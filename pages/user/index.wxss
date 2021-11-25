@@ -1,0 +1,18 @@
+view {
+  width: 100%;
+  position: relative;
+}
+.user-wrap {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 20%);
+}
+.found {
+  width: 100%;
+}
+.tips {
+  text-align: center;
+  color: #434343;
+}

@@ -1,0 +1,17 @@
+page,
+view,
+text,
+image,
+navigator {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* 主题颜色 */
+page {
+  --themeColor: #ffe485;
+  font-size: 28rpx;
+}
+
+/* 字体大小 */

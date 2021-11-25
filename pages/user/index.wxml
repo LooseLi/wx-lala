@@ -1,0 +1,6 @@
+<view>
+	<view class="user-wrap">
+		<image class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
+		<view class="tips">紧锣密鼓筹备中...</view>
+	</view>
+</view>

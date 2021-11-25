@@ -1,0 +1,75 @@
+/* view {
+  使用全局颜色
+  color: var(--themeColor);
+} */
+page {
+  background: linear-gradient(180deg, #91d5ff 0%, #ffffff 100%);
+}
+.container {
+  width: 100%;
+}
+.bg {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.card {
+  position: relative;
+  width: calc(100% - 24px);
+  margin: -16px auto;
+  padding: 12px;
+  background: rgba(230, 247, 255, 0.5);
+  box-shadow: 1px 1px 6px #bae7ff;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 2;
+  font-size: 14px;
+  color: #262626;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.icon-dingwei {
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+}
+
+.temperature {
+  font-size: 48px;
+  padding: 14px 0;
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.line {
+  margin: 0 6px;
+}
+
+.wind {
+  margin: 6px 0;
+}
+
+.windpower {
+  margin-right: 20px;
+}
+
+.icon-weather {
+  width: 36px;
+  height: 36px;
+  margin-right: 6px;
+}
+
+.weather {
+  display: flex;
+  align-items: center;
+}
