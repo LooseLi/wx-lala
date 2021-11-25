@@ -9,7 +9,7 @@
 			<view class="temperature">{{today.temperature}}º</view>
 			<view class="wrap">
 				<view class="info weather">
-					<image class="icon-weather" src="{{today.icon}}"></image>
+					<image bindtap="handleTips" class="icon-weather" src="{{today.icon}}"></image>
 					<view>{{today.weather}}</view>
 				</view>
 				<view class="info line">|</view>
@@ -20,7 +20,7 @@
 				<view class="info">风向：{{today.winddirection}}风</view>
 			</view>
 		</block>
-		<view wx:else>
+		<view wx:else bindtap="handleNoAuth">
 			<image class="noAuth" src="./images/noAuth.png" mode="aspectFit" lazy-load />
 		</view>
 	</view>
