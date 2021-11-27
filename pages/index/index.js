@@ -29,6 +29,12 @@ Page({
         tips: '天气还算不错～',
       },
       {
+        weather: '多云',
+        day: './images/weather/qingtianduoyun.png',
+        night: './images/weather/qingtianduoyun.png',
+        tips: '看看真的有很多云吗～ 🤔',
+      },
+      {
         weather: '阴',
         day: './images/weather/yin.png',
         night: './images/weather/yin.png',
