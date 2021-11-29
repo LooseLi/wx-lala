@@ -3,6 +3,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isShowMeet: false, //是否见面
+    meetContent: '', //提示语
     province: '', //省
     city: '', //市
     today: null, //今日天气
@@ -330,10 +332,61 @@ Page({
     });
   },
 
+  // 见面时间
+  beforeMeet() {
+    const meetTime = new Date('2021/12/03 23:59:59').getTime();
+    const currentTime = new Date().getTime();
+    const currentM = new Date().getMonth();
+    const currentD = new Date().getDate();
+    if (currentM === 11 && currentD === 3) {
+      this.setData({
+        isShowMeet: true,
+        meetContent: '小松今天要来啦～',
+      });
+      return;
+    }
+    if (currentM === 11 && currentD > 3) {
+      this.setData({
+        isShowMeet: false,
+        meetContent: '',
+      });
+      return;
+    }
+    const needTime = meetTime - currentTime;
+    const day = 1000 * 3600 * 24;
+    const needDay = parseInt(needTime / day);
+    if (needDay >= 1) {
+      this.setData({
+        isShowMeet: true,
+      });
+      if (needDay === 4) {
+        this.setData({
+          meetContent: '今天是蛋糕小拉～ 但别忘了还有 4 天就要见松啦',
+        });
+      }
+      if (needDay === 3) {
+        this.setData({
+          meetContent: '倒计时 3 天～ 爱你喔',
+        });
+      }
+      if (needDay === 2) {
+        this.setData({
+          meetContent: '嘿嘿，还有 2 天，冲冲冲',
+        });
+      }
+      if (needDay === 1) {
+        this.setData({
+          meetContent: '还有 1 天就能见到拉啦 要洗白白喔～',
+        });
+      }
+    }
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.beforeMeet();
     this.beforeGetLocation();
   },
 

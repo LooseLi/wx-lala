@@ -16,7 +16,7 @@ page {
 .card {
   position: relative;
   width: calc(100% - 24px);
-  margin: -16px auto;
+  margin: -16px auto 36px;
   padding: 12px;
   background: rgba(230, 247, 255, 0.5);
   box-shadow: 1px 1px 6px #bae7ff;
@@ -72,4 +72,12 @@ page {
 .weather {
   display: flex;
   align-items: center;
+}
+
+.meet {
+  background: linear-gradient(90deg, #ffa940 20%, #85a5ff 76%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 16px;
 }
