@@ -4,7 +4,8 @@
 		<text class="meet">{{meetContent}}</text>
 	</view>
 
-	<view class="card">
+	<!-- 天气 -->
+	<view class="weather-card">
 		<block wx:if="{{hasAuth}}">
 			<view class="location">
 				<image class="icon-dingwei" src="./images/dingwei.png"></image>
@@ -27,5 +28,53 @@
 		<view wx:else bindtap="handleNoAuth">
 			<image class="noAuth" src="./images/noAuth.png" mode="aspectFit" lazy-load />
 		</view>
+	</view>
+
+	<!-- 节假日 -->
+	<view class="holiday-card" wx:if="{{nowHoliday}}">
+		<view class="holiday-wrap">
+			<image wx:if="{{nowHoliday.index === 0}}" class="icon-holiday" src="./images/holiday/icon-0.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 1}}" class="icon-holiday" src="./images/holiday/icon-1.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 2}}" class="icon-holiday" src="./images/holiday/icon-2.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 3}}" class="icon-holiday" src="./images/holiday/icon-3.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 4}}" class="icon-holiday" src="./images/holiday/icon-4.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 5}}" class="icon-holiday" src="./images/holiday/icon-5.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 6}}" class="icon-holiday" src="./images/holiday/icon-6.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 7}}" class="icon-holiday" src="./images/holiday/icon-7.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 8}}" class="icon-holiday" src="./images/holiday/icon-8.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 9}}" class="icon-holiday" src="./images/holiday/icon-9.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 10}}" class="icon-holiday" src="./images/holiday/icon-10.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 11}}" class="icon-holiday" src="./images/holiday/icon-11.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 12}}" class="icon-holiday" src="./images/holiday/icon-12.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 13}}" class="icon-holiday" src="./images/holiday/icon-13.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nowHoliday.index === 14}}" class="icon-holiday" src="./images/holiday/icon-14.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<view>{{nowHoliday.id}}啦～</view>
+		</view>
+		<view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
+		<view wx:else class="holiday-time">{{nowHoliday.begin}}~{{nowHoliday.end}}</view>
+	</view>
+
+	<!-- 节假日 -->
+	<view class="holiday-card" wx:if="{{nextHoliday}}">
+		<view class="holiday-wrap">
+			<image wx:if="{{nextHoliday.index === 0}}" class="icon-holiday" src="./images/holiday/icon-0.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 1}}" class="icon-holiday" src="./images/holiday/icon-1.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 2}}" class="icon-holiday" src="./images/holiday/icon-2.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 3}}" class="icon-holiday" src="./images/holiday/icon-3.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 4}}" class="icon-holiday" src="./images/holiday/icon-4.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 5}}" class="icon-holiday" src="./images/holiday/icon-5.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 6}}" class="icon-holiday" src="./images/holiday/icon-6.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 7}}" class="icon-holiday" src="./images/holiday/icon-7.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 8}}" class="icon-holiday" src="./images/holiday/icon-8.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 9}}" class="icon-holiday" src="./images/holiday/icon-9.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 10}}" class="icon-holiday" src="./images/holiday/icon-10.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 11}}" class="icon-holiday" src="./images/holiday/icon-11.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 12}}" class="icon-holiday" src="./images/holiday/icon-12.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 13}}" class="icon-holiday" src="./images/holiday/icon-13.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<image wx:if="{{nextHoliday.index === 14}}" class="icon-holiday" src="./images/holiday/icon-14.png" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+			<view><text class="holiday-name">{{nextHoliday.id}}</text>倒计时：<text class="holiday-name-day">{{countDownDay}}</text> 天</view>
+		</view>
+		<view wx:if="{{nextHoliday.days === 1}}" class="holiday-time">{{nextHoliday.begin}}</view>
+		<view wx:else class="holiday-time">{{nextHoliday.begin}}~{{nextHoliday.end}}</view>
 	</view>
 </view>

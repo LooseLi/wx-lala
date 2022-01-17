@@ -1,6 +1,8 @@
 <view>
 	<view class="user-wrap" bindtap="handleUser">
 		<image class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
+		<!-- <view>{{nickName}}</view> -->
+		<!-- <image src="{{avatar}}" /> -->
 		<view class="tips">紧锣密鼓筹备中...</view>
 	</view>
 </view>

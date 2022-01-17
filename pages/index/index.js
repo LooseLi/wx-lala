@@ -169,6 +169,117 @@ Page({
         tips: '要注意保暖喔～',
       },
     ],
+    // 节假日
+    holidays: [
+      {
+        index: 0,
+        id: '元旦节',
+        days: 3,
+        beginDate: '2022/01/01 00:00',
+        endDate: '2022/01/03 23:59',
+      },
+      {
+        index: 1,
+        id: '腊八节',
+        days: 1,
+        beginDate: '2022/01/10 00:00',
+        endDate: '2022/01/10 23:59',
+      },
+      {
+        index: 2,
+        id: '除夕',
+        days: 1,
+        beginDate: '2022/01/31 00:00',
+        endDate: '2022/01/31 23:59',
+      },
+      {
+        index: 3,
+        id: '春节',
+        days: 6,
+        beginDate: '2022/02/01 00:00',
+        endDate: '2022/02/06 23:59',
+      },
+      {
+        index: 4,
+        id: '情人节',
+        days: 1,
+        beginDate: '2022/02/14 00:00',
+        endDate: '2022/02/14 23:59',
+      },
+      {
+        index: 5,
+        id: '元宵节',
+        days: 1,
+        beginDate: '2022/02/15 00:00',
+        endDate: '2022/02/15 23:59',
+      },
+      {
+        index: 6,
+        id: '清明节',
+        days: 3,
+        beginDate: '2022/04/03 00:00:00',
+        endDate: '2022/04/05 23:59:59',
+      },
+      {
+        index: 7,
+        id: '劳动节',
+        days: 5,
+        beginDate: '2022/04/30 00:00:00',
+        endDate: '2022/05/04 23:59:59',
+      },
+      {
+        index: 8,
+        id: '端午节',
+        days: 3,
+        beginDate: '2022/06/03 00:00',
+        endDate: '2022/06/05 23:59',
+      },
+      {
+        index: 9,
+        id: '七夕节',
+        days: 1,
+        beginDate: '2022/08/04 00:00',
+        endDate: '2022/08/04 23:59',
+      },
+      {
+        index: 10,
+        id: '中秋节',
+        days: 3,
+        beginDate: '2022/09/10 00:00',
+        endDate: '2022/09/12 23:59',
+      },
+      {
+        index: 11,
+        id: '国庆节',
+        days: 7,
+        beginDate: '2022/10/01 00:00',
+        endDate: '2022/10/07 23:59',
+      },
+      {
+        index: 12,
+        id: '周年纪念日',
+        days: 1,
+        beginDate: '2022/11/13 00:00',
+        endDate: '2022/11/13 23:59',
+      },
+      {
+        index: 13,
+        id: '平安夜',
+        days: 1,
+        beginDate: '2022/12/24 00:00',
+        endDate: '2022/12/24 23:59',
+      },
+      {
+        index: 14,
+        id: '圣诞节',
+        days: 1,
+        beginDate: '2022/12/25 00:00',
+        endDate: '2022/12/25 23:59',
+      },
+    ],
+    nowHoliday: null, //当前所处节日
+    nextHoliday: null, //下一个节日
+    countDownDay: 0, //倒计时
   },
 
   // 点击天气图标
@@ -382,12 +493,62 @@ Page({
     }
   },
 
+  // 日期格式化
+  format(date) {
+    const y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    m = m <= 9 ? '0' + m : m;
+    let d = date.getDate();
+    d = d <= 9 ? '0' + d : d;
+    let h = date.getHours();
+    h = h <= 9 ? '0' + h : h;
+    let min = date.getMinutes();
+    min = min <= 9 ? '0' + min : min;
+    let s = date.getSeconds();
+    s = s <= 9 ? '0' + s : s;
+    return {y, m, d, h, min, s};
+  },
+
+  // 节假日
+  handleHolidays() {
+    const date = new Date();
+    const arr = [];
+    this.data.holidays.forEach(item => {
+      const beginTime = new Date(item.beginDate).getTime();
+      const endTime = new Date(item.endDate).getTime();
+      // 当前正在某个节假日
+      if (date.getTime() >= beginTime && date.getTime() <= endTime) {
+        item.begin = item.beginDate.split(' ')[0];
+        item.end = item.endDate.split(' ')[0];
+        this.setData({
+          nowHoliday: item,
+        });
+      }
+      if (date.getTime() < beginTime) {
+        item.begin = item.beginDate.split(' ')[0];
+        item.end = item.endDate.split(' ')[0];
+        arr.push(item);
+      }
+    });
+    this.setData({
+      nextHoliday: arr.length && arr[0],
+    });
+    const nextBeginTime = this.data.nextHoliday && new Date(this.data.nextHoliday.beginDate);
+    const countDown = (nextBeginTime - date) / (1000 * 60 * 60 * 24);
+    this.setData({
+      countDownDay: Math.ceil(countDown),
+    });
+    console.log(Math.ceil(countDown));
+    console.log(this.data.nextHoliday);
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     this.beforeMeet();
     this.beforeGetLocation();
+    this.handleHolidays();
   },
 
   /**
