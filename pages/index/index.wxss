@@ -98,9 +98,9 @@ page {
   font-family: 'Courier New', Courier, monospace;
 }
 .icon-holiday {
-  width: 30px;
-  height: 30px;
-  margin-right: 8px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
 }
 .holiday-wrap {
   display: flex;
@@ -117,4 +117,7 @@ page {
 .holiday-name-day {
   color: #ff6800;
   font-size: 24px;
+}
+.no-holiday{
+  text-align: center;
 }
