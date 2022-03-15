@@ -3,17 +3,20 @@
   color: var(--themeColor);
 } */
 page {
-  background: linear-gradient(180deg, #91d5ff 0%, #ffffff 100%);
+  background: linear-gradient(270deg, #91d5ff 0%, #ffffff 100%);
   /* background: #e6f7ff; */
 }
+
 .container {
   width: 100%;
 }
+
 .bg {
   width: 100%;
   position: relative;
   z-index: 1;
 }
+
 .weather-card {
   position: relative;
   width: calc(100% - 24px);
@@ -97,27 +100,37 @@ page {
   color: #262626;
   font-family: 'Courier New', Courier, monospace;
 }
+
 .icon-holiday {
   width: 50px;
   height: 50px;
   margin-right: 10px;
 }
+
 .holiday-wrap {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
+
 .holiday-time {
   margin-top: 4px;
 }
+
+.holiday-content {
+  color: #ffa39e;
+}
+
 .holiday-name {
   color: #ff6800;
   text-decoration: underline;
 }
+
 .holiday-name-day {
   color: #ff6800;
   font-size: 24px;
 }
-.no-holiday{
+
+.no-holiday {
   text-align: center;
 }

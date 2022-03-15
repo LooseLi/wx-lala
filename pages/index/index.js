@@ -11,8 +11,7 @@ Page({
     casts: null, //四天天气情况
     hasAuth: false, //是否有位置权限
     unknow: './images/weather/unknow.png',
-    weathers: [
-      {
+    weathers: [{
         weather: '晴',
         day: './images/weather/qing.png',
         night: './images/weather/qing.png',
@@ -170,13 +169,13 @@ Page({
       },
     ],
     // 节假日
-    holidays: [
-      {
+    holidays: [{
         index: 0,
         id: '元旦节',
         days: 3,
         beginDate: '2022/01/01 00:00',
         endDate: '2022/01/03 23:59',
+        content: '新的一年来啦！🌈新年新气象～冲冲冲'
       },
       {
         index: 1,
@@ -184,6 +183,7 @@ Page({
         days: 1,
         beginDate: '2022/01/10 00:00',
         endDate: '2022/01/10 23:59',
+        content: '今天要喝腊八粥喔～'
       },
       {
         index: 2,
@@ -191,6 +191,7 @@ Page({
         days: 1,
         beginDate: '2022/01/31 00:00',
         endDate: '2022/01/31 23:59',
+        content: '今晚要吃年夜饭啦！🍻小拉多吃点～'
       },
       {
         index: 3,
@@ -198,6 +199,7 @@ Page({
         days: 6,
         beginDate: '2022/02/01 00:00',
         endDate: '2022/02/06 23:59',
+        content: '拉拉新春快乐！🧧松松爱你喔～'
       },
       {
         index: 4,
@@ -205,6 +207,7 @@ Page({
         days: 1,
         beginDate: '2022/02/14 00:00',
         endDate: '2022/02/14 23:59',
+        content: '情人节快乐～我们要一起过鸭❤️'
       },
       {
         index: 5,
@@ -212,6 +215,7 @@ Page({
         days: 1,
         beginDate: '2022/02/15 00:00',
         endDate: '2022/02/15 23:59',
+        content: '吃元宵啦🎂，松松也过生日啦'
       },
       {
         index: 6,
@@ -219,6 +223,7 @@ Page({
         days: 3,
         beginDate: '2022/04/03 00:00:00',
         endDate: '2022/04/05 23:59:59',
+        content: '清明时节雨纷纷～'
       },
       {
         index: 7,
@@ -226,6 +231,7 @@ Page({
         days: 5,
         beginDate: '2022/04/30 00:00:00',
         endDate: '2022/05/04 23:59:59',
+        content: '不知道能不能出去玩，想去青岛✈'
       },
       {
         index: 8,
@@ -233,6 +239,7 @@ Page({
         days: 3,
         beginDate: '2022/06/03 00:00',
         endDate: '2022/06/05 23:59',
+        content: '吃粽子，也吃龙虾🍤，还吃荔枝！'
       },
       {
         index: 9,
@@ -240,6 +247,7 @@ Page({
         days: 1,
         beginDate: '2022/08/04 00:00',
         endDate: '2022/08/04 23:59',
+        content: '情人七夕都要和宝宝一起过❤️～'
       },
       {
         index: 10,
@@ -247,6 +255,7 @@ Page({
         days: 3,
         beginDate: '2022/09/10 00:00',
         endDate: '2022/09/12 23:59',
+        content: '晚上的月亮一定很圆，要吃月饼喔🥮'
       },
       {
         index: 11,
@@ -254,6 +263,7 @@ Page({
         days: 7,
         beginDate: '2022/10/01 00:00',
         endDate: '2022/10/07 23:59',
+        content: '最长假期，值得出去嗨皮！'
       },
       {
         index: 12,
@@ -261,6 +271,7 @@ Page({
         days: 1,
         beginDate: '2022/11/13 00:00',
         endDate: '2022/11/13 23:59',
+        content: '周年啦～宝宝，松爱你！'
       },
       {
         index: 13,
@@ -268,6 +279,7 @@ Page({
         days: 1,
         beginDate: '2022/12/24 00:00',
         endDate: '2022/12/24 23:59',
+        content: '吃苹果🍎'
       },
       {
         index: 14,
@@ -275,6 +287,7 @@ Page({
         days: 1,
         beginDate: '2022/12/25 00:00',
         endDate: '2022/12/25 23:59',
+        content: '我觉得可以去泡温泉👩‍💻'
       },
     ],
     nowHoliday: null, //当前所处节日
@@ -373,7 +386,10 @@ Page({
     const APP_ID = '0d5e9e7ec4881a5c3ed194b2338a6aca';
     wx.getLocation({
       success: res => {
-        const {longitude, latitude} = res;
+        const {
+          longitude,
+          latitude
+        } = res;
         wx.request({
           url: 'https://restapi.amap.com/v3/geocode/regeo',
           data: {
@@ -506,7 +522,14 @@ Page({
     min = min <= 9 ? '0' + min : min;
     let s = date.getSeconds();
     s = s <= 9 ? '0' + s : s;
-    return {y, m, d, h, min, s};
+    return {
+      y,
+      m,
+      d,
+      h,
+      min,
+      s
+    };
   },
 
   // 节假日
@@ -530,16 +553,14 @@ Page({
         arr.push(item);
       }
     });
-    this.setData({
-      nextHoliday: arr.length && arr[0],
+    const nextHolidays = arr.length > 3 ? arr.slice(0, 3) : arr;
+    nextHolidays.forEach(item => {
+      const nextBeginTime = new Date(item.beginDate);
+      item.countDown = Math.ceil((nextBeginTime - date) / (1000 * 60 * 60 * 24));
     });
-    const nextBeginTime = this.data.nextHoliday && new Date(this.data.nextHoliday.beginDate);
-    const countDown = (nextBeginTime - date) / (1000 * 60 * 60 * 24);
     this.setData({
-      countDownDay: Math.ceil(countDown),
+      nextHoliday: nextHolidays,
     });
-    console.log(Math.ceil(countDown));
-    console.log(this.data.nextHoliday);
   },
 
   /**
