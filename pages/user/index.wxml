@@ -1,13 +1,14 @@
 <view>
-	<view class="user-wrap" bindtap="handleUser">
-		<view class="user-info-wrap">
-			<open-data class="avatar" type="userAvatarUrl"></open-data>
+	<view class="user-wrap">
+		<view class="user-info-wrap" wx:if="{{isAuth}}">
+			<image class="avatar" src="{{avatar}}" mode="widthFix" lazy-load></image>
 			<view class="user-info">
-				<open-data class="nickname" type="userNickName" lang="zh_CN"></open-data>
+				<view>{{nickName}}</view>
 				<view>😘😘😘</view>
 			</view>
 		</view>
-		<image class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
+		<button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
+		<image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
 		<view class="tips">紧锣密鼓筹备中...</view>
 	</view>
 </view>

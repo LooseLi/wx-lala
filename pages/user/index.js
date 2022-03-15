@@ -4,8 +4,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    avatar: '',
     nickName: '',
-    avatar: ''
+    isAuth: false,
   },
 
   // 点击事件
@@ -19,26 +20,69 @@ Page({
 
   // 监听
   handleTabBarChange() {
+    console.log(111);
     // 查看是否授权
     wx.getSetting({
       success: res => {
-        console.log(res)
+        console.log(res);
         if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称
           wx.getUserProfile({
             desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-            success: (res) => {
-              console.log(res)
+            success: res => {
+              console.log(res);
               // var userInfo = res.userInfo;
               // this.setData({
               //   nickName: userInfo.nickName,
               //   avatar: userInfo.avatarUrl,
               // });
-            }
-          })
+            },
+          });
         }
-      }
-    })
+      },
+    });
+  },
+
+  // 获取
+  // getUserInfo(e) {
+  //   let code = '';
+  //   wx.login({
+  //     success: function (res) {
+  //       code = res.code;
+  //       const rawData = e.detail.rawData;
+  //       const signature = e.detail.signature;
+  //       const encryptedData = e.detail.encryptedData;
+  //       const iv = e.detail.iv;
+  //       const data = {
+  //         code: code,
+  //         rawData: rawData,
+  //         signature: signature,
+  //         iv: iv,
+  //         encryptedData: encryptedData,
+  //       }
+  //       wx.request({
+  //         url: 'https://restapi.amap.com/login',
+  //         data: data,
+  //         method: 'POST',
+  //         success: (res) => {
+  //           console.log(res)
+  //         },
+  //       })
+  //     }
+  //   })
+  // },
+
+  getUserProfile(e) {
+    wx.getUserProfile({
+      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      success: res => {
+        this.setData({
+          avatar: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          isAuth: true,
+        });
+      },
+    });
   },
 
   /**

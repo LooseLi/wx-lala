@@ -30,8 +30,6 @@ view {
   margin-left: 16px;
 }
 
-.nickname {}
-
 .found {
   width: 100%;
 }
