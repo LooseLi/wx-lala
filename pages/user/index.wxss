@@ -2,6 +2,7 @@ view {
   width: 100%;
   position: relative;
 }
+
 .user-wrap {
   width: 100%;
   position: absolute;
@@ -9,9 +10,32 @@ view {
   left: 50%;
   transform: translate(-50%, 20%);
 }
+
+.user-info-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.user-info {
+  flex: 1;
+  margin-left: 16px;
+}
+
+.nickname {}
+
 .found {
   width: 100%;
 }
+
 .tips {
   text-align: center;
   color: #434343;

@@ -1,8 +1,13 @@
 <view>
 	<view class="user-wrap" bindtap="handleUser">
+		<view class="user-info-wrap">
+			<open-data class="avatar" type="userAvatarUrl"></open-data>
+			<view class="user-info">
+				<open-data class="nickname" type="userNickName" lang="zh_CN"></open-data>
+				<view>😘😘😘</view>
+			</view>
+		</view>
 		<image class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
-		<!-- <view>{{nickName}}</view> -->
-		<!-- <image src="{{avatar}}" /> -->
 		<view class="tips">紧锣密鼓筹备中...</view>
 	</view>
 </view>
