@@ -1,3 +1,6 @@
+let okayapi = require('../../utils/YesApi/yesapi');
+let app = getApp();
+
 // pages/user/index.js
 Page({
   /**
@@ -40,15 +43,16 @@ Page({
             this.setData({
               uid: res.data.openid,
             });
+            const params = {
+              model_name: 'userInfo',
+              field_name: 'uid',
+              field_value: res.data.openid,
+              app_key: app.globalData.yesapi.app_key,
+            };
             wx.request({
               method: 'GET',
               url: 'http://api.yesapi.cn/api/App/Table/GetOneDataByOneField',
-              data: {
-                model_name: 'userInfo',
-                field_name: 'uid',
-                field_value: res.data.openid,
-                app_key: this.data.APP_KEY,
-              },
+              data: okayapi.enryptData(params),
               success: res => {
                 console.log(res);
                 this.setData({
@@ -128,18 +132,19 @@ Page({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: res => {
         console.log(res);
+        const params = {
+          model_name: 'userInfo',
+          app_key: this.data.APP_KEY,
+          data: {
+            avatar: res.userInfo.avatarUrl,
+            nickname: res.userInfo.nickName,
+            uid: this.data.uid,
+          },
+        };
         wx.request({
           method: 'POST',
           url: 'http://api.yesapi.cn/api/App/Table/Create',
-          data: {
-            model_name: 'userInfo',
-            app_key: this.data.APP_KEY,
-            data: {
-              avatar: res.userInfo.avatarUrl,
-              nickname: res.userInfo.nickName,
-              uid: this.data.uid,
-            },
-          },
+          data: okayapi.enryptData(params),
         });
         this.setData({
           avatar: res.userInfo.avatarUrl,

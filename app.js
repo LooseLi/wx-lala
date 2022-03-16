@@ -4,6 +4,14 @@ App({
    */
   onLaunch: function () {},
 
+  globalData: {
+    yesapi: {
+      api_host: 'https://hd215.api.yesapi.cn/',
+      app_key: 'EA2BD5AA28FF7BD4A39F219DF4650EDE',
+      app_secrect: 'qpKdNJKeSM9e2dEUBZrJZCXMq2F7B6F1sPwvK2CghozIKvpHD34wgFtkikq9YTGClyUz6'
+    }
+  },
+
   /**
    * 当小程序启动，或从后台进入前台显示，会触发 onShow
    */
