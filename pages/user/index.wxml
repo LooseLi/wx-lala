@@ -1,9 +1,9 @@
 <view>
-	<view class="user-wrap">
+	<view wx:if="{{loading}}" class="user-wrap">
 		<view class="user-info-wrap" wx:if="{{isAuth}}">
 			<image class="avatar" src="{{avatar}}" mode="widthFix" lazy-load></image>
 			<view class="user-info">
-				<view>{{nickName}}</view>
+				<view>{{nickname}}</view>
 				<view>😘😘😘</view>
 			</view>
 		</view>
@@ -11,4 +11,7 @@
 		<image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
 		<view class="tips">紧锣密鼓筹备中...</view>
 	</view>
+	<loading hidden="{{loading}}">
+		加载中...
+	</loading>
 </view>
