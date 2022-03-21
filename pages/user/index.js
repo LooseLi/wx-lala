@@ -62,7 +62,14 @@ Page({
               isAuth: false,
               uid: data.openid
             });
-          }
+          },
+          fail: err => {
+            wx.showToast({
+              title: 'login接口出错',
+              duration: 3000,
+              icon: 'none',
+            });
+          },
         })
       }
     })
