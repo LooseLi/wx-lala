@@ -1,4 +1,5 @@
-let okayapi = require('../../utils/YesApi/yesapi');
+const db = wx.cloud.database();
+const userInfo = db.collection('userInfo');
 let app = getApp();
 
 // pages/user/index.js
@@ -25,132 +26,67 @@ Page({
   },
 
   // 监听
-  handleTabBarChange() {
-    const APP_ID = 'wxab00d9afbda623cf';
-    const secret = '5f1d10c89d82fe00f0f55d4391c5584e';
+  async handleTabBarChange() {
+    const res = await userInfo.get();
+    const infos = res.data;
     wx.login({
       success: res => {
         wx.request({
           method: 'GET',
           url: 'https://api.weixin.qq.com/sns/jscode2session',
           data: {
-            appid: APP_ID,
-            secret,
+            appid: app.globalData.APP_ID,
+            secret: app.globalData.APP_SECRET,
             js_code: res.code,
             grant_type: 'authorization_code',
           },
-          success: res => {
+          success: ({
+            data
+          }) => {
+            const arr = infos.filter(item => item.uid === data.openid);
+            if (arr.length) {
+              this.setData({
+                avatar: arr[0].avatar,
+                nickname: arr[0].nickname,
+                isAuth: true,
+                uid: data.openid
+              });
+              return;
+            }
             this.setData({
-              uid: res.data.openid,
+              isAuth: false,
+              uid: data.openid
             });
-            const params = {
-              model_name: 'userInfo',
-              field_name: 'uid',
-              field_value: res.data.openid,
-              app_key: app.globalData.yesapi.app_key,
-            };
-            wx.request({
-              method: 'GET',
-              url: 'http://api.yesapi.cn/api/App/Table/GetOneDataByOneField',
-              data: okayapi.enryptData(params),
-              success: res => {
-                console.log(res);
-                this.setData({
-                  loading: true,
-                });
-                const {data} = res;
-                if (data.data.err_code === 3) {
-                  this.setData({
-                    isAuth: false,
-                  });
-                  return;
-                }
-                this.setData({
-                  avatar: data.data.data.avatar,
-                  nickname: data.data.data.nickname,
-                  isAuth: true,
-                });
-              },
-            });
-          },
-        });
-      },
-    });
-    // 查看是否授权
-    // wx.getSetting({
-    //   success: res => {
-    //     console.log(res);
-    //     if (res.authSetting['scope.userInfo']) {
-    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-    //       wx.getUserProfile({
-    //         desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-    //         success: res => {
-    //           console.log(res);
-    //           // var userInfo = res.userInfo;
-    //           // this.setData({
-    //           //   nickname: userInfo.nickName,
-    //           //   avatar: userInfo.avatarUrl,
-    //           // });
-    //         },
-    //       });
-    //     }
-    //   },
-    // });
+          }
+        })
+      }
+    })
   },
 
-  // 获取
-  // getUserInfo(e) {
-  //   let code = '';
-  //   wx.login({
-  //     success: function (res) {
-  //       code = res.code;
-  //       const rawData = e.detail.rawData;
-  //       const signature = e.detail.signature;
-  //       const encryptedData = e.detail.encryptedData;
-  //       const iv = e.detail.iv;
-  //       const data = {
-  //         code: code,
-  //         rawData: rawData,
-  //         signature: signature,
-  //         iv: iv,
-  //         encryptedData: encryptedData,
-  //       }
-  //       wx.request({
-  //         url: 'https://restapi.amap.com/login',
-  //         data: data,
-  //         method: 'POST',
-  //         success: (res) => {
-  //           console.log(res)
-  //         },
-  //       })
-  //     }
-  //   })
-  // },
-
+  // 一键登录
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: res => {
-        console.log(res);
-        const params = {
-          model_name: 'userInfo',
-          app_key: this.data.APP_KEY,
-          data: {
-            avatar: res.userInfo.avatarUrl,
-            nickname: res.userInfo.nickName,
-            uid: this.data.uid,
-          },
-        };
-        wx.request({
-          method: 'POST',
-          url: 'http://api.yesapi.cn/api/App/Table/Create',
-          data: okayapi.enryptData(params),
-        });
         this.setData({
           avatar: res.userInfo.avatarUrl,
           nickname: res.userInfo.nickName,
-          isAuth: true,
+          isAuth: true
         });
+        userInfo.add({
+          // data 字段表示需新增的 JSON 数据
+          data: {
+            // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
+            due: new Date(),
+            uid: this.data.uid,
+            avatar: this.data.avatar,
+            nickname: this.data.nickname,
+          },
+          success: function (res) {
+            // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
+            console.log(res)
+          }
+        })
       },
     });
   },

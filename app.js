@@ -2,14 +2,15 @@ App({
   /**
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
-  onLaunch: function () {},
+  onLaunch: function () {
+    wx.cloud.init({
+      env: 'cloud1-5g2h5bs5d6613df6'
+    });
+  },
 
   globalData: {
-    yesapi: {
-      api_host: 'https://hd215.api.yesapi.cn/',
-      app_key: 'EA2BD5AA28FF7BD4A39F219DF4650EDE',
-      app_secrect: 'qpKdNJKeSM9e2dEUBZrJZCXMq2F7B6F1sPwvK2CghozIKvpHD34wgFtkikq9YTGClyUz6'
-    }
+    APP_ID: 'wxab00d9afbda623cf',
+    APP_SECRET: '5f1d10c89d82fe00f0f55d4391c5584e'
   },
 
   /**

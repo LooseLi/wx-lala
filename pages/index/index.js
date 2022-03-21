@@ -11,8 +11,7 @@ Page({
     casts: null, //四天天气情况
     hasAuth: false, //是否有位置权限
     unknow: './images/weather/unknow.png',
-    weathers: [
-      {
+    weathers: [{
         weather: '晴',
         day: './images/weather/qing.png',
         night: './images/weather/qing.png',
@@ -170,8 +169,7 @@ Page({
       },
     ],
     // 节假日
-    holidays: [
-      {
+    holidays: [{
         index: 0,
         id: '元旦节',
         days: 3,
@@ -388,7 +386,10 @@ Page({
     const APP_ID = '0d5e9e7ec4881a5c3ed194b2338a6aca';
     wx.getLocation({
       success: res => {
-        const {longitude, latitude} = res;
+        const {
+          longitude,
+          latitude
+        } = res;
         wx.request({
           url: 'https://restapi.amap.com/v3/geocode/regeo',
           data: {
