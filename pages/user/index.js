@@ -65,7 +65,7 @@ Page({
           },
           fail: err => {
             wx.showToast({
-              title: 'login接口出错',
+              title: err,
               duration: 3000,
               icon: 'none',
             });
