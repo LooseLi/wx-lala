@@ -33,7 +33,7 @@ Page({
       success: res => {
         wx.request({
           method: 'GET',
-          url: 'https://api.weixin.qq.com/sns/jscode2session',
+          url: 'https://restapi.amap.com/sns/jscode2session',
           data: {
             appid: app.globalData.APP_ID,
             secret: app.globalData.APP_SECRET,
@@ -43,11 +43,6 @@ Page({
           success: ({
             data
           }) => {
-            wx.showToast({
-              title: data.openid,
-              duration: 3000,
-              icon: 'none',
-            });
             const arr = infos.filter(item => item.uid === data.openid);
             if (arr.length) {
               this.setData({
@@ -61,13 +56,6 @@ Page({
             this.setData({
               isAuth: false,
               uid: data.openid
-            });
-          },
-          fail: err => {
-            wx.showToast({
-              title: err,
-              duration: 3000,
-              icon: 'none',
             });
           },
         })
