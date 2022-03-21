@@ -43,6 +43,11 @@ Page({
           success: ({
             data
           }) => {
+            wx.showToast({
+              title: data.openid,
+              duration: 3000,
+              icon: 'none',
+            });
             const arr = infos.filter(item => item.uid === data.openid);
             if (arr.length) {
               this.setData({
