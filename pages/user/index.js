@@ -29,38 +29,27 @@ Page({
   async handleTabBarChange() {
     const res = await userInfo.get();
     const infos = res.data;
-    wx.login({
+    wx.cloud.callFunction({
+      name: 'getOpenId',
       success: res => {
-        wx.request({
-          method: 'GET',
-          url: 'https://restapi.amap.com/sns/jscode2session',
-          data: {
-            appid: app.globalData.APP_ID,
-            secret: app.globalData.APP_SECRET,
-            js_code: res.code,
-            grant_type: 'authorization_code',
-          },
-          success: ({
-            data
-          }) => {
-            const arr = infos.filter(item => item.uid === data.openid);
-            if (arr.length) {
-              this.setData({
-                avatar: arr[0].avatar,
-                nickname: arr[0].nickname,
-                isAuth: true,
-                uid: data.openid
-              });
-              return;
-            }
-            this.setData({
-              isAuth: false,
-              uid: data.openid
-            });
-          },
-        })
-      }
-    })
+        this.setData({
+          isAuth: false,
+          uid: res.result.openid
+        });
+        const arr = infos.filter(item => item.uid === res.result.openid);
+        if (arr.length) {
+          this.setData({
+            avatar: arr[0].avatar,
+            nickname: arr[0].nickname,
+            isAuth: true,
+          });
+          return;
+        }
+      },
+      fail: err => {
+        console.log('查询失败', err);
+      },
+    });
   },
 
   // 一键登录
@@ -79,8 +68,8 @@ Page({
             // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
             due: new Date(),
             uid: this.data.uid,
-            avatar: this.data.avatar,
-            nickname: this.data.nickname,
+            avatar: res.userInfo.avatarUrl,
+            nickname: res.userInfo.nickName,
           },
           success: function (res) {
             // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
