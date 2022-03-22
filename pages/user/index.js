@@ -1,6 +1,5 @@
 const db = wx.cloud.database();
 const userInfo = db.collection('userInfo');
-let app = getApp();
 
 // pages/user/index.js
 Page({
@@ -8,11 +7,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loading: false,
+    loading: true,
     avatar: '',
     nickname: '',
     isAuth: false,
-    APP_KEY: 'EA2BD5AA28FF7BD4A39F219DF4650EDE',
     uid: '',
   },
 
@@ -34,6 +32,7 @@ Page({
       success: res => {
         this.setData({
           isAuth: false,
+          loading: true,
           uid: res.result.openid
         });
         const arr = infos.filter(item => item.uid === res.result.openid);
@@ -42,12 +41,16 @@ Page({
             avatar: arr[0].avatar,
             nickname: arr[0].nickname,
             isAuth: true,
+            loading: false,
           });
           return;
         }
       },
       fail: err => {
         console.log('查询失败', err);
+        this.setData({
+          loading: false,
+        });
       },
     });
   },
