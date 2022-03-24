@@ -1,3 +1,6 @@
+const db = wx.cloud.database();
+const list = db.collection('list');
+
 Page({
   /**
    * 页面的初始数据
@@ -5,291 +8,12 @@ Page({
   data: {
     isShowMeet: false, //是否见面
     meetContent: '', //提示语
-    province: '', //省
-    city: '', //市
     today: null, //今日天气
-    casts: null, //四天天气情况
     hasAuth: false, //是否有位置权限
-    unknow: './images/weather/unknow.png',
-    weathers: [{
-        weather: '晴',
-        day: './images/weather/qing.png',
-        night: './images/weather/qing.png',
-        tips: '大好日子，想个松吧～',
-      },
-      {
-        weather: '少云',
-        day: './images/weather/qingtianduoyun.png',
-        night: './images/weather/qingtianduoyun.png',
-        tips: '天上的云有点少呢～',
-      },
-      {
-        weather: '晴间多云',
-        day: './images/weather/qingtianduoyun.png',
-        night: './images/weather/qingtianduoyun.png',
-        tips: '天气还算不错～',
-      },
-      {
-        weather: '多云',
-        day: './images/weather/qingtianduoyun.png',
-        night: './images/weather/qingtianduoyun.png',
-        tips: '看看真的有很多云吗～ 🤔',
-      },
-      {
-        weather: '阴',
-        day: './images/weather/yin.png',
-        night: './images/weather/yin.png',
-        tips: '今天阴沉沉的 🤨',
-      },
-      {
-        weather: '霾',
-        day: './images/weather/wumai.png',
-        night: './images/weather/wumai.png',
-        tips: '有雾霾！戴口罩喔～ 😷',
-      },
-      {
-        weather: '风',
-        day: './images/weather/feng.png',
-        night: './images/weather/feng.png',
-        tips: '吹呀吹呀，我的宝宝宝宝',
-      },
-      {
-        weather: '雷阵雨',
-        day: './images/weather/leizhenyu.png',
-        night: './images/weather/leizhenyu.png',
-        tips: '打雷不怕，松松抱～',
-      },
-      {
-        weather: '小雨',
-        day: './images/weather/xiaoyu.png',
-        night: './images/weather/xiaoyu.png',
-        tips: '记得带伞🌂喔～',
-      },
-      {
-        weather: '中雨',
-        day: './images/weather/zhongyu.png',
-        night: './images/weather/zhongyu.png',
-        tips: '记得带伞🌂喔～',
-      },
-      {
-        weather: '大雨',
-        day: './images/weather/dayu.png',
-        night: './images/weather/dayu.png',
-        tips: '啊啊啊，好大的雨！',
-      },
-      {
-        weather: '暴雨',
-        day: './images/weather/baoyu.png',
-        night: './images/weather/baoyu.png',
-        tips: '这雨，出不了门拉～',
-      },
-      {
-        weather: '大暴雨',
-        day: './images/weather/dabaoyu.png',
-        night: './images/weather/dabaoyu.png',
-        tips: '没见过这么大雨 🤯',
-      },
-      {
-        weather: '特大暴雨',
-        day: './images/weather/tedabaoyu.png',
-        night: './images/weather/tedabaoyu.png',
-        tips: '要不我们请个假？',
-      },
-      {
-        weather: '冻雨',
-        day: './images/weather/dongyu.png',
-        night: './images/weather/dongyu.png',
-        tips: '这是什么天气？🤔',
-      },
-      {
-        weather: '雨夹雪',
-        day: './images/weather/yujiaxue.png',
-        night: './images/weather/yujiaxue.png',
-        tips: '这雪不知道能不能下',
-      },
-      {
-        weather: '阵雨夹雪',
-        day: './images/weather/zhenyujiaxue.png',
-        night: './images/weather/zhenyujiaxue.png',
-        tips: '这雪不知道能不能下',
-      },
-      {
-        weather: '小雪',
-        day: './images/weather/xiaoxue.png',
-        night: './images/weather/xiaoxue.png',
-        tips: '下雪拉～',
-      },
-      {
-        weather: '中雪',
-        day: './images/weather/zhongxue.png',
-        night: './images/weather/zhongxue.png',
-        tips: '想和宝宝一起看雪～',
-      },
-      {
-        weather: '大雪',
-        day: './images/weather/daxue.png',
-        night: './images/weather/daxue.png',
-        tips: '这雪还挺大，南方是肯定没有的',
-      },
-      {
-        weather: '暴雪',
-        day: './images/weather/baoxue.png',
-        night: './images/weather/baoxue.png',
-        tips: '不知道能不能见到这么大的雪',
-      },
-      {
-        weather: '浮尘',
-        day: './images/weather/fuchen.png',
-        night: './images/weather/fuchen.png',
-        tips: '漂浮的尘埃？',
-      },
-      {
-        weather: '扬沙',
-        day: './images/weather/yangsha.png',
-        night: './images/weather/yangsha.png',
-        tips: '扬起的沙子？😂',
-      },
-      {
-        weather: '沙尘暴',
-        day: './images/weather/shachenbao.png',
-        night: './images/weather/shachenbao.png',
-        tips: '抱紧小拉花',
-      },
-      {
-        weather: '热',
-        day: './images/weather/reqiwengao.png',
-        night: './images/weather/reqiwengao.png',
-        tips: '火娃小心鸭',
-      },
-      {
-        weather: '冷',
-        day: './images/weather/lengqiwendi.png',
-        night: './images/weather/lengqiwendi.png',
-        tips: '要注意保暖喔～',
-      },
-    ],
+    unknow: 'cloud://cloud1-5g2h5bs5d6613df6.636c-cloud1-5g2h5bs5d6613df6-1308328307/weather/unknow.png',
+    weathers: [],
     // 节假日
-    holidays: [{
-        index: 0,
-        id: '元旦节',
-        days: 3,
-        beginDate: '2022/01/01 00:00',
-        endDate: '2022/01/03 23:59',
-        content: '新的一年来啦！🌈新年新气象～冲冲冲',
-      },
-      {
-        index: 1,
-        id: '腊八节',
-        days: 1,
-        beginDate: '2022/01/10 00:00',
-        endDate: '2022/01/10 23:59',
-        content: '今天要喝腊八粥喔～',
-      },
-      {
-        index: 2,
-        id: '除夕',
-        days: 1,
-        beginDate: '2022/01/31 00:00',
-        endDate: '2022/01/31 23:59',
-        content: '今晚要吃年夜饭啦！🍻小拉多吃点～',
-      },
-      {
-        index: 3,
-        id: '春节',
-        days: 6,
-        beginDate: '2022/02/01 00:00',
-        endDate: '2022/02/06 23:59',
-        content: '拉拉新春快乐！🧧松松爱你喔～',
-      },
-      {
-        index: 4,
-        id: '情人节',
-        days: 1,
-        beginDate: '2022/02/14 00:00',
-        endDate: '2022/02/14 23:59',
-        content: '情人节快乐～我们要一起过鸭❤️',
-      },
-      {
-        index: 5,
-        id: '元宵节',
-        days: 1,
-        beginDate: '2022/02/15 00:00',
-        endDate: '2022/02/15 23:59',
-        content: '吃元宵啦🎂，松松也过生日啦',
-      },
-      {
-        index: 6,
-        id: '清明节',
-        days: 3,
-        beginDate: '2022/04/03 00:00:00',
-        endDate: '2022/04/05 23:59:59',
-        content: '清明时节雨纷纷～',
-      },
-      {
-        index: 7,
-        id: '劳动节',
-        days: 5,
-        beginDate: '2022/04/30 00:00:00',
-        endDate: '2022/05/04 23:59:59',
-        content: '不知道能不能出去玩，想去青岛✈',
-      },
-      {
-        index: 8,
-        id: '端午节',
-        days: 3,
-        beginDate: '2022/06/03 00:00',
-        endDate: '2022/06/05 23:59',
-        content: '吃粽子，也吃龙虾🍤，还吃荔枝！',
-      },
-      {
-        index: 9,
-        id: '七夕节',
-        days: 1,
-        beginDate: '2022/08/04 00:00',
-        endDate: '2022/08/04 23:59',
-        content: '情人七夕都要和宝宝一起过❤️～',
-      },
-      {
-        index: 10,
-        id: '中秋节',
-        days: 3,
-        beginDate: '2022/09/10 00:00',
-        endDate: '2022/09/12 23:59',
-        content: '晚上的月亮一定很圆，要吃月饼喔🥮',
-      },
-      {
-        index: 11,
-        id: '国庆节',
-        days: 7,
-        beginDate: '2022/10/01 00:00',
-        endDate: '2022/10/07 23:59',
-        content: '最长假期，值得出去嗨皮！',
-      },
-      {
-        index: 12,
-        id: '周年纪念日',
-        days: 1,
-        beginDate: '2022/11/13 00:00',
-        endDate: '2022/11/13 23:59',
-        content: '周年啦～宝宝，松爱你！',
-      },
-      {
-        index: 13,
-        id: '平安夜',
-        days: 1,
-        beginDate: '2022/12/24 00:00',
-        endDate: '2022/12/24 23:59',
-        content: '吃苹果🍎',
-      },
-      {
-        index: 14,
-        id: '圣诞节',
-        days: 1,
-        beginDate: '2022/12/25 00:00',
-        endDate: '2022/12/25 23:59',
-        content: '我觉得可以去泡温泉👩‍💻',
-      },
-    ],
+    holidays: [],
     nowHoliday: null, //当前所处节日
     nextHoliday: null, //下一个节日
     countDownDay: 0, //倒计时
@@ -424,14 +148,6 @@ Page({
                   today: lives,
                 });
                 console.log(this.data.hasAuth);
-                // const obj = res.data.forecasts[0];
-                // console.log(obj);
-                // this.setData({
-                //   province:obj.province,
-                //   city:obj.city,
-                //   today:obj.casts.length && obj.casts[0],
-                //   casts:obj.casts
-                // });
               },
             });
           },
@@ -563,10 +279,22 @@ Page({
     });
   },
 
+  // 获取列表(节假日和天气)
+  async getList() {
+    const res = await list.get();
+    const holidays = res.data.filter(item => item.name === 'holidays');
+    const weathers = res.data.filter(item => item.name === 'weathers');
+    this.setData({
+      holidays: holidays[0].holidays,
+      weathers: weathers[0].weathers
+    });
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: async function (options) {
+    await this.getList();
     this.beforeMeet();
     this.beforeGetLocation();
     this.handleHolidays();
