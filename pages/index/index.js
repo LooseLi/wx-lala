@@ -143,6 +143,7 @@ Page({
                   lives.tips = arr[0].tips;
                 } else {
                   lives.icon = this.data.unknow;
+                  lives.tips = '快截图！让松松去更新天气小图标吧～';
                 }
                 this.setData({
                   today: lives,
