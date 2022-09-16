@@ -1,6 +1,7 @@
 const db = wx.cloud.database();
 const list = db.collection('list');
 const API = require('../../utils/api')
+const plugins = require('../../utils/plugins');
 
 Page({
   /**
@@ -22,26 +23,14 @@ Page({
 
   // 点击天气图标
   handleTips() {
-    wx.showToast({
-      title: this.data.today.tips,
-      duration: 3000,
-      icon: 'none',
+    plugins.showToast({
+      title: this.data.today.tips
     });
   },
   // 点击没有权限图片的事件
   handleNoAuth() {
-    wx.showToast({
-      title: '没有给我位置权限，看我委屈的小眼神 🥺',
-      duration: 3000,
-      icon: 'none',
-    });
-  },
-  // 没有权限toast
-  showToast() {
-    wx.showToast({
-      title: '没有访问位置的权限 😵',
-      duration: 3000,
-      icon: 'none',
+    plugins.showToast({
+      title: '没有给我位置权限，看我委屈的小眼神 🥺'
     });
   },
 
@@ -53,7 +42,9 @@ Page({
         if (res.authSetting['scope.userLocation']) {
           return;
         }
-        this.showToast();
+        plugins.showToast({
+          title: '没有访问位置的权限 😵'
+        });
       },
       fail: err => {
         console.log(err);

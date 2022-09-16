@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
 const userInfo = db.collection('userInfo');
+const plugins = require('../../utils/plugins');
 
 // pages/user/index.js
 Page({
@@ -16,10 +17,8 @@ Page({
 
   // 点击事件
   handleUser() {
-    wx.showToast({
-      title: '小松秃头开发中~ 👨‍🦲',
-      duration: 3000,
-      icon: 'none',
+    plugins.showToast({
+      title: '小松秃头开发中~ 👨‍🦲'
     });
   },
 
