@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
 const list = db.collection('list');
+const API = require('../../utils/api')
 
 Page({
   /**
@@ -21,14 +22,12 @@ Page({
 
   // 点击天气图标
   handleTips() {
-    console.log(this.data.today);
     wx.showToast({
       title: this.data.today.tips,
       duration: 3000,
       icon: 'none',
     });
   },
-
   // 点击没有权限图片的事件
   handleNoAuth() {
     wx.showToast({
@@ -37,7 +36,6 @@ Page({
       icon: 'none',
     });
   },
-
   // 没有权限toast
   showToast() {
     wx.showToast({
@@ -107,52 +105,33 @@ Page({
 
   // 获取当前位置
   getLocation() {
-    const APP_ID = '0d5e9e7ec4881a5c3ed194b2338a6aca';
     wx.getLocation({
-      success: res => {
+      success: async res => {
         const {
           longitude,
           latitude
         } = res;
-        wx.request({
-          url: 'https://restapi.amap.com/v3/geocode/regeo',
-          data: {
-            key: APP_ID,
-            location: `${longitude},${latitude}`,
-          },
-          header: {
-            'content-type': 'application/json',
-          },
-          success: result => {
-            const adcode = result.data.regeocode.addressComponent.adcode;
-            wx.request({
-              url: 'https://restapi.amap.com/v3/weather/weatherInfo',
-              data: {
-                key: APP_ID,
-                city: adcode,
-                extensions: 'base',
-              },
-              header: {
-                'content-type': 'application/json',
-              },
-              success: res => {
-                const lives = res.data.lives.length && res.data.lives[0];
-                const arr = this.data.weathers.filter(item => item.weather === lives.weather);
-                if (arr.length) {
-                  lives.icon = arr[0].day;
-                  lives.tips = arr[0].tips;
-                } else {
-                  lives.icon = this.data.unknow;
-                  lives.tips = '快截图！让松松去更新天气小图标吧～';
-                }
-                this.setData({
-                  today: lives,
-                });
-                console.log(this.data.hasAuth);
-              },
-            });
-          },
-        });
+        const code = await API.getCityCode({
+          location: `${longitude},${latitude}`
+        })
+        const adcode = code.regeocode.addressComponent.adcode;
+        API.getCityWeather({
+          city: adcode,
+          extensions: 'base',
+        }).then(res => {
+          const lives = res.lives.length && res.lives[0];
+          const arr = this.data.weathers.filter(item => item.weather === lives.weather);
+          if (arr.length) {
+            lives.icon = arr[0].day;
+            lives.tips = arr[0].tips;
+          } else {
+            lives.icon = this.data.unknow;
+            lives.tips = '快截图！让松松去更新天气小图标吧～';
+          }
+          this.setData({
+            today: lives,
+          });
+        })
       },
     });
   },
@@ -174,79 +153,6 @@ Page({
         console.log(err);
       },
     });
-  },
-
-  // 见面时间
-  beforeMeet() {
-    const meetTime = new Date('2021/12/03 23:59:59').getTime();
-    const currentTime = new Date().getTime();
-    const currentM = new Date().getMonth();
-    const currentD = new Date().getDate();
-    if (currentM === 11 && currentD === 3) {
-      this.setData({
-        isShowMeet: true,
-        meetContent: '小松今天要来啦～',
-      });
-      return;
-    }
-    if (currentM === 11 && currentD > 3) {
-      this.setData({
-        isShowMeet: false,
-        meetContent: '',
-      });
-      return;
-    }
-    const needTime = meetTime - currentTime;
-    const day = 1000 * 3600 * 24;
-    const needDay = parseInt(needTime / day);
-    if (needDay >= 1) {
-      this.setData({
-        isShowMeet: true,
-      });
-      if (needDay === 4) {
-        this.setData({
-          meetContent: '今天是蛋糕小拉～ 但别忘了还有 4 天就要见松啦',
-        });
-      }
-      if (needDay === 3) {
-        this.setData({
-          meetContent: '倒计时 3 天～ 爱你喔',
-        });
-      }
-      if (needDay === 2) {
-        this.setData({
-          meetContent: '嘿嘿，还有 2 天，冲冲冲',
-        });
-      }
-      if (needDay === 1) {
-        this.setData({
-          meetContent: '还有 1 天就能见到拉啦 要洗白白喔～',
-        });
-      }
-    }
-  },
-
-  // 日期格式化
-  format(date) {
-    const y = date.getFullYear();
-    let m = date.getMonth() + 1;
-    m = m <= 9 ? '0' + m : m;
-    let d = date.getDate();
-    d = d <= 9 ? '0' + d : d;
-    let h = date.getHours();
-    h = h <= 9 ? '0' + h : h;
-    let min = date.getMinutes();
-    min = min <= 9 ? '0' + min : min;
-    let s = date.getSeconds();
-    s = s <= 9 ? '0' + s : s;
-    return {
-      y,
-      m,
-      d,
-      h,
-      min,
-      s,
-    };
   },
 
   // 节假日
@@ -296,7 +202,6 @@ Page({
    */
   onLoad: async function (options) {
     await this.getList();
-    this.beforeMeet();
     this.beforeGetLocation();
     this.handleHolidays();
   },
