@@ -18,7 +18,7 @@ Page({
         id: 0,
         icon: './images/event/icon-anniversary.png',
         title: '拉拉松松纪念日',
-        page: ''
+        page: '/pages/index/components/anniversary/index'
       },
       {
         id: 1,
