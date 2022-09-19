@@ -1,0 +1,32 @@
+<view class="wrap">
+  <!-- 当前节假日 -->
+  <view class="holiday-card" wx:if="{{nowHoliday}}">
+    <view class="holiday-wrap">
+      <image class="icon-holiday" src="{{nowHoliday.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+      <view>
+        <view>{{nowHoliday.id}}啦～</view>
+        <view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
+        <view wx:else class="holiday-time">{{nowHoliday.begin}}~{{nowHoliday.end}}</view>
+        <view class="holiday-content">{{nowHoliday.content}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="holiday-card no-holiday" wx:else>今天不是节假日喔～快看看还剩几天可以过节 👇</view>
+
+  <!-- 下一个节假日倒计时 -->
+  <view wx:if="{{nextHoliday.length}}">
+    <view class="holiday-card" wx:for="{{nextHoliday}}" wx:key="id">
+      <view class="holiday-wrap">
+        <view>
+          <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
+        </view>
+        <view>
+          <view><text class="holiday-name">{{item.id}}</text>倒计时：<text class="holiday-name-day">{{item.countDown}}</text> 天</view>
+          <view wx:if="{{item.days === 1}}" class="holiday-time">{{item.begin}}</view>
+          <view wx:else class="holiday-time">{{item.begin}}~{{item.end}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="holiday-card no-holiday" wx:else>今年已经没有假了～马上也要新的一年啦</view>
+</view>

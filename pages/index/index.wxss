@@ -24,7 +24,7 @@ page {
   padding: 12px;
   /* background: rgba(230, 247, 255, 0.5); */
   background: rgba(0, 0, 0, 0.45);
-  box-shadow: 1px 1px 6px #595959;
+  box-shadow: 0px 2px 8px rgba(23, 22, 81, 0.3);
   border-radius: 12px;
   text-align: center;
   z-index: 2;
@@ -87,50 +87,33 @@ page {
   font-size: 16px;
 }
 
-.holiday-card {
-  position: relative;
+.event-list {
   width: calc(100% - 24px);
-  margin: 0 auto 12px;
-  padding: 12px;
-  background: rgba(230, 247, 255, 0.5);
-  box-shadow: 1px 1px 6px #d9d9d9;
-  border-radius: 12px;
-  z-index: 2;
-  font-size: 14px;
-  color: #262626;
-  font-family: 'Courier New', Courier, monospace;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.icon-holiday {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-}
-
-.holiday-wrap {
+.event {
+  width: calc((100% - 20px) / 2);
+  height: 66px;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 8px rgba(23, 22, 81, 0.3);
+  border-radius: 6px;
+  margin-bottom: 14px;
+  color: #fff;
+  font-size: 12px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: left;
 }
 
-.holiday-time {
-  margin-top: 4px;
+.event-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px 0 20px;
 }
 
-.holiday-content {
-  color: #ffa39e;
-}
-
-.holiday-name {
-  color: #ff6800;
-  text-decoration: underline;
-}
-
-.holiday-name-day {
-  color: #ff6800;
-  font-size: 24px;
-}
-
-.no-holiday {
-  text-align: center;
+.event:nth-child(2n+1) {
+  margin-right: 20px;
 }

@@ -1,0 +1,54 @@
+page {
+  background-color: #f2f4f5;
+}
+
+.wrap {
+  margin-top: 50px;
+}
+
+.holiday-card {
+  position: relative;
+  width: calc(100% - 24px);
+  margin: 0 auto 12px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0px 0px 1px rgba(23, 22, 81, 0.1);
+  z-index: 2;
+  font-size: 14px;
+  color: #262626;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.icon-holiday {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.holiday-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.holiday-time {
+  margin-top: 4px;
+}
+
+.holiday-content {
+  color: #ffa39e;
+}
+
+.holiday-name {
+  color: #ff6800;
+  text-decoration: underline;
+}
+
+.holiday-name-day {
+  color: #ff6800;
+  font-size: 24px;
+}
+
+.no-holiday {
+  text-align: center;
+}

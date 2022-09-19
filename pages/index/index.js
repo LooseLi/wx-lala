@@ -14,11 +14,31 @@ Page({
     hasAuth: false, //是否有位置权限
     unknow: 'cloud://cloud1-5g2h5bs5d6613df6.636c-cloud1-5g2h5bs5d6613df6-1308328307/weather/unknow.png',
     weathers: [],
-    // 节假日
-    holidays: [],
-    nowHoliday: null, //当前所处节日
-    nextHoliday: null, //下一个节日
-    countDownDay: 0, //倒计时
+    events: [{
+        id: 0,
+        icon: './images/event/icon-anniversary.png',
+        title: '拉拉松松纪念日',
+        page: ''
+      },
+      {
+        id: 1,
+        icon: './images/event/icon-countdown.png',
+        title: '倒计时',
+        page: '/pages/index/components/countdown/index'
+      },
+      {
+        id: 2,
+        icon: './images/event/icon-hoildays.png',
+        title: '能放几天假鸭',
+        page: ''
+      },
+      {
+        id: 3,
+        icon: './images/event/icon-more.png',
+        title: '想想要新加些啥',
+        page: ''
+      },
+    ]
   },
 
   // 点击天气图标
@@ -146,46 +166,24 @@ Page({
     });
   },
 
-  // 节假日
-  handleHolidays() {
-    const date = new Date();
-    const arr = [];
-    this.data.holidays.forEach(item => {
-      const beginTime = new Date(item.beginDate).getTime();
-      const endTime = new Date(item.endDate).getTime();
-      // 当前正在某个节假日
-      if (date.getTime() >= beginTime && date.getTime() <= endTime) {
-        item.begin = item.beginDate.split(' ')[0];
-        item.end = item.endDate.split(' ')[0];
-        this.setData({
-          nowHoliday: item,
-        });
-      }
-      if (date.getTime() < beginTime) {
-        item.begin = item.beginDate.split(' ')[0];
-        item.end = item.endDate.split(' ')[0];
-        arr.push(item);
-      }
-    });
-    const nextHolidays = arr.length > 3 ? arr.slice(0, 3) : arr;
-    nextHolidays.forEach(item => {
-      const nextBeginTime = new Date(item.beginDate);
-      item.countDown = Math.ceil((nextBeginTime - date) / (1000 * 60 * 60 * 24));
-    });
+  // 获取列表(天气)
+  async getList() {
+    const res = await list.get();
+    const weathers = res.data.filter(item => item.name === 'weathers');
     this.setData({
-      nextHoliday: nextHolidays,
+      weathers: weathers[0].weathers
     });
   },
 
-  // 获取列表(节假日和天气)
-  async getList() {
-    const res = await list.get();
-    const holidays = res.data.filter(item => item.name === 'holidays');
-    const weathers = res.data.filter(item => item.name === 'weathers');
-    this.setData({
-      holidays: holidays[0].holidays,
-      weathers: weathers[0].weathers
-    });
+  // 点击
+  eventClick(e) {
+    const currentEventIndex = e.currentTarget.dataset.eventIndex
+    const url = this.data.events[currentEventIndex].page
+    if (url) {
+      wx.navigateTo({
+        url,
+      })
+    }
   },
 
   /**
@@ -194,7 +192,6 @@ Page({
   onLoad: async function (options) {
     await this.getList();
     this.beforeGetLocation();
-    this.handleHolidays();
   },
 
   /**

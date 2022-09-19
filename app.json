@@ -1,14 +1,14 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/user/index"
+    "pages/user/index",
+    "pages/index/components/countdown/index"
   ],
   "window":{
     "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#daecff",
     "navigationBarTitleText": "lala",
-    "navigationBarTextStyle":"black",
-    "navigationStyle": "custom"
+    "navigationBarTextStyle":"black"
   },
   "tabBar": {
     "color": "#8c8c8c",
