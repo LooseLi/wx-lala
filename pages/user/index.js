@@ -43,6 +43,11 @@ Page({
             loading: false,
           });
           return;
+        } else {
+          this.setData({
+            loading: false,
+            isAuth: false,
+          });
         }
       },
       fail: err => {
