@@ -1,5 +1,4 @@
 <view class="container">
-	<image class="bg" src="./images/bg.jpeg" mode="widthFix" />
 	<view class="card" wx:if="{{isShowMeet}}">
 		<text class="meet">{{meetContent}}</text>
 	</view>

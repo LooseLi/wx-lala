@@ -14,7 +14,7 @@ page {
   width: 100%;
   text-align: right;
   padding: 0 12px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .add-wrap>image {
@@ -32,13 +32,14 @@ page {
   background: #fff;
   box-shadow: 0px 0px 1px rgba(23, 22, 81, 0.1);
   border-radius: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   padding: 20px;
   color: #262626;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .anniversary>.left>view:first-child {
@@ -48,4 +49,12 @@ page {
 .anniversary>.right>text {
   font-size: 18px;
   color: #ff6800;
+}
+
+.icon-delete {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: -4px;
+  top: -8px;
 }

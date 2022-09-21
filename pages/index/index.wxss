@@ -3,8 +3,10 @@
   color: var(--themeColor);
 } */
 page {
-  background: linear-gradient(270deg, #91d5ff 0%, #ffffff 100%);
+  /* background: linear-gradient(270deg, #91d5ff 0%, #ffffff 100%); */
   /* background: #e6f7ff; */
+  background-image: url('https://636c-cloud1-5g2h5bs5d6613df6-1308328307.tcb.qcloud.la/WechatIMG233.jpeg?sign=ada53e14a4d0eabd8c51c09e1c85f8ff&t=1663741253');
+  background-size: 100% 100%;
 }
 
 .container {
@@ -20,7 +22,7 @@ page {
 .weather-card {
   position: relative;
   width: calc(100% - 24px);
-  margin: -70px auto 20px;
+  margin: 40px auto 20px;
   padding: 12px;
   /* background: rgba(230, 247, 255, 0.5); */
   background: rgba(0, 0, 0, 0.45);

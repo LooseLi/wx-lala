@@ -11,7 +11,9 @@ Page({
     list: [],
     dialog: false,
     name: '',
-    date: BASE.dateFormat(new Date(), 'yyyy-MM-dd')
+    date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+    id: '', // 某条纪念日id
+    type: 'add', // 新增还是修改
   },
 
   openDialog() {
@@ -24,6 +26,7 @@ Page({
     this.setData({
       dialog: false
     })
+    this.resetData();
   },
 
   bindInputChange(e) {
@@ -64,7 +67,59 @@ Page({
       success: (res) => {
         this.closeDialog();
         this.getAnniversary();
-        this.resetData();
+      }
+    })
+  },
+
+  update() {
+    anniversary.doc(this.data.id).update({
+      data: {
+        name: this.data.name,
+        date: this.data.date
+      },
+      success: (res) => {
+        this.closeDialog();
+        this.getAnniversary();
+      }
+    })
+  },
+
+  // 保存
+  onSave() {
+    if (this.data.type === 'add') {
+      this.add();
+    }
+    if (this.data.type === 'update') {
+      this.update();
+    }
+  },
+
+  // 点击新增图标
+  onAdd() {
+    this.setData({
+      type: 'add'
+    });
+    this.openDialog();
+  },
+
+  // 更新
+  onUpdate(e) {
+    const obj = e.currentTarget.dataset.eventIndex;
+    this.setData({
+      name: obj.name,
+      date: obj.date,
+      id: obj._id,
+      type: 'update'
+    });
+    this.openDialog();
+  },
+
+  // 删除
+  onDelete(e) {
+    const id = e.currentTarget.dataset.eventIndex._id;
+    anniversary.doc(id).remove({
+      success: (res) => {
+        this.getAnniversary();
       }
     })
   },
