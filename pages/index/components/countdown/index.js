@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
-const list = db.collection('list');
+const countdownDay = db.collection('countdownDay');
+const BASE = require('../../../../utils/base')
 
 Page({
 
@@ -11,6 +12,11 @@ Page({
     holidays: [],
     nowHoliday: null, //当前所处节日
     nextHoliday: null, //下一个节日
+    dialog: false,
+    name: '',
+    date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+    content: '',
+    type: 'add', // 新增还是修改
   },
 
   // 节假日
@@ -45,20 +51,93 @@ Page({
     });
   },
 
-  // 获取列表(节假日和天气)
-  async getList() {
-    const res = await list.get();
-    const holidays = res.data.filter(item => item.name === 'holidays');
+  // 获取倒计时(节假日)
+  async getCountdownDay() {
+    const res = await countdownDay.get();
     this.setData({
-      holidays: holidays[0].holidays,
+      holidays: res.data,
     });
+  },
+
+  openDialog() {
+    this.setData({
+      dialog: true
+    })
+  },
+
+  closeDialog() {
+    this.setData({
+      dialog: false
+    })
+    this.resetData();
+  },
+
+  bindInputChange(e) {
+    this.setData({
+      name: e.detail.value
+    });
+  },
+
+  bindContentChange(e) {
+    this.setData({
+      content: e.detail.value
+    });
+  },
+
+  bindDateChange(e) {
+    this.setData({
+      date: e.detail.value
+    });
+  },
+
+  resetData() {
+    this.setData({
+      name: '',
+      date: BASE.dateFormat(new Date(), 'yyyy-MM-dd')
+    });
+  },
+
+  add() {
+    countdownDay.add({
+      data: {
+        id: this.data.name,
+        beginDate: `${this.data.date} 00:00`,
+        endDate: `${this.data.date} 23:59`,
+        canEdit: true,
+        days: 1,
+        content: this.data.content
+      },
+      success: async (res) => {
+        this.closeDialog();
+        await this.getCountdownDay();
+        this.handleHolidays();
+      }
+    })
+  },
+
+  // 点击新增图标
+  onAdd() {
+    this.setData({
+      type: 'add'
+    });
+    this.openDialog();
+  },
+
+  // 保存
+  onSave() {
+    if (this.data.type === 'add') {
+      this.add();
+    }
+    if (this.data.type === 'update') {
+      this.update();
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
-    await this.getList();
+    await this.getCountdownDay();
     this.handleHolidays();
   },
 

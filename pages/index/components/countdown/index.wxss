@@ -2,6 +2,10 @@ page {
   background-color: #f2f4f5;
 }
 
+.weui-half-screen-dialog_large {
+  top: 200px;
+}
+
 .wrap {
   margin-top: 50px;
 }
@@ -12,7 +16,7 @@ page {
   margin: 0 auto 12px;
   padding: 12px;
   background: #fff;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
   z-index: 2;
   font-size: 14px;
   color: #262626;
@@ -51,4 +55,16 @@ page {
 
 .no-holiday {
   text-align: center;
+}
+
+.add-wrap {
+  width: 100%;
+  text-align: right;
+  padding: 0 12px;
+  margin-bottom: 20px;
+}
+
+.add-wrap>image {
+  width: 24px;
+  height: 24px;
 }
