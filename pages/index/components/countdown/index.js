@@ -98,14 +98,16 @@ Page({
   },
 
   add() {
+    const formatDate = this.data.date.replace(/-/g, '/');
     countdownDay.add({
       data: {
         id: this.data.name,
-        beginDate: `${this.data.date} 00:00`,
-        endDate: `${this.data.date} 23:59`,
+        beginDate: `${formatDate} 00:00`,
+        endDate: `${formatDate} 23:59`,
         canEdit: true,
         days: 1,
-        content: this.data.content
+        content: this.data.content,
+        imgUrl: 'cloud://cloud1-5g2h5bs5d6613df6.636c-cloud1-5g2h5bs5d6613df6-1308328307/weather/icon-countdown-other.png'
       },
       success: async (res) => {
         this.closeDialog();
