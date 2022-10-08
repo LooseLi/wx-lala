@@ -116,34 +116,24 @@ Page({
 
   // 获取当前位置
   getLocation() {
-    wx.getLocation({
-      success: async res => {
-        const {
-          longitude,
-          latitude
-        } = res;
-        const code = await API.getCityCode({
-          location: `${longitude},${latitude}`
-        })
-        const adcode = code.regeocode.addressComponent.adcode;
-        API.getCityWeather({
-          city: adcode,
-          extensions: 'base',
-        }).then(res => {
-          const lives = res.lives.length && res.lives[0];
-          const arr = this.data.weathers.filter(item => item.weather === lives.weather);
-          if (arr.length) {
-            lives.icon = arr[0].day;
-            lives.tips = arr[0].tips;
-          } else {
-            lives.icon = this.data.unknow;
-            lives.tips = '快截图！让松松去更新天气小图标吧～';
-          }
-          this.setData({
-            today: lives,
-          });
-        })
+    API.myAmapFun.getWeather({
+      success: (data) => {
+        const lives = data.liveData;
+        const arr = this.data.weathers.filter(item => item.weather === lives.weather);
+        if (arr.length) {
+          lives.icon = arr[0].day;
+          lives.tips = arr[0].tips;
+        } else {
+          lives.icon = this.data.unknow;
+          lives.tips = '快截图！让松松去更新天气小图标吧～';
+        }
+        this.setData({
+          today: lives,
+        });
       },
+      fail: (info) => {
+        console.log(info);
+      }
     });
   },
 

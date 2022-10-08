@@ -1,15 +1,15 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
     "pages/user/index",
     "pages/index/components/countdown/index",
     "pages/index/components/anniversary/index"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#daecff",
     "navigationBarTitleText": "lala",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "color": "#8c8c8c",
@@ -38,5 +38,8 @@
     "scope.userLocation": {
       "desc": "您的位置信息将用于获取当前所在地的天气状况"
     }
-  }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ]
 }

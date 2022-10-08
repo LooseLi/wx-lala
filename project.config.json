@@ -4,10 +4,11 @@
   "packOptions": {
     "ignore": [
       {
-        "type": "file",
-        "value": ".eslintrc.js"
+        "value": ".eslintrc.js",
+        "type": "file"
       }
-    ]
+    ],
+    "include": []
   },
   "setting": {
     "urlCheck": false,
@@ -51,33 +52,9 @@
   "libVersion": "2.19.4",
   "appid": "wxab00d9afbda623cf",
   "projectname": "lala",
-  "debugOptions": {
-    "hidedInDevtools": []
-  },
-  "scripts": {},
-  "staticServerOptions": {
-    "baseURL": "",
-    "servePath": ""
-  },
-  "isGameTourist": false,
-  "condition": {
-    "search": {
-      "list": []
-    },
-    "conversation": {
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
-    "plugin": {
-      "list": []
-    },
-    "gamePlugin": {
-      "list": []
-    },
-    "miniprogram": {
-      "list": []
-    }
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
   }
 }
