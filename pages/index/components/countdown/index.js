@@ -16,7 +16,8 @@ Page({
     name: '',
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
     content: '',
-    type: 'add', // 新增还是修改
+    type: 'add', // 新增还是修改,
+    id: ''
   },
 
   // 节假日
@@ -93,7 +94,8 @@ Page({
   resetData() {
     this.setData({
       name: '',
-      date: BASE.dateFormat(new Date(), 'yyyy-MM-dd')
+      date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+      content: ''
     });
   },
 
@@ -117,10 +119,42 @@ Page({
     })
   },
 
+  update() {
+    const formatDate = this.data.date.replace(/-/g, '/');
+    countdownDay.doc(this.data.id).update({
+      data: {
+        id: this.data.name,
+        beginDate: `${formatDate} 00:00`,
+        endDate: `${formatDate} 23:59`,
+        content: this.data.content,
+      },
+      success: async (res) => {
+        this.closeDialog();
+        await this.getCountdownDay();
+        this.handleHolidays();
+      }
+    })
+  },
+
   // 点击新增图标
   onAdd() {
     this.setData({
       type: 'add'
+    });
+    this.openDialog();
+  },
+
+  // 更新
+  onUpdate(e) {
+    const obj = e.currentTarget.dataset.eventIndex;
+    if (!obj.canEdit) return;
+    const date = obj.beginDate.split(' ')[0].replace(/\//g, '-');
+    this.setData({
+      name: obj.id,
+      date,
+      id: obj._id,
+      content: obj.content,
+      type: 'update'
     });
     this.openDialog();
   },
