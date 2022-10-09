@@ -49,6 +49,7 @@ Page({
   },
 
   async getAnniversary() {
+    console.log(111);
     const res = await anniversary.get();
     res.data.forEach(item => {
       item.days = BASE.dateDiff(item.date);
