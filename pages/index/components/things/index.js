@@ -1,18 +1,30 @@
-// pages/index/components/things/index.js
+const db = wx.cloud.database();
+const things100 = db.collection('things100');
+const BASE = require('../../../../utils/base')
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    things: []
+  },
 
+  // 获取100件小事
+  async getThings100() {
+    const res = await things100.get();
+    this.setData({
+      things: res.data
+    });
+    console.log(this.data.things);
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
-
+  async onLoad(options) {
+    await this.getThings100();
   },
 
   /**

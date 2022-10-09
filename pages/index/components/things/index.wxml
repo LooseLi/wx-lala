@@ -1,1 +1,10 @@
-
+<view class="wrap">
+  <view class="things-wrap">
+    <view class="things" wx:for="{{things}}" wx:key="_id">
+      <view class="{{item.isUploaded ? 'picture' : 'no-picture' }}">
+        <image src="{{item.picture}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" />
+      </view>
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+</view>
