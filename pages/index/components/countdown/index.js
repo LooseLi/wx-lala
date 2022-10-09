@@ -169,6 +169,17 @@ Page({
     }
   },
 
+  // 删除
+  onDelete(e) {
+    const id = e.currentTarget.dataset.eventIndex._id;
+    countdownDay.doc(id).remove({
+      success: async (res) => {
+        await this.getCountdownDay();
+        this.handleHolidays();
+      }
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */

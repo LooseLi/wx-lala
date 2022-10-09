@@ -23,6 +23,14 @@ page {
   font-family: 'Courier New', Courier, monospace;
 }
 
+.icon-delete {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: -4px;
+  top: -8px;
+}
+
 .icon-holiday {
   width: 50px;
   height: 50px;

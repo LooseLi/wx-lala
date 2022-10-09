@@ -19,6 +19,7 @@
   <!-- 下一个节假日倒计时 -->
   <view wx:if="{{nextHoliday.length}}">
     <view class="holiday-card" wx:for="{{nextHoliday}}" wx:key="id">
+      <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
       <view class="holiday-wrap" data-event-index="{{item}}" bindtap="onUpdate">
         <view>
           <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
