@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/user/index",
     "pages/index/components/countdown/index",
-    "pages/index/components/anniversary/index"
+    "pages/index/components/anniversary/index",
+    "pages/index/components/things/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

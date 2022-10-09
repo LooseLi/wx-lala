@@ -34,6 +34,12 @@ Page({
       },
       {
         id: 3,
+        icon: './images/event/icon-things.png',
+        title: '100 件小事',
+        page: '/pages/index/components/things/index'
+      },
+      {
+        id: 4,
         icon: './images/event/icon-more.png',
         title: '想想要新加些啥',
         page: ''
