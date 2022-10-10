@@ -8,7 +8,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    things: []
+    things: [],
+    dialog: false,
+    date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+    currentThing: {}
   },
 
   // 获取100件小事
@@ -18,6 +21,35 @@ Page({
       things: res.data
     });
     console.log(this.data.things);
+  },
+
+  openDialog() {
+    this.setData({
+      dialog: true
+    })
+  },
+
+  closeDialog() {
+    this.setData({
+      dialog: false
+    })
+  },
+
+  // 点击上传
+  onUpload(e) {
+    const obj = e.currentTarget.dataset.eventIndex;
+    console.log(obj);
+    this.setData({
+      // type: 'add',
+      currentThing: obj
+    });
+    this.openDialog();
+  },
+
+  bindDateChange(e) {
+    this.setData({
+      date: e.detail.value
+    });
   },
 
   /**

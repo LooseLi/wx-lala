@@ -6,6 +6,43 @@ page {
   padding: 50px 12px 0;
 }
 
+.weui-half-screen-dialog_large {
+  top: 200px;
+  background-color: #f0f0f0;
+}
+
+.weui-half-screen-dialog__bd {
+  padding-bottom: 0;
+}
+
+.weui-half-screen-dialog__ft {
+  padding: 0;
+}
+
+
+.weui-cell::before {
+  border-top: none;
+}
+
+.weui-cell {
+  text-align: center;
+  padding: 12px;
+}
+
+.upload-bg {
+  width: 300px;
+  height: 300px;
+  margin: 50px auto 30px;
+  border-radius: 12px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.dialog-name {
+  font-size: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
 .things-wrap {
   width: 100%;
   display: flex;
@@ -34,7 +71,7 @@ page {
   margin-bottom: 8px;
 }
 
-.no-picture{
+.no-picture {
   width: 100%;
   height: 100px;
   margin-bottom: 8px;
