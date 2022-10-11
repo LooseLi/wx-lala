@@ -35,6 +35,21 @@ page {
   margin: 50px auto 30px;
   border-radius: 12px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-add {
+  width: 100px;
+  height: 100px;
+}
+
+.add-tips {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #ffadd2;
 }
 
 .dialog-name {
