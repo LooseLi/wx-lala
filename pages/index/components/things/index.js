@@ -11,7 +11,8 @@ Page({
     things: [],
     dialog: false,
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
-    currentThing: {}
+    currentThing: {},
+    imagePreviewUrl: ''
   },
 
   // 获取100件小事
@@ -44,6 +45,22 @@ Page({
       currentThing: obj
     });
     this.openDialog();
+  },
+
+  // 选择本地照片
+  choosePicture() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album'],
+      success: (res) => {
+        console.log(res.tempFiles[0].tempFilePath);
+        this.setData({
+          imagePreviewUrl: res.tempFiles[0].tempFilePath
+        });
+      },
+      fail: (info) => {}
+    })
   },
 
   bindDateChange(e) {

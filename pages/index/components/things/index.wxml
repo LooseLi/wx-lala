@@ -12,9 +12,10 @@
 <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true">
   <view class="weui-mask weui-transition {{dialog ? 'weui-transition_show' : ''}}" bindtap="closeDialog" aria-role="button" aria-label="关闭"></view>
   <view class="weui-half-screen-dialog weui-half-screen-dialog_large weui-transition {{dialog ? 'weui-transition_show' : ''}}">
-    <view class="upload-bg">
-      <image class="icon-add" src="../images/things/icon-add-picture.png" mode="aspectFit|aspectFill|widthFix" />
-      <text class="add-tips">一张图片记录甜蜜我们的回忆</text>
+    <view class="upload-bg" bindtap="choosePicture">
+      <image class="icon-add-image" wx:if="{{imagePreviewUrl}}" src="{{imagePreviewUrl}}" mode="aspectFit|aspectFill|widthFix" />
+      <image wx:else class="icon-add" src="../images/things/icon-add-picture.png" mode="aspectFit|aspectFill|widthFix" />
+      <text wx:if="{{!imagePreviewUrl}}" class="add-tips">一张图片记录甜蜜我们的回忆</text>
     </view>
     <view class="weui-half-screen-dialog__bd" style="height: 42px;">
       <view class="dialog-name">{{currentThing.name}}</view>
