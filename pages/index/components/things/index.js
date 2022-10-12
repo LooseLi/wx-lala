@@ -1,6 +1,10 @@
 const db = wx.cloud.database();
 const things100 = db.collection('things100');
-const BASE = require('../../../../utils/base')
+const BASE = require('../../../../utils/base');
+import WeCropper from '../../../../utils/weCropper/we-cropper.min';
+const device = wx.getSystemInfoSync(); // 获取设备信息
+const width = device.windowWidth; // 示例为一个与屏幕等宽的正方形裁剪框
+const height = width;
 
 Page({
 
@@ -12,7 +16,24 @@ Page({
     dialog: false,
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
     currentThing: {},
-    imagePreviewUrl: ''
+    imagePreviewUrl: '',
+    showWeCropper: false, // 是否显示裁剪
+    cropperOpt: {
+      id: 'cropper',
+      tranlateX: width / 2,
+      tranlateY: height / 2,
+      width,
+      height,
+      scale: 2.5,
+      zoom: 8,
+      cut: {
+        x: (width - 300) / 2,
+        y: (height - 300) / 2,
+        width: 300,
+        height: 300
+      }
+    }, // 裁剪配置
+    testUrl: 'https://636c-cloud1-5g2h5bs5d6613df6-1308328307.tcb.qcloud.la/WechatIMG233.jpeg?sign=ada53e14a4d0eabd8c51c09e1c85f8ff&t=1663741253'
   },
 
   // 获取100件小事
@@ -39,7 +60,6 @@ Page({
   // 点击上传
   onUpload(e) {
     const obj = e.currentTarget.dataset.eventIndex;
-    console.log(obj);
     this.setData({
       // type: 'add',
       currentThing: obj
@@ -54,10 +74,13 @@ Page({
       mediaType: ['image'],
       sourceType: ['album'],
       success: (res) => {
-        console.log(res.tempFiles[0].tempFilePath);
         this.setData({
-          imagePreviewUrl: res.tempFiles[0].tempFilePath
+          showWeCropper: true
+          // imagePreviewUrl: res.tempFiles[0].tempFilePath
         });
+        const src = res.tempFiles[0].tempFilePath
+        this.cropper.pushOrign(src)
+        this.closeDialog();
       },
       fail: (info) => {}
     })
@@ -69,11 +92,52 @@ Page({
     });
   },
 
+  // 裁剪初始化
+  initWeCropper() {
+    const {
+      cropperOpt
+    } = this.data
+    this.cropper = new WeCropper(cropperOpt)
+      .on('ready', (ctx) => {
+        console.log(`wecropper is ready for work!`)
+      })
+      .on('beforeImageLoad', (ctx) => {
+        wx.showToast({
+          title: '上传中',
+          icon: 'loading',
+          duration: 20000
+        })
+      })
+      .on('imageLoad', (ctx) => {
+        wx.hideToast()
+      })
+  },
+
+  touchStart(e) {
+    this.cropper.touchStart(e)
+  },
+  touchMove(e) {
+    this.cropper.touchMove(e)
+  },
+  touchEnd(e) {
+    this.cropper.touchEnd(e)
+  },
+
+  getCropperImage() {
+    this.cropper.getCropperImage((res) => {
+      this.setData({
+        showWeCropper: false,
+      })
+      console.log(res)
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
     await this.getThings100();
+    this.initWeCropper();
   },
 
   /**
