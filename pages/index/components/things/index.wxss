@@ -116,9 +116,22 @@ text {
   top: 0;
   left: 0;
   background: #000;
-  /* z-index: 9999; */
+  z-index: 9999;
+}
+
+.weui-btn_primary {
+  background: var(--backgroundColorButton);
 }
 
 .button-cropper-image {
+  position: relative;
+  top: 40px;
   color: #fff;
+  height: 42px;
+  width: calc(100% - 60px);
+  border-radius: 30px;
+  line-height: 42px;
+  text-align: center;
+  margin: 0 auto;
+  background: var(--backgroundColorButton);
 }

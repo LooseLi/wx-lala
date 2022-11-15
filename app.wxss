@@ -12,7 +12,7 @@ navigator {
 
 /* 主题颜色 */
 page {
-  --themeColor: #ffe485;
+  --backgroundColorButton: #e95f6f;
   font-size: 28rpx;
 }
 

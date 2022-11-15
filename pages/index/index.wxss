@@ -1,7 +1,3 @@
-/* view {
-  使用全局颜色
-  color: var(--themeColor);
-} */
 page {
   /* background: linear-gradient(270deg, #91d5ff 0%, #ffffff 100%); */
   /* background: #e6f7ff; */

@@ -42,7 +42,6 @@ Page({
     this.setData({
       things: res.data
     });
-    console.log(this.data.things);
   },
 
   openDialog() {
@@ -76,11 +75,9 @@ Page({
       success: (res) => {
         this.setData({
           showWeCropper: true
-          // imagePreviewUrl: res.tempFiles[0].tempFilePath
         });
         const src = res.tempFiles[0].tempFilePath
         this.cropper.pushOrign(src)
-        this.closeDialog();
       },
       fail: (info) => {}
     })
@@ -128,8 +125,42 @@ Page({
       this.setData({
         showWeCropper: false,
       })
-      console.log(res)
+      if (res) {
+        this.setData({
+          imagePreviewUrl: res
+        });
+      }
     })
+  },
+
+  // 已完成
+  onSave() {
+    this.uploadImage();
+  },
+
+  uploadImage() {
+    let cloudPath = `uploadImageThings/${Date.now()}.jpg`;
+    wx.cloud.uploadFile({
+      cloudPath,
+      filePath: this.data.imagePreviewUrl,
+      success: (res) => {
+        const fileID = res.fileID;
+        if (fileID) {
+          things100.doc(this.data.currentThing._id).update({
+            data: {
+              picture: fileID
+            },
+            success: async (res) => {
+              await this.getThings100();
+              this.closeDialog();
+            }
+          })
+        }
+      },
+      fail: info => {
+        console.log(info);
+      }
+    });
   },
 
   /**
