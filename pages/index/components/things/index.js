@@ -148,7 +148,8 @@ Page({
         if (fileID) {
           things100.doc(this.data.currentThing._id).update({
             data: {
-              picture: fileID
+              picture: fileID,
+              isUploaded: true
             },
             success: async (res) => {
               await this.getThings100();
