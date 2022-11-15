@@ -2,7 +2,7 @@
   <view class="things-wrap">
     <view class="things" bindtap="onUpload" wx:for="{{things}}" wx:key="_id" data-event-index="{{item}}">
       <view class="{{item.isUploaded ? 'picture' : 'no-picture' }}">
-        <image src="{{item.picture}}" mode="aspectFit|aspectFill|widthFix" />
+        <image src="{{item.picture || pictureDefault}}" mode="aspectFit|aspectFill|widthFix" />
       </view>
       <text>{{item.name}}</text>
     </view>

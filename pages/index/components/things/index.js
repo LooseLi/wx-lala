@@ -33,14 +33,19 @@ Page({
         height: 300
       }
     }, // 裁剪配置
-    testUrl: 'https://636c-cloud1-5g2h5bs5d6613df6-1308328307.tcb.qcloud.la/WechatIMG233.jpeg?sign=ada53e14a4d0eabd8c51c09e1c85f8ff&t=1663741253'
+    pictureDefault: '../images/things/icon-default.png'
   },
 
   // 获取100件小事
   async getThings100() {
-    const res = await things100.get();
+    const count = await things100.count();
+    let all = [];
+    for (let i = 0; i < count.total; i += 20) {
+      const res = await things100.skip(i).get();
+      all = all.concat(res.data)
+    }
     this.setData({
-      things: res.data
+      things: all
     });
   },
 
