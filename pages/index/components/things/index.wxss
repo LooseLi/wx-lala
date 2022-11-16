@@ -1,5 +1,6 @@
 page {
   background-color: #f2f4f5;
+  padding-bottom: 20px;
 }
 
 .wrap {
