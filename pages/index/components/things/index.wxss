@@ -135,3 +135,24 @@ text {
   margin: 0 auto;
   background: var(--backgroundColorButton);
 }
+
+picker {
+  margin-bottom: 10px;
+}
+
+.picker-wrap {
+  display: inline-block;
+  background: var(--backgroundColorButton);
+  padding: 0 10px 2px;
+  border-radius: 4px;
+}
+
+.picker {
+  color: #fff;
+  margin-right: 10px;
+}
+
+.icon-triangle {
+  width: 8px;
+  height: 8px;
+}

@@ -1,4 +1,12 @@
 <view class="wrap">
+  <view>
+    <picker mode="selector" bindchange="bindPickerChange" value="{{currentSelectIndex}}" range="{{selects}}" range-key="value">
+      <view class="picker-wrap">
+        <text class="picker">{{selects[currentSelectIndex].value}}</text>
+        <image class="icon-triangle" src="../images/things/icon-triangle.svg"></image>
+      </view>
+    </picker>
+  </view>
   <view class="things-wrap">
     <view class="things" bindtap="onUpload" wx:for="{{things}}" wx:key="_id" data-event-index="{{item}}">
       <view class="{{item.isUploaded ? 'picture' : 'no-picture' }}">

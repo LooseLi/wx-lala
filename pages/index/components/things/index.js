@@ -12,6 +12,23 @@ Page({
    * 页面的初始数据
    */
   data: {
+    selects: [{
+        value: '全部小事',
+        id: 0,
+        flag: undefined
+      },
+      {
+        value: '未完成',
+        id: 1,
+        flag: false
+      },
+      {
+        value: '已完成',
+        id: 2,
+        flag: true
+      },
+    ],
+    currentSelectIndex: 0,
     things: [],
     dialog: false,
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
@@ -37,16 +54,34 @@ Page({
   },
 
   // 获取100件小事
-  async getThings100() {
-    const count = await things100.count();
+  async getThings100(flag) {
+    wx.showLoading({
+      title: '加载中'
+    })
+    let count;
+    if (flag === true || flag === false) {
+      count = await things100.where({
+        isUploaded: flag
+      }).count();
+    } else {
+      count = await things100.count();
+    }
     let all = [];
     for (let i = 0; i < count.total; i += 20) {
-      const res = await things100.skip(i).get();
+      let res;
+      if (flag === true || flag === false) {
+        res = await things100.where({
+          isUploaded: flag
+        }).skip(i).get();
+      } else {
+        res = await things100.skip(i).get();
+      }
       all = all.concat(res.data)
     }
     this.setData({
       things: all
     });
+    wx.hideLoading()
   },
 
   openDialog() {
@@ -167,6 +202,16 @@ Page({
         console.log(info);
       }
     });
+  },
+
+  // 下拉选择
+  bindPickerChange(e) {
+    const index = parseInt(e.detail.value);
+    this.setData({
+      currentSelectIndex: index
+    });
+    const flag = this.data.selects[index].flag;
+    this.getThings100(flag);
   },
 
   /**
