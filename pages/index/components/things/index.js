@@ -103,6 +103,15 @@ Page({
       // type: 'add',
       currentThing: obj
     });
+    if (obj.isUploaded) {
+      this.setData({
+        imagePreviewUrl: obj.picture
+      });
+    } else {
+      this.setData({
+        imagePreviewUrl: ''
+      });
+    }
     this.openDialog();
   },
 
