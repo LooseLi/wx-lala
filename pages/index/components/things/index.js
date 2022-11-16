@@ -5,6 +5,7 @@ import WeCropper from '../../../../utils/weCropper/we-cropper.min';
 const device = wx.getSystemInfoSync(); // 获取设备信息
 const width = device.windowWidth; // 示例为一个与屏幕等宽的正方形裁剪框
 const height = width;
+const plugins = require('../../../../utils/plugins');
 
 Page({
 
@@ -50,7 +51,8 @@ Page({
         height: 300
       }
     }, // 裁剪配置
-    pictureDefault: '../images/things/icon-default.png'
+    pictureDefault: '../images/things/icon-default.png',
+    fileID: '', // 裁剪后的图片地址
   },
 
   // 获取100件小事
@@ -101,7 +103,8 @@ Page({
     const obj = e.currentTarget.dataset.eventIndex;
     this.setData({
       // type: 'add',
-      currentThing: obj
+      currentThing: obj,
+      date: obj.date
     });
     if (obj.isUploaded) {
       this.setData({
@@ -178,38 +181,52 @@ Page({
         this.setData({
           imagePreviewUrl: res
         });
+        let cloudPath = `uploadImageThings/${Date.now()}.jpg`;
+        wx.cloud.uploadFile({
+          cloudPath,
+          filePath: this.data.imagePreviewUrl,
+          success: (res) => {
+            const fileID = res.fileID;
+            this.setData({
+              fileID
+            });
+          },
+          fail: info => {
+            console.log(info);
+          }
+        });
       }
     })
   },
 
   // 已完成
   onSave() {
-    this.uploadImage();
+    if (!this.data.currentThing.isUploaded && !this.data.fileID) {
+      plugins.showToast({
+        title: '需要上传一张照片喔～'
+      });
+      return;
+    }
+    things100.doc(this.data.currentThing._id).update({
+      data: {
+        date: this.data.date,
+        picture: this.data.fileID || this.data.currentThing.picture,
+        isUploaded: true
+      },
+      success: async (res) => {
+        await this.getThings100();
+        this.closeDialog();
+        this.resetData();
+      }
+    })
   },
 
-  uploadImage() {
-    let cloudPath = `uploadImageThings/${Date.now()}.jpg`;
-    wx.cloud.uploadFile({
-      cloudPath,
-      filePath: this.data.imagePreviewUrl,
-      success: (res) => {
-        const fileID = res.fileID;
-        if (fileID) {
-          things100.doc(this.data.currentThing._id).update({
-            data: {
-              picture: fileID,
-              isUploaded: true
-            },
-            success: async (res) => {
-              await this.getThings100();
-              this.closeDialog();
-            }
-          })
-        }
-      },
-      fail: info => {
-        console.log(info);
-      }
+  // 重置数据
+  resetData() {
+    this.setData({
+      fileID: '',
+      currentThing: {},
+      imagePreviewUrl: ''
     });
   },
 
