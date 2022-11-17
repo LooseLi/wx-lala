@@ -78,7 +78,15 @@ Page({
       } else {
         res = await things100.skip(i).get();
       }
-      all = all.concat(res.data)
+      all = all.concat(res.data);
+    }
+    if (flag === undefined) {
+      const thingTotal = all.length;
+      const thingDone = all.filter(item => item.isUploaded);
+      this.setData({
+        thingTotal,
+        thingDone: thingDone.length
+      });
     }
     this.setData({
       things: all

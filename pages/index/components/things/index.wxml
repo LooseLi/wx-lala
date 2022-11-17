@@ -1,4 +1,5 @@
 <view class="wrap">
+  <view class="total-wrap">已完成 <text class="done">{{thingDone}}</text>/{{thingTotal}}</view>
   <view>
     <picker mode="selector" bindchange="bindPickerChange" value="{{currentSelectIndex}}" range="{{selects}}" range-key="value">
       <view class="picker-wrap">

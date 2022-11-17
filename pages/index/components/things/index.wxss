@@ -59,6 +59,18 @@ page {
   color: #ffadd2;
 }
 
+.total-wrap {
+  font-size: 16px;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.done {
+  font-size: 16px;
+  color: var(--fontColor);
+}
+
 .dialog-name {
   font-size: 16px;
   text-align: center;
