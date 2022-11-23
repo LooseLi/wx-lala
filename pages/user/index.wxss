@@ -3,6 +3,19 @@ view {
   position: relative;
 }
 
+.weui-half-screen-dialog_large {
+  top: 300px;
+}
+
+.remind-time {
+  display: flex;
+  align-items: center;
+}
+
+.remind-text {
+  color: rgba(0, 0, 0, 0.38);
+}
+
 .user-wrap {
   width: 100%;
   position: absolute;

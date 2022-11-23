@@ -6,12 +6,52 @@
         <view>{{nickname}}</view>
         <view>😘😘😘</view>
       </view>
-      <date-time-picker></date-time-picker>
     </view>
     <button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
+    <view class="todo-wrap">
+      <view class="todo-add">
+        <button bindtap="addTodo">添加待办提醒</button>
+      </view>
+    </view>
     <image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
     <view class="tips">紧锣密鼓筹备中...</view>
   </view>
+
+  <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true">
+    <view class="weui-mask weui-transition {{dialog ? 'weui-transition_show' : ''}}" bindtap="closeDialog" aria-role="button" aria-label="关闭"></view>
+    <view class="weui-half-screen-dialog weui-half-screen-dialog_large weui-transition {{dialog ? 'weui-transition_show' : ''}}">
+      <view class="weui-half-screen-dialog__hd">
+        <view class="weui-half-screen-dialog__hd__side" bindtap="closeDialog">
+          <view aria-role="button" class="weui-btn_icon">关闭<i class="weui-icon-close-thin"></i></view>
+        </view>
+      </view>
+      <view class="weui-half-screen-dialog__bd" style="padding-top: 32px; height: 50px;">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__bd">
+              <input class="weui-input" value="{{todoObj.title}}" placeholder-class="weui-input__placeholder" bindinput="bindTodoChange" placeholder="待办事项" />
+            </view>
+          </view>
+        </view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__bd">
+              <view class="remind-time">
+                <text class="remind-text">提醒时间：</text>
+                <date-time-picker time="{{todoObj.time}}" bind:changeTime="onChangeTime"></date-time-picker>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="weui-half-screen-dialog__ft">
+        <view class="weui-half-screen-dialog__btn-area">
+          <view aria-role="button" class="weui-btn weui-btn_primary" bindtap="onSave">保存</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <loading hidden="{{!loading}}">
     加载中...
   </loading>

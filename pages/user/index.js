@@ -13,6 +13,11 @@ Page({
     nickname: '',
     isAuth: false,
     uid: '',
+    dialog: false,
+    todoObj: {
+      title: '',
+      time: ''
+    }
   },
 
   // 点击事件
@@ -84,6 +89,50 @@ Page({
           }
         })
       },
+    });
+  },
+
+  openDialog() {
+    this.setData({
+      dialog: true
+    })
+  },
+
+  closeDialog() {
+    this.setData({
+      dialog: false
+    })
+    this.resetData();
+  },
+
+  resetData() {
+    this.setData({
+      todoObj: {
+        title: '',
+        time: ''
+      }
+    });
+  },
+
+  // 添加待办
+  addTodo() {
+    this.openDialog();
+  },
+
+  bindTodoChange(e) {
+    this.setData({
+      todoObj: {
+        title: e.detail.value
+      }
+    });
+  },
+
+  // 年月日时分秒选择器
+  onChangeTime(e) {
+    this.setData({
+      todoObj: {
+        time: e.detail.remindTime
+      }
     });
   },
 

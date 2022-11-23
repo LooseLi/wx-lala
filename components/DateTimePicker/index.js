@@ -2,7 +2,23 @@ var dateTimePicker = require('../../utils/dateTimePicker.js') //引入外部的j
 const mydate = new Date();
 
 Component({
-  properties: {},
+  properties: {
+    time: {
+      type: String,
+      value: '',
+      observer(value) {
+        if (value) {
+          this.setData({
+            currentTime: value
+          });
+        } else {
+          this.setData({
+            currentTime: mydate.toLocaleDateString() + ' ' + mydate.getHours() + ':' + mydate.getMinutes()
+          });
+        }
+      }
+    }
+  },
   data: {
     dateTimeArray: null,
     dateTime: null,
@@ -28,6 +44,9 @@ Component({
         // currentTime: dateTimeArray[0][dateTime[0]] + '-' + dateTimeArray[2][dateTime[2]] + '-' + dateTimeArray[4][dateTime[4]] + ' ' + dateTimeArray[6][dateTime[6]] + ':' + dateTimeArray[8][dateTime[8]] + ':' + dateTimeArray[10][dateTime[10]]
         currentTime: dateTimeArray[0][dateTime[0]] + '-' + dateTimeArray[2][dateTime[2]] + '-' + dateTimeArray[4][dateTime[4]] + ' ' + dateTimeArray[6][dateTime[6]] + ':' + dateTimeArray[8][dateTime[8]]
       });
+      this.triggerEvent('changeTime', {
+        remindTime: this.data.currentTime
+      });
       console.log(this.data.dateTimeArray)
     },
     changeDateTimeColumn(e) {
@@ -40,5 +59,5 @@ Component({
         dateTime: arr
       });
     }
-  }
+  },
 })
