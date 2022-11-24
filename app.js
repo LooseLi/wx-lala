@@ -13,6 +13,11 @@ App({
     APP_SECRET: '5f1d10c89d82fe00f0f55d4391c5584e'
   },
 
+  getTopPages: () => {
+    let pages = getCurrentPages();
+    return pages[pages.length - 1];
+  },
+
   /**
    * 当小程序启动，或从后台进入前台显示，会触发 onShow
    */

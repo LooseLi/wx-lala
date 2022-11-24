@@ -46,7 +46,7 @@
       </view>
       <view class="weui-half-screen-dialog__ft">
         <view class="weui-half-screen-dialog__btn-area">
-          <view aria-role="button" class="weui-btn weui-btn_primary" bindtap="onSave">保存</view>
+          <view aria-role="button" class="weui-btn weui-btn_primary" bindtap="onSave">添加</view>
         </view>
       </view>
     </view>

@@ -1,4 +1,5 @@
 const db = wx.cloud.database();
+const todos = db.collection('todos');
 const userInfo = db.collection('userInfo');
 const plugins = require('../../utils/plugins');
 
@@ -17,7 +18,9 @@ Page({
     todoObj: {
       title: '',
       time: ''
-    }
+    },
+    todoTitle: '',
+    todoTime: ''
   },
 
   // 点击事件
@@ -107,10 +110,8 @@ Page({
 
   resetData() {
     this.setData({
-      todoObj: {
-        title: '',
-        time: ''
-      }
+      todoTitle: '',
+      todoTime: ''
     });
   },
 
@@ -121,19 +122,65 @@ Page({
 
   bindTodoChange(e) {
     this.setData({
-      todoObj: {
-        title: e.detail.value
-      }
+      todoTitle: e.detail.value
     });
   },
 
   // 年月日时分秒选择器
-  onChangeTime(e) {
-    this.setData({
-      todoObj: {
-        time: e.detail.remindTime
+  onChangeTime(e) {},
+
+  requestSubscribeMessage() {
+    wx.requestSubscribeMessage({
+      tmplIds: ['GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII'],
+      success: (res) => {
+        this.sendMessage();
+      },
+      fail: (err) => {
+        console.log(err);
+      },
+      complete: () => {}
+    })
+  },
+
+  // 发送消息
+  sendMessage() {
+    console.log(this.data.todoTitle);
+    console.log(this.data.todoTime);
+    wx.cloud.callFunction({
+      name: 'sendMsg',
+      data: {
+        title: this.data.todoTitle,
+        time: this.data.todoTime
+      },
+      success: (res) => {
+        console.log(res);
+        this.closeDialog();
+      },
+      fail: (err) => {
+        console.log(err);
       }
-    });
+    })
+  },
+
+  // 添加待办事项到数据库
+  add() {
+    todos.add({
+      data: {
+        title: this.data.todoTitle,
+        time: new Date(this.data.todoTime)
+      }
+    })
+  },
+
+  // 确认添加
+  onSave() {
+    wx.getSetting({
+      withSubscriptions: true,
+      success: async (res) => {
+        await this.add();
+        this.requestSubscribeMessage();
+      }
+    })
   },
 
   /**
