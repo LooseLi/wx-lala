@@ -164,10 +164,13 @@ Page({
 
   // 添加待办事项到数据库
   add() {
+    let todoTime = this.data.todoTime.replace(/-/g, '/') + ':00:00';
+    const todoGetTime = new Date(todoTime).getTime();
     todos.add({
       data: {
         title: this.data.todoTitle,
-        time: new Date(this.data.todoTime)
+        time: new Date(todoTime),
+        timestamp: todoGetTime
       }
     })
   },

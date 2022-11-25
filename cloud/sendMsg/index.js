@@ -7,39 +7,36 @@ cloud.init({
 
 const db = cloud.database();
 const todos = db.collection('todos');
+const current_timestamp = new Date().getTime();
 
 // 云函数入口函数
 exports.main = async (event, context) => {
   const _openid = cloud.getWXContext().OPENID;
   const arr = await todos.where({
-    _openid
+    _openid,
+    timestamp: current_timestamp
   }).get();
-  if (!arr.length) return {};
-  const currentTime = new Date().getTime();
-  const obj = null;
-  arr.forEach(item => {
-    const time = item.time.getTime();
-    if (time === currentTime) {
-      obj = item;
+  if (arr.length) {
+    const obj = arr[0];
+    try {
+      const result = await cloud.openapi.subscribeMessage.send({
+        touser: cloud.getWXContext().OPENID, // 通过 getWXContext 获取 OPENID
+        page: 'user/index',
+        data: {
+          thing1: {
+            value: obj.title
+          },
+          time2: {
+            value: obj.time
+          },
+        },
+        templateId: 'GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII',
+        miniprogramState: 'developer'
+      })
+      return JSON.parse(JSON.stringify(result))
+    } catch (error) {
+      return error
     }
-  });
-  if (!obj) return obj;
-  try {
-    const result = await cloud.openapi.subscribeMessage.send({
-      touser: cloud.getWXContext().OPENID, // 通过 getWXContext 获取 OPENID
-      page: 'user/index',
-      data: {
-        thing1: {
-          value: obj.title
-        },
-        time2: {
-          value: obj.time
-        },
-      },
-      templateId: 'GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII',
-    })
-    return JSON.parse(JSON.stringify(result))
-  } catch (error) {
-    return error
   }
+  return {};
 }

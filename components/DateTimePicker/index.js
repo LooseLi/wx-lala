@@ -1,5 +1,4 @@
 var dateTimePicker = require('../../utils/dateTimePicker.js') //引入外部的js工具类
-const mydate = new Date();
 const app = getApp();
 
 Component({
@@ -25,8 +24,8 @@ Component({
     dateTime: null,
     startYear: 2016,
     endYear: 2040,
-    //  + ':' + mydate.getSeconds()
-    currentTime: mydate.toLocaleDateString() + ' ' + mydate.getHours() + ':' + mydate.getMinutes()
+    //  + ':' + mydate.getMinutes() + ':' + mydate.getSeconds()
+    currentTime: ''
   },
   methods: {
     pickerTap: function (e) {
@@ -44,11 +43,8 @@ Component({
       this.setData({
         // dateTime: e.detail.value,
         // currentTime: dateTimeArray[0][dateTime[0]] + '-' + dateTimeArray[2][dateTime[2]] + '-' + dateTimeArray[4][dateTime[4]] + ' ' + dateTimeArray[6][dateTime[6]] + ':' + dateTimeArray[8][dateTime[8]] + ':' + dateTimeArray[10][dateTime[10]]
-        currentTime: dateTimeArray[0][dateTime[0]] + '-' + dateTimeArray[2][dateTime[2]] + '-' + dateTimeArray[4][dateTime[4]] + ' ' + dateTimeArray[6][dateTime[6]] + ':' + dateTimeArray[8][dateTime[8]]
+        currentTime: dateTimeArray[0][dateTime[0]] + '-' + dateTimeArray[2][dateTime[2]] + '-' + dateTimeArray[4][dateTime[4]] + ' ' + dateTimeArray[6][dateTime[6]]
       });
-      // this.triggerEvent('changeTime', {
-      //   remindTime: this.data.currentTime
-      // });
       app.getTopPages().setData({
         todoTime: this.data.currentTime
       });
@@ -64,4 +60,18 @@ Component({
       });
     }
   },
+  lifetimes: {
+    attached() {
+      let mydate = new Date();
+      const current = mydate.toLocaleDateString().replace(/\//g, '-') + ' ' + mydate.getHours();
+      this.setData({
+        currentTime: current
+      });
+      const obj = dateTimePicker.dateTimePicker(this.data.startYear, this.data.endYear, this.data.currentTime);
+      this.setData({
+        dateTimeArray: obj.dateTimeArray,
+        dateTime: obj.dateTime
+      });
+    }
+  }
 })

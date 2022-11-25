@@ -13,7 +13,6 @@ function getLoopArray(start, end) {
 }
 
 function getMonthDay(year, month) {
-  console.log(year, month)
   var flag = year % 400 == 0 || (year % 4 == 0 && year % 100 != 0),
     array = null;
   switch (month) {
@@ -52,13 +51,12 @@ function getNewDateArry() { //如果dateTimePicker的date不可能为空，此�
     seco = withData(newDate.getSeconds());
 
   // return [year, '年', mont, '月', date, '日', hour, ':', minu, ':', seco];
-  return [year, '年', mont, '月', date, '日', hour, ':', minu];
+  return [year, '年', mont, '月', date, '日', hour, '时'];
 }
 
 function getcurrent(date) {
-  console.log(date)
-  var d = new Date(date);
-  console.log(d)
+  const defaultTime = date.replace(/-/g, '/') + ':00:00';
+  var d = new Date(defaultTime);
   var year = withData(d.getFullYear()),
     month = withData(d.getMonth() + 1),
     dat = withData(d.getDate()),
@@ -66,7 +64,7 @@ function getcurrent(date) {
     minu = withData(d.getMinutes()),
     seco = withData(d.getSeconds());
   // return [year, '年', month, '月', dat, '日', hour, ':', minu, ':', seco]
-  return [year, '年', month, '月', dat, '日', hour, ':', minu]
+  return [year, '年', month, '月', dat, '日', hour, '时']
 }
 
 function dateTimePicker(startYear, endYear, date) {
@@ -74,11 +72,9 @@ function dateTimePicker(startYear, endYear, date) {
   if (date) {
     datearr = getcurrent(date);
   }
-  console.log(datearr)
   // 返回默认显示的数组和联动数组的声明
   var dateTime = [],
     dateTimeArray = [
-      [],
       [],
       [],
       [],
@@ -92,7 +88,6 @@ function dateTimePicker(startYear, endYear, date) {
   var end = endYear || 2100;
   // 默认开始显示数据
   var defaultDate = date ? datearr : getNewDateArry();
-  console.log(defaultDate)
   // 处理联动列表数据
   /*年月日 时分*/
   dateTimeArray[0] = getLoopArray(start, end);
@@ -102,8 +97,9 @@ function dateTimePicker(startYear, endYear, date) {
   dateTimeArray[4] = getMonthDay(defaultDate[0], defaultDate[2]);
   dateTimeArray[5] = ['日'];
   dateTimeArray[6] = getLoopArray(0, 23);
-  dateTimeArray[7] = [':'];
-  dateTimeArray[8] = getLoopArray(0, 59);
+  dateTimeArray[7] = ['时'];
+  // dateTimeArray[7] = [':'];
+  // dateTimeArray[8] = getLoopArray(0, 59);
   // dateTimeArray[9] = [':'];
   // dateTimeArray[10] = getLoopArray(0, 59);
 
