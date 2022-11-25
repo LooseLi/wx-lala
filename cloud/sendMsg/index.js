@@ -31,7 +31,7 @@ exports.main = async (event, context) => {
           },
         },
         templateId: 'GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII',
-        miniprogramState: 'developer'
+        miniprogramState: 'trial'
       })
       return JSON.parse(JSON.stringify(result))
     } catch (error) {
