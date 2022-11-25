@@ -11,10 +11,15 @@ const current_timestamp = new Date().getTime();
 
 // 云函数入口函数
 exports.main = async (event, context) => {
+  // 5分钟的毫秒数
+  const fiveMinu = 5 * 60 * 1000;
+  const minTimestamp = current_timestamp - fiveMinu;
+  const maxTimestamp = current_timestamp + fiveMinu;
   const _openid = cloud.getWXContext().OPENID;
+  const _ = db.command;
   const arr = await todos.where({
     _openid,
-    timestamp: current_timestamp
+    timestamp: _.and(_.gt(minTimestamp), _.lt(maxTimestamp))
   }).get();
   if (arr.length) {
     const obj = arr[0];
