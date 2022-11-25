@@ -182,6 +182,29 @@ Page({
     }
   },
 
+  // 随机食物
+  randomFood() {
+    wx.request({
+      url: 'https://eolink.o.apispace.com/eat222/api/v1/forward/chishenme',
+      data: {
+        size: 2,
+      },
+      header: {
+        'X-APISpace-Token': '07oamggx9fyvu7c8mu0kbrbnyceauyh6',
+        'Authorization-Type': 'apikey'
+      },
+      success: (res) => {
+        console.log(res);
+        this.setData({
+          foods: res.data.data
+        });
+      },
+      fail: (err) => {
+        console.log(err);
+      }
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -189,39 +212,4 @@ Page({
     await this.getList();
     this.beforeGetLocation();
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {},
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {},
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {},
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {},
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {},
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {},
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {},
 });

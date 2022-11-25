@@ -21,6 +21,7 @@ exports.main = async (event, context) => {
     _openid,
     timestamp: _.and(_.gt(minTimestamp), _.lt(maxTimestamp))
   }).get();
+  console.log(arr);
   if (arr.length) {
     const obj = arr[0];
     try {

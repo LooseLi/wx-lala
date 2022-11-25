@@ -3,6 +3,18 @@
     <text class="meet">{{meetContent}}</text>
   </view>
 
+  <!-- 今天吃什么 -->
+  <view class="eat-wrap">
+    <text wx:if="{{!foods.length}}" class="food-name">今天吃什么？</text>
+    <text wx:else class="food-name">{{foods[0]}}、{{foods[1]}}</text>
+    <view class="food-random" bindtap="randomFood">
+      <image class="food-random" src="./images/food/icon-eat-img.png"></image>
+    </view>
+    <view class="food-list">
+      <image class="food-list" src="./images/food/icon-eat-list.png"></image>
+    </view>
+  </view>
+
   <!-- 天气 -->
   <view class="weather-card">
     <block wx:if="{{hasAuth}}">
@@ -29,6 +41,7 @@
     </view>
   </view>
 
+  <!-- 事件列表 -->
   <view class="event-list">
     <view class="event" data-event-index="{{item.id}}" wx:for="{{events}}" wx:key="id" bindtap="eventClick">
       <image class="event-icon" src="{{item.icon}}"></image>
