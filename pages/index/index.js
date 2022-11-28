@@ -44,7 +44,8 @@ Page({
         title: '想想要新加些啥',
         page: ''
       },
-    ]
+    ],
+    foods: ['饺子', '大盘鸡']
   },
 
   // 点击天气图标
@@ -203,6 +204,17 @@ Page({
         console.log(err);
       }
     })
+  },
+
+  // 选定今日食物
+  onFood(e) {
+    const {
+      foodIndex
+    } = e.currentTarget.dataset;
+    console.log(foodIndex);
+    this.setData({
+      todayFood: foodIndex
+    });
   },
 
   /**
