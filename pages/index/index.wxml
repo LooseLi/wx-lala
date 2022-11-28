@@ -5,19 +5,16 @@
 
   <!-- 今天吃什么 -->
   <view class="eat-wrap">
-    <text wx:if="{{!foods.length}}" class="food-name no-choice">今天吃什么？</text>
-    <view class="food-wrap" wx:else>
-      <view class="food-name" wx:for="{{foods}}" wx:key="item">
-        <text class="icon-eat-text">{{item}}</text>
-        <image bindtap="onFood" class="icon-eat-recommend" data-food-index="{{item}}" src="./images/food/icon-eat-recommend.png"></image>
-      </view>
+    <text wx:if="{{!foods.length}}" class="food-name">今天吃什么？</text>
+    <view wx:else class="food-name">
+      <text class="icon-eat-text">{{foods[0]}}、{{foods[1]}}</text>
     </view>
     <view class="food-random" bindtap="randomFood">
       <image class="food-random" src="./images/food/icon-eat-img.png"></image>
     </view>
-    <view class="food-list">
+    <!-- <view class="food-list">
       <image class="food-list" src="./images/food/icon-eat-list.png"></image>
-    </view>
+    </view> -->
   </view>
 
   <!-- 天气 -->
