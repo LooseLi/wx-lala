@@ -1,5 +1,5 @@
 const db = wx.cloud.database();
-const anniversary = db.collection('anniversary');
+const anniversary = db.collection('anniversaryList');
 const BASE = require('../../../../utils/base')
 
 Page({
@@ -116,10 +116,20 @@ Page({
 
   // 删除
   onDelete(e) {
-    const id = e.currentTarget.dataset.eventIndex._id;
-    anniversary.doc(id).remove({
+    wx.showModal({
+      title: '提示🥹',
+      content: '删掉就找不回来咯，确定要删咩',
       success: (res) => {
-        this.getAnniversary();
+        if (res.confirm) {
+          const id = e.currentTarget.dataset.eventIndex._id;
+          anniversary.doc(id).remove({
+            success: (res) => {
+              this.getAnniversary();
+            }
+          })
+        } else if (res.cancel) {
+          console.log('用户点击取消')
+        }
       }
     })
   },
