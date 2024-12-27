@@ -9,9 +9,9 @@
     </view>
     <button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
     <view class="todo-wrap">
-      <view class="todo-add">
+      <!-- <view class="todo-add">
         <button bindtap="addTodo">添加待办提醒</button>
-      </view>
+      </view> -->
     </view>
     <image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
     <view class="tips">紧锣密鼓筹备中...</view>

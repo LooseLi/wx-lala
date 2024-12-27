@@ -13,7 +13,7 @@ Page({
     avatar: '',
     nickname: '',
     isAuth: false,
-    uid: '',
+    openid: '',
     dialog: false,
     todoObj: {
       title: '',
@@ -40,9 +40,9 @@ Page({
         this.setData({
           isAuth: false,
           loading: true,
-          uid: res.result.openid
+          openid: res.result.OPENID
         });
-        const arr = infos.filter(item => item.uid === res.result.openid);
+        const arr = infos.filter(item => item.openid === res.result.OPENID);
         if (arr.length) {
           this.setData({
             avatar: arr[0].avatar,
@@ -82,7 +82,7 @@ Page({
           data: {
             // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
             due: new Date(),
-            uid: this.data.uid,
+            openid: this.data.openid,
             avatar: res.userInfo.avatarUrl,
             nickname: res.userInfo.nickName,
           },
