@@ -6,6 +6,13 @@ const showToast = (data) => {
   });
 }
 
+const showLoading = (text) => {
+  wx.showLoading({
+    title: text || '加载中'
+  });
+}
+
 module.exports = {
-  showToast
+  showToast,
+  showLoading
 }

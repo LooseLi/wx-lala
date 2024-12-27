@@ -1,7 +1,7 @@
 page {
   /* background: linear-gradient(270deg, #91d5ff 0%, #ffffff 100%); */
   /* background: #e6f7ff; */
-  background-image: url('https://636c-cloud1-5g2h5bs5d6613df6-1308328307.tcb.qcloud.la/WechatIMG233.jpeg?sign=ada53e14a4d0eabd8c51c09e1c85f8ff&t=1663741253');
+  background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546');
   background-size: 100% 100%;
 }
 
@@ -67,8 +67,8 @@ page {
 }
 
 .icon-weather {
-  width: 36px;
-  height: 36px;
+  width: 35px;
+  height: 35px;
   margin-right: 6px;
 }
 
@@ -125,7 +125,9 @@ page {
 }
 
 .food-name {
-  width: calc((100% - 24px) / 2);
+  width: 100%;
+  margin-right: 12px;
+  flex: 1;
   background: rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 8px rgba(23, 22, 81, 0.3);
   border-radius: 6px;

@@ -4,7 +4,8 @@ App({
    */
   onLaunch: function () {
     wx.cloud.init({
-      env: 'cloud1-5g2h5bs5d6613df6'
+      // env: 'cloud1-5g2h5bs5d6613df6'
+      env: 'lala-tsum-6gem2abq66c46985'
     });
   },
 

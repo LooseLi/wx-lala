@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
-const list = db.collection('list');
+const weatherDB = db.collection('weatherList'); // 天气icon
+const foodDB = db.collection('foodList'); // 吃什么
 const API = require('../../utils/api')
 const plugins = require('../../utils/plugins');
 
@@ -12,7 +13,7 @@ Page({
     meetContent: '', //提示语
     today: null, //今日天气
     hasAuth: false, //是否有位置权限
-    unknow: 'cloud://cloud1-5g2h5bs5d6613df6.636c-cloud1-5g2h5bs5d6613df6-1308328307/weather/unknow.png',
+    unknow: 'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
     events: [{
         id: 0,
@@ -128,7 +129,7 @@ Page({
         const lives = data.liveData;
         const arr = this.data.weathers.filter(item => item.weather === lives.weather);
         if (arr.length) {
-          lives.icon = arr[0].day;
+          lives.icon = arr[0].icon;
           lives.tips = arr[0].tips;
         } else {
           lives.icon = this.data.unknow;
@@ -164,11 +165,10 @@ Page({
   },
 
   // 获取列表(天气)
-  async getList() {
-    const res = await list.get();
-    const weathers = res.data.filter(item => item.name === 'weathers');
+  async getWeatherList() {
+    const res = await weatherDB.get();
     this.setData({
-      weathers: weathers[0].weathers
+      weathers: res.data
     });
   },
 
@@ -184,33 +184,23 @@ Page({
   },
 
   // 随机食物
-  randomFood() {
-    wx.request({
-      url: 'https://eolink.o.apispace.com/eat222/api/v1/forward/chishenme',
-      data: {
-        size: 2,
-      },
-      header: {
-        'X-APISpace-Token': '07oamggx9fyvu7c8mu0kbrbnyceauyh6',
-        'Authorization-Type': 'apikey'
-      },
-      success: (res) => {
-        console.log(res);
-        this.setData({
-          foods: res.data.data
-        });
-      },
-      fail: (err) => {
-        console.log(err);
-      }
-    })
+  async randomFood() {
+    plugins.showLoading('食物匹配中');
+    const res = await foodDB.aggregate().sample({
+      size: 2
+    }).end();
+    const arr = res.list.map(item => item.name);
+    this.setData({
+      foods: arr
+    });
+    wx.hideLoading();
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
-    await this.getList();
+    await this.getWeatherList();
     this.beforeGetLocation();
   },
 });
