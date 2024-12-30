@@ -105,12 +105,13 @@ Page({
   },
 
   add() {
-    const formatDate = this.data.date.replace(/-/g, '/');
+    // const formatDate = this.data.date.replace(/-/g, '/');
     countdownDay.add({
       data: {
         id: this.data.name,
-        beginDate: `${formatDate} 00:00`,
-        endDate: `${formatDate} 23:59`,
+        beginDate: `${this.data.date}`,
+        endDate: `${this.data.date}`,
+        today: `${this.data.date}`,
         canEdit: true,
         days: 1,
         content: this.data.content,
@@ -125,12 +126,13 @@ Page({
   },
 
   update() {
-    const formatDate = this.data.date.replace(/-/g, '/');
+    // const formatDate = this.data.date.replace(/-/g, '/');
     countdownDay.doc(this.data.id).update({
       data: {
         id: this.data.name,
-        beginDate: `${formatDate} 00:00`,
-        endDate: `${formatDate} 23:59`,
+        beginDate: `${this.data.date}`,
+        endDate: `${this.data.date}`,
+        today: `${this.data.date}`,
         content: this.data.content,
       },
       success: async (res) => {
