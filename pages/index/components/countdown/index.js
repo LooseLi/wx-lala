@@ -1,5 +1,5 @@
 const db = wx.cloud.database();
-const countdownDay = db.collection('countdownDay');
+const countdownDay = db.collection('holidayList');
 const BASE = require('../../../../utils/base')
 
 Page({
@@ -24,24 +24,29 @@ Page({
   handleHolidays() {
     const date = new Date();
     const arr = [];
+    const currentFormattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     this.data.holidays.forEach(item => {
       const beginTime = new Date(item.beginDate).getTime();
       const endTime = new Date(item.endDate).getTime();
-      // 当前正在某个节假日
-      if (date.getTime() >= beginTime && date.getTime() <= endTime) {
-        item.begin = item.beginDate.split(' ')[0];
-        item.end = item.endDate.split(' ')[0];
+      item.begin = item.beginDate.split("-").slice(1).join(".");
+      item.end = item.endDate.split("-").slice(1).join(".");
+      if (currentFormattedDate === item.today) {
+        // 当前正好是某个节假日
         this.setData({
           nowHoliday: item,
         });
-      }
-      if (date.getTime() < beginTime) {
-        item.begin = item.beginDate.split(' ')[0];
-        item.end = item.endDate.split(' ')[0];
+      } else if (date.getTime() >= beginTime && date.getTime() <= endTime) {
+        // 当前正在某个节假日范围
+        this.setData({
+          nowHoliday: item,
+        });
+      } else if (date.getTime() < beginTime) {
+        // 还没到的节假日
         arr.push(item);
       }
     });
-    // const nextHolidays = arr.length > 3 ? arr.slice(0, 3) : arr;
+    // 按照 beginDate 字段升序排序
+    arr.sort((a, b) => new Date(a.beginDate) - new Date(b.beginDate));
     const nextHolidays = arr;
     nextHolidays.forEach(item => {
       const nextBeginTime = new Date(item.beginDate);
@@ -109,7 +114,7 @@ Page({
         canEdit: true,
         days: 1,
         content: this.data.content,
-        imgUrl: 'cloud://cloud1-5g2h5bs5d6613df6.636c-cloud1-5g2h5bs5d6613df6-1308328307/weather/icon-countdown-other.png'
+        imgUrl: 'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconHolidays/kaixinguo.png?sign=931efe25e5f43cfd1cf614f6796a62a9&t=1735550502'
       },
       success: async (res) => {
         this.closeDialog();
@@ -171,11 +176,21 @@ Page({
 
   // 删除
   onDelete(e) {
-    const id = e.currentTarget.dataset.eventIndex._id;
-    countdownDay.doc(id).remove({
-      success: async (res) => {
-        await this.getCountdownDay();
-        this.handleHolidays();
+    wx.showModal({
+      title: '提示🥹',
+      content: '删掉就找不回来咯，确定要删咩',
+      success: (res) => {
+        if (res.confirm) {
+          const id = e.currentTarget.dataset.eventIndex._id;
+          countdownDay.doc(id).remove({
+            success: async (res) => {
+              await this.getCountdownDay();
+              this.handleHolidays();
+            }
+          })
+        } else if (res.cancel) {
+          console.log('用户点击取消')
+        }
       }
     })
   },

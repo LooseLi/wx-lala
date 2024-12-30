@@ -6,13 +6,14 @@
   <view class="holiday-card no-holiday" wx:if="{{!nowHoliday && !nextHoliday.length}}">这一年幸苦啦，准备迎接新的一年吧~~~</view>
   <view wx:else>
     <!-- 当前节假日 -->
+    <view class="title" wx:if="{{nowHoliday}}">今天是个好日子！</view>
     <view class="holiday-card" wx:if="{{nowHoliday}}">
       <view class="holiday-wrap">
         <image class="icon-holiday" src="{{nowHoliday.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
         <view>
-          <view>{{nowHoliday.id}}啦～</view>
+          <view>{{nowHoliday.id}}～</view>
           <view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
-          <view wx:else class="holiday-time">{{nowHoliday.begin}}~{{nowHoliday.end}}</view>
+          <view wx:else class="holiday-time">{{nowHoliday.begin}} ~ {{nowHoliday.end}}</view>
           <view class="holiday-content">{{nowHoliday.content}}</view>
         </view>
       </view>
@@ -20,6 +21,7 @@
     <view class="holiday-card no-holiday" wx:else>今天不是节假日喔～快看看还剩几天可以过节 👇</view>
 
     <!-- 下一个节假日倒计时 -->
+    <view class="title" wx:if="{{nextHoliday.length}}">正在悄然赶来(当天有寄语喔~)</view>
     <view wx:if="{{nextHoliday.length}}">
       <view class="holiday-card" wx:for="{{nextHoliday}}" wx:key="id">
         <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
@@ -28,7 +30,7 @@
             <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
           </view>
           <view>
-            <view><text class="holiday-name">{{item.id}}</text>倒计时：<text class="holiday-name-day">{{item.countDown}}</text> 天</view>
+            <view><text class="holiday-name">{{item.id}}</text>：<text class="holiday-name-day">{{item.countDown}}</text> 天</view>
             <view wx:if="{{item.days === 1}}" class="holiday-time">{{item.begin}}</view>
             <view wx:else class="holiday-time">{{item.begin}}~{{item.end}}</view>
           </view>
