@@ -26,8 +26,8 @@ Page({
     const arr = [];
     const currentFormattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     this.data.holidays.forEach(item => {
-      const beginTime = new Date(item.beginDate).getTime();
-      const endTime = new Date(item.endDate).getTime();
+      const beginTime = new Date(item.beginDate.replace(/-/g, '/')).getTime();
+      const endTime = new Date(item.endDate.replace(/-/g, '/')).getTime();
       item.begin = item.beginDate.split("-").slice(1).join(".");
       item.end = item.endDate.split("-").slice(1).join(".");
       if (currentFormattedDate === item.today) {
@@ -46,10 +46,10 @@ Page({
       }
     });
     // 按照 beginDate 字段升序排序
-    arr.sort((a, b) => new Date(a.beginDate) - new Date(b.beginDate));
+    arr.sort((a, b) => new Date(a.beginDate.replace(/-/g, '/')) - new Date(b.beginDate.replace(/-/g, '/')));
     const nextHolidays = arr;
     nextHolidays.forEach(item => {
-      const nextBeginTime = new Date(item.beginDate);
+      const nextBeginTime = new Date(item.beginDate.replace(/-/g, '/'));
       item.countDown = Math.ceil((nextBeginTime - date) / (1000 * 60 * 60 * 24));
     });
     this.setData({

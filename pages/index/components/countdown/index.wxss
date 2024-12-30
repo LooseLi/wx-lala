@@ -50,7 +50,7 @@ page {
 }
 
 .holiday-time {
-  margin-top: 4px;
+  /* margin-top: 4px; */
 }
 
 .holiday-content {
