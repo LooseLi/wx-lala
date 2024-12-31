@@ -4,7 +4,7 @@
   </view>
   <view class="anniversary-list">
     <view class="anniversary" wx:for="{{list}}" wx:key="id" data-event-index="{{item}}" bindtap="onUpdate">
-      <image class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
+      <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
       <view class="left">
         <view>{{item.name}}</view>
         <view>{{item.date}}</view>

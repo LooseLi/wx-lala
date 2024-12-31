@@ -62,7 +62,8 @@ Page({
     anniversary.add({
       data: {
         name: this.data.name,
-        date: this.data.date
+        date: this.data.date,
+        canEdit: true,
       },
       success: (res) => {
         this.closeDialog();
@@ -105,13 +106,15 @@ Page({
   // 更新
   onUpdate(e) {
     const obj = e.currentTarget.dataset.eventIndex;
-    this.setData({
-      name: obj.name,
-      date: obj.date,
-      id: obj._id,
-      type: 'update'
-    });
-    this.openDialog();
+    if (obj.canEdit) {
+      this.setData({
+        name: obj.name,
+        date: obj.date,
+        id: obj._id,
+        type: 'update'
+      });
+      this.openDialog();
+    }
   },
 
   // 删除
