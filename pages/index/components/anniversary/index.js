@@ -49,12 +49,29 @@ Page({
   },
 
   async getAnniversary() {
-    const res = await anniversary.get();
-    res.data.forEach(item => {
-      item.days = BASE.dateDiff(item.date);
-    });
-    this.setData({
-      list: res.data
+    // 小程序直接获取列表一次请求上限 20 条
+    // 用云函数获取列表一次请求上限 100 条，因此可能需要分批获取
+    wx.cloud.callFunction({
+      name: 'getAnniversary',
+      success: res => {
+        const {
+          result
+        } = res;
+        const {
+          data
+        } = result;
+        data.forEach(item => {
+          item.days = BASE.dateDiff(item.date);
+        });
+        // 使用 sort 方法降序排序
+        data.sort((a, b) => b.days - a.days);
+        this.setData({
+          list: data
+        });
+      },
+      fail: err => {
+        console.log('查询失败', err);
+      },
     });
   },
 
