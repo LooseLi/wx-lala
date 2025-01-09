@@ -1,6 +1,7 @@
 const db = wx.cloud.database();
 const anniversary = db.collection('anniversaryList');
-const BASE = require('../../../../utils/base')
+const BASE = require('../../../../utils/base');
+const plugins = require('../../../../utils/plugins');
 
 Page({
 
@@ -49,6 +50,7 @@ Page({
   },
 
   async getAnniversary() {
+    plugins.showLoading();
     // 小程序直接获取列表一次请求上限 20 条
     // 用云函数获取列表一次请求上限 100 条，因此可能需要分批获取
     wx.cloud.callFunction({
@@ -68,9 +70,11 @@ Page({
         this.setData({
           list: data
         });
+        wx.hideLoading();
       },
       fail: err => {
         console.log('查询失败', err);
+        wx.hideLoading();
       },
     });
   },

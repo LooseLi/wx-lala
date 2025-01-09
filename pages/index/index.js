@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const weatherDB = db.collection('weatherList'); // 天气icon
 const foodDB = db.collection('foodList'); // 吃什么
-const API = require('../../utils/api')
+const API = require('../../utils/api');
 const plugins = require('../../utils/plugins');
 
 Page({

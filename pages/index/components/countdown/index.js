@@ -1,6 +1,7 @@
 const db = wx.cloud.database();
 const countdownDay = db.collection('holidayList');
-const BASE = require('../../../../utils/base')
+const BASE = require('../../../../utils/base');
+const plugins = require('../../../../utils/plugins');
 
 Page({
 
@@ -59,10 +60,12 @@ Page({
 
   // 获取倒计时(节假日)
   async getCountdownDay() {
+    plugins.showLoading();
     const res = await countdownDay.get();
     this.setData({
       holidays: res.data,
     });
+    wx.hideLoading();
   },
 
   openDialog() {
