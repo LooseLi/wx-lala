@@ -9,6 +9,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    checkInData: null, // 打卡数据
     isShowMeet: false, //是否见面
     meetContent: '', //提示语
     today: null, //今日天气
@@ -204,7 +205,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
+    // 获取用户openid并存储
+    wx.cloud.callFunction({
+      name: 'getOpenId',
+      success: res => {
+        wx.setStorageSync('openid', res.result.OPENID)
+      }
+    });
+
     await this.getWeatherList();
     this.beforeGetLocation();
+  },
+
+  // 打卡成功的回调
+  onCheckInSuccess(e) {
+    const checkInData = e.detail
+    this.setData({ checkInData })
+    
+    // 可以在这里添加其他打卡成功后的操作
+    console.log('打卡成功：', checkInData)
   },
 });

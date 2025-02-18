@@ -8,6 +8,9 @@
       </view>
     </view>
     <button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
+    <!-- 打卡组件 -->
+    <check-in id="checkIn" wx:if="{{isAuth}}" bind:checkInSuccess="onCheckInSuccess" />
+
     <view class="todo-wrap">
       <!-- <view class="todo-add">
         <button bindtap="addTodo">添加待办提醒</button>

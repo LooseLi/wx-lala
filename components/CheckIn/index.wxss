@@ -1,0 +1,126 @@
+.check-in-container {
+  width: 100%;
+  /* padding: 32rpx; */
+  box-sizing: border-box;
+}
+
+.check-in-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 32rpx;
+  padding: 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.check-in-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.continuous-days, .points-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.days-number, .points-number {
+  font-size: 56rpx;
+  font-weight: 600;
+  color: #1D1D1F;
+  line-height: 1.1;
+  font-family: -apple-system, 'SF Pro Display';
+}
+
+.days-text, .points-text {
+  font-size: 28rpx;
+  color: #86868B;
+  font-family: -apple-system, 'SF Pro Text';
+}
+
+.check-in-button {
+  background: linear-gradient(135deg, #0A84FF 0%, #007AFF 100%);
+  color: white;
+  padding: 24rpx 48rpx;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: -apple-system, 'SF Pro Text';
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.check-in-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.check-in-button:active::after {
+  opacity: 1;
+}
+
+.check-in-button.checked {
+  background: linear-gradient(135deg, #32D74B 0%, #28CD41 100%);
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.check-in-button.checked {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-hover {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.check-in-button.loading {
+  opacity: 0.8;
+}
+
+/* 为了适应深色模式 */
+@media (prefers-color-scheme: dark) {
+  .check-in-card {
+    background: rgba(30, 30, 30, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .days-number,
+  .points-number {
+    color: #FFFFFF;
+  }
+
+  .days-text,
+  .points-text {
+    color: #98989D;
+  }
+}
+
+.check-in-button:active {
+  transform: scale(0.95);
+}

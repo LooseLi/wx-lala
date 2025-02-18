@@ -23,6 +23,17 @@ Page({
     todoTime: ''
   },
 
+  // 打卡成功的回调
+  onCheckInSuccess(e) {
+    const checkInData = e.detail
+    console.log('打卡成功：', checkInData)
+
+    // 如果获得了新的徽章，可以在这里更新界面显示
+    if (checkInData.rewards.badges && checkInData.rewards.badges.length > 0) {
+      // TODO: 更新徽章展示
+    }
+  },
+
   // 点击事件
   handleUser() {
     plugins.showToast({
@@ -72,26 +83,45 @@ Page({
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: res => {
-        this.setData({
+        // 存储用户信息到本地
+        const userInfo = {
           avatar: res.userInfo.avatarUrl,
           nickname: res.userInfo.nickName,
           isAuth: true
-        });
-        userInfo.add({
-          // data 字段表示需新增的 JSON 数据
+        }
+        wx.setStorageSync('userInfo', userInfo)
+        
+        // 更新页面显示
+        this.setData(userInfo)
+
+        // 存储到数据库
+        db.collection('userInfo').add({
           data: {
-            // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
             due: new Date(),
             openid: this.data.openid,
             avatar: res.userInfo.avatarUrl,
             nickname: res.userInfo.nickName,
+            createTime: new Date()
           },
-          success: function (res) {
-            // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
-            console.log(res)
+          success: res => {
+            // 刷新打卡组件状态
+            setTimeout(() => {
+              const checkInComponent = this.selectComponent('#checkIn')
+              if (checkInComponent) {
+                checkInComponent.checkTodayStatus()
+              }
+            }, 1500) // 等待 1.5 秒确保数据已经存储
+            console.log('用户信息存储成功：', res)
           }
         })
       },
+      fail: err => {
+        console.error('获取用户信息失败：', err)
+        wx.showToast({
+          title: '获取信息失败',
+          icon: 'none'
+        })
+      }
     });
   },
 
@@ -191,6 +221,16 @@ Page({
    */
   onLoad: function (options) {
     this.handleTabBarChange();
+    
+    // 从本地存储读取用户信息
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo) {
+      this.setData({
+        avatar: userInfo.avatar,
+        nickname: userInfo.nickname,
+        isAuth: true
+      })
+    }
   },
 
   /**
@@ -201,7 +241,15 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow: function () {
+    if (this.data.isAuth) {
+      // 刷新打卡组件状态
+      const checkInComponent = this.selectComponent('#checkIn')
+      if (checkInComponent) {
+        checkInComponent.checkTodayStatus()
+      }
+    }
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

@@ -1,0 +1,22 @@
+<view class="check-in-container">
+  <view class="check-in-card">
+    <view class="check-in-info">
+      <view class="continuous-days">
+        <text class="days-number">{{continuousDays}}</text>
+        <text class="days-text">连续打卡</text>
+      </view>
+      <view class="points-info">
+        <text class="points-number">{{totalPoints}}</text>
+        <text class="points-text">积分</text>
+      </view>
+    </view>
+    <view 
+      class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}"
+      hover-class="button-hover"
+      bindtap="handleCheckIn"
+    >
+      <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
+      <text wx:else>已打卡</text>
+    </view>
+  </view>
+</view>
