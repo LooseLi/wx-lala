@@ -13,7 +13,11 @@
         <view>😘😘😘</view>
       </view>
     </view>
-    <button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
+    <view class="btn-login" wx:else>
+      <button class="ios-button" hover-class="ios-button-hover" bindtap="getUserProfile">
+        <text class="ios-button-text">登录</text>
+      </button>
+    </view>
 
     <!-- 编辑昵称弹窗 -->
     <view class="edit-dialog" wx:if="{{showNicknameEdit}}">

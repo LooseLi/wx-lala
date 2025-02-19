@@ -50,14 +50,20 @@ view {
   transform: scale(0.98);
 }
 
+.avatar-container:active .avatar {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
 .avatar {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-  border-radius: 40rpx;
+  border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 0.5px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
 .user-info {
@@ -72,7 +78,7 @@ view {
   bottom: 8rpx;
   width: 48rpx;
   height: 48rpx;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 50%;
@@ -200,4 +206,41 @@ view {
 .tips {
   text-align: center;
   color: #434343;
+}
+
+.btn-login {
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+.ios-button {
+  background: linear-gradient(145deg, #3B9BFF, #0051FF);
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ios-button::after {
+  border: none;
+}
+
+.ios-button-text {
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.ios-button-hover {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(0, 122, 255, 0.2);
+  background: linear-gradient(145deg, #1E8AFF, #0045FF);
 }
