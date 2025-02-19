@@ -26,7 +26,7 @@ Component({
   },
 
   observers: {
-    'checkInData': function(data) {
+    'checkInData': function (data) {
       if (data) {
         this.setData({
           isCheckedIn: true,
@@ -54,12 +54,14 @@ Component({
 
       try {
         console.log('调用云函数查询打卡状态')
-        const { result } = await wx.cloud.callFunction({
+        const {
+          result
+        } = await wx.cloud.callFunction({
           name: 'getCheckInStatus'
         })
-        
+
         console.log('打卡状态查询结果：', result)
-        
+
         if (result.success) {
           this.setData({
             isCheckedIn: result.data.isCheckedIn,
@@ -84,7 +86,9 @@ Component({
     async handleCheckIn() {
       if (this.data.isCheckedIn || this.data.loading) return
 
-      this.setData({ loading: true })
+      this.setData({
+        loading: true
+      })
 
       try {
         const res = await wx.cloud.callFunction({
@@ -92,8 +96,11 @@ Component({
         })
 
         if (res.result.success) {
-          const { continuousDays, rewards } = res.result.data
-          
+          const {
+            continuousDays,
+            rewards
+          } = res.result.data
+
           // 显示打卡成功动画和提示
           wx.showToast({
             title: '打卡成功',
@@ -133,7 +140,9 @@ Component({
           icon: 'none'
         })
       } finally {
-        this.setData({ loading: false })
+        this.setData({
+          loading: false
+        })
       }
     }
   }

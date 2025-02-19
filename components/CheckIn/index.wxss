@@ -22,13 +22,15 @@
   gap: 32rpx;
 }
 
-.continuous-days, .points-info {
+.continuous-days,
+.points-info {
   display: flex;
   flex-direction: column;
   gap: 8rpx;
 }
 
-.days-number, .points-number {
+.days-number,
+.points-number {
   font-size: 56rpx;
   font-weight: 600;
   color: #1D1D1F;
@@ -36,7 +38,8 @@
   font-family: -apple-system, 'SF Pro Display';
 }
 
-.days-text, .points-text {
+.days-text,
+.points-text {
   font-size: 28rpx;
   color: #86868B;
   font-family: -apple-system, 'SF Pro Text';
@@ -81,9 +84,11 @@
     transform: scale(0.95);
     opacity: 0.5;
   }
+
   50% {
     transform: scale(1.02);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;

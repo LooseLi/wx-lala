@@ -220,8 +220,10 @@ Page({
   // 打卡成功的回调
   onCheckInSuccess(e) {
     const checkInData = e.detail
-    this.setData({ checkInData })
-    
+    this.setData({
+      checkInData
+    })
+
     // 可以在这里添加其他打卡成功后的操作
     console.log('打卡成功：', checkInData)
   },

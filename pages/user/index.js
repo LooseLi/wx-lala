@@ -15,8 +15,8 @@ Page({
     isAuth: false,
     openid: '',
     dialog: false,
-    showNicknameEdit: false,  // 显示昵称编辑弹窗
-    editingNickname: '',      // 正在编辑的昵称
+    showNicknameEdit: false, // 显示昵称编辑弹窗
+    editingNickname: '', // 正在编辑的昵称
     todoObj: {
       title: '',
       time: ''
@@ -46,16 +46,20 @@ Page({
   // 监听
   async handleTabBarChange() {
     try {
-      this.setData({ loading: true });
-      
+      this.setData({
+        loading: true
+      });
+
       // 获取OpenID
-      const openIdRes = await wx.cloud.callFunction({ name: 'getOpenId' });
+      const openIdRes = await wx.cloud.callFunction({
+        name: 'getOpenId'
+      });
       const openid = openIdRes.result.OPENID;
-      
+
       // 获取用户信息
       const res = await userInfo.get();
       const userRecord = res.data.find(item => item.openid === openid);
-      
+
       // 更新状态
       if (userRecord) {
         this.setData({
@@ -93,29 +97,29 @@ Page({
         // 生成默认用户信息
         const defaultAvatar = '/static/images/default-avatar.jpg';
         const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
-        
+
         // 构建用户信息对象
         const userInfo = {
           avatar: defaultAvatar,
           nickname: defaultNickname,
           isAuth: true,
-          originalAvatar: res.userInfo.avatarUrl,    // 保存原始头像
-          originalNickname: res.userInfo.nickName,   // 保存原始昵称
+          originalAvatar: res.userInfo.avatarUrl, // 保存原始头像
+          originalNickname: res.userInfo.nickName, // 保存原始昵称
           updateTime: new Date()
         }
 
         // 存储用户信息到本地
         wx.setStorageSync('userInfo', userInfo)
-        
+
         // 更新页面显示
         this.setData(userInfo)
 
         // 存储到数据库
         db.collection('userInfo').add({
           data: {
-            ...userInfo,              // 展开用户信息对象
+            ...userInfo, // 展开用户信息对象
             openid: this.data.openid,
-            createTime: new Date()    // 创建时间
+            createTime: new Date() // 创建时间
           },
           success: res => {
             // 刷新打卡组件状态
@@ -235,7 +239,7 @@ Page({
    */
   onLoad: function (options) {
     this.handleTabBarChange();
-    
+
     // 从本地存储读取用户信息
     const userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {
@@ -298,16 +302,18 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         const tempFilePath = res.tempFilePaths[0]
-        
+
         // 上传到云存储
         wx.cloud.uploadFile({
           cloudPath: `avatar/${this.data.openid}_${Date.now()}.jpg`,
           filePath: tempFilePath,
           success: res => {
             const avatar = res.fileID
-            
+
             // 更新本地和数据库
-            this.updateUserInfo({ avatar })
+            this.updateUserInfo({
+              avatar
+            })
           },
           fail: err => {
             wx.showToast({
@@ -353,9 +359,11 @@ Page({
       })
       return
     }
-    
+
     // 更新本地和数据库
-    this.updateUserInfo({ nickname })
+    this.updateUserInfo({
+      nickname
+    })
     this.closeNicknameEdit()
   },
 
@@ -363,15 +371,21 @@ Page({
   updateUserInfo(data) {
     // 更新本地数据
     const userInfo = wx.getStorageSync('userInfo')
-    const newUserInfo = { ...userInfo, ...data, updateTime: new Date() }
+    const newUserInfo = {
+      ...userInfo,
+      ...data,
+      updateTime: new Date()
+    }
     wx.setStorageSync('userInfo', newUserInfo)
-    
+
     // 更新页面显示
     this.setData(data)
 
     // 更新数据库
     db.collection('userInfo')
-      .where({ openid: this.data.openid })
+      .where({
+        openid: this.data.openid
+      })
       .update({
         data: {
           ...data,

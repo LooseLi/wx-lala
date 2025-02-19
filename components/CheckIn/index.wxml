@@ -10,11 +10,7 @@
         <text class="points-text">积分</text>
       </view>
     </view>
-    <view 
-      class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}"
-      hover-class="button-hover"
-      bindtap="handleCheckIn"
-    >
+    <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" hover-class="button-hover" bindtap="handleCheckIn">
       <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
       <text wx:else>已打卡</text>
     </view>

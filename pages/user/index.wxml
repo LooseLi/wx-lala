@@ -21,11 +21,7 @@
       <view class="dialog-content">
         <view class="dialog-header">编辑昵称</view>
         <view class="dialog-body">
-          <input type="text" 
-                 value="{{editingNickname}}" 
-                 bindinput="onNicknameInput"
-                 placeholder="请输入新的昵称"
-                 maxlength="12"/>
+          <input type="text" value="{{editingNickname}}" bindinput="onNicknameInput" placeholder="请输入新的昵称" maxlength="12" />
         </view>
         <view class="dialog-footer">
           <button bindtap="closeNicknameEdit">取消</button>
