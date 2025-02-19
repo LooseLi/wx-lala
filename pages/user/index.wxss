@@ -35,16 +35,120 @@ view {
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 
+/* 头像区域 */
+.avatar-container {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+}
+
 .avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 60rpx;
   overflow: hidden;
 }
 
 .user-info {
   flex: 1;
-  margin-left: 16px;
+  margin-left: 30rpx;
+}
+
+/* 编辑图标 */
+.edit-icon {
+  position: absolute;
+  right: -8rpx;
+  bottom: -8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  background: #007AFF;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* 昵称区域 */
+.nickname-container {
+  display: flex;
+  align-items: center;
+  font-size: 32rpx;
+  margin-bottom: 10rpx;
+}
+
+.nickname-container .edit-icon {
+  position: static;
+  margin-left: 10rpx;
+  width: 32rpx;
+  height: 32rpx;
+  font-size: 20rpx;
+}
+
+/* 编辑弹窗 */
+.edit-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dialog-content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 600rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.dialog-header {
+  padding: 20rpx;
+  text-align: center;
+  font-size: 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.dialog-body {
+  padding: 30rpx;
+}
+
+.dialog-body input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.dialog-footer {
+  display: flex;
+  border-top: 1rpx solid #eee;
+}
+
+.dialog-footer button {
+  flex: 1;
+  border-radius: 0;
+  border: none;
 }
 
 .found {

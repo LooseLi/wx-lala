@@ -1,13 +1,39 @@
 <view>
   <view class="user-wrap" wx:if="{{!loading}}">
     <view class="user-info-wrap" wx:if="{{isAuth}}">
-      <image class="avatar" src="{{avatar}}" mode="widthFix" lazy-load></image>
+      <view class="avatar-container" bindtap="editAvatar">
+        <image class="avatar" src="{{avatar}}" mode="aspectFill" lazy-load></image>
+        <view class="edit-icon">✎</view>
+      </view>
       <view class="user-info">
-        <view>{{nickname}}</view>
+        <view class="nickname-container" bindtap="editNickname">
+          <text>{{nickname}}</text>
+          <text class="edit-icon">✎</text>
+        </view>
         <view>😘😘😘</view>
       </view>
     </view>
     <button wx:else type="primary" bindtap="getUserProfile">一键登录</button>
+
+    <!-- 编辑昵称弹窗 -->
+    <view class="edit-dialog" wx:if="{{showNicknameEdit}}">
+      <view class="mask" bindtap="closeNicknameEdit"></view>
+      <view class="dialog-content">
+        <view class="dialog-header">编辑昵称</view>
+        <view class="dialog-body">
+          <input type="text" 
+                 value="{{editingNickname}}" 
+                 bindinput="onNicknameInput"
+                 placeholder="请输入新的昵称"
+                 maxlength="12"/>
+        </view>
+        <view class="dialog-footer">
+          <button bindtap="closeNicknameEdit">取消</button>
+          <button type="primary" bindtap="saveNickname">保存</button>
+        </view>
+      </view>
+    </view>
+
     <!-- 打卡组件 -->
     <check-in id="checkIn" wx:if="{{isAuth}}" bind:checkInSuccess="onCheckInSuccess" />
 

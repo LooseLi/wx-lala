@@ -15,6 +15,8 @@ Page({
     isAuth: false,
     openid: '',
     dialog: false,
+    showNicknameEdit: false,  // 显示昵称编辑弹窗
+    editingNickname: '',      // 正在编辑的昵称
     todoObj: {
       title: '',
       time: ''
@@ -43,39 +45,44 @@ Page({
 
   // 监听
   async handleTabBarChange() {
-    const res = await userInfo.get();
-    const infos = res.data;
-    wx.cloud.callFunction({
-      name: 'getOpenId',
-      success: res => {
+    try {
+      this.setData({ loading: true });
+      
+      // 获取OpenID
+      const openIdRes = await wx.cloud.callFunction({ name: 'getOpenId' });
+      const openid = openIdRes.result.OPENID;
+      
+      // 获取用户信息
+      const res = await userInfo.get();
+      const userRecord = res.data.find(item => item.openid === openid);
+      
+      // 更新状态
+      if (userRecord) {
         this.setData({
-          isAuth: false,
-          loading: true,
-          openid: res.result.OPENID
+          openid,
+          avatar: userRecord.avatar,
+          nickname: userRecord.nickname,
+          isAuth: true,
+          loading: false
         });
-        const arr = infos.filter(item => item.openid === res.result.OPENID);
-        if (arr.length) {
-          this.setData({
-            avatar: arr[0].avatar,
-            nickname: arr[0].nickname,
-            isAuth: true,
-            loading: false,
-          });
-          return;
-        } else {
-          this.setData({
-            loading: false,
-            isAuth: false,
-          });
-        }
-      },
-      fail: err => {
-        console.log('查询失败', err);
+      } else {
         this.setData({
+          openid,
           loading: false,
+          isAuth: false
         });
-      },
-    });
+      }
+    } catch (err) {
+      console.error('初始化失败:', err);
+      this.setData({
+        loading: false,
+        isAuth: false
+      });
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   // 一键登录
@@ -83,12 +90,21 @@ Page({
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: res => {
-        // 存储用户信息到本地
+        // 生成默认用户信息
+        const defaultAvatar = '/static/images/default-avatar.jpg';
+        const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
+        
+        // 构建用户信息对象
         const userInfo = {
-          avatar: res.userInfo.avatarUrl,
-          nickname: res.userInfo.nickName,
-          isAuth: true
+          avatar: defaultAvatar,
+          nickname: defaultNickname,
+          isAuth: true,
+          originalAvatar: res.userInfo.avatarUrl,    // 保存原始头像
+          originalNickname: res.userInfo.nickName,   // 保存原始昵称
+          updateTime: new Date()
         }
+
+        // 存储用户信息到本地
         wx.setStorageSync('userInfo', userInfo)
         
         // 更新页面显示
@@ -97,11 +113,9 @@ Page({
         // 存储到数据库
         db.collection('userInfo').add({
           data: {
-            due: new Date(),
+            ...userInfo,              // 展开用户信息对象
             openid: this.data.openid,
-            avatar: res.userInfo.avatarUrl,
-            nickname: res.userInfo.nickName,
-            createTime: new Date()
+            createTime: new Date()    // 创建时间
           },
           success: res => {
             // 刷新打卡组件状态
@@ -275,4 +289,106 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {},
+
+  // 编辑头像
+  editAvatar() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePath = res.tempFilePaths[0]
+        
+        // 上传到云存储
+        wx.cloud.uploadFile({
+          cloudPath: `avatar/${this.data.openid}_${Date.now()}.jpg`,
+          filePath: tempFilePath,
+          success: res => {
+            const avatar = res.fileID
+            
+            // 更新本地和数据库
+            this.updateUserInfo({ avatar })
+          },
+          fail: err => {
+            wx.showToast({
+              title: '上传失败',
+              icon: 'none'
+            })
+          }
+        })
+      }
+    })
+  },
+
+  // 编辑昵称
+  editNickname() {
+    this.setData({
+      showNicknameEdit: true,
+      editingNickname: this.data.nickname
+    })
+  },
+
+  // 关闭昵称编辑
+  closeNicknameEdit() {
+    this.setData({
+      showNicknameEdit: false,
+      editingNickname: ''
+    })
+  },
+
+  // 昵称输入事件
+  onNicknameInput(e) {
+    this.setData({
+      editingNickname: e.detail.value
+    })
+  },
+
+  // 保存昵称
+  saveNickname() {
+    const nickname = this.data.editingNickname.trim()
+    if (!nickname) {
+      wx.showToast({
+        title: '昵称不能为空',
+        icon: 'none'
+      })
+      return
+    }
+    
+    // 更新本地和数据库
+    this.updateUserInfo({ nickname })
+    this.closeNicknameEdit()
+  },
+
+  // 更新用户信息
+  updateUserInfo(data) {
+    // 更新本地数据
+    const userInfo = wx.getStorageSync('userInfo')
+    const newUserInfo = { ...userInfo, ...data, updateTime: new Date() }
+    wx.setStorageSync('userInfo', newUserInfo)
+    
+    // 更新页面显示
+    this.setData(data)
+
+    // 更新数据库
+    db.collection('userInfo')
+      .where({ openid: this.data.openid })
+      .update({
+        data: {
+          ...data,
+          updateTime: new Date()
+        }
+      })
+      .then(() => {
+        wx.showToast({
+          title: '更新成功',
+          icon: 'success'
+        })
+      })
+      .catch(err => {
+        wx.showToast({
+          title: '更新失败',
+          icon: 'none'
+        })
+      })
+  }
 });
