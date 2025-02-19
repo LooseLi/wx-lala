@@ -19,8 +19,9 @@ view {
 .user-wrap {
   width: 100%;
   min-height: 100vh;
-  background-color: #f7f7f7;
-  padding: 20rpx;
+  background-color: #F2F2F7;
+  padding: 32rpx;
+  padding-top: calc(32rpx + env(safe-area-inset-top));
   box-sizing: border-box;
 }
 
@@ -28,18 +29,25 @@ view {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 24rpx;
-  background-color: #fff;
-  border-radius: 12rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 32rpx;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
 }
 
 /* 头像区域 */
 .avatar-container {
   position: relative;
-  width: 120rpx;
-  height: 120rpx;
+  width: 160rpx;
+  height: 160rpx;
+  transition: transform 0.2s ease;
+}
+
+.avatar-container:active {
+  transform: scale(0.98);
 }
 
 .avatar {
@@ -47,8 +55,9 @@ view {
   height: 100%;
   display: block;
   object-fit: cover;
-  border-radius: 60rpx;
+  border-radius: 40rpx;
   overflow: hidden;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .user-info {
@@ -59,35 +68,68 @@ view {
 /* 编辑图标 */
 .edit-icon {
   position: absolute;
-  right: -8rpx;
-  bottom: -8rpx;
-  width: 36rpx;
-  height: 36rpx;
-  background: #007AFF;
+  right: 8rpx;
+  bottom: 8rpx;
+  width: 48rpx;
+  height: 48rpx;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 50%;
-  color: #fff;
-  font-size: 24rpx;
+  color: #FFFFFF;
+  font-size: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
   z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.edit-icon:active {
+  transform: scale(0.95);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 /* 昵称区域 */
 .nickname-container {
   display: flex;
   align-items: center;
-  font-size: 32rpx;
-  margin-bottom: 10rpx;
+  margin-bottom: 16rpx;
+  padding: 4rpx 0;
+}
+
+.nickname {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333333;
 }
 
 .nickname-container .edit-icon {
-  position: static;
-  margin-left: 10rpx;
+  position: relative;
+  margin-left: 16rpx;
   width: 32rpx;
   height: 32rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #007AFF;
   font-size: 20rpx;
+  transition: all 0.2s ease;
+  opacity: 0.85;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  transform: translateY(2rpx);
+}
+
+.nickname-container:active {
+  opacity: 0.7;
+}
+
+.nickname-container:active .edit-icon {
+  transform: scale(0.9);
 }
 
 /* 编辑弹窗 */

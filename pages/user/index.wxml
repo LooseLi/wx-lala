@@ -3,12 +3,12 @@
     <view class="user-info-wrap" wx:if="{{isAuth}}">
       <view class="avatar-container" bindtap="editAvatar">
         <image class="avatar" src="{{avatar}}" mode="aspectFill" lazy-load></image>
-        <view class="edit-icon">✎</view>
+        <view class="edit-icon">✏️</view>
       </view>
       <view class="user-info">
         <view class="nickname-container" bindtap="editNickname">
-          <text>{{nickname}}</text>
-          <text class="edit-icon">✎</text>
+          <text class="nickname">{{nickname}}</text>
+          <view class="edit-icon">✏️</view>
         </view>
         <view>😘😘😘</view>
       </view>
@@ -43,7 +43,7 @@
       </view> -->
     </view>
     <image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
-    <view class="tips">紧锣密鼓筹备中...</view>
+    <!-- <view class="tips">紧锣密鼓筹备中...</view> -->
   </view>
 
   <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true">
