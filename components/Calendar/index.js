@@ -3,6 +3,10 @@ Component({
     checkedDates: {
       type: Array,
       value: []
+    },
+    makeupDates: {
+      type: Array,
+      value: []
     }
   },
 
@@ -21,13 +25,13 @@ Component({
   },
 
   methods: {
-    initCalendar() {
+    async initCalendar() {
       const now = new Date()
       const currentYear = now.getFullYear()
       const currentMonth = now.getMonth() + 1
 
-      // 生成当前月和上个月的数据
-      const currentMonthData = this.generateMonthData(currentYear, currentMonth)
+      // 获取当前月和上个月的签到数据
+      await this.getMonthCheckInData(currentYear, currentMonth)
       
       // 计算上个月的年和月
       let prevYear = currentYear
@@ -36,6 +40,10 @@ Component({
         prevYear--
         prevMonth = 12
       }
+      await this.getMonthCheckInData(prevYear, prevMonth)
+
+      // 生成月份数据
+      const currentMonthData = this.generateMonthData(currentYear, currentMonth)
       const prevMonthData = this.generateMonthData(prevYear, prevMonth)
 
       this.setData({
@@ -44,6 +52,37 @@ Component({
         months: [prevMonthData, currentMonthData],
         currentMonthIndex: 1  // 默认显示当前月
       })
+    },
+
+    async getMonthCheckInData(year, month) {
+      try {
+        const { result } = await wx.cloud.callFunction({
+          name: 'getMonthCheckInData',
+          data: { year, month }
+        })
+        
+        if (result.success) {
+          const { checkInDays = [], makeupDays = [] } = result.data
+          // 转换日期格式
+          const checkedDates = checkInDays.map(day => 
+            `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+          )
+          const makeupDates = makeupDays.map(day => 
+            `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+          )
+          
+          this.setData({ 
+            checkedDates: [...this.data.checkedDates, ...checkedDates],
+            makeupDates: [...this.data.makeupDates, ...makeupDates]
+          })
+        }
+      } catch (error) {
+        console.error('获取签到数据失败：', error)
+        wx.showToast({
+          title: '获取签到数据失败',
+          icon: 'none'
+        })
+      }
     },
 
 
@@ -71,13 +110,18 @@ Component({
       for (var i = 1; i <= lastDay.getDate(); i++) {
         const currentDate = new Date(year, month - 1, i)
         const dateStr = this.formatDate(currentDate)
+        const isChecked = this.properties.checkedDates.includes(dateStr)
+        const isMakeup = this.properties.makeupDates.includes(dateStr)
         
         days.push({
           date: dateStr,
           day: i,
           isToday: this.isSameDay(currentDate, today),
-          isChecked: this.properties.checkedDates.includes(dateStr),
-          canMakeup: currentDate >= thirtyDaysAgo && currentDate < today && !this.isSameDay(currentDate, today) && !this.properties.checkedDates.includes(dateStr),
+          isChecked: isChecked || isMakeup,
+          isMakeup: isMakeup,
+          canMakeup: currentDate >= thirtyDaysAgo && currentDate < today && 
+                    !this.isSameDay(currentDate, today) && 
+                    !isChecked && !isMakeup,
           isDisabled: currentDate < thirtyDaysAgo || currentDate > today,
           isSelected: false
         })
@@ -114,7 +158,9 @@ Component({
       const thirtyDaysAgo = new Date(today)
       thirtyDaysAgo.setDate(today.getDate() - 30)
 
-      if (currentDate >= thirtyDaysAgo && currentDate < today && !this.properties.checkedDates.includes(date)) {
+      if (currentDate >= thirtyDaysAgo && currentDate < today && 
+          !this.properties.checkedDates.includes(date) && 
+          !this.properties.makeupDates.includes(date)) {
         // 重置所有月份的选中状态
         const months = this.data.months.map(month => {
           const days = month.days.map(day => ({
@@ -127,8 +173,11 @@ Component({
         // 更新所有月份数据
         this.setData({ months })
         
-        // 触发事件
-        this.triggerEvent('dateSelect', { date })
+        // 触发事件，传递是否为补签
+        this.triggerEvent('dateSelect', { 
+          date,
+          isMakeup: true
+        })
       }
     },
 

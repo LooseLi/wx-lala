@@ -1,47 +1,60 @@
 // \u4e91\u51fd\u6570\u5165\u53e3\u6587\u4ef6
 const cloud = require('wx-server-sdk')
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
+const db = cloud.database()
+const _ = db.command
 
-cloud.init({
-  env: 'lala-tsum-6gem2abq66c46985'
-})
-
-// \u4e91\u51fd\u6570\u5165\u53e3\u51fd\u6570
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const userId = wxContext.OPENID
-  const db = cloud.database()
-  const checkInRecords = db.collection('checkInRecords')
-  const userPoints = db.collection('userPoints')
 
   try {
-    // \u83b7\u53d6\u4eca\u65e5\u6253\u5361\u72b6\u6001
+    // 获取今日日期信息
     const now = new Date()
-    const dateStr = now.toISOString().split('T')[0]
-    
-    const todayRecord = await checkInRecords
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    const day = now.getDate()
+    const yearMonth = `${year}-${String(month).padStart(2, '0')}`
+
+    // 1. 获取本月签到记录
+    const monthRecord = await db.collection('checkInMonthly')
       .where({
         userId,
-        dateStr: dateStr
+        yearMonth
       })
       .get()
 
-    // \u83b7\u53d6\u7528\u6237\u79ef\u5206
-    const pointsRecord = await userPoints
-      .where({
-        userId
-      })
+    // 2. 获取用户状态
+    const userStatus = await db.collection('userCheckInStatus')
+      .where({ userId })
       .get()
+
+    // 3. 获取用户积分
+    const pointsRecord = await db.collection('userPoints')
+      .where({ userId })
+      .get()
+
+    // 4. 处理签到状态
+    const isCheckedIn = monthRecord.data.length > 0 && 
+      monthRecord.data[0].checkInDays.includes(day)
+
+    // 5. 获取连续签到天数和签到范围
+    const status = userStatus.data[0] || {}
+    const continuousDays = status.continuousDays || 0
+    const currentStreak = status.currentStreak || { startDate: '', endDate: '' }
 
     return {
       success: true,
       data: {
-        isCheckedIn: todayRecord.data.length > 0,
-        continuousDays: todayRecord.data.length > 0 ? todayRecord.data[0].continuousDays : 0,
-        totalPoints: pointsRecord.data.length > 0 ? pointsRecord.data[0].currentPoints : 0
+        isCheckedIn,
+        continuousDays,
+        currentStreak,
+        totalPoints: pointsRecord.data.length > 0 ? 
+          pointsRecord.data[0].currentPoints : 0
       }
     }
   } catch (error) {
-    console.error(error)
+    console.error('获取签到状态失败：', error)
     return {
       success: false,
       error: error.message

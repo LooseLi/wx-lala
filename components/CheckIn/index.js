@@ -13,7 +13,12 @@ Component({
     loading: false,
     showMakeupDialog: false,
     selectedDate: null,
-    checkedDates: []
+    checkedDates: [],
+    makeupDates: [],
+    currentStreak: {
+      startDate: '',
+      endDate: ''
+    }
   },
 
   lifetimes: {
@@ -33,8 +38,8 @@ Component({
       if (data) {
         this.setData({
           isCheckedIn: true,
-          continuousDays: data.continuousDays,
-          totalPoints: data.rewards.points
+          continuousDays: data.continuousDays || 0,
+          totalPoints: data.totalPoints || 0
         })
       }
     }
@@ -56,16 +61,15 @@ Component({
       })
 
       try {
-        console.log('调用云函数查询打卡状态')
-        const {
-          result
-        } = await wx.cloud.callFunction({
+        // 获取用户签到状态和积分
+        const { result } = await wx.cloud.callFunction({
           name: 'getCheckInStatus'
         })
 
-        console.log('打卡状态查询结果：', result)
+        console.log('签到状态查询结果：', result)
 
         if (result.success) {
+          const today = new Date().toISOString().split('T')[0]
           this.setData({
             isCheckedIn: result.data.isCheckedIn,
             continuousDays: result.data.continuousDays,
@@ -75,7 +79,7 @@ Component({
           throw new Error(result.error || '查询失败')
         }
       } catch (error) {
-        console.error('获取打卡状态失败：', error)
+        console.error('获取签到状态失败：', error)
         wx.showToast({
           title: '获取状态失败',
           icon: 'none'
@@ -96,14 +100,13 @@ Component({
 
       try {
         const res = await wx.cloud.callFunction({
-          name: 'checkIn'
+          name: 'checkInV2'
         })
 
         if (res.result.success) {
           const {
             continuousDays,
-            rewards,
-            checkedDates
+            rewards
           } = res.result.data
 
           // 显示打卡成功动画和提示
@@ -112,27 +115,21 @@ Component({
             icon: 'success'
           })
 
-          // 如果有新徽章，显示徽章获得提示
-          if (rewards.badges && rewards.badges.length > 0) {
-            setTimeout(() => {
-              wx.showModal({
-                title: '🎉 恭喜获得新徽章',
-                content: `获得徽章：${rewards.badges.join('、')}`,
-                showCancel: false
-              })
-            }, 1500)
-          }
-
           // 更新状态
           this.setData({
             isCheckedIn: true,
             continuousDays,
-            totalPoints: this.data.totalPoints + rewards.points,
-            checkedDates
+            totalPoints: this.data.totalPoints + rewards.points
           })
 
           // 触发父组件更新
-          this.triggerEvent('checkInSuccess', res.result.data)
+          this.triggerEvent('checkInSuccess', {
+            continuousDays,
+            rewards
+          })
+
+          // 刷新日历组件
+          this.triggerEvent('refreshCalendar')
         } else {
           wx.showToast({
             title: res.result.message,
@@ -170,9 +167,11 @@ Component({
 
     // 选择补签日期
     onDateSelect(e) {
-      const { date } = e.detail
-      console.log('e',date);
-      this.setData({ selectedDate: date })
+      const { date, isMakeup } = e.detail
+      console.log('选择日期：', date, '是否补签：', isMakeup)
+      if (isMakeup) {
+        this.setData({ selectedDate: date })
+      }
     },
 
     // 处理补签
@@ -181,7 +180,7 @@ Component({
       
       if (this.data.totalPoints < 30) {
         wx.showToast({
-          title: '积分不足',
+          title: '积分不足，补签需要30积分',
           icon: 'none'
         })
         return
@@ -198,12 +197,8 @@ Component({
         })
 
         if (res.result.success) {
-          const {
-            continuousDays,
-            totalPoints,
-            checkedDates
-          } = res.result.data
-
+          const data = res.result.data || {}
+          
           wx.showToast({
             title: '补签成功',
             icon: 'success'
@@ -212,13 +207,18 @@ Component({
           // 更新状态
           this.setData({
             showMakeupDialog: false,
-            continuousDays,
-            totalPoints,
-            checkedDates
+            continuousDays: data.continuousDays || this.data.continuousDays,
+            totalPoints: data.totalPoints || this.data.totalPoints,
+            checkedDates: data.checkedDates || []
           })
 
-          // 触发父组件更新
-          this.triggerEvent('checkInSuccess', res.result.data)
+          // 触发父组件更新，使用与 handleCheckIn 相同的数据格式
+          this.triggerEvent('checkInSuccess', {
+            continuousDays: data.continuousDays || this.data.continuousDays,
+            rewards: {
+              points: data.totalPoints - this.data.totalPoints // 积分变化
+            }
+          })
         } else {
           wx.showToast({
             title: res.result.message || '补签失败',

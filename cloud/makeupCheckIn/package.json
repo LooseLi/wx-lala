@@ -1,0 +1,9 @@
+{
+  "name": "makeupCheckIn",
+  "version": "1.0.0",
+  "description": "补签功能",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

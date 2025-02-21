@@ -1,0 +1,9 @@
+{
+  "name": "getMonthCheckInData",
+  "version": "1.0.0",
+  "description": "获取月度签到数据",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

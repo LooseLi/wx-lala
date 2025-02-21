@@ -29,11 +29,6 @@ Page({
   onCheckInSuccess(e) {
     const checkInData = e.detail
     console.log('打卡成功：', checkInData)
-
-    // 如果获得了新的徽章，可以在这里更新界面显示
-    if (checkInData.rewards.badges && checkInData.rewards.badges.length > 0) {
-      // TODO: 更新徽章展示
-    }
   },
 
   // 点击事件

@@ -21,13 +21,13 @@
           wx:key="dayIndex" 
           wx:for-item="day"
           wx:for-index="dayIndex"
-          class="day-item {{day.isEmpty ? 'empty' : ''}} {{day.isToday ? 'today' : ''}} {{day.isChecked ? 'checked' : ''}} {{day.canMakeup ? 'can-makeup' : ''}} {{day.isSelected ? 'selected' : ''}} {{day.isDisabled ? 'disabled' : ''}}"
+          class="day-item {{day.isEmpty ? 'empty' : ''}} {{day.isToday ? 'today' : ''}} {{day.isChecked ? 'checked' : ''}} {{day.isMakeup ? 'makeup' : ''}} {{day.canMakeup ? 'can-makeup' : ''}} {{day.isSelected ? 'selected' : ''}} {{day.isDisabled ? 'disabled' : ''}}"
           data-date="{{day.date}}"
           bindtap="{{!day.isEmpty ? 'selectDate' : ''}}"
         >
           <view class="day-content">
             <text>{{day.day}}</text>
-            <view wx:if="{{day.isChecked}}" class="check-icon">✓</view>
+            <view wx:if="{{day.isChecked}}" class="check-icon {{day.isMakeup ? 'makeup' : ''}}">{{day.isMakeup ? '补' : '✓'}}</view>
           </view>
         </view>
       </view>
@@ -39,6 +39,10 @@
     <view class="legend-item">
       <view class="legend-dot checked"></view>
       <text>已签到</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-dot makeup"></view>
+      <text>已补签</text>
     </view>
     <view class="legend-item">
       <view class="legend-dot can-makeup"></view>

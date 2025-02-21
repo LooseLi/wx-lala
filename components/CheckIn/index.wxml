@@ -4,6 +4,9 @@
       <view class="continuous-days">
         <text class="days-number">{{continuousDays}}</text>
         <text class="days-text">连续打卡</text>
+        <text class="streak-dates" wx:if="{{currentStreak.startDate}}">
+          {{currentStreak.startDate}} 至 {{currentStreak.endDate}}
+        </text>
       </view>
       <view class="points-info">
         <text class="points-number">{{totalPoints}}</text>
@@ -38,6 +41,7 @@
       <calendar 
         class="makeup-calendar"
         checkedDates="{{checkedDates}}" 
+        makeupDates="{{makeupDates}}"
         selectedDate="{{selectedDate}}"
         bind:dateSelect="onDateSelect"
       />

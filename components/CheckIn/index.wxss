@@ -18,7 +18,9 @@
 
 .button-group {
   display: flex;
-  gap: 20rpx;
+  flex-direction: column;
+  gap: 16rpx;
+  min-width: 160rpx;
 }
 
 .check-in-info {
@@ -32,6 +34,13 @@
   display: flex;
   flex-direction: column;
   gap: 8rpx;
+}
+
+.streak-dates {
+  font-size: 24rpx;
+  color: #86868B;
+  margin-top: 8rpx;
+  font-family: -apple-system, 'SF Pro Text';
 }
 
 .days-number,
@@ -53,7 +62,7 @@
 .check-in-button {
   background: linear-gradient(135deg, #0A84FF 0%, #007AFF 100%);
   color: white;
-  padding: 24rpx 48rpx;
+  padding: 20rpx 0;
   border-radius: 48rpx;
   font-size: 32rpx;
   font-weight: 500;
@@ -62,6 +71,7 @@
   position: relative;
   overflow: hidden;
   text-align: center;
+  width: 100%;
 }
 
 .check-in-button::after {
@@ -106,18 +116,20 @@
 
 /* 补签按钮 */
 .makeup-button {
-  background: rgba(0, 122, 255, 0.1);
-  color: #007AFF;
-  padding: 24rpx 32rpx;
+  background: rgba(255, 149, 0, 0.1);
+  color: #FF9500;
+  padding: 20rpx 0;
   border-radius: 48rpx;
   font-size: 32rpx;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: -apple-system, 'SF Pro Text';
+  text-align: center;
+  width: 100%;
 }
 
 .makeup-button:active {
-  background: rgba(0, 122, 255, 0.2);
+  background: rgba(255, 149, 0, 0.2);
 }
 
 /* 补签弹窗 */

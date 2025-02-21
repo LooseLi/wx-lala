@@ -141,6 +141,16 @@ swiper-item {
   color: white;
 }
 
+.makeup .day-content {
+  background: #FF9500;
+  color: white;
+}
+
+.check-icon.makeup {
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
 .can-makeup .day-content {
   border: 1px solid rgba(0, 122, 255, 0.3);
   color: #007AFF;
@@ -193,6 +203,10 @@ swiper-item {
 
 .legend-dot.checked {
   background: #007AFF;
+}
+
+.legend-dot.makeup {
+  background: #FF9500;
 }
 
 .legend-dot.can-makeup {
