@@ -30,7 +30,7 @@
 
   <!-- 补签弹窗 -->
   <view class="makeup-dialog" wx:if="{{showMakeupDialog}}">
-    <view class="dialog-mask" bindtap="hideMakeupDialog"></view>
+    <view class="dialog-mask" bindtap="hideMakeupDialog" catchtouchmove="preventTouchMove"></view>
     <view class="dialog-content">
       <view class="dialog-header">
         <text class="dialog-title">补签打卡</text>

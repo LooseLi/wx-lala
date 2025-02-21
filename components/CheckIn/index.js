@@ -149,6 +149,11 @@ Component({
       }
     },
 
+    // 阻止弹窗背景滚动
+    preventTouchMove() {
+      return
+    },
+
     // 显示补签弹窗
     showMakeupDialog() {
       this.setData({
