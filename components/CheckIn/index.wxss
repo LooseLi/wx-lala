@@ -141,7 +141,7 @@
   bottom: 0;
   z-index: 1000;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
 }
 
@@ -152,21 +152,29 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .dialog-content {
   position: relative;
-  width: 90%;
-  max-width: 600rpx;
-  max-height: 90vh;
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 40rpx;
-  box-shadow: 0 16rpx 32rpx rgba(0, 0, 0, 0.12);
-  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx 24rpx;
+  box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  max-height: 90vh;
+}
+
+.dialog-indicator {
+  width: 36rpx;
+  height: 4rpx;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4rpx;
+  margin: 0 auto 24rpx;
 }
 
 @keyframes slideUp {
@@ -182,23 +190,92 @@
 
 .dialog-header {
   text-align: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 32rpx;
 }
 
 .dialog-title {
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: 600;
   color: #1D1D1F;
   display: block;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
+  font-family: -apple-system, 'SF Pro Display';
 }
 
 .dialog-subtitle {
   font-size: 28rpx;
   color: #86868B;
+  font-family: -apple-system, 'SF Pro Text';
 }
 
 /* 补签确认区域 */
+.makeup-confirm {
+  margin-top: 32rpx;
+  padding: 24rpx;
+  background: rgba(0, 122, 255, 0.05);
+  border-radius: 16rpx;
+  transform: translateY(20rpx);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.makeup-confirm.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.confirm-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.points-icon {
+  font-size: 36rpx;
+}
+
+.points-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.points-text {
+  color: #1D1D1F;
+  font-size: 28rpx;
+  font-family: -apple-system, 'SF Pro Text';
+}
+
+.points-available {
+  color: #86868B;
+  font-size: 24rpx;
+  font-family: -apple-system, 'SF Pro Text';
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #0A84FF 0%, #0066FF 100%);
+  color: white;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  font-family: -apple-system, 'SF Pro Text';
+  box-shadow: 0 4rpx 8rpx rgba(0, 102, 255, 0.2);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.confirm-button.button-hover {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 4rpx rgba(0, 102, 255, 0.1);
+}
+
+.confirm-button.disabled {
+  background: linear-gradient(135deg, #D1D1D6 0%, #C7C7CC 100%);
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: none;
+}
 .makeup-confirm {
   margin-top: 40rpx;
   padding-top: 30rpx;

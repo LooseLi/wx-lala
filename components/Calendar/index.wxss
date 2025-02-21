@@ -124,6 +124,8 @@ swiper-item {
   font-size: 28rpx;
   position: relative;
   margin: 0 auto;
+  /* 确保日期数字居中 */
+  text-align: center;
 }
 
 /* 日期状态样式 */
@@ -137,18 +139,11 @@ swiper-item {
 }
 
 .checked .day-content {
-  background: #007AFF;
-  color: white;
+  color: #007AFF;
 }
 
 .makeup .day-content {
-  background: #FF9500;
-  color: white;
-}
-
-.check-icon.makeup {
-  font-size: 20rpx;
-  font-weight: bold;
+  color: #007AFF;
 }
 
 .can-makeup .day-content {
@@ -172,11 +167,21 @@ swiper-item {
 }
 
 .check-icon {
-  font-size: 24rpx;
+  font-size: 20rpx;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  bottom: -2rpx;
+  right: -2rpx;
+  color: #007AFF;
+  /* 添加白色背景确保可见性 */
+  background: white;
+  border-radius: 50%;
+  width: 24rpx;
+  height: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 添加投影提高可见性 */
+  box-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 底部图例 */
@@ -206,7 +211,7 @@ swiper-item {
 }
 
 .legend-dot.makeup {
-  background: #FF9500;
+  background: #007AFF;
 }
 
 .legend-dot.can-makeup {

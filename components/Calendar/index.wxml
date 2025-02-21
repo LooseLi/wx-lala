@@ -27,30 +27,10 @@
         >
           <view class="day-content">
             <text>{{day.day}}</text>
-            <view wx:if="{{day.isChecked}}" class="check-icon {{day.isMakeup ? 'makeup' : ''}}">{{day.isMakeup ? '补' : '✓'}}</view>
+            <view wx:if="{{day.isChecked}}" class="check-icon">✓</view>
           </view>
         </view>
       </view>
     </swiper-item>
   </swiper>
-
-  <!-- 补签说明 -->
-  <view class="calendar-footer">
-    <view class="legend-item">
-      <view class="legend-dot checked"></view>
-      <text>已签到</text>
-    </view>
-    <view class="legend-item">
-      <view class="legend-dot makeup"></view>
-      <text>已补签</text>
-    </view>
-    <view class="legend-item">
-      <view class="legend-dot can-makeup"></view>
-      <text>可补签</text>
-    </view>
-    <view class="legend-item">
-      <view class="legend-dot disabled"></view>
-      <text>不可选</text>
-    </view>
-  </view>
 </view>

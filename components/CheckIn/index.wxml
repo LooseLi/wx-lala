@@ -32,8 +32,11 @@
   <view class="makeup-dialog" wx:if="{{showMakeupDialog}}">
     <view class="dialog-mask" bindtap="hideMakeupDialog" catchtouchmove="preventTouchMove"></view>
     <view class="dialog-content">
+      <!-- 下拉指示条 -->
+      <view class="dialog-indicator"></view>
+      
       <view class="dialog-header">
-        <text class="dialog-title">补签打卡</text>
+        <!-- <text class="dialog-title">补签打卡</text> -->
         <text class="dialog-subtitle">可补签近30天内未打卡的日期</text>
       </view>
       
@@ -47,14 +50,18 @@
       />
 
       <!-- 补签确认区域 -->
-      <view class="makeup-confirm" wx:if="{{selectedDate}}">
+      <view class="makeup-confirm {{selectedDate ? 'show' : ''}}">
         <view class="confirm-info">
-          <text>补签将消耗30积分</text>
-          <text class="points-available">可用积分：{{totalPoints}}</text>
+          <view class="points-icon">✨</view>
+          <view class="points-detail">
+            <text class="points-text">补签将消耗30积分</text>
+            <text class="points-available">可用积分：{{totalPoints}}</text>
+          </view>
         </view>
         <view class="confirm-button {{totalPoints >= 30 ? '' : 'disabled'}}" 
+              hover-class="button-hover"
               bindtap="handleMakeup">
-          确认补签
+          <text>确认补签</text>
         </view>
       </view>
     </view>

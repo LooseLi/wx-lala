@@ -135,7 +135,6 @@ Component({
           day: i,
           isToday: this.isSameDay(currentDate, today),
           isChecked: isChecked || isMakeup,
-          isMakeup: isMakeup,
           canMakeup: currentDate >= thirtyDaysAgo && currentDate < today && 
                     !this.isSameDay(currentDate, today) && 
                     !isChecked && !isMakeup,
