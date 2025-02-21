@@ -1,0 +1,209 @@
+.calendar-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 800rpx;
+}
+
+.calendar-body {
+  flex: 1;
+  width: 100%;
+}
+
+swiper {
+  height: 100%;
+}
+
+swiper-item {
+  height: 100%;
+}
+
+/* 日历头部 */
+.calendar-header {
+  margin-bottom: 20rpx;
+}
+
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  width: 100%;
+  max-width: 650rpx;
+}
+
+.arrow-left, .arrow-right {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007AFF;
+}
+
+.arrow-left::after {
+  content: '<';
+  font-size: 32rpx;
+}
+
+.arrow-right::after {
+  content: '>';
+  font-size: 32rpx;
+}
+
+.current-date {
+  font-size: 32rpx;
+  font-weight: 500;
+  margin: 0 40rpx;
+  text-align: center;
+}
+
+.arrow-left, .arrow-right {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+/* 星期表头 */
+.weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(70rpx, 1fr));
+  text-align: center;
+  padding: 20rpx 8rpx;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 650rpx;
+  box-sizing: border-box;
+}
+
+.weekday-item {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 日历主体 */
+.calendar-body {
+  width: 100%;
+  padding: 20rpx 0;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(70rpx, 1fr));
+  gap: 4rpx;
+  padding: 16rpx 8rpx;
+  background: #fff;
+  width: 100%;
+  max-width: 650rpx;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.day-item {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.day-content {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 28rpx;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* 日期状态样式 */
+.empty {
+  pointer-events: none;
+}
+
+.today .day-content {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007AFF;
+}
+
+.checked .day-content {
+  background: #007AFF;
+  color: white;
+}
+
+.can-makeup .day-content {
+  border: 1px solid rgba(0, 122, 255, 0.3);
+  color: #007AFF;
+}
+
+.can-makeup.selected .day-content {
+  background: rgba(0, 122, 255, 0.15);
+  border-color: #007AFF;
+  color: #007AFF;
+}
+
+.selected .day-content {
+  background: #007AFF;
+  color: white;
+}
+
+.disabled .day-content {
+  color: #ccc;
+}
+
+.check-icon {
+  font-size: 24rpx;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 底部图例 */
+.calendar-footer {
+  display: flex;
+  justify-content: center;
+  gap: 40rpx;
+  padding: 20rpx 0 10rpx;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.legend-dot.checked {
+  background: #007AFF;
+}
+
+.legend-dot.can-makeup {
+  border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+.legend-dot.disabled {
+  background: #ccc;
+}
+
+.legend-item text {
+  font-size: 24rpx;
+  color: #999;
+}

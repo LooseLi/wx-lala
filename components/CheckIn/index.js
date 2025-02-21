@@ -10,7 +10,10 @@ Component({
     isCheckedIn: false,
     continuousDays: 0,
     totalPoints: 0,
-    loading: false
+    loading: false,
+    showMakeupDialog: false,
+    selectedDate: null,
+    checkedDates: []
   },
 
   lifetimes: {
@@ -83,6 +86,7 @@ Component({
     },
 
     // 执行打卡
+    // 执行打卡
     async handleCheckIn() {
       if (this.data.isCheckedIn || this.data.loading) return
 
@@ -98,7 +102,8 @@ Component({
         if (res.result.success) {
           const {
             continuousDays,
-            rewards
+            rewards,
+            checkedDates
           } = res.result.data
 
           // 显示打卡成功动画和提示
@@ -122,7 +127,8 @@ Component({
           this.setData({
             isCheckedIn: true,
             continuousDays,
-            totalPoints: this.data.totalPoints + rewards.points
+            totalPoints: this.data.totalPoints + rewards.points,
+            checkedDates
           })
 
           // 触发父组件更新
@@ -143,6 +149,90 @@ Component({
         this.setData({
           loading: false
         })
+      }
+    },
+
+    // 显示补签弹窗
+    showMakeupDialog() {
+      this.setData({
+        showMakeupDialog: true,
+        selectedDate: null
+      })
+    },
+
+    // 隐藏补签弹窗
+    hideMakeupDialog() {
+      this.setData({
+        showMakeupDialog: false,
+        selectedDate: null
+      })
+    },
+
+    // 选择补签日期
+    onDateSelect(e) {
+      const { date } = e.detail
+      console.log('e',date);
+      this.setData({ selectedDate: date })
+    },
+
+    // 处理补签
+    async handleMakeup() {
+      if (!this.data.selectedDate || this.data.loading) return
+      
+      if (this.data.totalPoints < 30) {
+        wx.showToast({
+          title: '积分不足',
+          icon: 'none'
+        })
+        return
+      }
+
+      this.setData({ loading: true })
+
+      try {
+        const res = await wx.cloud.callFunction({
+          name: 'makeupCheckIn',
+          data: {
+            date: this.data.selectedDate
+          }
+        })
+
+        if (res.result.success) {
+          const {
+            continuousDays,
+            totalPoints,
+            checkedDates
+          } = res.result.data
+
+          wx.showToast({
+            title: '补签成功',
+            icon: 'success'
+          })
+
+          // 更新状态
+          this.setData({
+            showMakeupDialog: false,
+            continuousDays,
+            totalPoints,
+            checkedDates
+          })
+
+          // 触发父组件更新
+          this.triggerEvent('checkInSuccess', res.result.data)
+        } else {
+          wx.showToast({
+            title: res.result.message || '补签失败',
+            icon: 'none'
+          })
+        }
+      } catch (error) {
+        console.error('补签失败：', error)
+        wx.showToast({
+          title: '补签失败，请重试',
+          icon: 'none'
+        })
+      } finally {
+        this.setData({ loading: false })
       }
     }
   }

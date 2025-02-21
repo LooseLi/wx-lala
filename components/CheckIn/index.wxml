@@ -10,9 +10,49 @@
         <text class="points-text">积分</text>
       </view>
     </view>
-    <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" hover-class="button-hover" bindtap="handleCheckIn">
-      <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
-      <text wx:else>已打卡</text>
+    <view class="button-group">
+      <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" 
+            hover-class="button-hover" 
+            bindtap="handleCheckIn">
+        <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
+        <text wx:else>已打卡</text>
+      </view>
+      <view class="makeup-button" 
+            hover-class="button-hover" 
+            bindtap="showMakeupDialog">
+        补签
+      </view>
+    </view>
+  </view>
+
+  <!-- 补签弹窗 -->
+  <view class="makeup-dialog" wx:if="{{showMakeupDialog}}">
+    <view class="dialog-mask" bindtap="hideMakeupDialog"></view>
+    <view class="dialog-content">
+      <view class="dialog-header">
+        <text class="dialog-title">补签打卡</text>
+        <text class="dialog-subtitle">可补签近30天内未打卡的日期</text>
+      </view>
+      
+      <!-- 日历组件 -->
+      <calendar 
+        class="makeup-calendar"
+        checkedDates="{{checkedDates}}" 
+        selectedDate="{{selectedDate}}"
+        bind:dateSelect="onDateSelect"
+      />
+
+      <!-- 补签确认区域 -->
+      <view class="makeup-confirm" wx:if="{{selectedDate}}">
+        <view class="confirm-info">
+          <text>补签将消耗30积分</text>
+          <text class="points-available">可用积分：{{totalPoints}}</text>
+        </view>
+        <view class="confirm-button {{totalPoints >= 30 ? '' : 'disabled'}}" 
+              bindtap="handleMakeup">
+          确认补签
+        </view>
+      </view>
     </view>
   </view>
 </view>

@@ -1,0 +1,52 @@
+<view class="calendar-container">
+  <!-- 日历头部 -->
+  <view class="calendar-header">
+    <view class="header-wrap">
+      <view class="arrow-left" bindtap="prevMonth"></view>
+      <view class="current-date">{{year}}年{{month}}月</view>
+      <view class="arrow-right" bindtap="nextMonth"></view>
+    </view>
+    <!-- 星期表头 -->
+    <view class="weekday-header">
+      <view wx:for="{{weekdays}}" wx:key="*this" class="weekday-item">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 日历主体 -->
+  <swiper class="calendar-body" current="{{currentMonthIndex}}" bindchange="onSwiperChange">
+    <swiper-item wx:for="{{months}}" wx:key="index">
+      <view class="days-grid">
+        <view 
+          wx:for="{{item.days}}" 
+          wx:key="dayIndex" 
+          wx:for-item="day"
+          wx:for-index="dayIndex"
+          class="day-item {{day.isEmpty ? 'empty' : ''}} {{day.isToday ? 'today' : ''}} {{day.isChecked ? 'checked' : ''}} {{day.canMakeup ? 'can-makeup' : ''}} {{day.isSelected ? 'selected' : ''}} {{day.isDisabled ? 'disabled' : ''}}"
+          data-date="{{day.date}}"
+          bindtap="{{!day.isEmpty ? 'selectDate' : ''}}"
+        >
+          <view class="day-content">
+            <text>{{day.day}}</text>
+            <view wx:if="{{day.isChecked}}" class="check-icon">✓</view>
+          </view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 补签说明 -->
+  <view class="calendar-footer">
+    <view class="legend-item">
+      <view class="legend-dot checked"></view>
+      <text>已签到</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-dot can-makeup"></view>
+      <text>可补签</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-dot disabled"></view>
+      <text>不可选</text>
+    </view>
+  </view>
+</view>
