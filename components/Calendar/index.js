@@ -26,32 +26,49 @@ Component({
 
   methods: {
     async initCalendar() {
-      const now = new Date()
-      const currentYear = now.getFullYear()
-      const currentMonth = now.getMonth() + 1
-
-      // 获取当前月和上个月的签到数据
-      await this.getMonthCheckInData(currentYear, currentMonth)
-      
-      // 计算上个月的年和月
-      let prevYear = currentYear
-      let prevMonth = currentMonth - 1
-      if (prevMonth === 0) {
-        prevYear--
-        prevMonth = 12
-      }
-      await this.getMonthCheckInData(prevYear, prevMonth)
-
-      // 生成月份数据
-      const currentMonthData = this.generateMonthData(currentYear, currentMonth)
-      const prevMonthData = this.generateMonthData(prevYear, prevMonth)
-
-      this.setData({
-        year: currentYear,
-        month: currentMonth,
-        months: [prevMonthData, currentMonthData],
-        currentMonthIndex: 1  // 默认显示当前月
+      // 显示加载提示
+      wx.showLoading({
+        title: '加载中...',
+        mask: true
       })
+
+      try {
+        const now = new Date()
+        const currentYear = now.getFullYear()
+        const currentMonth = now.getMonth() + 1
+
+        // 获取当前月和上个月的签到数据
+        await this.getMonthCheckInData(currentYear, currentMonth)
+        
+        // 计算上个月的年和月
+        let prevYear = currentYear
+        let prevMonth = currentMonth - 1
+        if (prevMonth === 0) {
+          prevYear--
+          prevMonth = 12
+        }
+        await this.getMonthCheckInData(prevYear, prevMonth)
+
+        // 生成月份数据
+        const currentMonthData = this.generateMonthData(currentYear, currentMonth)
+        const prevMonthData = this.generateMonthData(prevYear, prevMonth)
+
+        this.setData({
+          year: currentYear,
+          month: currentMonth,
+          months: [prevMonthData, currentMonthData],
+          currentMonthIndex: 1  // 默认显示当前月
+        })
+      } catch (error) {
+        console.error('初始化日历失败:', error)
+        wx.showToast({
+          title: '加载失败，请重试',
+          icon: 'none'
+        })
+      } finally {
+        // 关闭加载提示
+        wx.hideLoading()
+      }
     },
 
     async getMonthCheckInData(year, month) {
