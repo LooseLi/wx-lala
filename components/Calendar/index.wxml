@@ -2,9 +2,11 @@
   <!-- 日历头部 -->
   <view class="calendar-header">
     <view class="header-wrap">
-      <view class="arrow-left" bindtap="prevMonth"></view>
-      <view class="current-date">{{year}}年{{month}}月</view>
-      <view class="arrow-right" bindtap="nextMonth"></view>
+      <view class="date-navigator">
+        <view class="arrow-left" bindtap="prevMonth"></view>
+        <view class="current-date">{{year}}年{{month}}月</view>
+        <view class="arrow-right" bindtap="nextMonth"></view>
+      </view>
     </view>
     <!-- 星期表头 -->
     <view class="weekday-header">

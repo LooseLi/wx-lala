@@ -30,10 +30,18 @@ swiper-item {
 .header-wrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 20rpx 0;
   width: 100%;
-  max-width: 650rpx;
+  box-sizing: border-box;
+}
+
+.date-navigator {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  width: 400rpx;  /* 限制整体宽度 */
+  justify-content: space-between; /* 两端对齐 */
 }
 
 .arrow-left, .arrow-right {
@@ -74,9 +82,10 @@ swiper-item {
 /* 星期表头 */
 .weekday-header {
   display: grid;
-  grid-template-columns: repeat(7, minmax(70rpx, 1fr));
+  grid-template-columns: repeat(7, 1fr);
+  margin: 0 auto;
   text-align: center;
-  padding: 20rpx 8rpx;
+  padding: 20rpx 40rpx;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 650rpx;
@@ -96,9 +105,9 @@ swiper-item {
 
 .days-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(70rpx, 1fr));
+  grid-template-columns: repeat(7, 1fr);
   gap: 4rpx;
-  padding: 16rpx 8rpx;
+  padding: 0 40rpx;
   background: #fff;
   width: 100%;
   max-width: 650rpx;
