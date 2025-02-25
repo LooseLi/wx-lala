@@ -85,7 +85,7 @@ swiper-item {
   grid-template-columns: repeat(7, 1fr);
   margin: 0 auto;
   text-align: center;
-  padding: 20rpx 40rpx;
+  padding: 20rpx 20rpx;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 650rpx;
@@ -107,7 +107,7 @@ swiper-item {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4rpx;
-  padding: 0 40rpx;
+  padding: 0 20rpx;
   background: #fff;
   width: 100%;
   max-width: 650rpx;
