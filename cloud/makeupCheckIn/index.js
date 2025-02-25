@@ -7,25 +7,61 @@ const _ = db.command
 const calculateContinuousDays = (dates, targetDate) => {
   // 确保所有日期都是 YYYY-MM-DD 格式的字符串
   const sortedDates = [...dates, targetDate].sort()
-  let maxContinuous = 1
-  let currentContinuous = 1
-  let lastDate = new Date(sortedDates[0])
-
-  for (let i = 1; i < sortedDates.length; i++) {
-    const currentDate = new Date(sortedDates[i])
-    const dayDiff = Math.floor((currentDate - lastDate) / (24 * 60 * 60 * 1000))
+  
+  // 获取今天的日期字符串
+  const now = new Date()
+  const todayStr = now.toISOString().split('T')[0]
+  
+  // 获取最后一次打卡日期
+  const lastCheckInDate = sortedDates[sortedDates.length - 1]
+  
+  // 如果今天已打卡，从今天往前数
+  if (lastCheckInDate === todayStr) {
+    let continuous = 1
+    let lastDate = now
     
-    if (dayDiff === 1) {
-      currentContinuous++
-      maxContinuous = Math.max(maxContinuous, currentContinuous)
-    } else {
-      currentContinuous = 1
+    for (let i = sortedDates.length - 2; i >= 0; i--) {
+      const currentDate = new Date(sortedDates[i])
+      const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000))
+      
+      if (dayDiff === 1) {
+        continuous++
+        lastDate = currentDate
+      } else {
+        break
+      }
     }
+    return continuous
+  } 
+  // 如果今天未打卡，看是否是昨天
+  else {
+    const yesterday = new Date(now)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toISOString().split('T')[0]
     
-    lastDate = currentDate
+    // 如果最后打卡日期是昨天，就从昨天开始数
+    if (lastCheckInDate === yesterdayStr) {
+      let continuous = 1
+      let lastDate = yesterday
+      
+      for (let i = sortedDates.length - 2; i >= 0; i--) {
+        const currentDate = new Date(sortedDates[i])
+        const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000))
+        
+        if (dayDiff === 1) {
+          continuous++
+          lastDate = currentDate
+        } else {
+          break
+        }
+      }
+      return continuous
+    } 
+    // 如果最后打卡日期不是昨天，说明连续中断了
+    else {
+      return 0
+    }
   }
-
-  return maxContinuous
 }
 
 exports.main = async (event, context) => {

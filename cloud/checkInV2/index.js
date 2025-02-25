@@ -35,14 +35,19 @@ exports.main = async (event, context) => {
     if (userStatus.data.length > 0) {
       const lastStatus = userStatus.data[0]
       const lastCheckIn = new Date(lastStatus.lastCheckIn)
-      const yesterday = new Date(now)
-      yesterday.setDate(yesterday.getDate() - 1)
+      
+      // 计算最后打卡日期和今天的天数差
+      const diffTime = now.getTime() - lastCheckIn.getTime()
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
-      // 判断是否连续签到
-      if (lastCheckIn.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
+      // 判断是否连续签到（只差一天）
+      if (diffDays === 1) {
         continuousDays = lastStatus.continuousDays + 1
         // 连续签到额外积分
         points += Math.min(Math.floor(continuousDays / 7) * 5, 20)
+      } else {
+        // 如果间隔超过一天，重置连续天数为1
+        continuousDays = 1
       }
     }
 
