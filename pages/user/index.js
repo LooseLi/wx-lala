@@ -22,7 +22,8 @@ Page({
       time: ''
     },
     todoTitle: '',
-    todoTime: ''
+    todoTime: '',
+    dialogAnimation: false
   },
 
   // 打卡成功的回调
@@ -327,6 +328,13 @@ Page({
       showNicknameEdit: true,
       editingNickname: this.data.nickname
     })
+    
+    // 添加延迟，确保动画效果顺畅
+    setTimeout(() => {
+      this.setData({
+        dialogAnimation: true
+      })
+    }, 50)
   },
 
   // 关闭昵称编辑
@@ -339,8 +347,9 @@ Page({
 
   // 昵称输入事件
   onNicknameInput(e) {
+    const value = e.detail.value
     this.setData({
-      editingNickname: e.detail.value
+      editingNickname: value
     })
   },
 
@@ -352,6 +361,11 @@ Page({
         title: '昵称不能为空',
         icon: 'none'
       })
+      return
+    }
+    
+    if (nickname === this.data.nickname) {
+      this.closeNicknameEdit()
       return
     }
 

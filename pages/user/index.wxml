@@ -20,16 +20,19 @@
     </view>
 
     <!-- 编辑昵称弹窗 -->
-    <view class="edit-dialog" wx:if="{{showNicknameEdit}}">
+    <view class="edit-dialog {{showNicknameEdit ? 'show' : ''}}" wx:if="{{showNicknameEdit}}">
       <view class="mask" bindtap="closeNicknameEdit"></view>
       <view class="dialog-content">
         <view class="dialog-header">编辑昵称</view>
         <view class="dialog-body">
-          <input type="text" value="{{editingNickname}}" bindinput="onNicknameInput" placeholder="请输入新的昵称" maxlength="12" />
+          <view class="input-container">
+            <input type="text" value="{{editingNickname}}" bindinput="onNicknameInput" placeholder="请输入新的昵称" maxlength="12" focus="{{showNicknameEdit}}" />
+            <text class="char-counter">{{editingNickname.length}}/12</text>
+          </view>
         </view>
         <view class="dialog-footer">
-          <button bindtap="closeNicknameEdit">取消</button>
-          <button type="primary" bindtap="saveNickname">保存</button>
+          <button class="cancel-btn" hover-class="button-hover" bindtap="closeNicknameEdit">取消</button>
+          <button class="confirm-btn" hover-class="button-hover" bindtap="saveNickname">保存</button>
         </view>
       </view>
     </view>

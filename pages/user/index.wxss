@@ -146,6 +146,15 @@ view {
   right: 0;
   bottom: 0;
   z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.edit-dialog.show {
+  opacity: 1;
 }
 
 .mask {
@@ -154,49 +163,111 @@ view {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .dialog-content {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 600rpx;
-  background: #fff;
-  border-radius: 12rpx;
+  position: relative;
+  width: 650rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
   overflow: hidden;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.edit-dialog.show .dialog-content {
+  transform: scale(1);
 }
 
 .dialog-header {
-  padding: 20rpx;
+  padding: 30rpx 20rpx;
   text-align: center;
-  font-size: 32rpx;
-  border-bottom: 1rpx solid #eee;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #000;
 }
 
 .dialog-body {
-  padding: 30rpx;
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5rpx;
+  background: rgba(142, 142, 147, 0.12);
+  border-radius: 14rpx;
+  padding: 0 15rpx;
 }
 
 .dialog-body input {
-  width: 100%;
-  height: 80rpx;
-  border: 1rpx solid #ddd;
-  border-radius: 8rpx;
-  padding: 0 20rpx;
-  font-size: 28rpx;
+  flex: 1;
+  height: 90rpx;
+  background: transparent;
+  padding: 0 10rpx;
+  font-size: 32rpx;
+  box-sizing: border-box;
+  color: #000;
+  border: none;
+}
+
+.char-counter {
+  font-size: 24rpx;
+  color: #8e8e93;
+  margin-left: 10rpx;
+  white-space: nowrap;
 }
 
 .dialog-footer {
   display: flex;
-  border-top: 1rpx solid #eee;
+  border-top: 0.5px solid rgba(60, 60, 67, 0.15);
 }
 
 .dialog-footer button {
   flex: 1;
   border-radius: 0;
   border: none;
+  background: transparent;
+  font-size: 32rpx;
+  padding: 24rpx 0;
+  margin: 0;
+  line-height: 1.2;
+  height: auto;
+  position: relative;
+}
+
+.dialog-footer button::after {
+  border: none;
+}
+
+.dialog-footer .cancel-btn {
+  color: #8e8e93;
+  font-weight: 400;
+}
+
+.dialog-footer .confirm-btn {
+  color: #007aff;
+  font-weight: 500;
+}
+
+.dialog-footer .confirm-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 0.5px;
+  background: rgba(60, 60, 67, 0.15);
+}
+
+.button-hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  opacity: 0.9;
 }
 
 .found {
