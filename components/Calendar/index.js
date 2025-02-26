@@ -57,7 +57,7 @@ Component({
           year: currentYear,
           month: currentMonth,
           months: [prevMonthData, currentMonthData],
-          currentMonthIndex: 1  // 默认显示当前月
+          currentMonthIndex: 1,  // 默认显示当前月
         })
       } catch (error) {
         console.error('初始化日历失败:', error)

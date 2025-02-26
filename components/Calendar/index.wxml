@@ -3,9 +3,9 @@
   <view class="calendar-header">
     <view class="header-wrap">
       <view class="date-navigator">
-        <view class="arrow-left" bindtap="prevMonth"></view>
+        <view class="arrow-left {{currentMonthIndex === 0 ? 'disabled' : ''}}" bindtap="{{currentMonthIndex === 0 ? '' : 'prevMonth'}}"></view>
         <view class="current-date">{{year}}年{{month}}月</view>
-        <view class="arrow-right" bindtap="nextMonth"></view>
+        <view class="arrow-right {{currentMonthIndex === 1 ? 'disabled' : ''}}" bindtap="{{currentMonthIndex === 1 ? '' : 'nextMonth'}}"></view>
       </view>
     </view>
     <!-- 星期表头 -->

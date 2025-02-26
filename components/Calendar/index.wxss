@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 800rpx;
+  height: 700rpx;
 }
 
 .calendar-body {
@@ -24,14 +24,14 @@ swiper-item {
 
 /* 日历头部 */
 .calendar-header {
-  margin-bottom: 20rpx;
+  margin-bottom: 10rpx;
 }
 
 .header-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20rpx 0;
+  padding: 15rpx 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -50,7 +50,12 @@ swiper-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #007AFF;
+  color: #666;
+}
+
+.arrow-left.disabled, .arrow-right.disabled {
+  opacity: 0.3;
+  color: #ccc;
 }
 
 .arrow-left::after {
@@ -70,22 +75,13 @@ swiper-item {
   text-align: center;
 }
 
-.arrow-left, .arrow-right {
-  width: 60rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-}
-
 /* 星期表头 */
 .weekday-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin: 0 auto;
   text-align: center;
-  padding: 20rpx 20rpx;
+  padding: 10rpx 20rpx;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 650rpx;
@@ -100,13 +96,13 @@ swiper-item {
 /* 日历主体 */
 .calendar-body {
   width: 100%;
-  padding: 20rpx 0;
+  padding: 10rpx 0;
 }
 
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4rpx;
+  gap: 2rpx;
   padding: 0 20rpx;
   background: #fff;
   width: 100%;
@@ -124,13 +120,13 @@ swiper-item {
 }
 
 .day-content {
-  width: 64rpx;
-  height: 64rpx;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 28rpx;
+  font-size: 26rpx;
   position: relative;
   margin: 0 auto;
   /* 确保日期数字居中 */
@@ -176,7 +172,7 @@ swiper-item {
 }
 
 .check-icon {
-  font-size: 20rpx;
+  font-size: 18rpx;
   position: absolute;
   bottom: -2rpx;
   right: -2rpx;
