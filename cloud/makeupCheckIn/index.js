@@ -207,7 +207,7 @@ exports.main = async (event, context) => {
       return {
         success: true,
         data: {
-          totalPoints: newPoints.data[0].currentPoints,
+          currentPoints: newPoints.data[0].currentPoints,
           continuousDays: newContinuousDays,
           checkedDates: [...allDates, date].sort()
         }

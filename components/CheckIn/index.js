@@ -9,7 +9,7 @@ Component({
   data: {
     isCheckedIn: false,
     continuousDays: 0,
-    totalPoints: 0,
+    currentPoints: 0,
     loading: false,
     showMakeupDialog: false,
     selectedDate: null,
@@ -39,7 +39,7 @@ Component({
         this.setData({
           isCheckedIn: true,
           continuousDays: data.continuousDays || 0,
-          totalPoints: data.totalPoints || 0
+          currentPoints: data.currentPoints || 0
         })
       }
     }
@@ -73,7 +73,7 @@ Component({
           this.setData({
             isCheckedIn: result.data.isCheckedIn,
             continuousDays: result.data.continuousDays,
-            totalPoints: result.data.totalPoints
+            currentPoints: result.data.currentPoints
           })
         } else {
           throw new Error(result.error || '查询失败')
@@ -89,7 +89,6 @@ Component({
       }
     },
 
-    // 执行打卡
     // 执行打卡
     async handleCheckIn() {
       if (this.data.isCheckedIn || this.data.loading) return
@@ -119,7 +118,7 @@ Component({
           this.setData({
             isCheckedIn: true,
             continuousDays,
-            totalPoints: this.data.totalPoints + rewards.points
+            currentPoints: this.data.currentPoints + rewards.points
           })
 
           // 触发父组件更新
@@ -183,7 +182,7 @@ Component({
     async handleMakeup() {
       if (!this.data.selectedDate || this.data.loading) return
       
-      if (this.data.totalPoints < 30) {
+      if (this.data.currentPoints < 30) {
         wx.showToast({
           title: '积分不足，补签需要30积分',
           icon: 'none'
@@ -213,7 +212,7 @@ Component({
           this.setData({
             showMakeupDialog: false,
             continuousDays: data.continuousDays || this.data.continuousDays,
-            totalPoints: data.totalPoints || this.data.totalPoints,
+            currentPoints: data.currentPoints || this.data.currentPoints,
             checkedDates: data.checkedDates || []
           })
 
@@ -221,9 +220,12 @@ Component({
           this.triggerEvent('checkInSuccess', {
             continuousDays: data.continuousDays || this.data.continuousDays,
             rewards: {
-              points: data.totalPoints - this.data.totalPoints // 积分变化
+              points: data.currentPoints - this.data.currentPoints // 积分变化
             }
           })
+          
+          // 刷新日历组件
+          this.triggerEvent('refreshCalendar')
         } else {
           wx.showToast({
             title: res.result.message || '补签失败',

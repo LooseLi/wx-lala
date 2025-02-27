@@ -129,7 +129,7 @@ exports.main = async (event, context) => {
         isCheckedIn,
         continuousDays,
         currentStreak,
-        totalPoints: pointsRecord.data.length > 0 ? 
+        currentPoints: pointsRecord.data.length > 0 ? 
           pointsRecord.data[0].currentPoints : 0
       }
     }

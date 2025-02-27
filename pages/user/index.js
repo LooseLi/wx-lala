@@ -23,13 +23,19 @@ Page({
     },
     todoTitle: '',
     todoTime: '',
-    dialogAnimation: false
+    dialogAnimation: false,
+    checkInData: null
   },
 
   // 打卡成功的回调
   onCheckInSuccess(e) {
     const checkInData = e.detail
     console.log('打卡成功：', checkInData)
+    
+    // 如果需要，可以在这里更新页面上的其他数据
+    this.setData({
+      checkInData: checkInData
+    })
   },
 
   // 点击事件
