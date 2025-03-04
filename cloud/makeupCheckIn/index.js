@@ -101,7 +101,7 @@ exports.main = async (event, context) => {
       }
     }
 
-    // 3. 检查并扣除积分
+    // 3. 检查积分是否足够（只检查，不扣除）
     const userPoints = await db.collection('userPoints')
       .where({ userId })
       .get()
@@ -117,17 +117,7 @@ exports.main = async (event, context) => {
     const transaction = await db.startTransaction()
     
     try {
-      // 4.1 扣除积分
-      await transaction.collection('userPoints')
-        .where({ userId })
-        .update({
-          data: {
-            currentPoints: _.inc(-30),
-            updatedAt: db.serverDate()
-          }
-        })
-
-      // 4.2 添加补签记录
+      // 4.1 添加补签记录（原来是第4.2步，现在提前）
       let monthRecord = await transaction.collection('checkInMonthly')
         .where({
           userId,
@@ -191,7 +181,17 @@ exports.main = async (event, context) => {
           }
         })
 
-      // 7. 获取更新后的数据
+      // 7. 扣除积分（移动到最后执行）
+      await transaction.collection('userPoints')
+        .where({ userId })
+        .update({
+          data: {
+            currentPoints: _.inc(-30),
+            updatedAt: db.serverDate()
+          }
+        })
+
+      // 8. 获取更新后的数据
       const [newPoints, userStatus] = await Promise.all([
         transaction.collection('userPoints')
           .where({ userId })
@@ -201,7 +201,7 @@ exports.main = async (event, context) => {
           .get()
       ])
 
-      // 8. 提交事务
+      // 9. 提交事务
       await transaction.commit()
 
       return {

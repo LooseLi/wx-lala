@@ -209,18 +209,22 @@ Component({
           })
 
           // 更新状态
+          // 补签固定扣除 30 积分
+          const newPoints = this.data.currentPoints - 30;
           this.setData({
             showMakeupDialog: false,
             continuousDays: data.continuousDays || this.data.continuousDays,
-            currentPoints: data.currentPoints || this.data.currentPoints,
+            currentPoints: newPoints,
             checkedDates: data.checkedDates || []
           })
 
           // 触发父组件更新，使用与 handleCheckIn 相同的数据格式
+          // 注意：补签会扣除积分，所以积分变化应该是负值
+          const pointsChange = -30; // 补签固定扣除 30 积分
           this.triggerEvent('checkInSuccess', {
             continuousDays: data.continuousDays || this.data.continuousDays,
             rewards: {
-              points: data.currentPoints - this.data.currentPoints // 积分变化
+              points: pointsChange
             }
           })
           
