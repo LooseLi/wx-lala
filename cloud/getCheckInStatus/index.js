@@ -88,10 +88,7 @@ exports.main = async (event, context) => {
       db.collection('checkInMonthly').where({ userId, yearMonth: lastYearMonth }).get()
     ])
 
-    // 2. 获取用户状态
-    const userStatus = await db.collection('userCheckInStatus')
-      .where({ userId })
-      .get()
+    // 2. 用户状态获取逻辑已移除（userCheckInStatus集合已删除）
 
     // 3. 获取用户积分
     const pointsRecord = await db.collection('userPoints')
@@ -120,8 +117,8 @@ exports.main = async (event, context) => {
     }
     
     const continuousDays = calculateContinuousDays(allDates)
-    const status = userStatus.data[0] || {}
-    const currentStreak = status.currentStreak || { startDate: '', endDate: '' }
+    // userCheckInStatus集合已删除，使用默认值
+    const currentStreak = { startDate: '', endDate: '' }
 
     return {
       success: true,

@@ -169,17 +169,7 @@ exports.main = async (event, context) => {
       // 计算新的连续签到天数
       const newContinuousDays = calculateContinuousDays(allDates, date)
 
-      // 6. 更新用户签到状态
-      await transaction.collection('userCheckInStatus')
-        .where({ userId })
-        .update({
-          data: {
-            continuousDays: newContinuousDays,
-            lastCheckIn: date,
-            totalCheckIns: _.inc(1),
-            updatedAt: db.serverDate()
-          }
-        })
+      // 6. 用户状态更新逻辑已移除（userCheckInStatus集合已删除）
 
       // 7. 扣除积分（移动到最后执行）
       await transaction.collection('userPoints')
@@ -192,14 +182,9 @@ exports.main = async (event, context) => {
         })
 
       // 8. 获取更新后的数据
-      const [newPoints, userStatus] = await Promise.all([
-        transaction.collection('userPoints')
-          .where({ userId })
-          .get(),
-        transaction.collection('userCheckInStatus')
-          .where({ userId })
-          .get()
-      ])
+      const newPoints = await transaction.collection('userPoints')
+        .where({ userId })
+        .get()
 
       // 9. 提交事务
       await transaction.commit()

@@ -75,7 +75,6 @@ exports.main = async (event, context) => {
   const dateStr = now.toISOString().split('T')[0]
 
   const checkInMonthly = db.collection('checkInMonthly')
-  const userCheckInStatus = db.collection('userCheckInStatus')
   const userPoints = db.collection('userPoints')
 
   try {
@@ -90,8 +89,7 @@ exports.main = async (event, context) => {
       return { success: false, message: '今日已打卡' }
     }
 
-    // 2. 获取用户状态和所有打卡记录
-    let userStatus = await userCheckInStatus.where({ userId }).get()
+    // 2. 获取所有打卡记录
     let points = 10 // 基础积分
     
     // 获取所有月份的打卡记录
@@ -147,35 +145,7 @@ exports.main = async (event, context) => {
       })
     }
 
-    // 4. 更新用户状态
-    if (userStatus.data.length === 0) {
-      await userCheckInStatus.add({
-        data: {
-          userId,
-          continuousDays,
-          totalCheckIns: 1,
-          lastCheckIn: dateStr,
-          currentStreak: {
-            startDate: dateStr,
-            endDate: dateStr
-          },
-          updatedAt: now
-        }
-      })
-    } else {
-      await userCheckInStatus.where({ userId }).update({
-        data: {
-          continuousDays,
-          totalCheckIns: _.inc(1),
-          lastCheckIn: dateStr,
-          currentStreak: {
-            startDate: continuousDays === 1 ? dateStr : userStatus.data[0].currentStreak.startDate,
-            endDate: dateStr
-          },
-          updatedAt: now
-        }
-      })
-    }
+    // 4. 用户状态更新逻辑已移除（userCheckInStatus集合已删除）
 
     // 5. 更新用户积分
     const pointsResult = await userPoints.where({ userId }).get()
