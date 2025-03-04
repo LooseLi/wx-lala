@@ -3,6 +3,69 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 
+// 计算连续签到天数
+const calculateContinuousDays = (dates) => {
+  if (!dates || dates.length === 0) return 0
+  
+  // 按日期排序
+  const sortedDates = [...dates].sort()
+  
+  // 获取今天的日期字符串
+  const now = new Date()
+  const todayStr = now.toISOString().split('T')[0]
+  
+  // 获取最后一次打卡日期
+  const lastCheckInDate = sortedDates[sortedDates.length - 1]
+  
+  // 如果今天已打卡，从今天往前数
+  if (lastCheckInDate === todayStr) {
+    let continuous = 1
+    let lastDate = now
+    
+    for (let i = sortedDates.length - 2; i >= 0; i--) {
+      const currentDate = new Date(sortedDates[i])
+      const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000))
+      
+      if (dayDiff === 1) {
+        continuous++
+        lastDate = currentDate
+      } else {
+        break
+      }
+    }
+    return continuous
+  } 
+  // 如果今天未打卡，看是否是昨天
+  else {
+    const yesterday = new Date(now)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toISOString().split('T')[0]
+    
+    // 如果最后打卡日期是昨天，就从昨天开始数
+    if (lastCheckInDate === yesterdayStr) {
+      let continuous = 1
+      let lastDate = yesterday
+      
+      for (let i = sortedDates.length - 2; i >= 0; i--) {
+        const currentDate = new Date(sortedDates[i])
+        const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000))
+        
+        if (dayDiff === 1) {
+          continuous++
+          lastDate = currentDate
+        } else {
+          break
+        }
+      }
+      return continuous
+    } 
+    // 如果最后打卡日期不是昨天，说明连续中断了
+    else {
+      return 0
+    }
+  }
+}
+
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const userId = wxContext.OPENID
@@ -27,28 +90,31 @@ exports.main = async (event, context) => {
       return { success: false, message: '今日已打卡' }
     }
 
-    // 2. 获取用户状态
+    // 2. 获取用户状态和所有打卡记录
     let userStatus = await userCheckInStatus.where({ userId }).get()
-    let continuousDays = 1
     let points = 10 // 基础积分
-
-    if (userStatus.data.length > 0) {
-      const lastStatus = userStatus.data[0]
-      const lastCheckIn = new Date(lastStatus.lastCheckIn)
-      
-      // 计算最后打卡日期和今天的天数差
-      const diffTime = now.getTime() - lastCheckIn.getTime()
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-
-      // 判断是否连续签到（只差一天）
-      if (diffDays === 1) {
-        continuousDays = lastStatus.continuousDays + 1
-        // 连续签到额外积分
-        points += Math.min(Math.floor(continuousDays / 7) * 5, 20)
-      } else {
-        // 如果间隔超过一天，重置连续天数为1
-        continuousDays = 1
-      }
+    
+    // 获取所有月份的打卡记录
+    const allMonthlyRecords = await checkInMonthly.where({ userId }).get()
+    
+    // 获取所有打卡日期
+    const allDates = allMonthlyRecords.data.reduce((acc, month) => {
+      const dates = month.checkInDays.map(d => 
+        `${month.yearMonth}-${String(d).padStart(2, '0')}`
+      )
+      return [...acc, ...dates]
+    }, [])
+    
+    // 添加今天的日期（因为还未更新到数据库）
+    const allDatesWithToday = [...allDates, dateStr]
+    
+    // 使用统一的方法计算连续天数
+    const continuousDays = calculateContinuousDays(allDatesWithToday)
+    
+    // 计算额外积分
+    if (continuousDays > 1) {
+      // 连续签到额外积分
+      points += Math.min(Math.floor(continuousDays / 7) * 5, 20)
     }
 
     // 3. 更新月度记录
