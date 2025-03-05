@@ -32,7 +32,7 @@
           <view class="holiday-name">今天是 {{nowHoliday.id}}</view>
           <view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
           <view wx:else class="holiday-time">{{nowHoliday.begin}} - {{nowHoliday.end}}</view>
-          <view class="holiday-content">{{nowHoliday.content}}</view>
+          <view class="holiday-content greeting-text {{!hasShownAnimation ? 'animate-fade-in' : ''}}">{{nowHoliday.content}}</view>
         </view>
       </view>
     </view>

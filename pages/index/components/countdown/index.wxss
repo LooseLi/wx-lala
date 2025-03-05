@@ -127,8 +127,38 @@ page {
 
 .holiday-content {
   color: #8E8E93;
-  margin-top: 6px;
+  /* margin-top: 6px; */
   font-size: 13px;
+}
+
+/* 祝福语渐变文字样式 */
+.greeting-text {
+  font-size: 15px;
+  font-weight: 500;
+  background-image: linear-gradient(to right, #36B4FF, #1E90FF, #5A6CFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding: 4px 0;
+  /* margin-top: 8px; */
+}
+
+/* 淡入动画效果 */
+.animate-fade-in {
+  animation: fadeIn 1s 500ms ease-out;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .holiday-name {

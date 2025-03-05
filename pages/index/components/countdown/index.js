@@ -19,7 +19,8 @@ Page({
     content: '',
     type: 'add', // 新增还是修改,
     id: '',
-    activeTab: 'current' // 当前激活的标签页：current或upcoming
+    activeTab: 'current', // 当前激活的标签页：current或upcoming
+    hasShownAnimation: false // 是否已经显示过动画
   },
 
   // 节假日
@@ -209,6 +210,13 @@ Page({
   onLoad: async function (options) {
     await this.getCountdownDay();
     this.handleHolidays();
+    
+    // 设置延时，在动画结束后标记为已显示过动画
+    setTimeout(() => {
+      this.setData({
+        hasShownAnimation: true
+      });
+    }, 1500); // 与动画时间一致
   },
 
   /**
