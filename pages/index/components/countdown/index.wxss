@@ -5,7 +5,8 @@ page {
   font-size: 14px;
   line-height: 1.4;
   padding-bottom: 20px;
-  padding-top: 44px; /* 为导航栏预留空间 */
+  padding-top: 44px;
+  /* 为导航栏预留空间 */
 }
 
 .weui-half-screen-dialog_large {
@@ -16,15 +17,61 @@ page {
   background-color: #F2F2F7;
 }
 
+.weui-half-screen-dialog__hd {
+  display: flex;
+  align-items: center;
+  padding: 8px 24px;
+  position: relative;
+}
+
 .wrap {
   margin-top: 0;
 }
 
 /* 对话框标题样式 */
+.weui-half-screen-dialog__hd__side {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ios-close-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.ios-close-icon {
+  position: absolute;
+  top: 50%;
+  /* 置于垂直中心偏上一点 */
+  left: 50%;
+  right: 0;
+  font-size: 20px;
+  color: #666;
+  text-align: center;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  /* 微调垂直位置 */
+}
+
+.weui-half-screen-dialog__hd__main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .weui-half-screen-dialog__title {
   font-size: 17px;
   font-weight: 600;
   color: #000;
+  text-align: center;
 }
 
 /* 对话框输入框样式 */
@@ -155,6 +202,7 @@ page {
     opacity: 0;
     transform: translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -232,7 +280,8 @@ page {
 }
 
 .ios-status-bar {
-  height: 20px; /* 状态栏高度 */
+  height: 20px;
+  /* 状态栏高度 */
 }
 
 .ios-action-content {
@@ -274,7 +323,8 @@ page {
 /* 分段控制器样式 */
 .ios-segment-container {
   padding: 16px 16px 8px;
-  margin-top: 56px; /* 减小与添加按钮的间距 */
+  margin-top: 56px;
+  /* 减小与添加按钮的间距 */
 }
 
 .ios-segment-control {
