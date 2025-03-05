@@ -18,7 +18,8 @@ Page({
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
     content: '',
     type: 'add', // 新增还是修改,
-    id: ''
+    id: '',
+    activeTab: 'current' // 当前激活的标签页：current或upcoming
   },
 
   // 节假日
@@ -109,12 +110,13 @@ Page({
 
   add() {
     // const formatDate = this.data.date.replace(/-/g, '/');
+    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
     countdownDay.add({
       data: {
         id: this.data.name,
-        beginDate: `${this.data.date}`,
-        endDate: `${this.data.date}`,
-        today: `${this.data.date}`,
+        beginDate: date,
+        endDate: date,
+        today: date,
         canEdit: true,
         days: 1,
         content: this.data.content,
@@ -130,12 +132,13 @@ Page({
 
   update() {
     // const formatDate = this.data.date.replace(/-/g, '/');
+    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
     countdownDay.doc(this.data.id).update({
       data: {
         id: this.data.name,
-        beginDate: `${this.data.date}`,
-        endDate: `${this.data.date}`,
-        today: `${this.data.date}`,
+        beginDate: date,
+        endDate: date,
+        today: date,
         content: this.data.content,
       },
       success: async (res) => {
@@ -255,5 +258,13 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+
+  // 切换标签页
+  switchTab: function (e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({
+      activeTab: tab
+    });
   }
 })

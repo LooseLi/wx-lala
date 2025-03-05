@@ -1,51 +1,112 @@
 <view class="wrap">
-  <view class="add-wrap">
-    <image src="../images/anniversary/icon-add.png" bindtap="onAdd"></image>
+  <!-- 简化的添加按钮区域 -->
+  <view class="ios-action-bar">
+    <view class="ios-status-bar"></view>
+    <view class="ios-action-content">
+      <view class="spacer"></view>
+      <view class="ios-add-button" bindtap="onAdd">
+        <text class="ios-icon">+</text>
+      </view>
+    </view>
   </view>
-  <!-- 今年没有假期了 -->
-  <view class="holiday-card no-holiday" wx:if="{{!nowHoliday && !nextHoliday.length}}">这一年幸苦啦，准备迎接新的一年吧~~~</view>
-  <view wx:else>
+  
+  <!-- 分段控制器 -->
+  <view class="ios-segment-container">
+    <view class="ios-segment-control">
+      <view class="ios-segment {{activeTab === 'current' ? 'ios-segment-active' : ''}}" bindtap="switchTab" data-tab="current">
+        <text>当前倒计时</text>
+      </view>
+      <view class="ios-segment {{activeTab === 'upcoming' ? 'ios-segment-active' : ''}}" bindtap="switchTab" data-tab="upcoming">
+        <text>即将到来</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 当前标签页内容 -->
+  <view wx:if="{{activeTab === 'current'}}">
     <!-- 当前节假日 -->
-    <view class="title" wx:if="{{nowHoliday}}">今天是个好日子！</view>
     <view class="holiday-card" wx:if="{{nowHoliday}}">
       <view class="holiday-wrap">
-        <image class="icon-holiday" src="{{nowHoliday.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
-        <view>
-          <view>{{nowHoliday.id}}～</view>
+        <image class="icon-holiday" src="{{nowHoliday.imgUrl}}" mode="aspectFit" lazy-load="true" />
+        <view class="holiday-content-wrap">
+          <view class="holiday-name">今天是 {{nowHoliday.id}}</view>
           <view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
-          <view wx:else class="holiday-time">{{nowHoliday.begin}} ~ {{nowHoliday.end}}</view>
+          <view wx:else class="holiday-time">{{nowHoliday.begin}} - {{nowHoliday.end}}</view>
           <view class="holiday-content">{{nowHoliday.content}}</view>
         </view>
       </view>
     </view>
-    <view class="holiday-card no-holiday" wx:else>今天不是节假日喔～快看看还剩几天可以过节 👇</view>
-
-    <!-- 下一个节假日倒计时 -->
-    <view class="title" wx:if="{{nextHoliday.length}}">正在悄然赶来(当天有寄语喔~)</view>
+    
+    <!-- 今天不是节假日 -->
+    <view class="holiday-card" wx:if="{{!nowHoliday && nextHoliday.length}}">
+      <view class="holiday-wrap">
+        <view class="holiday-content-wrap">
+          <view class="holiday-name">今天不是节假日</view>
+          <view class="holiday-content">快看看还剩几天可以过节吧！</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 下一个节假日 -->
+    <view class="section-title" wx:if="{{nextHoliday.length}}">下一个节假日</view>
+    <view class="holiday-card" wx:if="{{nextHoliday.length}}">
+      <image wx:if="{{nextHoliday[0].canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{nextHoliday[0]}}" catchtap="onDelete"></image>
+      <view class="holiday-wrap" data-event-index="{{nextHoliday[0]}}" bindtap="onUpdate">
+        <image class="icon-holiday" src="{{nextHoliday[0].imgUrl}}" mode="aspectFit" lazy-load="true" />
+        <view class="holiday-content-wrap">
+          <view class="holiday-name">{{nextHoliday[0].id}}</view>
+          <view wx:if="{{nextHoliday[0].days === 1}}" class="holiday-time">{{nextHoliday[0].begin}}</view>
+          <view wx:else class="holiday-time">{{nextHoliday[0].begin}} - {{nextHoliday[0].end}}</view>
+          <view class="holiday-content"><text class="day-prefix">还有</text><text class="holiday-name-day">{{nextHoliday[0].countDown}}</text><text class="day-text">天</text></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 没有节假日 -->
+    <view class="holiday-card no-holiday" wx:if="{{!nowHoliday && !nextHoliday.length}}">
+      <view class="empty-state">
+        <text class="empty-title">暂无倒计时</text>
+        <text class="empty-subtitle">点击右上角添加按钮来创建新的倒计时</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 即将到来标签页内容 -->
+  <view wx:if="{{activeTab === 'upcoming'}}">
+    <!-- 所有即将到来的节日 -->
     <view wx:if="{{nextHoliday.length}}">
       <view class="holiday-card" wx:for="{{nextHoliday}}" wx:key="id">
         <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
         <view class="holiday-wrap" data-event-index="{{item}}" bindtap="onUpdate">
-          <view>
-            <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit|aspectFill|widthFix" lazy-load="true" binderror="" bindload="" />
-          </view>
-          <view>
-            <view><text class="holiday-name">{{item.id}}</text>：<text class="holiday-name-day">{{item.countDown}}</text> 天</view>
+          <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit" lazy-load="true" />
+          <view class="holiday-content-wrap">
+            <view class="holiday-name">{{item.id}}</view>
             <view wx:if="{{item.days === 1}}" class="holiday-time">{{item.begin}}</view>
-            <view wx:else class="holiday-time">{{item.begin}}~{{item.end}}</view>
+            <view wx:else class="holiday-time">{{item.begin}} - {{item.end}}</view>
+            <view class="holiday-content"><text class="day-prefix">还有</text><text class="holiday-name-day">{{item.countDown}}</text><text class="day-text">天</text></view>
           </view>
         </view>
       </view>
     </view>
-    <view class="holiday-card no-holiday" wx:else>今年已经没有假了～马上也要新的一年啦</view>
+    
+    <!-- 没有即将到来的节日 -->
+    <view class="holiday-card no-holiday" wx:if="{{!nextHoliday.length}}">
+      <view class="empty-state">
+        <text class="empty-title">暂无即将到来的倒计时</text>
+        <text class="empty-subtitle">点击右上角添加按钮来创建新的倒计时</text>
+      </view>
+    </view>
   </view>
 
+  <!-- 对话框 -->
   <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true">
     <view class="weui-mask weui-transition {{dialog ? 'weui-transition_show' : ''}}" bindtap="closeDialog" aria-role="button" aria-label="关闭"></view>
     <view class="weui-half-screen-dialog weui-half-screen-dialog_large weui-transition {{dialog ? 'weui-transition_show' : ''}}">
       <view class="weui-half-screen-dialog__hd">
         <view class="weui-half-screen-dialog__hd__side" bindtap="closeDialog">
-          <view aria-role="button" class="weui-btn_icon">关闭<i class="weui-icon-close-thin"></i></view>
+          <view aria-role="button" class="ios-close-btn">
+            <text class="ios-close-icon">×</text>
+          </view>
         </view>
         <view class="weui-half-screen-dialog__hd__main">
           <strong class="weui-half-screen-dialog__title">创建倒计时</strong>

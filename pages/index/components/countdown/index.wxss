@@ -1,27 +1,91 @@
 page {
-  background-color: #f2f4f5;
+  background-color: #F2F2F7;
+  font-family: -apple-system, "SF Pro", "Helvetica Neue", sans-serif;
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.4;
   padding-bottom: 20px;
+  padding-top: 44px; /* 为导航栏预留空间 */
 }
 
 .weui-half-screen-dialog_large {
-  top: 200px;
+  top: auto;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background-color: #F2F2F7;
 }
 
 .wrap {
-  margin-top: 50px;
+  margin-top: 0;
+}
+
+/* 对话框标题样式 */
+.weui-half-screen-dialog__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* 对话框输入框样式 */
+.weui-cell {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  margin: 8px 16px;
+  padding: 12px 16px;
+}
+
+.weui-input {
+  height: 24px;
+  line-height: 24px;
+  font-size: 15px;
+}
+
+/* 对话框按钮样式 */
+.weui-btn_primary {
+  background: linear-gradient(135deg, #36B4FF, #1E90FF);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  height: 44px;
+  line-height: 44px;
+  margin: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 关闭按钮样式 */
+.ios-close-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #E5E5EA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px;
+}
+
+.ios-close-icon {
+  font-size: 24px;
+  color: #8E8E93;
+  line-height: 24px;
 }
 
 .holiday-card {
   position: relative;
-  width: calc(100% - 24px);
+  width: calc(100% - 32px);
   margin: 0 auto 12px;
-  padding: 12px;
+  padding: 16px;
   background: #fff;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   z-index: 2;
   font-size: 14px;
-  color: #262626;
-  font-family: 'Courier New', Courier, monospace;
+  color: #000000;
+  overflow: hidden;
 }
 
 .title {
@@ -30,17 +94,23 @@ page {
 }
 
 .icon-delete {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   position: absolute;
-  right: -4px;
-  top: -8px;
+  right: 8px;
+  top: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 4px;
+  box-sizing: border-box;
 }
 
 .icon-holiday {
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin-right: 12px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .holiday-wrap {
@@ -50,35 +120,156 @@ page {
 }
 
 .holiday-time {
-  /* margin-top: 4px; */
+  font-size: 13px;
+  color: #8E8E93;
+  margin-top: 4px;
 }
 
 .holiday-content {
-  color: #ffa39e;
+  color: #8E8E93;
+  margin-top: 6px;
+  font-size: 13px;
 }
 
 .holiday-name {
-  /* color: #ff6800; */
-  /* text-decoration: underline; */
+  font-weight: 500;
+  font-size: 17px;
 }
 
 .holiday-name-day {
-  color: #ff6800;
+  color: #36B4FF;
   font-size: 24px;
+  font-weight: 600;
+  margin: 0 6px;
+}
+
+.day-text {
+  color: #8E8E93;
+  font-size: 13px;
+}
+
+.day-prefix {
+  color: #8E8E93;
+  font-size: 13px;
 }
 
 .no-holiday {
   text-align: center;
+  padding: 24px 16px;
 }
 
-.add-wrap {
-  width: 100%;
-  text-align: right;
-  padding: 0 12px;
-  margin-bottom: 20px;
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
 }
 
-.add-wrap>image {
-  width: 24px;
-  height: 24px;
+.empty-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: #8E8E93;
+  text-align: center;
+  max-width: 80%;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #8E8E93;
+  margin: 16px 16px 8px;
+}
+
+.holiday-content-wrap {
+  flex: 1;
+}
+
+/* 简化的添加按钮区域 */
+.ios-action-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  z-index: 100;
+}
+
+.ios-status-bar {
+  height: 20px; /* 状态栏高度 */
+}
+
+.ios-action-content {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.ios-add-button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #36B4FF, #1E90FF);
+  border-radius: 18px;
+  color: white;
+  box-shadow: 0 2px 8px rgba(54, 180, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.ios-add-button:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #2AA0E5, #1880E0);
+}
+
+.ios-icon {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+/* 分段控制器样式 */
+.ios-segment-container {
+  padding: 16px 16px 8px;
+  margin-top: 56px; /* 减小与添加按钮的间距 */
+}
+
+.ios-segment-control {
+  display: flex;
+  background-color: #E5E5EA;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 32px;
+}
+
+.ios-segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #8E8E93;
+  transition: all 0.2s ease;
+}
+
+.ios-segment-active {
+  background-color: #FFFFFF;
+  color: #000000;
+  border-radius: 7px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  margin: 1px;
+  font-weight: 500;
 }
