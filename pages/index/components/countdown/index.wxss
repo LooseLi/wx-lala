@@ -163,7 +163,24 @@ page {
 .holiday-wrap {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.holiday-left {
+  display: flex;
+  align-items: center;
+}
+
+.holiday-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.countdown-days {
+  color: #8E8E93;
+  font-size: 13px;
 }
 
 .holiday-time {
@@ -187,6 +204,8 @@ page {
   background-clip: text;
   color: transparent;
   padding: 4px 0;
+  font-style: italic;
+  /* 添加斜体样式 */
   /* margin-top: 8px; */
 }
 

@@ -9,19 +9,19 @@
       </view>
     </view>
   </view>
-  
+
   <!-- 分段控制器 -->
   <view class="ios-segment-container">
     <view class="ios-segment-control">
       <view class="ios-segment {{activeTab === 'current' ? 'ios-segment-active' : ''}}" bindtap="switchTab" data-tab="current">
-        <text>当前倒计时</text>
+        <text>当前节日</text>
       </view>
       <view class="ios-segment {{activeTab === 'upcoming' ? 'ios-segment-active' : ''}}" bindtap="switchTab" data-tab="upcoming">
         <text>即将到来</text>
       </view>
     </view>
   </view>
-  
+
   <!-- 当前标签页内容 -->
   <view wx:if="{{activeTab === 'current'}}">
     <!-- 当前节假日 -->
@@ -29,14 +29,14 @@
       <view class="holiday-wrap">
         <image class="icon-holiday" src="{{nowHoliday.imgUrl}}" mode="aspectFit" lazy-load="true" />
         <view class="holiday-content-wrap">
-          <view class="holiday-name">今天是 {{nowHoliday.id}}</view>
+          <view class="holiday-name">{{nowHoliday.id}}</view>
           <view wx:if="{{nowHoliday.days === 1}}" class="holiday-time">{{nowHoliday.begin}}</view>
           <view wx:else class="holiday-time">{{nowHoliday.begin}} - {{nowHoliday.end}}</view>
           <view class="holiday-content greeting-text {{!hasShownAnimation ? 'animate-fade-in' : ''}}">{{nowHoliday.content}}</view>
         </view>
       </view>
     </view>
-    
+
     <!-- 今天不是节假日 -->
     <view class="holiday-card" wx:if="{{!nowHoliday && nextHoliday.length}}">
       <view class="holiday-wrap">
@@ -46,22 +46,26 @@
         </view>
       </view>
     </view>
-    
+
     <!-- 下一个节假日 -->
     <view class="section-title" wx:if="{{nextHoliday.length}}">下一个节假日</view>
     <view class="holiday-card" wx:if="{{nextHoliday.length}}">
       <image wx:if="{{nextHoliday[0].canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{nextHoliday[0]}}" catchtap="onDelete"></image>
       <view class="holiday-wrap" data-event-index="{{nextHoliday[0]}}" bindtap="onUpdate">
-        <image class="icon-holiday" src="{{nextHoliday[0].imgUrl}}" mode="aspectFit" lazy-load="true" />
-        <view class="holiday-content-wrap">
-          <view class="holiday-name">{{nextHoliday[0].id}}</view>
-          <view wx:if="{{nextHoliday[0].days === 1}}" class="holiday-time">{{nextHoliday[0].begin}}</view>
-          <view wx:else class="holiday-time">{{nextHoliday[0].begin}} - {{nextHoliday[0].end}}</view>
-          <view class="holiday-content"><text class="day-prefix">还有</text><text class="holiday-name-day">{{nextHoliday[0].countDown}}</text><text class="day-text">天</text></view>
+        <view class="holiday-left">
+          <image class="icon-holiday" src="{{nextHoliday[0].imgUrl}}" mode="aspectFit" lazy-load="true" />
+          <view class="holiday-content-wrap">
+            <view class="holiday-name">{{nextHoliday[0].id}}</view>
+            <view wx:if="{{nextHoliday[0].days === 1}}" class="holiday-time">{{nextHoliday[0].begin}}</view>
+            <view wx:else class="holiday-time">{{nextHoliday[0].begin}} - {{nextHoliday[0].end}}</view>
+          </view>
+        </view>
+        <view class="holiday-right">
+          <view class="countdown-days"><text class="holiday-name-day">{{nextHoliday[0].countDown}}</text><text class="day-text">天</text></view>
         </view>
       </view>
     </view>
-    
+
     <!-- 没有节假日 -->
     <view class="holiday-card no-holiday" wx:if="{{!nowHoliday && !nextHoliday.length}}">
       <view class="empty-state">
@@ -70,7 +74,7 @@
       </view>
     </view>
   </view>
-  
+
   <!-- 即将到来标签页内容 -->
   <view wx:if="{{activeTab === 'upcoming'}}">
     <!-- 所有即将到来的节日 -->
@@ -78,17 +82,21 @@
       <view class="holiday-card" wx:for="{{nextHoliday}}" wx:key="id">
         <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
         <view class="holiday-wrap" data-event-index="{{item}}" bindtap="onUpdate">
-          <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit" lazy-load="true" />
-          <view class="holiday-content-wrap">
-            <view class="holiday-name">{{item.id}}</view>
-            <view wx:if="{{item.days === 1}}" class="holiday-time">{{item.begin}}</view>
-            <view wx:else class="holiday-time">{{item.begin}} - {{item.end}}</view>
-            <view class="holiday-content"><text class="day-prefix">还有</text><text class="holiday-name-day">{{item.countDown}}</text><text class="day-text">天</text></view>
+          <view class="holiday-left">
+            <image class="icon-holiday" src="{{item.imgUrl}}" mode="aspectFit" lazy-load="true" />
+            <view class="holiday-content-wrap">
+              <view class="holiday-name">{{item.id}}</view>
+              <view wx:if="{{item.days === 1}}" class="holiday-time">{{item.begin}}</view>
+              <view wx:else class="holiday-time">{{item.begin}} - {{item.end}}</view>
+            </view>
+          </view>
+          <view class="holiday-right">
+            <view class="countdown-days"><text class="holiday-name-day">{{item.countDown}}</text><text class="day-text">天</text></view>
           </view>
         </view>
       </view>
     </view>
-    
+
     <!-- 没有即将到来的节日 -->
     <view class="holiday-card no-holiday" wx:if="{{!nextHoliday.length}}">
       <view class="empty-state">
