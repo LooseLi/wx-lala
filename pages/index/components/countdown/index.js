@@ -110,6 +110,16 @@ Page({
   },
 
   add() {
+    // 再次验证输入是否为空（防止直接调用add方法的情况）
+    if (!this.data.name) {
+      wx.showToast({
+        title: '这是什么倒计时鸭?',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
     // const formatDate = this.data.date.replace(/-/g, '/');
     const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
     countdownDay.add({
@@ -127,11 +137,34 @@ Page({
         this.closeDialog();
         await this.getCountdownDay();
         this.handleHolidays();
+        wx.showToast({
+          title: '添加成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '添加失败',
+          icon: 'error',
+          duration: 2000
+        });
+        console.error('添加倒计时失败:', err);
       }
     })
   },
 
   update() {
+    // 再次验证输入是否为空（防止直接调用update方法的情况）
+    if (!this.data.name) {
+      wx.showToast({
+        title: '这是什么倒计时鸭?',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
     // const formatDate = this.data.date.replace(/-/g, '/');
     const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
     countdownDay.doc(this.data.id).update({
@@ -146,6 +179,19 @@ Page({
         this.closeDialog();
         await this.getCountdownDay();
         this.handleHolidays();
+        wx.showToast({
+          title: '更新成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '更新失败',
+          icon: 'error',
+          duration: 2000
+        });
+        console.error('更新倒计时失败:', err);
       }
     })
   },
@@ -175,6 +221,16 @@ Page({
 
   // 保存
   onSave() {
+    // 验证输入是否为空
+    if (!this.data.name) {
+      wx.showToast({
+        title: '这是什么倒计时鸭?',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
     if (this.data.type === 'add') {
       this.add();
     }

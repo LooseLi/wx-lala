@@ -136,7 +136,7 @@
           </view>
           <view class="weui-cell weui-cell_active">
             <view class="weui-cell__bd">
-              <input class="weui-input" value="{{content}}" placeholder-class="weui-input__placeholder" bindinput="bindContentChange" placeholder="留下当天想说的话吧~" />
+              <input class="weui-input" value="{{content}}" placeholder-class="weui-input__placeholder" bindinput="bindContentChange" placeholder="留下当天想说的话吧(选填)" />
             </view>
           </view>
         </view>
