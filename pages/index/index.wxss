@@ -112,7 +112,7 @@ page {
   margin: 0 10px 0 20px;
 }
 
-.event:nth-child(2n+1) {
+.event:nth-child(2n + 1) {
   margin-right: 20px;
 }
 

@@ -5,13 +5,13 @@ App({
   onLaunch: function () {
     wx.cloud.init({
       // env: 'cloud1-5g2h5bs5d6613df6'
-      env: 'lala-tsum-6gem2abq66c46985'
+      env: 'lala-tsum-6gem2abq66c46985',
     });
   },
 
   globalData: {
     APP_ID: 'wxab00d9afbda623cf',
-    APP_SECRET: '5f1d10c89d82fe00f0f55d4391c5584e'
+    APP_SECRET: '5f1d10c89d82fe00f0f55d4391c5584e',
   },
 
   getTopPages: () => {

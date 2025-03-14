@@ -26,25 +26,19 @@ module.exports = {
     requirePlugin: true,
     requireMiniProgram: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:prettier/recommended',
-    'plugin:miniprogram/recommended'
-  ],
-  plugins: [
-    'miniprogram'
-  ],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended', 'plugin:miniprogram/recommended'],
+  plugins: ['miniprogram'],
   rules: {
     // 微信小程序特定规则
-    'camelcase': 'off',
-    'no-unused-vars': ['error', { 'varsIgnorePattern': 'Page|App|Component|getApp|getCurrentPages' }],
+    camelcase: 'off',
+    'no-unused-vars': ['error', { varsIgnorePattern: 'Page|App|Component|getApp|getCurrentPages' }],
     // 常用规则
-    'indent': ['error', 2, { 'SwitchCase': 1 }],
-    'quotes': ['error', 'single'],
-    'semi': ['error', 'always'],
+    indent: ['error', 2, { SwitchCase: 1 }],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
-    'no-console': ['warn', { 'allow': ['warn', 'error'] }],
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     // 与 Prettier 集成的规则
-    'prettier/prettier': ['error', {}, { 'usePrettierrc': true }]
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
   },
-}
+};

@@ -144,30 +144,30 @@ swiper-item {
 
 .today .day-content {
   background: rgba(0, 122, 255, 0.1);
-  color: #007AFF;
+  color: #007aff;
 }
 
 .checked .day-content {
-  color: #007AFF;
+  color: #007aff;
 }
 
 .makeup .day-content {
-  color: #007AFF;
+  color: #007aff;
 }
 
 .can-makeup .day-content {
   border: 1px dashed rgba(0, 122, 255, 0.6);
-  color: #007AFF;
+  color: #007aff;
 }
 
 .can-makeup.selected .day-content {
   background: rgba(0, 122, 255, 0.15);
-  border: 1px dashed #007AFF;
-  color: #007AFF;
+  border: 1px dashed #007aff;
+  color: #007aff;
 }
 
 .selected .day-content {
-  background: #007AFF;
+  background: #007aff;
   color: white;
 }
 
@@ -180,7 +180,7 @@ swiper-item {
   position: absolute;
   bottom: -2rpx;
   right: -2rpx;
-  color: #007AFF;
+  color: #007aff;
   /* 添加白色背景确保可见性 */
   background: white;
   border-radius: 50%;
@@ -216,11 +216,11 @@ swiper-item {
 }
 
 .legend-dot.checked {
-  background: #007AFF;
+  background: #007aff;
 }
 
 .legend-dot.makeup {
-  background: #007AFF;
+  background: #007aff;
 }
 
 .legend-dot.can-makeup {

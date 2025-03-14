@@ -18,7 +18,7 @@ page {
   margin-bottom: 20px;
 }
 
-.add-wrap>image {
+.add-wrap > image {
   width: 24px;
   height: 24px;
 }
@@ -31,7 +31,9 @@ page {
 .anniversary {
   width: 100%;
   background: #fff;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
   margin-bottom: 20px;
   padding: 20px;
   color: #262626;
@@ -42,11 +44,11 @@ page {
   position: relative;
 }
 
-.anniversary>.left>view:first-child {
+.anniversary > .left > view:first-child {
   font-size: 14px;
 }
 
-.anniversary>.right>text {
+.anniversary > .right > text {
   font-size: 18px;
   color: #ff6800;
 }

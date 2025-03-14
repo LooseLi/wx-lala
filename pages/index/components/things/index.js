@@ -8,25 +8,25 @@ const height = width;
 const plugins = require('../../../../utils/plugins');
 
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    selects: [{
+    selects: [
+      {
         value: '全部小事',
         id: 0,
-        flag: undefined
+        flag: undefined,
       },
       {
         value: '未完成',
         id: 1,
-        flag: false
+        flag: false,
       },
       {
         value: '已完成',
         id: 2,
-        flag: true
+        flag: true,
       },
     ],
     currentSelectIndex: 0,
@@ -48,8 +48,8 @@ Page({
         x: (width - 300) / 2,
         y: (height - 300) / 2,
         width: 300,
-        height: 300
-      }
+        height: 300,
+      },
     }, // 裁剪配置
     pictureDefault: '../images/things/icon-default.png',
     fileID: '', // 裁剪后的图片地址
@@ -58,13 +58,15 @@ Page({
   // 获取100件小事
   async getThings100(flag) {
     wx.showLoading({
-      title: '加载中'
-    })
+      title: '加载中',
+    });
     let count;
     if (flag === true || flag === false) {
-      count = await things100.where({
-        isUploaded: flag
-      }).count();
+      count = await things100
+        .where({
+          isUploaded: flag,
+        })
+        .count();
     } else {
       count = await things100.count();
     }
@@ -72,9 +74,12 @@ Page({
     for (let i = 0; i < count.total; i += 20) {
       let res;
       if (flag === true || flag === false) {
-        res = await things100.where({
-          isUploaded: flag
-        }).skip(i).get();
+        res = await things100
+          .where({
+            isUploaded: flag,
+          })
+          .skip(i)
+          .get();
       } else {
         res = await things100.skip(i).get();
       }
@@ -85,25 +90,25 @@ Page({
       const thingDone = all.filter(item => item.isUploaded);
       this.setData({
         thingTotal,
-        thingDone: thingDone.length
+        thingDone: thingDone.length,
       });
     }
     this.setData({
-      things: all
+      things: all,
     });
-    wx.hideLoading()
+    wx.hideLoading();
   },
 
   openDialog() {
     this.setData({
-      dialog: true
-    })
+      dialog: true,
+    });
   },
 
   closeDialog() {
     this.setData({
-      dialog: false
-    })
+      dialog: false,
+    });
   },
 
   // 点击上传
@@ -112,15 +117,15 @@ Page({
     this.setData({
       // type: 'add',
       currentThing: obj,
-      date: obj.date
+      date: obj.date,
     });
     if (obj.isUploaded) {
       this.setData({
-        imagePreviewUrl: obj.picture
+        imagePreviewUrl: obj.picture,
       });
     } else {
       this.setData({
-        imagePreviewUrl: ''
+        imagePreviewUrl: '',
       });
     }
     this.openDialog();
@@ -132,86 +137,84 @@ Page({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album'],
-      success: (res) => {
+      success: res => {
         this.setData({
-          showWeCropper: true
+          showWeCropper: true,
         });
-        const src = res.tempFiles[0].tempFilePath
-        this.cropper.pushOrign(src)
+        const src = res.tempFiles[0].tempFilePath;
+        this.cropper.pushOrign(src);
       },
-      fail: (info) => {}
-    })
+      fail: info => {},
+    });
   },
 
   bindDateChange(e) {
     this.setData({
-      date: e.detail.value
+      date: e.detail.value,
     });
   },
 
   // 裁剪初始化
   initWeCropper() {
-    const {
-      cropperOpt
-    } = this.data
+    const { cropperOpt } = this.data;
     this.cropper = new WeCropper(cropperOpt)
-      .on('ready', (ctx) => {
-        console.log(`wecropper is ready for work!`)
+      .on('ready', ctx => {
+        console.log(`wecropper is ready for work!`);
       })
-      .on('beforeImageLoad', (ctx) => {
+      .on('beforeImageLoad', ctx => {
         wx.showToast({
           title: '上传中',
           icon: 'loading',
-          duration: 20000
-        })
+          duration: 20000,
+        });
       })
-      .on('imageLoad', (ctx) => {
-        wx.hideToast()
-      })
+      .on('imageLoad', ctx => {
+        wx.hideToast();
+      });
   },
 
   touchStart(e) {
-    this.cropper.touchStart(e)
+    this.cropper.touchStart(e);
   },
   touchMove(e) {
-    this.cropper.touchMove(e)
+    this.cropper.touchMove(e);
   },
   touchEnd(e) {
-    this.cropper.touchEnd(e)
+    this.cropper.touchEnd(e);
   },
 
   getCropperImage() {
-    this.cropper.getCropperImage((res) => {
+    this.cropper.getCropperImage(res => {
       this.setData({
         showWeCropper: false,
-      })
+      });
       if (res) {
         this.setData({
-          imagePreviewUrl: res
+          imagePreviewUrl: res,
         });
         let cloudPath = `uploadImageThings/${Date.now()}.jpg`;
         wx.cloud.uploadFile({
           cloudPath,
           filePath: this.data.imagePreviewUrl,
-          success: (res) => {
+          success: res => {
             const fileID = res.fileID;
             this.setData({
-              fileID
+              fileID,
             });
           },
           fail: info => {
             console.log(info);
-          }
+          },
         });
       }
-    })
+    });
   },
 
   // 已完成
   onSave() {
     if (!this.data.currentThing.isUploaded && !this.data.fileID) {
       plugins.showToast({
-        title: '需要上传一张照片喔～'
+        title: '需要上传一张照片喔～',
       });
       return;
     }
@@ -219,14 +222,14 @@ Page({
       data: {
         date: this.data.date,
         picture: this.data.fileID || this.data.currentThing.picture,
-        isUploaded: true
+        isUploaded: true,
       },
-      success: async (res) => {
+      success: async res => {
         await this.getThings100();
         this.closeDialog();
         this.resetData();
-      }
-    })
+      },
+    });
   },
 
   // 重置数据
@@ -234,7 +237,7 @@ Page({
     this.setData({
       fileID: '',
       currentThing: {},
-      imagePreviewUrl: ''
+      imagePreviewUrl: '',
     });
   },
 
@@ -242,7 +245,7 @@ Page({
   bindPickerChange(e) {
     const index = parseInt(e.detail.value);
     this.setData({
-      currentSelectIndex: index
+      currentSelectIndex: index,
     });
     const flag = this.data.selects[index].flag;
     this.getThings100(flag);
@@ -259,49 +262,35 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady() {
-
-  },
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {
-
-  },
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide() {
-
-  },
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload() {
-
-  },
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh() {
-
-  },
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom() {
-
-  },
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage() {
-
-  }
-})
+  onShareAppMessage() {},
+});

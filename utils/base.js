@@ -1,7 +1,7 @@
-const IS = require('./is')
+const IS = require('./is');
 
 // 返回年月日时分秒
-const timeFormat = (date) => {
+const timeFormat = date => {
   const y = date.getFullYear();
   let m = date.getMonth() + 1;
   m = m <= 9 ? '0' + m : m;
@@ -21,7 +21,7 @@ const timeFormat = (date) => {
     min,
     s,
   };
-}
+};
 
 /**
  * @param {*} time 时间戳|日期|字符串
@@ -62,9 +62,9 @@ const dateFormat = (time, str) => {
  * @param {*} str
  * @returns
  */
-const dateDiff = (date) => {
+const dateDiff = date => {
   // 将-转化为/，使用new Date
-  const dateBegin = new Date(date.replace(/-/g, "/"));
+  const dateBegin = new Date(date.replace(/-/g, '/'));
   const currentDate = new Date();
   let dateDiff = currentDate.getTime() - dateBegin.getTime();
   let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
@@ -81,5 +81,5 @@ const dateDiff = (date) => {
 
 module.exports = {
   dateFormat,
-  dateDiff
-}
+  dateDiff,
+};

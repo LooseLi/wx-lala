@@ -4,7 +4,6 @@ const BASE = require('../../../../utils/base');
 const plugins = require('../../../../utils/plugins');
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -20,7 +19,7 @@ Page({
     type: 'add', // 新增还是修改,
     id: '',
     activeTab: 'current', // 当前激活的标签页：current或upcoming
-    hasShownAnimation: false // 是否已经显示过动画
+    hasShownAnimation: false, // 是否已经显示过动画
   },
 
   // 节假日
@@ -31,8 +30,8 @@ Page({
     this.data.holidays.forEach(item => {
       const beginTime = new Date(item.beginDate.replace(/-/g, '/')).getTime();
       const endTime = new Date(item.endDate.replace(/-/g, '/')).getTime();
-      item.begin = item.beginDate.split("-").slice(1).join(".");
-      item.end = item.endDate.split("-").slice(1).join(".");
+      item.begin = item.beginDate.split('-').slice(1).join('.');
+      item.end = item.endDate.split('-').slice(1).join('.');
       if (currentFormattedDate === item.today) {
         // 当前正好是某个节假日
         this.setData({
@@ -49,7 +48,9 @@ Page({
       }
     });
     // 按照 beginDate 字段升序排序
-    arr.sort((a, b) => new Date(a.beginDate.replace(/-/g, '/')) - new Date(b.beginDate.replace(/-/g, '/')));
+    arr.sort(
+      (a, b) => new Date(a.beginDate.replace(/-/g, '/')) - new Date(b.beginDate.replace(/-/g, '/')),
+    );
     const nextHolidays = arr;
     nextHolidays.forEach(item => {
       const nextBeginTime = new Date(item.beginDate.replace(/-/g, '/'));
@@ -72,32 +73,32 @@ Page({
 
   openDialog() {
     this.setData({
-      dialog: true
-    })
+      dialog: true,
+    });
   },
 
   closeDialog() {
     this.setData({
-      dialog: false
-    })
+      dialog: false,
+    });
     this.resetData();
   },
 
   bindInputChange(e) {
     this.setData({
-      name: e.detail.value
+      name: e.detail.value,
     });
   },
 
   bindContentChange(e) {
     this.setData({
-      content: e.detail.value
+      content: e.detail.value,
     });
   },
 
   bindDateChange(e) {
     this.setData({
-      date: e.detail.value
+      date: e.detail.value,
     });
   },
 
@@ -105,7 +106,7 @@ Page({
     this.setData({
       name: '',
       date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
-      content: ''
+      content: '',
     });
   },
 
@@ -115,13 +116,13 @@ Page({
       wx.showToast({
         title: '这是什么倒计时鸭?',
         icon: 'none',
-        duration: 2000
+        duration: 2000,
       });
       return;
     }
 
     // const formatDate = this.data.date.replace(/-/g, '/');
-    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
+    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d');
     countdownDay.add({
       data: {
         id: this.data.name,
@@ -131,27 +132,28 @@ Page({
         canEdit: true,
         days: 1,
         content: this.data.content,
-        imgUrl: 'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconHolidays/kaixinguo.png?sign=931efe25e5f43cfd1cf614f6796a62a9&t=1735550502'
+        imgUrl:
+          'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconHolidays/kaixinguo.png?sign=931efe25e5f43cfd1cf614f6796a62a9&t=1735550502',
       },
-      success: async (res) => {
+      success: async res => {
         this.closeDialog();
         await this.getCountdownDay();
         this.handleHolidays();
         wx.showToast({
           title: '添加成功',
           icon: 'success',
-          duration: 2000
+          duration: 2000,
         });
       },
-      fail: (err) => {
+      fail: err => {
         wx.showToast({
           title: '添加失败',
           icon: 'error',
-          duration: 2000
+          duration: 2000,
         });
         console.error('添加倒计时失败:', err);
-      }
-    })
+      },
+    });
   },
 
   update() {
@@ -160,13 +162,13 @@ Page({
       wx.showToast({
         title: '这是什么倒计时鸭?',
         icon: 'none',
-        duration: 2000
+        duration: 2000,
       });
       return;
     }
 
     // const formatDate = this.data.date.replace(/-/g, '/');
-    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d')
+    const date = BASE.dateFormat(this.data.date, 'yyyy-M-d');
     countdownDay.doc(this.data.id).update({
       data: {
         id: this.data.name,
@@ -175,31 +177,31 @@ Page({
         today: date,
         content: this.data.content,
       },
-      success: async (res) => {
+      success: async res => {
         this.closeDialog();
         await this.getCountdownDay();
         this.handleHolidays();
         wx.showToast({
           title: '更新成功',
           icon: 'success',
-          duration: 2000
+          duration: 2000,
         });
       },
-      fail: (err) => {
+      fail: err => {
         wx.showToast({
           title: '更新失败',
           icon: 'error',
-          duration: 2000
+          duration: 2000,
         });
         console.error('更新倒计时失败:', err);
-      }
-    })
+      },
+    });
   },
 
   // 点击新增图标
   onAdd() {
     this.setData({
-      type: 'add'
+      type: 'add',
     });
     this.openDialog();
   },
@@ -214,7 +216,7 @@ Page({
       date,
       id: obj._id,
       content: obj.content,
-      type: 'update'
+      type: 'update',
     });
     this.openDialog();
   },
@@ -226,7 +228,7 @@ Page({
       wx.showToast({
         title: '这是什么倒计时鸭?',
         icon: 'none',
-        duration: 2000
+        duration: 2000,
       });
       return;
     }
@@ -244,20 +246,20 @@ Page({
     wx.showModal({
       title: '提示🥹',
       content: '删掉就找不回来咯，确定要删咩',
-      success: (res) => {
+      success: res => {
         if (res.confirm) {
           const id = e.currentTarget.dataset.eventIndex._id;
           countdownDay.doc(id).remove({
-            success: async (res) => {
+            success: async res => {
               await this.getCountdownDay();
               this.handleHolidays();
-            }
-          })
+            },
+          });
         } else if (res.cancel) {
-          console.log('用户点击取消')
+          console.log('用户点击取消');
         }
-      }
-    })
+      },
+    });
   },
 
   /**
@@ -270,7 +272,7 @@ Page({
     // 设置延时，在动画结束后标记为已显示过动画
     setTimeout(() => {
       this.setData({
-        hasShownAnimation: true
+        hasShownAnimation: true,
       });
     }, 1500); // 与动画时间一致
   },
@@ -278,57 +280,43 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-
-  },
+  onReady: function () {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-
-  },
+  onShow: function () {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-
-  },
+  onHide: function () {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-
-  },
+  onUnload: function () {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-
-  },
+  onPullDownRefresh: function () {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-
-  },
+  onReachBottom: function () {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
-  },
+  onShareAppMessage: function () {},
 
   // 切换标签页
   switchTab: function (e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({
-      activeTab: tab
+      activeTab: tab,
     });
-  }
-})
+  },
+});

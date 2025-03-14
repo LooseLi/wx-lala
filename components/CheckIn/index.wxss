@@ -38,7 +38,7 @@
 
 .streak-dates {
   font-size: 24rpx;
-  color: #86868B;
+  color: #86868b;
   margin-top: 8rpx;
   font-family: -apple-system, 'SF Pro Text';
 }
@@ -47,7 +47,7 @@
 .points-number {
   font-size: 56rpx;
   font-weight: 600;
-  color: #1D1D1F;
+  color: #1d1d1f;
   line-height: 1.1;
   font-family: -apple-system, 'SF Pro Display';
 }
@@ -55,12 +55,12 @@
 .days-text,
 .points-text {
   font-size: 28rpx;
-  color: #86868B;
+  color: #86868b;
   font-family: -apple-system, 'SF Pro Text';
 }
 
 .check-in-button {
-  background: linear-gradient(135deg, #0A84FF 0%, #007AFF 100%);
+  background: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
   color: white;
   padding: 20rpx 0;
   border-radius: 48rpx;
@@ -91,7 +91,7 @@
 }
 
 .check-in-button.checked {
-  background: linear-gradient(135deg, #32D74B 0%, #28CD41 100%);
+  background: linear-gradient(135deg, #32d74b 0%, #28cd41 100%);
 }
 
 @keyframes scaleIn {
@@ -117,7 +117,7 @@
 /* 补签按钮 */
 .makeup-button {
   background: rgba(255, 149, 0, 0.1);
-  color: #FF9500;
+  color: #ff9500;
   padding: 20rpx 0;
   border-radius: 48rpx;
   font-size: 32rpx;
@@ -197,7 +197,7 @@
 .dialog-title {
   font-size: 40rpx;
   font-weight: 600;
-  color: #1D1D1F;
+  color: #1d1d1f;
   display: block;
   margin-bottom: 12rpx;
   font-family: -apple-system, 'SF Pro Display';
@@ -205,7 +205,7 @@
 
 .dialog-subtitle {
   font-size: 28rpx;
-  color: #86868B;
+  color: #86868b;
   font-family: -apple-system, 'SF Pro Text';
 }
 
@@ -243,19 +243,19 @@
 }
 
 .points-text {
-  color: #1D1D1F;
+  color: #1d1d1f;
   font-size: 28rpx;
   font-family: -apple-system, 'SF Pro Text';
 }
 
 .points-available {
-  color: #86868B;
+  color: #86868b;
   font-size: 24rpx;
   font-family: -apple-system, 'SF Pro Text';
 }
 
 .confirm-button {
-  background: linear-gradient(135deg, #0A84FF 0%, #0066FF 100%);
+  background: linear-gradient(135deg, #0a84ff 0%, #0066ff 100%);
   color: white;
   padding: 24rpx;
   border-radius: 16rpx;
@@ -273,7 +273,7 @@
 }
 
 .confirm-button.disabled {
-  background: linear-gradient(135deg, #D1D1D6 0%, #C7C7CC 100%);
+  background: linear-gradient(135deg, #d1d1d6 0%, #c7c7cc 100%);
   color: rgba(255, 255, 255, 0.8);
   box-shadow: none;
 }
@@ -290,15 +290,15 @@
   align-items: center;
   margin-bottom: 20rpx;
   font-size: 28rpx;
-  color: #1D1D1F;
+  color: #1d1d1f;
 }
 
 .points-available {
-  color: #86868B;
+  color: #86868b;
 }
 
 .confirm-button {
-  background: linear-gradient(135deg, #0A84FF 0%, #007AFF 100%);
+  background: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
   color: white;
   padding: 24rpx;
   border-radius: 16rpx;
@@ -313,8 +313,8 @@
 }
 
 .confirm-button.disabled {
-  background: #E5E5EA;
-  color: #8E8E93;
+  background: #e5e5ea;
+  color: #8e8e93;
   pointer-events: none;
 }
 
@@ -336,12 +336,12 @@
 
   .days-number,
   .points-number {
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
   .days-text,
   .points-text {
-    color: #98989D;
+    color: #98989d;
   }
 }
 

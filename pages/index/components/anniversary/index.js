@@ -4,7 +4,6 @@ const BASE = require('../../../../utils/base');
 const plugins = require('../../../../utils/plugins');
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -19,33 +18,33 @@ Page({
 
   openDialog() {
     this.setData({
-      dialog: true
-    })
+      dialog: true,
+    });
   },
 
   closeDialog() {
     this.setData({
-      dialog: false
-    })
+      dialog: false,
+    });
     this.resetData();
   },
 
   bindInputChange(e) {
     this.setData({
-      name: e.detail.value
+      name: e.detail.value,
     });
   },
 
   bindDateChange(e) {
     this.setData({
-      date: e.detail.value
+      date: e.detail.value,
     });
   },
 
   resetData() {
     this.setData({
       name: '',
-      date: BASE.dateFormat(new Date(), 'yyyy-MM-dd')
+      date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
     });
   },
 
@@ -56,19 +55,15 @@ Page({
     wx.cloud.callFunction({
       name: 'getAnniversary',
       success: res => {
-        const {
-          result
-        } = res;
-        const {
-          data
-        } = result;
+        const { result } = res;
+        const { data } = result;
         data.forEach(item => {
           item.days = BASE.dateDiff(item.date);
         });
         // 使用 sort 方法降序排序
         data.sort((a, b) => b.days - a.days);
         this.setData({
-          list: data
+          list: data,
         });
         wx.hideLoading();
       },
@@ -86,24 +81,24 @@ Page({
         date: this.data.date,
         canEdit: true,
       },
-      success: (res) => {
+      success: res => {
         this.closeDialog();
         this.getAnniversary();
-      }
-    })
+      },
+    });
   },
 
   update() {
     anniversary.doc(this.data.id).update({
       data: {
         name: this.data.name,
-        date: this.data.date
+        date: this.data.date,
       },
-      success: (res) => {
+      success: res => {
         this.closeDialog();
         this.getAnniversary();
-      }
-    })
+      },
+    });
   },
 
   // 保存
@@ -119,7 +114,7 @@ Page({
   // 点击新增图标
   onAdd() {
     this.setData({
-      type: 'add'
+      type: 'add',
     });
     this.openDialog();
   },
@@ -132,7 +127,7 @@ Page({
         name: obj.name,
         date: obj.date,
         id: obj._id,
-        type: 'update'
+        type: 'update',
       });
       this.openDialog();
     }
@@ -143,19 +138,19 @@ Page({
     wx.showModal({
       title: '提示🥹',
       content: '删掉就找不回来咯，确定要删咩',
-      success: (res) => {
+      success: res => {
         if (res.confirm) {
           const id = e.currentTarget.dataset.eventIndex._id;
           anniversary.doc(id).remove({
-            success: (res) => {
+            success: res => {
               this.getAnniversary();
-            }
-          })
+            },
+          });
         } else if (res.cancel) {
-          console.log('用户点击取消')
+          console.log('用户点击取消');
         }
-      }
-    })
+      },
+    });
   },
 
   /**
@@ -168,49 +163,35 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-
-  },
+  onReady: function () {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-
-  },
+  onShow: function () {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-
-  },
+  onHide: function () {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-
-  },
+  onUnload: function () {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-
-  },
+  onPullDownRefresh: function () {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-
-  },
+  onReachBottom: function () {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
-  }
-})
+  onShareAppMessage: function () {},
+});

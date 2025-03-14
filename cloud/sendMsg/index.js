@@ -2,8 +2,8 @@
 const cloud = require('wx-server-sdk');
 
 cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-}) // 使用当前云环境
+  env: cloud.DYNAMIC_CURRENT_ENV,
+}); // 使用当前云环境
 
 const db = cloud.database();
 const todos = db.collection('todos');
@@ -17,10 +17,12 @@ exports.main = async (event, context) => {
   const maxTimestamp = current_timestamp + fiveMinu;
   const _openid = cloud.getWXContext().OPENID;
   const _ = db.command;
-  const arr = await todos.where({
-    _openid,
-    timestamp: _.and(_.gt(minTimestamp), _.lt(maxTimestamp))
-  }).get();
+  const arr = await todos
+    .where({
+      _openid,
+      timestamp: _.and(_.gt(minTimestamp), _.lt(maxTimestamp)),
+    })
+    .get();
   console.log(arr);
   if (arr.length) {
     const obj = arr[0];
@@ -30,19 +32,19 @@ exports.main = async (event, context) => {
         page: 'user/index',
         data: {
           thing1: {
-            value: obj.title
+            value: obj.title,
           },
           time2: {
-            value: obj.time
+            value: obj.time,
           },
         },
         templateId: 'GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII',
-        miniprogramState: 'trial'
-      })
-      return JSON.parse(JSON.stringify(result))
+        miniprogramState: 'trial',
+      });
+      return JSON.parse(JSON.stringify(result));
     } catch (error) {
-      return error
+      return error;
     }
   }
   return {};
-}
+};

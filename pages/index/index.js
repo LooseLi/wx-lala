@@ -14,31 +14,33 @@ Page({
     meetContent: '', //提示语
     today: null, //今日天气
     hasAuth: false, //是否有位置权限
-    unknow: 'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
+    unknow:
+      'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
-    events: [{
+    events: [
+      {
         id: 0,
         icon: './images/event/icon-anniversary.png',
         title: '拉拉松松纪念日',
-        page: '/pages/index/components/anniversary/index'
+        page: '/pages/index/components/anniversary/index',
       },
       {
         id: 1,
         icon: './images/event/icon-countdown.png',
         title: '倒计时',
-        page: '/pages/index/components/countdown/index'
+        page: '/pages/index/components/countdown/index',
       },
       {
         id: 2,
         icon: './images/event/icon-hoildays.png',
         title: '能放几天假鸭',
-        page: ''
+        page: '',
       },
       {
         id: 3,
         icon: './images/event/icon-more.png',
         title: '想想要新加些啥',
-        page: ''
+        page: '',
       },
       // {
       //   id: 3,
@@ -47,19 +49,19 @@ Page({
       //   page: '/pages/index/components/things/index'
       // },
     ],
-    foods: []
+    foods: [],
   },
 
   // 点击天气图标
   handleTips() {
     plugins.showToast({
-      title: this.data.today.tips
+      title: this.data.today.tips,
     });
   },
   // 点击没有权限图片的事件
   handleNoAuth() {
     plugins.showToast({
-      title: '没有给我位置权限，看我委屈的小眼神 🥺'
+      title: '没有给我位置权限，看我委屈的小眼神 🥺',
     });
   },
 
@@ -72,7 +74,7 @@ Page({
           return;
         }
         plugins.showToast({
-          title: '没有访问位置的权限 😵'
+          title: '没有访问位置的权限 😵',
         });
       },
       fail: err => {
@@ -126,7 +128,7 @@ Page({
   // 获取当前位置
   getLocation() {
     API.myAmapFun.getWeather({
-      success: (data) => {
+      success: data => {
         const lives = data.liveData;
         const arr = this.data.weathers.filter(item => item.weather === lives.weather);
         if (arr.length) {
@@ -140,9 +142,9 @@ Page({
           today: lives,
         });
       },
-      fail: (info) => {
+      fail: info => {
         console.log(info);
-      }
+      },
     });
   },
 
@@ -169,7 +171,7 @@ Page({
   async getWeatherList() {
     const res = await weatherDB.get();
     this.setData({
-      weathers: res.data
+      weathers: res.data,
     });
   },
 
@@ -180,10 +182,10 @@ Page({
     if (url) {
       wx.navigateTo({
         url,
-      })
+      });
     } else {
       plugins.showToast({
-        title: '😵努力掉头发ing'
+        title: '😵努力掉头发ing',
       });
     }
   },
@@ -191,12 +193,15 @@ Page({
   // 随机食物
   async randomFood() {
     plugins.showLoading('食物匹配中');
-    const res = await foodDB.aggregate().sample({
-      size: 2
-    }).end();
+    const res = await foodDB
+      .aggregate()
+      .sample({
+        size: 2,
+      })
+      .end();
     const arr = res.list.map(item => item.name);
     this.setData({
-      foods: arr
+      foods: arr,
     });
     wx.hideLoading();
   },
@@ -209,8 +214,8 @@ Page({
     wx.cloud.callFunction({
       name: 'getOpenId',
       success: res => {
-        wx.setStorageSync('openid', res.result.OPENID)
-      }
+        wx.setStorageSync('openid', res.result.OPENID);
+      },
     });
 
     await this.getWeatherList();
@@ -219,12 +224,12 @@ Page({
 
   // 打卡成功的回调
   onCheckInSuccess(e) {
-    const checkInData = e.detail
+    const checkInData = e.detail;
     this.setData({
-      checkInData
-    })
+      checkInData,
+    });
 
     // 可以在这里添加其他打卡成功后的操作
-    console.log('打卡成功：', checkInData)
+    console.log('打卡成功：', checkInData);
   },
 });

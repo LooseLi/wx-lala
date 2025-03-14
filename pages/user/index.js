@@ -60,7 +60,7 @@ Page({
 
       // 获取用户信息
       const res = await userInfo.get();
-      const userRecord = res.data.find((item) => item.openid === openid);
+      const userRecord = res.data.find(item => item.openid === openid);
 
       // 更新状态
       if (userRecord) {
@@ -95,7 +95,7 @@ Page({
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
+      success: res => {
         // 生成默认用户信息
         const defaultAvatar = '/static/images/default-avatar.jpg';
         const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
@@ -123,7 +123,7 @@ Page({
             openid: this.data.openid,
             createTime: new Date(), // 创建时间
           },
-          success: (res) => {
+          success: res => {
             // 刷新打卡组件状态
             setTimeout(() => {
               const checkInComponent = this.selectComponent('#checkIn');
@@ -135,7 +135,7 @@ Page({
           },
         });
       },
-      fail: (err) => {
+      fail: err => {
         console.error('获取用户信息失败：', err);
         wx.showToast({
           title: '获取信息失败',
@@ -182,10 +182,10 @@ Page({
   requestSubscribeMessage() {
     wx.requestSubscribeMessage({
       tmplIds: ['GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII'],
-      success: (res) => {
+      success: res => {
         this.sendMessage();
       },
-      fail: (err) => {
+      fail: err => {
         console.log(err);
       },
       complete: () => {},
@@ -202,11 +202,11 @@ Page({
         title: this.data.todoTitle,
         time: this.data.todoTime,
       },
-      success: (res) => {
+      success: res => {
         console.log(res);
         this.closeDialog();
       },
-      fail: (err) => {
+      fail: err => {
         console.log(err);
       },
     });
@@ -229,7 +229,7 @@ Page({
   onSave() {
     wx.getSetting({
       withSubscriptions: true,
-      success: async (res) => {
+      success: async res => {
         await this.add();
         this.requestSubscribeMessage();
       },
@@ -302,14 +302,14 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
+      success: res => {
         const tempFilePath = res.tempFilePaths[0];
 
         // 上传到云存储
         wx.cloud.uploadFile({
           cloudPath: `avatar/${this.data.openid}_${Date.now()}.jpg`,
           filePath: tempFilePath,
-          success: (res) => {
+          success: res => {
             const avatar = res.fileID;
 
             // 更新本地和数据库
@@ -317,7 +317,7 @@ Page({
               avatar,
             });
           },
-          fail: (err) => {
+          fail: err => {
             wx.showToast({
               title: '上传失败',
               icon: 'none',
@@ -413,7 +413,7 @@ Page({
           icon: 'success',
         });
       })
-      .catch((err) => {
+      .catch(err => {
         wx.showToast({
           title: '更新失败',
           icon: 'none',
