@@ -62,7 +62,9 @@ Component({
 
       try {
         // 获取用户签到状态和积分
-        const { result } = await wx.cloud.callFunction({
+        const {
+          result
+        } = await wx.cloud.callFunction({
           name: 'getCheckInStatus'
         })
 
@@ -171,17 +173,22 @@ Component({
 
     // 选择补签日期
     onDateSelect(e) {
-      const { date, isMakeup } = e.detail
+      const {
+        date,
+        isMakeup
+      } = e.detail
       console.log('选择日期：', date, '是否补签：', isMakeup)
       if (isMakeup) {
-        this.setData({ selectedDate: date })
+        this.setData({
+          selectedDate: date
+        })
       }
     },
 
     // 处理补签
     async handleMakeup() {
       if (!this.data.selectedDate || this.data.loading) return
-      
+
       if (this.data.currentPoints < 30) {
         wx.showToast({
           title: '积分不足，补签需要30积分',
@@ -190,7 +197,9 @@ Component({
         return
       }
 
-      this.setData({ loading: true })
+      this.setData({
+        loading: true
+      })
 
       try {
         const res = await wx.cloud.callFunction({
@@ -202,7 +211,7 @@ Component({
 
         if (res.result.success) {
           const data = res.result.data || {}
-          
+
           wx.showToast({
             title: '补签成功',
             icon: 'success'
@@ -227,7 +236,7 @@ Component({
               points: pointsChange
             }
           })
-          
+
           // 刷新日历组件
           this.triggerEvent('refreshCalendar')
         } else {
@@ -243,7 +252,9 @@ Component({
           icon: 'none'
         })
       } finally {
-        this.setData({ loading: false })
+        this.setData({
+          loading: false
+        })
       }
     }
   }

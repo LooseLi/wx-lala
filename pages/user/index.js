@@ -31,7 +31,7 @@ Page({
   onCheckInSuccess(e) {
     const checkInData = e.detail
     console.log('打卡成功：', checkInData)
-    
+
     // 如果需要，可以在这里更新页面上的其他数据
     this.setData({
       checkInData: checkInData
@@ -334,7 +334,7 @@ Page({
       showNicknameEdit: true,
       editingNickname: this.data.nickname
     })
-    
+
     // 添加延迟，确保动画效果顺畅
     setTimeout(() => {
       this.setData({
@@ -369,7 +369,7 @@ Page({
       })
       return
     }
-    
+
     if (nickname === this.data.nickname) {
       this.closeNicknameEdit()
       return

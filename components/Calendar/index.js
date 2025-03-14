@@ -39,7 +39,7 @@ Component({
 
         // 获取当前月和上个月的签到数据
         await this.getMonthCheckInData(currentYear, currentMonth)
-        
+
         // 计算上个月的年和月
         let prevYear = currentYear
         let prevMonth = currentMonth - 1
@@ -57,7 +57,7 @@ Component({
           year: currentYear,
           month: currentMonth,
           months: [prevMonthData, currentMonthData],
-          currentMonthIndex: 1,  // 默认显示当前月
+          currentMonthIndex: 1, // 默认显示当前月
         })
       } catch (error) {
         console.error('初始化日历失败:', error)
@@ -73,22 +73,29 @@ Component({
 
     async getMonthCheckInData(year, month) {
       try {
-        const { result } = await wx.cloud.callFunction({
+        const {
+          result
+        } = await wx.cloud.callFunction({
           name: 'getMonthCheckInData',
-          data: { year, month }
+          data: {
+            year,
+            month
+          }
         })
-        
+
         if (result.success) {
-          const { checkInDays = [], makeupDays = [] } = result.data
+          const {
+            checkInDays = [], makeupDays = []
+          } = result.data
           // 转换日期格式
-          const checkedDates = checkInDays.map(day => 
+          const checkedDates = checkInDays.map(day =>
             `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
           )
-          const makeupDates = makeupDays.map(day => 
+          const makeupDates = makeupDays.map(day =>
             `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
           )
-          
-          this.setData({ 
+
+          this.setData({
             checkedDates: [...this.data.checkedDates, ...checkedDates],
             makeupDates: [...this.data.makeupDates, ...makeupDates]
           })
@@ -109,12 +116,12 @@ Component({
       const firstDay = new Date(year, month - 1, 1)
       const lastDay = new Date(year, month, 0)
       const days = []
-      
+
       const firstDayOfMonth = firstDay.getDay()
       const today = new Date()
       const thirtyDaysAgo = new Date(today)
       thirtyDaysAgo.setDate(today.getDate() - 30)
-      
+
       // 添加上月末尾的空白日期
       for (let i = 0; i < firstDayOfMonth; i++) {
         days.push({
@@ -122,22 +129,22 @@ Component({
           isEmpty: true
         })
       }
-      
+
       // 添加当月日期
       for (var i = 1; i <= lastDay.getDate(); i++) {
         const currentDate = new Date(year, month - 1, i)
         const dateStr = this.formatDate(currentDate)
         const isChecked = this.properties.checkedDates.includes(dateStr)
         const isMakeup = this.properties.makeupDates.includes(dateStr)
-        
+
         days.push({
           date: dateStr,
           day: i,
           isToday: this.isSameDay(currentDate, today),
           isChecked: isChecked || isMakeup,
-          canMakeup: currentDate >= thirtyDaysAgo && currentDate < today && 
-                    !this.isSameDay(currentDate, today) && 
-                    !isChecked && !isMakeup,
+          canMakeup: currentDate >= thirtyDaysAgo && currentDate < today &&
+            !this.isSameDay(currentDate, today) &&
+            !isChecked && !isMakeup,
           isDisabled: currentDate < thirtyDaysAgo || currentDate > today,
           isSelected: false
         })
@@ -163,8 +170,8 @@ Component({
 
     isSameDay(date1, date2) {
       return date1.getFullYear() === date2.getFullYear() &&
-             date1.getMonth() === date2.getMonth() &&
-             date1.getDate() === date2.getDate()
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
     },
 
     selectDate(e) {
@@ -174,23 +181,28 @@ Component({
       const thirtyDaysAgo = new Date(today)
       thirtyDaysAgo.setDate(today.getDate() - 30)
 
-      if (currentDate >= thirtyDaysAgo && currentDate < today && 
-          !this.properties.checkedDates.includes(date) && 
-          !this.properties.makeupDates.includes(date)) {
+      if (currentDate >= thirtyDaysAgo && currentDate < today &&
+        !this.properties.checkedDates.includes(date) &&
+        !this.properties.makeupDates.includes(date)) {
         // 重置所有月份的选中状态
         const months = this.data.months.map(month => {
           const days = month.days.map(day => ({
             ...day,
             isSelected: day.date === date
           }))
-          return { ...month, days }
+          return {
+            ...month,
+            days
+          }
         })
-        
+
         // 更新所有月份数据
-        this.setData({ months })
-        
+        this.setData({
+          months
+        })
+
         // 触发事件，传递是否为补签
-        this.triggerEvent('dateSelect', { 
+        this.triggerEvent('dateSelect', {
           date,
           isMakeup: true
         })
@@ -199,8 +211,10 @@ Component({
 
     onSwiperChange(e) {
       const current = e.detail.current
-      this.setData({ currentMonthIndex: current })
-      
+      this.setData({
+        currentMonthIndex: current
+      })
+
       // 更新年月显示
       const monthData = this.data.months[current]
       if (monthData) {
@@ -217,7 +231,7 @@ Component({
     prevMonth() {
       // 如果已经在上个月，不需要切换
       if (this.data.currentMonthIndex === 0) return
-      
+
       this.setData({
         currentMonthIndex: 0
       })
@@ -226,7 +240,7 @@ Component({
     nextMonth() {
       // 如果已经在当前月，不需要切换
       if (this.data.currentMonthIndex === 1) return
-      
+
       this.setData({
         currentMonthIndex: 1
       })

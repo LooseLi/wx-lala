@@ -40,11 +40,14 @@ swiper-item {
   display: flex;
   align-items: center;
   gap: 20rpx;
-  width: 400rpx;  /* 限制整体宽度 */
-  justify-content: space-between; /* 两端对齐 */
+  width: 400rpx;
+  /* 限制整体宽度 */
+  justify-content: space-between;
+  /* 两端对齐 */
 }
 
-.arrow-left, .arrow-right {
+.arrow-left,
+.arrow-right {
   width: 60rpx;
   height: 60rpx;
   display: flex;
@@ -53,7 +56,8 @@ swiper-item {
   color: #666;
 }
 
-.arrow-left.disabled, .arrow-right.disabled {
+.arrow-left.disabled,
+.arrow-right.disabled {
   opacity: 0.3;
   color: #ccc;
 }

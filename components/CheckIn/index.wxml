@@ -14,15 +14,11 @@
       </view>
     </view>
     <view class="button-group">
-      <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" 
-            hover-class="button-hover" 
-            bindtap="handleCheckIn">
+      <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" hover-class="button-hover" bindtap="handleCheckIn">
         <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
         <text wx:else>已打卡</text>
       </view>
-      <view class="makeup-button" 
-            hover-class="button-hover" 
-            bindtap="showMakeupDialog">
+      <view class="makeup-button" hover-class="button-hover" bindtap="showMakeupDialog">
         补签
       </view>
     </view>
@@ -34,20 +30,14 @@
     <view class="dialog-content">
       <!-- 下拉指示条 -->
       <view class="dialog-indicator"></view>
-      
+
       <view class="dialog-header">
         <!-- <text class="dialog-title">补签打卡</text> -->
         <text class="dialog-subtitle">可补签近30天内未打卡的日期</text>
       </view>
-      
+
       <!-- 日历组件 -->
-      <calendar 
-        class="makeup-calendar"
-        checkedDates="{{checkedDates}}" 
-        makeupDates="{{makeupDates}}"
-        selectedDate="{{selectedDate}}"
-        bind:dateSelect="onDateSelect"
-      />
+      <calendar class="makeup-calendar" checkedDates="{{checkedDates}}" makeupDates="{{makeupDates}}" selectedDate="{{selectedDate}}" bind:dateSelect="onDateSelect" />
 
       <!-- 补签确认区域 -->
       <view class="makeup-confirm {{selectedDate ? 'show' : ''}}">
@@ -58,9 +48,7 @@
             <text class="points-available">可用积分：{{currentPoints}}</text>
           </view>
         </view>
-        <view class="confirm-button {{currentPoints >= 30 ? '' : 'disabled'}}" 
-              hover-class="button-hover"
-              bindtap="handleMakeup">
+        <view class="confirm-button {{currentPoints >= 30 ? '' : 'disabled'}}" hover-class="button-hover" bindtap="handleMakeup">
           <text>确认补签</text>
         </view>
       </view>

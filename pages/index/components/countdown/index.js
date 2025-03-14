@@ -266,7 +266,7 @@ Page({
   onLoad: async function (options) {
     await this.getCountdownDay();
     this.handleHolidays();
-    
+
     // 设置延时，在动画结束后标记为已显示过动画
     setTimeout(() => {
       this.setData({
