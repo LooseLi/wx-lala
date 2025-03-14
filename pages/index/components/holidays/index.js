@@ -123,19 +123,17 @@ Page({
    * 获取选中日期的详细信息
    */
   getSelectedDateInfo(date) {
-    const { holidayData } = this.data;
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const weekday = this.data.weekdays[date.getDay()];
     
-    // 查找该日期是否为节假日或调休日
-    const holidayInfo = holidayData.find(item => {
-      const itemDate = new Date(item.date);
-      return itemDate.getFullYear() === year && 
-             itemDate.getMonth() + 1 === month && 
-             itemDate.getDate() === day;
-    });
+    // 格式化日期字符串
+    const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
+    // 从日期映射中获取假期信息
+    const { holidayDateMap } = this.data;
+    const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
     
     // 构建选中日期信息
     const selectedDateInfo = {
@@ -143,9 +141,9 @@ Page({
       month,
       day,
       weekday: `周${weekday}`,
-      isHoliday: holidayInfo ? holidayInfo.type === 'holiday' : false,
-      isWorkday: holidayInfo ? holidayInfo.type === 'workday' : false,
-      name: holidayInfo ? holidayInfo.name : '',
+      isHoliday: dateInfo ? dateInfo.type === 'holiday' : false,
+      isWorkday: dateInfo ? dateInfo.type === 'workday' : false,
+      holidayName: dateInfo ? dateInfo.name : '',
     };
     
     this.setData({
@@ -157,7 +155,7 @@ Page({
    * 生成日历数据
    */
   generateCalendar() {
-    const { activeYear, currentMonth, holidayData } = this.data;
+    const { activeYear, currentMonth, holidayDateMap } = this.data;
     
     // 获取当前月的第一天
     const firstDayOfMonth = new Date(activeYear, currentMonth, 1);
@@ -199,19 +197,30 @@ Page({
           const prevYear = currentMonth === 0 ? activeYear - 1 : activeYear;
           const dateString = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(prevMonthDay).padStart(2, '0')}`;
           
+          // 获取日期类型信息
+          const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+          
           weekRow.push({
             day: prevMonthDay,
             currentMonth: false,
             date: dateString,
             isToday: false,
             isSelected: this.data.selectedDate === dateString,
-            isHoliday: this.isHoliday(prevYear, prevMonth + 1, prevMonthDay, holidayData, 'holiday'),
-            isWorkday: this.isHoliday(prevYear, prevMonth + 1, prevMonthDay, holidayData, 'workday'),
+            isHoliday: dateInfo && dateInfo.type === 'holiday',
+            isWorkday: dateInfo && dateInfo.type === 'workday',
+            isFirstDay: dateInfo && dateInfo.isFirstDay,
+            isMiddleDay: dateInfo && dateInfo.isMiddleDay,
+            isLastDay: dateInfo && dateInfo.isLastDay,
+            holidayName: dateInfo ? dateInfo.name : '',
+            holidayId: dateInfo ? dateInfo.holidayId : ''
           });
         }
         // 当前月的日期
         else if (dayCounter <= daysInMonth) {
           const dateString = `${activeYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
+          
+          // 获取日期类型信息
+          const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
           
           weekRow.push({
             day: dayCounter,
@@ -219,8 +228,13 @@ Page({
             date: dateString,
             isToday: isCurrentMonth && today.getDate() === dayCounter,
             isSelected: this.data.selectedDate === dateString,
-            isHoliday: this.isHoliday(activeYear, currentMonth + 1, dayCounter, holidayData, 'holiday'),
-            isWorkday: this.isHoliday(activeYear, currentMonth + 1, dayCounter, holidayData, 'workday'),
+            isHoliday: dateInfo && dateInfo.type === 'holiday',
+            isWorkday: dateInfo && dateInfo.type === 'workday',
+            isFirstDay: dateInfo && dateInfo.isFirstDay,
+            isMiddleDay: dateInfo && dateInfo.isMiddleDay,
+            isLastDay: dateInfo && dateInfo.isLastDay,
+            holidayName: dateInfo ? dateInfo.name : '',
+            holidayId: dateInfo ? dateInfo.holidayId : ''
           });
           
           dayCounter++;
@@ -231,14 +245,22 @@ Page({
           const nextYear = currentMonth === 11 ? activeYear + 1 : activeYear;
           const dateString = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextMonthDay).padStart(2, '0')}`;
           
+          // 获取日期类型信息
+          const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+          
           weekRow.push({
             day: nextMonthDay,
             currentMonth: false,
             date: dateString,
             isToday: false,
             isSelected: this.data.selectedDate === dateString,
-            isHoliday: this.isHoliday(nextYear, nextMonth + 1, nextMonthDay, holidayData, 'holiday'),
-            isWorkday: this.isHoliday(nextYear, nextMonth + 1, nextMonthDay, holidayData, 'workday'),
+            isHoliday: dateInfo && dateInfo.type === 'holiday',
+            isWorkday: dateInfo && dateInfo.type === 'workday',
+            isFirstDay: dateInfo && dateInfo.isFirstDay,
+            isMiddleDay: dateInfo && dateInfo.isMiddleDay,
+            isLastDay: dateInfo && dateInfo.isLastDay,
+            holidayName: dateInfo ? dateInfo.name : '',
+            holidayId: dateInfo ? dateInfo.holidayId : ''
           });
           
           nextMonthDay++;
@@ -269,6 +291,60 @@ Page({
   },
 
   /**
+   * 展开假期日期范围
+   */
+  expandHolidayDates(holidays) {
+    const dateMap = {};
+    
+    holidays.forEach(holiday => {
+      // 处理假期日期
+      const start = new Date(holiday.startDate);
+      const end = new Date(holiday.endDate);
+      let current = new Date(start);
+      
+      // 计算连续假期的总天数
+      const totalDays = Math.floor((end - start) / (24 * 60 * 60 * 1000)) + 1;
+      let dayCounter = 0;
+      
+      // 展开假期日期范围
+      while (current <= end) {
+        const dateStr = current.toISOString().split('T')[0];
+        dayCounter++;
+        
+        dateMap[dateStr] = {
+          type: 'holiday',
+          name: holiday.name,
+          isFirstDay: dayCounter === 1,
+          isMiddleDay: dayCounter > 1 && dayCounter < totalDays,
+          isLastDay: dayCounter === totalDays,
+          holidayId: holiday._id || holiday.name
+        };
+        
+        // 移动到下一天
+        const nextDate = new Date(current);
+        nextDate.setDate(nextDate.getDate() + 1);
+        current = nextDate;
+      }
+      
+      // 处理调休工作日
+      if (holiday.workdays && holiday.workdays.length) {
+        holiday.workdays.forEach(workday => {
+          dateMap[workday] = {
+            type: 'workday',
+            name: `${holiday.name}调休`,
+            isFirstDay: false,
+            isMiddleDay: false,
+            isLastDay: false,
+            holidayId: holiday._id || holiday.name
+          };
+        });
+      }
+    });
+    
+    return dateMap;
+  },
+  
+  /**
    * 判断日期是否为节假日或调休日
    */
   isHoliday(year, month, day, holidayData, type) {
@@ -295,14 +371,16 @@ Page({
         .where({
           year: wx.cloud.database().command.in([this.data.currentYear, this.data.nextYear]),
         })
-        .orderBy('date', 'asc')
         .get();
 
-      // 处理数据，添加星期几信息
-      const holidayData = this.processHolidayData(res.data);
-
+      console.log('获取到的假期数据:', res.data);
+      
+      // 展开假期日期范围
+      const holidayDateMap = this.expandHolidayDates(res.data);
+      
       this.setData({
-        holidayData,
+        holidayData: res.data,
+        holidayDateMap,
         isLoading: false,
       });
       

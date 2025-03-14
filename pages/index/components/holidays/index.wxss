@@ -141,52 +141,95 @@
   opacity: 0.3;
 }
 
-.date-circle {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 32rpx;
-}
-
 .date-text {
   font-size: 28rpx;
   color: #333;
+  z-index: 2;
 }
 
-.today .date-circle {
+/* 节假日和调休日样式 */
+.holiday {
+  background-color: #e4f8e9;
+}
+
+.workday {
+  background-color: #ffebe6;
+}
+
+/* 连续假期样式 */
+.first-day {
+  border-radius: 0;
+}
+
+.middle-day {
+  border-radius: 0;
+}
+
+.last-day {
+  border-radius: 0;
+}
+
+/* 单独一天的假期 */
+.first-day.last-day {
+  border-radius: 0;
+}
+
+/* 假期标记 */
+.holiday-tag {
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  font-size: 20rpx;
+  color: #34c759;
+  font-weight: bold;
+  z-index: 2;
+}
+
+/* 调休标记 */
+.workday-tag {
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  font-size: 20rpx;
+  color: #ff3b30;
+  font-weight: bold;
+  z-index: 2;
+}
+
+/* 今天和选中日期的样式 */
+.today {
+  position: relative;
+}
+
+.today::after {
+  content: '';
+  position: absolute;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
   background-color: #007aff;
+  z-index: 1;
 }
 
 .today .date-text {
   color: #fff;
   font-weight: 500;
+  z-index: 2;
 }
 
-.selected .date-circle {
-  background-color: #e5f1ff;
+.selected {
+  position: relative;
 }
 
-.date-marker {
+.selected::after {
+  content: '';
   position: absolute;
-  bottom: 10rpx;
-  display: flex;
-  justify-content: center;
-}
-
-.marker {
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 5rpx;
-}
-
-.holiday-marker {
-  background-color: #ff3b30;
-}
-
-.workday-marker {
-  background-color: #34c759;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid #007aff;
+  box-sizing: border-box;
+  z-index: 1;
 }
 
 /* 选中日期信息 */
@@ -228,13 +271,13 @@
 }
 
 .holiday-type {
-  background-color: #ffebe6;
-  color: #ff3b30;
+  background-color: #e4f8e9;
+  color: #34c759;
 }
 
 .workday-type {
-  background-color: #e4f8e9;
-  color: #34c759;
+  background-color: #ffebe6;
+  color: #ff3b30;
 }
 
 .no-holiday {
@@ -262,6 +305,14 @@
   height: 20rpx;
   border-radius: 10rpx;
   margin-right: 10rpx;
+}
+
+.holiday-marker {
+  background-color: #34c759;
+}
+
+.workday-marker {
+  background-color: #ff3b30;
 }
 
 .legend-text {

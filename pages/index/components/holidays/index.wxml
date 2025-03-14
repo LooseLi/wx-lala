@@ -28,18 +28,19 @@
   <view class="calendar-grid">
     <view class="calendar-row" wx:for="{{calendarRows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex">
       <view 
-        class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}}"
+        class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}"
         wx:for="{{row}}"
         wx:key="date"
         bindtap="selectDate"
         data-date="{{item.date}}"
       >
-        <view class="date-circle {{item.isSelected ? 'selected' : ''}}">
-          <text class="date-text">{{item.day}}</text>
-        </view>
-        <view class="date-marker" wx:if="{{item.isHoliday || item.isWorkday}}">
-          <view class="marker {{item.isHoliday ? 'holiday-marker' : 'workday-marker'}}"></view>
-        </view>
+        <view class="date-text">{{item.day}}</view>
+        
+        <!-- 假期标记 -->
+        <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
+        
+        <!-- 调休标记 -->
+        <view class="workday-tag" wx:if="{{item.isWorkday}}">班</view>
       </view>
     </view>
   </view>
@@ -49,7 +50,7 @@
       <text class="selected-date">{{selectedDateInfo.month}}月{{selectedDateInfo.day}}日 {{selectedDateInfo.weekday}}</text>
     </view>
     <view class="holiday-details" wx:if="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
-      <view class="holiday-name">{{selectedDateInfo.name}}</view>
+      <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>
       <view class="holiday-type {{selectedDateInfo.isHoliday ? 'holiday-type' : 'workday-type'}}">
         {{selectedDateInfo.isHoliday ? '放假' : '调休上班'}}
       </view>
@@ -59,7 +60,7 @@
     </view>
   </view>
   
-  <view class="legend">
+  <!-- <view class="legend">
     <view class="legend-item">
       <view class="legend-marker holiday-marker"></view>
       <text class="legend-text">法定节假日</text>
@@ -68,9 +69,9 @@
       <view class="legend-marker workday-marker"></view>
       <text class="legend-text">调休上班</text>
     </view>
-  </view>
+  </view> -->
   
   <view class="footer">
-    <view class="tips">提示：法定节假日安排可能会有调整，请以国务院发布的通知为准</view>
+    <view class="tips">法定节假日安排可能会有调整，请以国务院发布的通知为准</view>
   </view>
 </view>
