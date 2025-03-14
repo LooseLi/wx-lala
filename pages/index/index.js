@@ -34,7 +34,7 @@ Page({
         id: 2,
         icon: './images/event/icon-hoildays.png',
         title: '能放几天假鸭',
-        page: '',
+        page: '/pages/index/components/holidays/index',
       },
       {
         id: 3,

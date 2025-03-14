@@ -1,0 +1,165 @@
+.container {
+  padding: 32rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.tab.active {
+  color: #007aff;
+  font-weight: 500;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 6rpx;
+  background-color: #007aff;
+  border-radius: 3rpx;
+}
+
+.calendar-container {
+  margin-bottom: 32rpx;
+}
+
+.year-holidays {
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.holiday-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+}
+
+.holiday-item:last-child {
+  border-bottom: none;
+}
+
+.holiday-date {
+  width: 120rpx;
+  text-align: center;
+  margin-right: 24rpx;
+}
+
+.month {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.day {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+  display: block;
+}
+
+.weekday {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.holiday-info {
+  flex: 1;
+}
+
+.holiday-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.holiday-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.holiday-tag {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.holiday-tag.holiday-tag {
+  background-color: #ff9500;
+}
+
+.holiday-tag.workday-tag {
+  background-color: #34c759;
+}
+
+.no-data {
+  padding: 80rpx 0;
+  text-align: center;
+}
+
+.no-data-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.footer {
+  text-align: center;
+}
+
+.tips {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}

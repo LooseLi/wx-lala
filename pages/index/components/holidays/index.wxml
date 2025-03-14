@@ -1,0 +1,69 @@
+<view class="container">
+  <view class="header">
+    <view class="title">节假日日历</view>
+    <view class="subtitle">{{currentYear}}年 - {{nextYear}}年</view>
+  </view>
+  
+  <view class="tabs">
+    <view class="tab {{activeTab === 'current' ? 'active' : ''}}" bindtap="switchTab" data-tab="current">
+      {{currentYear}}年
+    </view>
+    <view class="tab {{activeTab === 'next' ? 'active' : ''}}" bindtap="switchTab" data-tab="next">
+      {{nextYear}}年
+    </view>
+  </view>
+  
+  <view class="calendar-container">
+    <block wx:if="{{activeTab === 'current'}}">
+      <view class="year-holidays">
+        <block wx:for="{{currentYearHolidays}}" wx:key="id">
+          <view class="holiday-item {{item.type === 'holiday' ? 'holiday' : 'workday'}}">
+            <view class="holiday-date">
+              <text class="month">{{item.month}}月</text>
+              <text class="day">{{item.day}}日</text>
+              <text class="weekday">{{item.weekday}}</text>
+            </view>
+            <view class="holiday-info">
+              <view class="holiday-name">{{item.name}}</view>
+              <view class="holiday-desc">{{item.type === 'holiday' ? '放假' : '调休上班'}}</view>
+            </view>
+            <view class="holiday-tag {{item.type === 'holiday' ? 'holiday-tag' : 'workday-tag'}}">
+              {{item.type === 'holiday' ? '休' : '班'}}
+            </view>
+          </view>
+        </block>
+        <view wx:if="{{currentYearHolidays.length === 0}}" class="no-data">
+          <view class="no-data-text">暂无数据</view>
+        </view>
+      </view>
+    </block>
+    
+    <block wx:if="{{activeTab === 'next'}}">
+      <view class="year-holidays">
+        <block wx:for="{{nextYearHolidays}}" wx:key="id">
+          <view class="holiday-item {{item.type === 'holiday' ? 'holiday' : 'workday'}}">
+            <view class="holiday-date">
+              <text class="month">{{item.month}}月</text>
+              <text class="day">{{item.day}}日</text>
+              <text class="weekday">{{item.weekday}}</text>
+            </view>
+            <view class="holiday-info">
+              <view class="holiday-name">{{item.name}}</view>
+              <view class="holiday-desc">{{item.type === 'holiday' ? '放假' : '调休上班'}}</view>
+            </view>
+            <view class="holiday-tag {{item.type === 'holiday' ? 'holiday-tag' : 'workday-tag'}}">
+              {{item.type === 'holiday' ? '休' : '班'}}
+            </view>
+          </view>
+        </block>
+        <view wx:if="{{nextYearHolidays.length === 0}}" class="no-data">
+          <view class="no-data-text">暂无数据</view>
+        </view>
+      </view>
+    </block>
+  </view>
+  
+  <view class="footer">
+    <view class="tips">提示：法定节假日安排可能会有调整，请以国务院发布的通知为准</view>
+  </view>
+</view>
