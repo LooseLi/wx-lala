@@ -1,0 +1,14 @@
+# 忽略的文件和目录
+node_modules
+miniprogram_npm
+dist
+.git
+.wxss.map
+.wxml.map
+.DS_Store
+package-lock.json
+yarn.lock
+*.min.js
+project.config.json
+project.private.config.json
+sitemap.json

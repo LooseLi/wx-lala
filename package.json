@@ -1,0 +1,33 @@
+{
+  "name": "lala",
+  "version": "1.0.0",
+  "description": "一款精心打造的个人生活助手小程序，致力于为用户提供便捷的日常服务和温暖的生活体验。采用了iOS风格的界面设计，注重用户体验和交互细节。",
+  "main": ".eslintrc.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js,.wxs --fix ./",
+    "format": "prettier --write \"**/*.{js,wxs,wxml,wxss,json}\"",
+    "check-format": "prettier --check \"**/*.{js,wxs,wxml,wxss,json}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LooseLi/wx-lala.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LooseLi/wx-lala/issues"
+  },
+  "homepage": "https://github.com/LooseLi/wx-lala#readme",
+  "devDependencies": {
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-miniprogram": "^0.2.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.5.3"
+  }
+}

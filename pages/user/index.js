@@ -19,29 +19,29 @@ Page({
     editingNickname: '', // 正在编辑的昵称
     todoObj: {
       title: '',
-      time: ''
+      time: '',
     },
     todoTitle: '',
     todoTime: '',
     dialogAnimation: false,
-    checkInData: null
+    checkInData: null,
   },
 
   // 打卡成功的回调
   onCheckInSuccess(e) {
-    const checkInData = e.detail
-    console.log('打卡成功：', checkInData)
+    const checkInData = e.detail;
+    console.log('打卡成功：', checkInData);
 
     // 如果需要，可以在这里更新页面上的其他数据
     this.setData({
-      checkInData: checkInData
-    })
+      checkInData: checkInData,
+    });
   },
 
   // 点击事件
   handleUser() {
     plugins.showToast({
-      title: '小松秃头开发中~ 👨‍🦲'
+      title: '小松秃头开发中~ 👨‍🦲',
     });
   },
 
@@ -49,18 +49,18 @@ Page({
   async handleTabBarChange() {
     try {
       this.setData({
-        loading: true
+        loading: true,
       });
 
       // 获取OpenID
       const openIdRes = await wx.cloud.callFunction({
-        name: 'getOpenId'
+        name: 'getOpenId',
       });
       const openid = openIdRes.result.OPENID;
 
       // 获取用户信息
       const res = await userInfo.get();
-      const userRecord = res.data.find(item => item.openid === openid);
+      const userRecord = res.data.find((item) => item.openid === openid);
 
       // 更新状态
       if (userRecord) {
@@ -69,24 +69,24 @@ Page({
           avatar: userRecord.avatar,
           nickname: userRecord.nickname,
           isAuth: true,
-          loading: false
+          loading: false,
         });
       } else {
         this.setData({
           openid,
           loading: false,
-          isAuth: false
+          isAuth: false,
         });
       }
     } catch (err) {
       console.error('初始化失败:', err);
       this.setData({
         loading: false,
-        isAuth: false
+        isAuth: false,
       });
       wx.showToast({
         title: '加载失败，请重试',
-        icon: 'none'
+        icon: 'none',
       });
     }
   },
@@ -95,7 +95,7 @@ Page({
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: res => {
+      success: (res) => {
         // 生成默认用户信息
         const defaultAvatar = '/static/images/default-avatar.jpg';
         const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
@@ -107,61 +107,61 @@ Page({
           isAuth: true,
           originalAvatar: res.userInfo.avatarUrl, // 保存原始头像
           originalNickname: res.userInfo.nickName, // 保存原始昵称
-          updateTime: new Date()
-        }
+          updateTime: new Date(),
+        };
 
         // 存储用户信息到本地
-        wx.setStorageSync('userInfo', userInfo)
+        wx.setStorageSync('userInfo', userInfo);
 
         // 更新页面显示
-        this.setData(userInfo)
+        this.setData(userInfo);
 
         // 存储到数据库
         db.collection('userInfo').add({
           data: {
             ...userInfo, // 展开用户信息对象
             openid: this.data.openid,
-            createTime: new Date() // 创建时间
+            createTime: new Date(), // 创建时间
           },
-          success: res => {
+          success: (res) => {
             // 刷新打卡组件状态
             setTimeout(() => {
-              const checkInComponent = this.selectComponent('#checkIn')
+              const checkInComponent = this.selectComponent('#checkIn');
               if (checkInComponent) {
-                checkInComponent.checkTodayStatus()
+                checkInComponent.checkTodayStatus();
               }
-            }, 1500) // 等待 1.5 秒确保数据已经存储
-            console.log('用户信息存储成功：', res)
-          }
-        })
+            }, 1500); // 等待 1.5 秒确保数据已经存储
+            console.log('用户信息存储成功：', res);
+          },
+        });
       },
-      fail: err => {
-        console.error('获取用户信息失败：', err)
+      fail: (err) => {
+        console.error('获取用户信息失败：', err);
         wx.showToast({
           title: '获取信息失败',
-          icon: 'none'
-        })
-      }
+          icon: 'none',
+        });
+      },
     });
   },
 
   openDialog() {
     this.setData({
-      dialog: true
-    })
+      dialog: true,
+    });
   },
 
   closeDialog() {
     this.setData({
-      dialog: false
-    })
+      dialog: false,
+    });
     this.resetData();
   },
 
   resetData() {
     this.setData({
       todoTitle: '',
-      todoTime: ''
+      todoTime: '',
     });
   },
 
@@ -172,7 +172,7 @@ Page({
 
   bindTodoChange(e) {
     this.setData({
-      todoTitle: e.detail.value
+      todoTitle: e.detail.value,
     });
   },
 
@@ -188,8 +188,8 @@ Page({
       fail: (err) => {
         console.log(err);
       },
-      complete: () => {}
-    })
+      complete: () => {},
+    });
   },
 
   // 发送消息
@@ -200,7 +200,7 @@ Page({
       name: 'sendMsg',
       data: {
         title: this.data.todoTitle,
-        time: this.data.todoTime
+        time: this.data.todoTime,
       },
       success: (res) => {
         console.log(res);
@@ -208,8 +208,8 @@ Page({
       },
       fail: (err) => {
         console.log(err);
-      }
-    })
+      },
+    });
   },
 
   // 添加待办事项到数据库
@@ -220,9 +220,9 @@ Page({
       data: {
         title: this.data.todoTitle,
         time: new Date(todoTime),
-        timestamp: todoGetTime
-      }
-    })
+        timestamp: todoGetTime,
+      },
+    });
   },
 
   // 确认添加
@@ -232,8 +232,8 @@ Page({
       success: async (res) => {
         await this.add();
         this.requestSubscribeMessage();
-      }
-    })
+      },
+    });
   },
 
   /**
@@ -243,13 +243,13 @@ Page({
     this.handleTabBarChange();
 
     // 从本地存储读取用户信息
-    const userInfo = wx.getStorageSync('userInfo')
+    const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
       this.setData({
         avatar: userInfo.avatar,
         nickname: userInfo.nickname,
-        isAuth: true
-      })
+        isAuth: true,
+      });
     }
   },
 
@@ -264,9 +264,9 @@ Page({
   onShow: function () {
     if (this.data.isAuth) {
       // 刷新打卡组件状态
-      const checkInComponent = this.selectComponent('#checkIn')
+      const checkInComponent = this.selectComponent('#checkIn');
       if (checkInComponent) {
-        checkInComponent.checkTodayStatus()
+        checkInComponent.checkTodayStatus();
       }
     }
   },
@@ -303,121 +303,121 @@ Page({
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePath = res.tempFilePaths[0]
+        const tempFilePath = res.tempFilePaths[0];
 
         // 上传到云存储
         wx.cloud.uploadFile({
           cloudPath: `avatar/${this.data.openid}_${Date.now()}.jpg`,
           filePath: tempFilePath,
-          success: res => {
-            const avatar = res.fileID
+          success: (res) => {
+            const avatar = res.fileID;
 
             // 更新本地和数据库
             this.updateUserInfo({
-              avatar
-            })
+              avatar,
+            });
           },
-          fail: err => {
+          fail: (err) => {
             wx.showToast({
               title: '上传失败',
-              icon: 'none'
-            })
-          }
-        })
-      }
-    })
+              icon: 'none',
+            });
+          },
+        });
+      },
+    });
   },
 
   // 编辑昵称
   editNickname() {
     this.setData({
       showNicknameEdit: true,
-      editingNickname: this.data.nickname
-    })
+      editingNickname: this.data.nickname,
+    });
 
     // 添加延迟，确保动画效果顺畅
     setTimeout(() => {
       this.setData({
-        dialogAnimation: true
-      })
-    }, 50)
+        dialogAnimation: true,
+      });
+    }, 50);
   },
 
   // 关闭昵称编辑
   closeNicknameEdit() {
     this.setData({
       showNicknameEdit: false,
-      editingNickname: ''
-    })
+      editingNickname: '',
+    });
   },
 
   // 昵称输入事件
   onNicknameInput(e) {
-    const value = e.detail.value
+    const value = e.detail.value;
     this.setData({
-      editingNickname: value
-    })
+      editingNickname: value,
+    });
   },
 
   // 保存昵称
   saveNickname() {
-    const nickname = this.data.editingNickname.trim()
+    const nickname = this.data.editingNickname.trim();
     if (!nickname) {
       wx.showToast({
         title: '昵称不能为空',
-        icon: 'none'
-      })
-      return
+        icon: 'none',
+      });
+      return;
     }
 
     if (nickname === this.data.nickname) {
-      this.closeNicknameEdit()
-      return
+      this.closeNicknameEdit();
+      return;
     }
 
     // 更新本地和数据库
     this.updateUserInfo({
-      nickname
-    })
-    this.closeNicknameEdit()
+      nickname,
+    });
+    this.closeNicknameEdit();
   },
 
   // 更新用户信息
   updateUserInfo(data) {
     // 更新本地数据
-    const userInfo = wx.getStorageSync('userInfo')
+    const userInfo = wx.getStorageSync('userInfo');
     const newUserInfo = {
       ...userInfo,
       ...data,
-      updateTime: new Date()
-    }
-    wx.setStorageSync('userInfo', newUserInfo)
+      updateTime: new Date(),
+    };
+    wx.setStorageSync('userInfo', newUserInfo);
 
     // 更新页面显示
-    this.setData(data)
+    this.setData(data);
 
     // 更新数据库
     db.collection('userInfo')
       .where({
-        openid: this.data.openid
+        openid: this.data.openid,
       })
       .update({
         data: {
           ...data,
-          updateTime: new Date()
-        }
+          updateTime: new Date(),
+        },
       })
       .then(() => {
         wx.showToast({
           title: '更新成功',
-          icon: 'success'
-        })
+          icon: 'success',
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         wx.showToast({
           title: '更新失败',
-          icon: 'none'
-        })
-      })
-  }
+          icon: 'none',
+        });
+      });
+  },
 });
