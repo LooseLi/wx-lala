@@ -5,6 +5,130 @@ const holidays = db.collection('holidays');
 // 引入农历转换库
 const solarlunar = require('../../../../miniprogram_npm/solarlunar/index');
 
+// 自定义节日数据
+const customFestivals = [
+  {
+    name: '小拉花',
+    date: '9-1',
+    tips: '生日快乐鸭🎂',
+    isLunar: false,
+  },
+  {
+    name: '小拉花',
+    date: '七月-三十',
+    tips: '农历生日快乐鸭~',
+    isLunar: true,
+  },
+  {
+    name: '母亲节',
+    date: '5-11',
+    tips: '',
+    isLunar: false,
+  },
+  {
+    name: '父亲节',
+    date: '6-15',
+    tips: '',
+    isLunar: false,
+  },
+  {
+    name: '元旦',
+    date: '1-1',
+    tips: '',
+    isLunar: false,
+  },
+  {
+    name: '除夕',
+    date: '腊月-廿九',
+    tips: '吃年夜饭啦~',
+    isLunar: true,
+  },
+  {
+    name: '春节',
+    date: '正月-初一',
+    tips: '新年快乐~',
+    isLunar: true,
+  },
+  {
+    name: '情人节',
+    date: '2-14',
+    tips: '情人节不快乐',
+    isLunar: false,
+  },
+  {
+    name: '元宵节',
+    date: '正月-十五',
+    tips: '吃元宵啦~',
+    isLunar: true,
+  },
+  {
+    name: '妇女节',
+    date: '3-8',
+    tips: '女神节快乐~',
+    isLunar: false,
+  },
+  {
+    name: '劳动节',
+    date: '5-1',
+    tips: '',
+    isLunar: false,
+  },
+  {
+    name: '端午节',
+    date: '五月-初五',
+    tips: '吃个粽子吧~',
+    isLunar: true,
+  },
+  {
+    name: '中秋节',
+    date: '八月-十五',
+    tips: '吃个月饼吧~',
+    isLunar: true,
+  },
+  {
+    name: '国庆节',
+    date: '10-1',
+    tips: '快乐假期！happy',
+    isLunar: false,
+  },
+  {
+    name: '七夕',
+    date: '七月-初七',
+    tips: '我们大抵不会相会了吧😔',
+    isLunar: true,
+  },
+  {
+    name: '重阳节',
+    date: '九月-初九',
+    tips: '给长辈打个电话吧',
+    isLunar: true,
+  },
+  {
+    name: '万圣夜',
+    date: '10-31',
+    tips: '小捣蛋👻',
+    isLunar: false,
+  },
+  {
+    name: '万圣节',
+    date: '11-1',
+    tips: '',
+    isLunar: false,
+  },
+  {
+    name: '平安夜',
+    date: '12-24',
+    tips: '平安夜啦🍎',
+    isLunar: false,
+  },
+  {
+    name: '圣诞节',
+    date: '12-25',
+    tips: '圣诞节快乐🎄',
+    isLunar: false,
+  },
+];
+
 Page({
   /**
    * 页面的初始数据
@@ -207,7 +331,15 @@ Page({
 
     // 获取农历信息
     const lunarInfo = solarlunar.solar2lunar(year, month, day);
-
+    
+    // 检查是否有匹配的自定义节日
+    const solarDate = `${month}-${day}`;
+    const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
+    
+    // 查找自定义节日
+    const customSolarFestival = customFestivals.find(item => !item.isLunar && item.date === solarDate);
+    const customLunarFestival = customFestivals.find(item => item.isLunar && item.date === lunarDate);
+    
     // 构建选中日期信息
     const selectedDateInfo = {
       year,
@@ -225,6 +357,8 @@ Page({
         festival: lunarInfo.festival || '',
         isLeap: lunarInfo.isLeap,
       },
+      // 添加自定义节日信息
+      customFestival: customSolarFestival || customLunarFestival || null,
     };
 
     this.setData({
@@ -313,7 +447,23 @@ Page({
    * @returns {String} 显示内容
    */
   getLunarDisplay(lunarInfo) {
-    // 优先级：节气 > 农历节日 > 公历节日 > 农历日期
+    // 检查是否有匹配的自定义节日
+    const solarDate = `${lunarInfo.cMonth}-${lunarInfo.cDay}`;
+    const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
+    
+    // 查找公历节日
+    const solarFestival = customFestivals.find(item => !item.isLunar && item.date === solarDate);
+    if (solarFestival) {
+      return solarFestival.name;
+    }
+    
+    // 查找农历节日
+    const lunarFestival = customFestivals.find(item => item.isLunar && item.date === lunarDate);
+    if (lunarFestival) {
+      return lunarFestival.name;
+    }
+    
+    // 原有的显示逻辑：节气 > 农历节日 > 公历节日 > 农历日期
     if (lunarInfo.term) {
       return lunarInfo.term;
     } else if (lunarInfo.festival) {

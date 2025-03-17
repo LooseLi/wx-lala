@@ -69,6 +69,12 @@
         {{selectedDateInfo.isHoliday ? '放假快乐😆' : '调休上班🥹'}}
       </view>
     </view>
+    <view class="festival-details" wx:elif="{{selectedDateInfo.customFestival}}">
+      <view class="festival-name">{{selectedDateInfo.customFestival.name}}</view>
+      <view class="festival-tips" wx:if="{{selectedDateInfo.customFestival.tips}}">
+        {{selectedDateInfo.customFestival.tips}}
+      </view>
+    </view>
     <view class="no-holiday" wx:else>
       <text>这一天没有特殊安排</text>
     </view>
