@@ -44,6 +44,9 @@
           >
             <view class="date-text">{{item.day}}</view>
             
+            <!-- 农历日期 -->
+            <view class="lunar-date" wx:if="{{item.lunar}}">{{item.lunar.display}}</view>
+            
             <!-- 假期标记 -->
             <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
             
@@ -58,6 +61,7 @@
   <view class="selected-date-info" wx:if="{{selectedDateInfo}}">
     <view class="date-header">
       <text class="selected-date">{{selectedDateInfo.month}}月{{selectedDateInfo.day}}日 {{selectedDateInfo.weekday}}</text>
+      <text class="lunar-info" wx:if="{{selectedDateInfo.lunar}}">农历 {{selectedDateInfo.lunar.month}}{{selectedDateInfo.lunar.day}}</text>
     </view>
     <view class="holiday-details" wx:if="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
       <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>

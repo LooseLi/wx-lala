@@ -2,6 +2,9 @@
 const db = wx.cloud.database();
 const holidays = db.collection('holidays');
 
+// 引入农历转换库
+const solarlunar = require('solarlunar');
+
 Page({
   /**
    * 页面的初始数据
@@ -201,6 +204,9 @@ Page({
     // 从日期映射中获取假期信息
     const { holidayDateMap } = this.data;
     const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+    
+    // 获取农历信息
+    const lunarInfo = solarlunar.solar2lunar(year, month, day);
 
     // 构建选中日期信息
     const selectedDateInfo = {
@@ -211,6 +217,14 @@ Page({
       isHoliday: dateInfo ? dateInfo.type === 'holiday' : false,
       isWorkday: dateInfo ? dateInfo.type === 'workday' : false,
       holidayName: dateInfo ? dateInfo.name : '',
+      // 添加农历信息
+      lunar: {
+        day: lunarInfo.IDayCn,
+        month: lunarInfo.IMonthCn,
+        term: lunarInfo.Term || '',
+        festival: lunarInfo.festival || '',
+        isLeap: lunarInfo.isLeap
+      }
     };
 
     this.setData({
@@ -288,6 +302,29 @@ Page({
   },
 
   /**
+   * 获取农历显示内容
+   * @param {Object} lunarInfo - 农历信息对象
+   * @returns {String} 显示内容
+   */
+  getLunarDisplay(lunarInfo) {
+    // 优先级：节气 > 农历节日 > 公历节日 > 农历日期
+    if (lunarInfo.Term) {
+      return lunarInfo.Term;
+    } else if (lunarInfo.festival) {
+      return lunarInfo.festival;
+    } else if (lunarInfo.solarFestival) {
+      return lunarInfo.solarFestival;
+    } else {
+      // 农历月初显示月份
+      if (lunarInfo.IDayCn === '初一') {
+        return lunarInfo.IMonthCn;
+      } else {
+        return lunarInfo.IDayCn;
+      }
+    }
+  },
+
+  /**
    * 生成指定年月的日历数据
    */
   generateCalendarForMonth(year, month, holidayDateMap) {
@@ -329,6 +366,10 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+          
+          // 获取农历信息
+          const lunarInfo = solarlunar.solar2lunar(prevYear, prevMonth + 1, prevMonthDay);
+          const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
           weekRow.push({
             day: prevMonthDay,
@@ -343,6 +384,14 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 添加农历信息
+            lunar: {
+              day: lunarInfo.IDayCn,
+              month: lunarInfo.IMonthCn,
+              term: lunarInfo.Term || '',
+              festival: lunarInfo.festival || '',
+              display: lunarDisplay
+            }
           });
         }
         // 当前月的日期
@@ -351,6 +400,10 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+          
+          // 获取农历信息
+          const lunarInfo = solarlunar.solar2lunar(year, month + 1, dayCounter);
+          const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
           weekRow.push({
             day: dayCounter,
@@ -365,6 +418,14 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 添加农历信息
+            lunar: {
+              day: lunarInfo.IDayCn,
+              month: lunarInfo.IMonthCn,
+              term: lunarInfo.Term || '',
+              festival: lunarInfo.festival || '',
+              display: lunarDisplay
+            }
           });
 
           dayCounter++;
@@ -377,6 +438,10 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
+          
+          // 获取农历信息
+          const lunarInfo = solarlunar.solar2lunar(nextYear, nextMonth + 1, nextMonthDay);
+          const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
           weekRow.push({
             day: nextMonthDay,
@@ -391,6 +456,14 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 添加农历信息
+            lunar: {
+              day: lunarInfo.IDayCn,
+              month: lunarInfo.IMonthCn,
+              term: lunarInfo.Term || '',
+              festival: lunarInfo.festival || '',
+              display: lunarDisplay
+            }
           });
 
           nextMonthDay++;
