@@ -29,7 +29,7 @@
           current="{{currentIndex}}" 
           bindchange="handleSwiperChange" 
           circular="{{true}}"
-          duration="300"
+          duration="200"
           skip-hidden-item-layout="{{true}}">
     <swiper-item wx:for="{{months}}" wx:key="id" wx:for-item="month" wx:for-index="monthIndex">
       <view class="calendar-grid">
