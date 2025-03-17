@@ -64,9 +64,20 @@
       <text class="lunar-info" wx:if="{{selectedDateInfo.lunar}}">农历 {{selectedDateInfo.lunar.month}}{{selectedDateInfo.lunar.day}}</text>
     </view>
     <view class="festival-details" wx:if="{{selectedDateInfo.customFestival}}">
-      <view class="festival-name">{{selectedDateInfo.customFestival.name}}</view>
-      <view class="festival-tips" wx:if="{{selectedDateInfo.customFestival.tips}}">
-        {{selectedDateInfo.customFestival.tips}}
+      <view wx:if="{{selectedDateInfo.customFestival.tips}}">
+        <view class="festival-name">{{selectedDateInfo.customFestival.name}}</view>
+        <view class="festival-tips">
+          {{selectedDateInfo.customFestival.tips}}
+        </view>
+      </view>
+      <view class="holiday-details" wx:elif="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
+        <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>
+        <view class="holiday-type {{selectedDateInfo.isHoliday ? 'holiday-type' : 'workday-type'}}">
+          {{selectedDateInfo.isHoliday ? '放假快乐😆' : '调休上班🥹'}}
+        </view>
+      </view>
+      <view class="no-holiday" wx:else>
+        <text>这一天没有特殊安排</text>
       </view>
     </view>
     <view class="holiday-details" wx:elif="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">

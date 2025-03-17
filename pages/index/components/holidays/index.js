@@ -34,7 +34,7 @@ const customFestivals = [
   {
     name: '元旦',
     date: '1-1',
-    tips: '',
+    tips: '新的一年啦~',
     isLunar: false,
   },
   {
@@ -70,7 +70,7 @@ const customFestivals = [
   {
     name: '劳动节',
     date: '5-1',
-    tips: '',
+    tips: '牛马专属',
     isLunar: false,
   },
   {
@@ -94,7 +94,7 @@ const customFestivals = [
   {
     name: '七夕',
     date: '七月-初七',
-    tips: '我们大抵不会相会了吧😔',
+    tips: '想你😔',
     isLunar: true,
   },
   {
@@ -106,7 +106,7 @@ const customFestivals = [
   {
     name: '万圣夜',
     date: '10-31',
-    tips: '小捣蛋👻',
+    tips: '捣蛋👻',
     isLunar: false,
   },
   {
