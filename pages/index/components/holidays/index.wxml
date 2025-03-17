@@ -45,7 +45,7 @@
             <view class="date-text">{{item.day}}</view>
             
             <!-- 农历日期 -->
-            <view class="lunar-date" wx:if="{{item.lunar}}">{{item.lunar.display || item.lunar.day}}</view>
+            <view class="lunar-date {{item.isCustomFestival ? 'custom-festival' : ''}}" wx:if="{{item.lunar}}">{{item.lunar.display || item.lunar.day}}</view>
             
             <!-- 假期标记 -->
             <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
@@ -63,16 +63,16 @@
       <text class="selected-date">{{selectedDateInfo.month}}月{{selectedDateInfo.day}}日 {{selectedDateInfo.weekday}}</text>
       <text class="lunar-info" wx:if="{{selectedDateInfo.lunar}}">农历 {{selectedDateInfo.lunar.month}}{{selectedDateInfo.lunar.day}}</text>
     </view>
-    <view class="holiday-details" wx:if="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
-      <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>
-      <view class="holiday-type {{selectedDateInfo.isHoliday ? 'holiday-type' : 'workday-type'}}">
-        {{selectedDateInfo.isHoliday ? '放假快乐😆' : '调休上班🥹'}}
-      </view>
-    </view>
-    <view class="festival-details" wx:elif="{{selectedDateInfo.customFestival}}">
+    <view class="festival-details" wx:if="{{selectedDateInfo.customFestival}}">
       <view class="festival-name">{{selectedDateInfo.customFestival.name}}</view>
       <view class="festival-tips" wx:if="{{selectedDateInfo.customFestival.tips}}">
         {{selectedDateInfo.customFestival.tips}}
+      </view>
+    </view>
+    <view class="holiday-details" wx:elif="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
+      <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>
+      <view class="holiday-type {{selectedDateInfo.isHoliday ? 'holiday-type' : 'workday-type'}}">
+        {{selectedDateInfo.isHoliday ? '放假快乐😆' : '调休上班🥹'}}
       </view>
     </view>
     <view class="no-holiday" wx:else>

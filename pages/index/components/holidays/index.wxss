@@ -165,6 +165,12 @@
   z-index: 2;
 }
 
+/* 自定义节日样式 */
+.custom-festival {
+  color: #4a90e2; /* 淡蓝色 */
+  font-weight: 500;
+}
+
 /* 节假日和调休日样式 */
 .holiday {
   background-color: #e4f8e9;
@@ -222,9 +228,9 @@
 .today::after {
   content: '';
   position: absolute;
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 76rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 80rpx;
   background-color: #007aff;
   z-index: 1;
 }
@@ -247,9 +253,9 @@
 .selected::after {
   content: '';
   position: absolute;
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 76rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 80rpx;
   border: 2rpx solid #007aff;
   box-sizing: border-box;
   z-index: 1;

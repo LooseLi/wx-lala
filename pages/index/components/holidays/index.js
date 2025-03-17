@@ -331,15 +331,19 @@ Page({
 
     // 获取农历信息
     const lunarInfo = solarlunar.solar2lunar(year, month, day);
-    
+
     // 检查是否有匹配的自定义节日
     const solarDate = `${month}-${day}`;
     const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
-    
+
     // 查找自定义节日
-    const customSolarFestival = customFestivals.find(item => !item.isLunar && item.date === solarDate);
-    const customLunarFestival = customFestivals.find(item => item.isLunar && item.date === lunarDate);
-    
+    const customSolarFestival = customFestivals.find(
+      item => !item.isLunar && item.date === solarDate,
+    );
+    const customLunarFestival = customFestivals.find(
+      item => item.isLunar && item.date === lunarDate,
+    );
+
     // 构建选中日期信息
     const selectedDateInfo = {
       year,
@@ -450,19 +454,19 @@ Page({
     // 检查是否有匹配的自定义节日
     const solarDate = `${lunarInfo.cMonth}-${lunarInfo.cDay}`;
     const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
-    
+
     // 查找公历节日
     const solarFestival = customFestivals.find(item => !item.isLunar && item.date === solarDate);
     if (solarFestival) {
       return solarFestival.name;
     }
-    
+
     // 查找农历节日
     const lunarFestival = customFestivals.find(item => item.isLunar && item.date === lunarDate);
     if (lunarFestival) {
       return lunarFestival.name;
     }
-    
+
     // 原有的显示逻辑：节气 > 农历节日 > 公历节日 > 农历日期
     if (lunarInfo.term) {
       return lunarInfo.term;
@@ -527,6 +531,15 @@ Page({
           const lunarInfo = solarlunar.solar2lunar(prevYear, prevMonth + 1, prevMonthDay);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
+          // 检查是否有匹配的自定义节日
+          const solarDate = `${prevMonth + 1}-${prevMonthDay}`;
+          const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
+          const isCustomFestival = customFestivals.some(
+            item =>
+              (item.isLunar && item.date === lunarDate) ||
+              (!item.isLunar && item.date === solarDate),
+          );
+
           weekRow.push({
             day: prevMonthDay,
             currentMonth: false,
@@ -540,6 +553,8 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 标记是否为自定义节日
+            isCustomFestival: isCustomFestival,
             // 添加农历信息
             lunar: {
               day: lunarInfo.dayCn,
@@ -561,6 +576,15 @@ Page({
           const lunarInfo = solarlunar.solar2lunar(year, month + 1, dayCounter);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
+          // 检查是否有匹配的自定义节日
+          const solarDate = `${month + 1}-${dayCounter}`;
+          const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
+          const isCustomFestival = customFestivals.some(
+            item =>
+              (item.isLunar && item.date === lunarDate) ||
+              (!item.isLunar && item.date === solarDate),
+          );
+
           weekRow.push({
             day: dayCounter,
             currentMonth: true,
@@ -574,6 +598,8 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 标记是否为自定义节日
+            isCustomFestival: isCustomFestival,
             // 添加农历信息
             lunar: {
               day: lunarInfo.dayCn,
@@ -599,6 +625,15 @@ Page({
           const lunarInfo = solarlunar.solar2lunar(nextYear, nextMonth + 1, nextMonthDay);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
 
+          // 检查是否有匹配的自定义节日
+          const solarDate = `${nextMonth + 1}-${nextMonthDay}`;
+          const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
+          const isCustomFestival = customFestivals.some(
+            item =>
+              (item.isLunar && item.date === lunarDate) ||
+              (!item.isLunar && item.date === solarDate),
+          );
+
           weekRow.push({
             day: nextMonthDay,
             currentMonth: false,
@@ -612,6 +647,8 @@ Page({
             isLastDay: dateInfo && dateInfo.isLastDay,
             holidayName: dateInfo ? dateInfo.name : '',
             holidayId: dateInfo ? dateInfo.holidayId : '',
+            // 标记是否为自定义节日
+            isCustomFestival: isCustomFestival,
             // 添加农历信息
             lunar: {
               day: lunarInfo.dayCn,
