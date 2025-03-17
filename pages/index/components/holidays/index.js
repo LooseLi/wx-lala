@@ -11,9 +11,9 @@ Page({
     nextYear: new Date().getFullYear() + 1,
     activeYear: new Date().getFullYear(), // 当前选中的年份
     currentMonth: new Date().getMonth(), // 当前选中的月份（0-11）
-    currentMonthName: '', // 当前月份名称
     weekdays: ['日', '一', '二', '三', '四', '五', '六'],
-    calendarRows: [], // 日历网格数据
+    months: [], // 三个月的日历数据（上个月、当前月、下个月）
+    currentIndex: 1, // 当前显示的是中间月份
     holidayData: [], // 节假日数据
     selectedDate: null, // 选中的日期
     selectedDateInfo: null, // 选中日期的详细信息
@@ -32,13 +32,33 @@ Page({
   },
 
   /**
-   * 上个月
+   * 处理滑动切换事件
    */
-  prevMonth() {
-    let { currentMonth, activeYear } = this.data;
-    currentMonth--;
+  handleSwiperChange(e) {
+    const lastIndex = this.data.currentIndex;
+    const currentIndex = e.detail.current;
 
-    // 如果月份小于0，则切换到上一年的12月
+    // 判断滑动方向
+    if ((lastIndex === 0 && currentIndex === 2) || (lastIndex === 2 && currentIndex === 0)) {
+      // 不处理循环滑动的特殊情况
+      return;
+    } else if (currentIndex > lastIndex) {
+      // 向左滑动（显示下个月）
+      this.updateCalendarToNextMonth();
+    } else if (currentIndex < lastIndex) {
+      // 向右滑动（显示上个月）
+      this.updateCalendarToPrevMonth();
+    }
+  },
+
+  /**
+   * 更新日历到上个月
+   */
+  updateCalendarToPrevMonth() {
+    let { currentMonth, activeYear } = this.data;
+
+    // 计算上个月的年和月
+    currentMonth--;
     if (currentMonth < 0) {
       currentMonth = 11;
       // 只允许在当前年和下一年之间切换
@@ -50,19 +70,21 @@ Page({
     this.setData({
       currentMonth,
       activeYear,
+      currentIndex: 1, // 始终将当前视图重置为中间项
     });
 
-    this.generateCalendar();
+    // 重新生成三个月的日历数据
+    this.generateThreeMonths();
   },
 
   /**
-   * 下个月
+   * 更新日历到下个月
    */
-  nextMonth() {
+  updateCalendarToNextMonth() {
     let { currentMonth, activeYear } = this.data;
-    currentMonth++;
 
-    // 如果月份大于11，则切换到下一年的1月
+    // 计算下个月的年和月
+    currentMonth++;
     if (currentMonth > 11) {
       currentMonth = 0;
       // 只允许在当前年和下一年之间切换
@@ -74,9 +96,25 @@ Page({
     this.setData({
       currentMonth,
       activeYear,
+      currentIndex: 1, // 始终将当前视图重置为中间项
     });
 
-    this.generateCalendar();
+    // 重新生成三个月的日历数据
+    this.generateThreeMonths();
+  },
+
+  /**
+   * 上个月（按钮点击）
+   */
+  prevMonth() {
+    this.updateCalendarToPrevMonth();
+  },
+
+  /**
+   * 下个月（按钮点击）
+   */
+  nextMonth() {
+    this.updateCalendarToNextMonth();
   },
 
   /**
@@ -84,7 +122,27 @@ Page({
    */
   selectDate(e) {
     const dateString = e.currentTarget.dataset.date;
+    const monthIndex = e.currentTarget.dataset.monthIndex;
     const date = new Date(dateString);
+
+    // 检查是否需要切换月份
+    if (monthIndex !== undefined) {
+      const selectedMonth = new Date(dateString).getMonth();
+      const currentMonth =
+        this.data.activeYear === new Date(dateString).getFullYear() ? this.data.currentMonth : null;
+
+      // 如果选中的是上个月或下个月的日期，则切换到相应的月份
+      if (currentMonth !== null && selectedMonth !== currentMonth) {
+        const selectedYear = new Date(dateString).getFullYear();
+        this.setData({
+          activeYear: selectedYear,
+          currentMonth: selectedMonth,
+        });
+
+        // 重新生成日历
+        this.generateThreeMonths();
+      }
+    }
 
     // 更新选中的日期
     this.setData({
@@ -102,20 +160,29 @@ Page({
    * 更新日历中选中日期的状态
    */
   updateSelectedDateInCalendar(selectedDate) {
-    const { calendarRows } = this.data;
+    const { months } = this.data;
 
-    // 遍历日历网格，更新选中状态
-    const updatedRows = calendarRows.map(row => {
-      return row.map(cell => {
-        return {
-          ...cell,
-          isSelected: cell.date === selectedDate,
-        };
+    if (!months || months.length === 0) return;
+
+    // 遍历所有月份的日历网格，更新选中状态
+    const updatedMonths = months.map(month => {
+      const updatedRows = month.rows.map(row => {
+        return row.map(cell => {
+          return {
+            ...cell,
+            isSelected: cell.date === selectedDate,
+          };
+        });
       });
+
+      return {
+        ...month,
+        rows: updatedRows,
+      };
     });
 
     this.setData({
-      calendarRows: updatedRows,
+      months: updatedMonths,
     });
   },
 
@@ -154,21 +221,20 @@ Page({
   /**
    * 生成日历数据
    */
-  generateCalendar() {
+  /**
+   * 生成三个月的日历数据
+   */
+  generateThreeMonths() {
     const { activeYear, currentMonth, holidayDateMap } = this.data;
+    const months = [];
 
-    // 获取当前月的第一天
-    const firstDayOfMonth = new Date(activeYear, currentMonth, 1);
-    // 获取当前月的最后一天
-    const lastDayOfMonth = new Date(activeYear, currentMonth + 1, 0);
+    // 计算上一个月
+    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const prevYear = currentMonth === 0 ? activeYear - 1 : activeYear;
 
-    // 获取当前月第一天是星期几（0-6）
-    const firstDayWeekday = firstDayOfMonth.getDay();
-    // 获取当前月的总天数
-    const daysInMonth = lastDayOfMonth.getDate();
-
-    // 获取上个月的最后几天（用于填充日历第一行）
-    const prevMonthLastDay = new Date(activeYear, currentMonth, 0).getDate();
+    // 计算下一个月
+    const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    const nextYear = currentMonth === 11 ? activeYear + 1 : activeYear;
 
     // 设置月份名称
     const monthNames = [
@@ -185,11 +251,62 @@ Page({
       '十一月',
       '十二月',
     ];
-    const currentMonthName = monthNames[currentMonth];
+
+    // 生成上个月的日历
+    months.push({
+      id: `${prevYear}-${prevMonth}`,
+      year: prevYear,
+      month: prevMonth,
+      monthName: monthNames[prevMonth],
+      rows: this.generateCalendarForMonth(prevYear, prevMonth, holidayDateMap),
+    });
+
+    // 生成当前月的日历
+    months.push({
+      id: `${activeYear}-${currentMonth}`,
+      year: activeYear,
+      month: currentMonth,
+      monthName: monthNames[currentMonth],
+      rows: this.generateCalendarForMonth(activeYear, currentMonth, holidayDateMap),
+    });
+
+    // 生成下个月的日历
+    months.push({
+      id: `${nextYear}-${nextMonth}`,
+      year: nextYear,
+      month: nextMonth,
+      monthName: monthNames[nextMonth],
+      rows: this.generateCalendarForMonth(nextYear, nextMonth, holidayDateMap),
+    });
+
+    this.setData({ months });
+
+    // 如果有选中的日期，更新选中状态
+    if (this.data.selectedDate) {
+      this.updateSelectedDateInCalendar(this.data.selectedDate);
+    }
+  },
+
+  /**
+   * 生成指定年月的日历数据
+   */
+  generateCalendarForMonth(year, month, holidayDateMap) {
+    // 获取当前月的第一天
+    const firstDayOfMonth = new Date(year, month, 1);
+    // 获取当前月的最后一天
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    // 获取当前月第一天是星期几（0-6）
+    const firstDayWeekday = firstDayOfMonth.getDay();
+    // 获取当前月的总天数
+    const daysInMonth = lastDayOfMonth.getDate();
+
+    // 获取上个月的最后几天（用于填充日历第一行）
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
 
     // 获取今天的日期信息
     const today = new Date();
-    const isCurrentMonth = today.getFullYear() === activeYear && today.getMonth() === currentMonth;
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
 
     // 构建日历网格（6行7列）
     const calendarRows = [];
@@ -206,8 +323,8 @@ Page({
         if (row === 0 && col < firstDayWeekday) {
           // 填充上个月的日期
           const prevMonthDay = prevMonthLastDay - (firstDayWeekday - col - 1);
-          const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-          const prevYear = currentMonth === 0 ? activeYear - 1 : activeYear;
+          const prevMonth = month === 0 ? 11 : month - 1;
+          const prevYear = month === 0 ? year - 1 : year;
           const dateString = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(prevMonthDay).padStart(2, '0')}`;
 
           // 获取日期类型信息
@@ -230,7 +347,7 @@ Page({
         }
         // 当前月的日期
         else if (dayCounter <= daysInMonth) {
-          const dateString = `${activeYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
+          const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
@@ -254,8 +371,8 @@ Page({
         }
         // 下个月的日期
         else {
-          const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
-          const nextYear = currentMonth === 11 ? activeYear + 1 : activeYear;
+          const nextMonth = month === 11 ? 0 : month + 1;
+          const nextYear = month === 11 ? year + 1 : year;
           const dateString = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextMonthDay).padStart(2, '0')}`;
 
           // 获取日期类型信息
@@ -292,15 +409,14 @@ Page({
       }
     }
 
-    this.setData({
-      calendarRows,
-      currentMonthName,
-    });
+    return calendarRows;
+  },
 
-    // 如果有选中的日期，更新选中状态
-    if (this.data.selectedDate) {
-      this.updateSelectedDateInCalendar(this.data.selectedDate);
-    }
+  /**
+   * 生成日历数据（兼容原有代码）
+   */
+  generateCalendar() {
+    this.generateThreeMonths();
   },
 
   /**
@@ -399,8 +515,8 @@ Page({
         isLoading: false,
       });
 
-      // 生成日历
-      this.generateCalendar();
+      // 生成三个月的日历数据
+      this.generateThreeMonths();
 
       // 默认选中今天
       const today = new Date();

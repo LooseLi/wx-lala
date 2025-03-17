@@ -1,6 +1,6 @@
 <view class="container">
   <view class="header">
-    <view class="title">节假日日历</view>
+    <!-- <view class="title">节假日日历</view> -->
     <view class="year-selector">
       <view class="year-btn {{activeYear === currentYear ? 'active' : ''}}" bindtap="switchYear" data-year="{{currentYear}}">
         {{currentYear}}年
@@ -15,7 +15,7 @@
     <view class="nav-btn" bindtap="prevMonth">
       <text class="nav-icon">〈</text>
     </view>
-    <view class="current-month">{{currentMonthName}}</view>
+    <view class="current-month">{{months[currentIndex].year}}年{{months[currentIndex].monthName}}</view>
     <view class="nav-btn" bindtap="nextMonth">
       <text class="nav-icon">〉</text>
     </view>
@@ -25,25 +25,35 @@
     <view class="weekday-item" wx:for="{{weekdays}}" wx:key="*this">{{item}}</view>
   </view>
   
-  <view class="calendar-grid">
-    <view class="calendar-row" wx:for="{{calendarRows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex">
-      <view 
-        class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}"
-        wx:for="{{row}}"
-        wx:key="date"
-        bindtap="selectDate"
-        data-date="{{item.date}}"
-      >
-        <view class="date-text">{{item.day}}</view>
-        
-        <!-- 假期标记 -->
-        <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
-        
-        <!-- 调休标记 -->
-        <view class="workday-tag" wx:if="{{item.isWorkday}}">班</view>
+  <swiper class="calendar-swiper" 
+          current="{{currentIndex}}" 
+          bindchange="handleSwiperChange" 
+          circular="{{true}}"
+          duration="300"
+          skip-hidden-item-layout="{{true}}">
+    <swiper-item wx:for="{{months}}" wx:key="id" wx:for-item="month" wx:for-index="monthIndex">
+      <view class="calendar-grid">
+        <view class="calendar-row" wx:for="{{month.rows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex">
+          <view 
+            class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}"
+            wx:for="{{row}}"
+            wx:key="date"
+            bindtap="selectDate"
+            data-date="{{item.date}}"
+            data-month-index="{{monthIndex}}"
+          >
+            <view class="date-text">{{item.day}}</view>
+            
+            <!-- 假期标记 -->
+            <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
+            
+            <!-- 调休标记 -->
+            <view class="workday-tag" wx:if="{{item.isWorkday}}">班</view>
+          </view>
+        </view>
       </view>
-    </view>
-  </view>
+    </swiper-item>
+  </swiper>
   
   <view class="selected-date-info" wx:if="{{selectedDateInfo}}">
     <view class="date-header">

@@ -26,7 +26,7 @@
   overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
   margin: 0 auto;
-  width: 80%;
+  /* width: 80%; */
 }
 
 .year-btn {
@@ -60,30 +60,31 @@
 .month-navigator {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin: 30rpx 0;
 }
 
 .nav-btn {
-  width: 80rpx;
-  height: 80rpx;
+  width: 50rpx;
+  height: 50rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 40rpx;
-  background-color: #fff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  border-radius: 25rpx;
+  /* background-color: #fff; */
+  /* box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05); */
 }
 
 .nav-icon {
-  font-size: 32rpx;
+  font-size: 28rpx;
   color: #007aff;
 }
 
 .current-month {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 500;
   color: #333;
+  margin: 0 30rpx;
 }
 
 /* 星期头部 */
@@ -104,6 +105,12 @@
   color: #999;
 }
 
+/* 日历滑动区域 */
+.calendar-swiper {
+  height: 600rpx;
+  width: 100%;
+}
+
 /* 日历网格 */
 .calendar-grid {
   background-color: #fff;
@@ -111,6 +118,7 @@
   overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
   margin-bottom: 30rpx;
+  height: 100%;
 }
 
 .calendar-row {
