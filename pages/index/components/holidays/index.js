@@ -3,7 +3,7 @@ const db = wx.cloud.database();
 const holidays = db.collection('holidays');
 
 // 引入农历转换库
-const solarlunar = require('solarlunar');
+const solarlunar = require('../../../../miniprogram_npm/solarlunar/index');
 
 Page({
   /**
@@ -204,7 +204,7 @@ Page({
     // 从日期映射中获取假期信息
     const { holidayDateMap } = this.data;
     const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
-    
+
     // 获取农历信息
     const lunarInfo = solarlunar.solar2lunar(year, month, day);
 
@@ -219,12 +219,12 @@ Page({
       holidayName: dateInfo ? dateInfo.name : '',
       // 添加农历信息
       lunar: {
-        day: lunarInfo.IDayCn,
-        month: lunarInfo.IMonthCn,
-        term: lunarInfo.Term || '',
+        day: lunarInfo.dayCn,
+        month: lunarInfo.monthCn,
+        term: lunarInfo.term || '',
         festival: lunarInfo.festival || '',
-        isLeap: lunarInfo.isLeap
-      }
+        isLeap: lunarInfo.isLeap,
+      },
     };
 
     this.setData({
@@ -276,12 +276,18 @@ Page({
     });
 
     // 生成当前月的日历
+    const currentMonthRows = this.generateCalendarForMonth(
+      activeYear,
+      currentMonth,
+      holidayDateMap,
+    );
+
     months.push({
       id: `${activeYear}-${currentMonth}`,
       year: activeYear,
       month: currentMonth,
       monthName: monthNames[currentMonth],
-      rows: this.generateCalendarForMonth(activeYear, currentMonth, holidayDateMap),
+      rows: currentMonthRows,
     });
 
     // 生成下个月的日历
@@ -308,18 +314,18 @@ Page({
    */
   getLunarDisplay(lunarInfo) {
     // 优先级：节气 > 农历节日 > 公历节日 > 农历日期
-    if (lunarInfo.Term) {
-      return lunarInfo.Term;
+    if (lunarInfo.term) {
+      return lunarInfo.term;
     } else if (lunarInfo.festival) {
       return lunarInfo.festival;
     } else if (lunarInfo.solarFestival) {
       return lunarInfo.solarFestival;
     } else {
       // 农历月初显示月份
-      if (lunarInfo.IDayCn === '初一') {
-        return lunarInfo.IMonthCn;
+      if (lunarInfo.dayCn === '初一') {
+        return lunarInfo.monthCn;
       } else {
-        return lunarInfo.IDayCn;
+        return lunarInfo.dayCn;
       }
     }
   },
@@ -366,7 +372,7 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
-          
+
           // 获取农历信息
           const lunarInfo = solarlunar.solar2lunar(prevYear, prevMonth + 1, prevMonthDay);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
@@ -386,12 +392,12 @@ Page({
             holidayId: dateInfo ? dateInfo.holidayId : '',
             // 添加农历信息
             lunar: {
-              day: lunarInfo.IDayCn,
-              month: lunarInfo.IMonthCn,
-              term: lunarInfo.Term || '',
+              day: lunarInfo.dayCn,
+              month: lunarInfo.monthCn,
+              term: lunarInfo.term || '',
               festival: lunarInfo.festival || '',
-              display: lunarDisplay
-            }
+              display: lunarDisplay,
+            },
           });
         }
         // 当前月的日期
@@ -400,7 +406,7 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
-          
+
           // 获取农历信息
           const lunarInfo = solarlunar.solar2lunar(year, month + 1, dayCounter);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
@@ -420,12 +426,12 @@ Page({
             holidayId: dateInfo ? dateInfo.holidayId : '',
             // 添加农历信息
             lunar: {
-              day: lunarInfo.IDayCn,
-              month: lunarInfo.IMonthCn,
-              term: lunarInfo.Term || '',
+              day: lunarInfo.dayCn,
+              month: lunarInfo.monthCn,
+              term: lunarInfo.term || '',
               festival: lunarInfo.festival || '',
-              display: lunarDisplay
-            }
+              display: lunarDisplay,
+            },
           });
 
           dayCounter++;
@@ -438,7 +444,7 @@ Page({
 
           // 获取日期类型信息
           const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
-          
+
           // 获取农历信息
           const lunarInfo = solarlunar.solar2lunar(nextYear, nextMonth + 1, nextMonthDay);
           const lunarDisplay = this.getLunarDisplay(lunarInfo);
@@ -458,12 +464,12 @@ Page({
             holidayId: dateInfo ? dateInfo.holidayId : '',
             // 添加农历信息
             lunar: {
-              day: lunarInfo.IDayCn,
-              month: lunarInfo.IMonthCn,
-              term: lunarInfo.Term || '',
+              day: lunarInfo.dayCn,
+              month: lunarInfo.monthCn,
+              term: lunarInfo.term || '',
               festival: lunarInfo.festival || '',
-              display: lunarDisplay
-            }
+              display: lunarDisplay,
+            },
           });
 
           nextMonthDay++;

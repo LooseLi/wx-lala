@@ -151,16 +151,16 @@
 }
 
 .date-text {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #333;
   z-index: 2;
 }
 
 /* 农历日期样式 */
 .lunar-date {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #888;
-  margin-top: 4rpx;
+  margin-top: -4rpx;
   line-height: 1;
   z-index: 2;
 }
@@ -222,9 +222,9 @@
 .today::after {
   content: '';
   position: absolute;
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 32rpx;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 76rpx;
   background-color: #007aff;
   z-index: 1;
 }
@@ -235,6 +235,11 @@
   z-index: 2;
 }
 
+.today .lunar-date {
+  color: #fff;
+  z-index: 2;
+}
+
 .selected {
   position: relative;
 }
@@ -242,9 +247,9 @@
 .selected::after {
   content: '';
   position: absolute;
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 32rpx;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 76rpx;
   border: 2rpx solid #007aff;
   box-sizing: border-box;
   z-index: 1;
