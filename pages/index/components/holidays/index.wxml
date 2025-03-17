@@ -52,7 +52,7 @@
     <view class="holiday-details" wx:if="{{selectedDateInfo.isHoliday || selectedDateInfo.isWorkday}}">
       <view class="holiday-name">{{selectedDateInfo.holidayName}}</view>
       <view class="holiday-type {{selectedDateInfo.isHoliday ? 'holiday-type' : 'workday-type'}}">
-        {{selectedDateInfo.isHoliday ? '放假' : '调休上班'}}
+        {{selectedDateInfo.isHoliday ? '放假快乐😆' : '调休上班🥹'}}
       </view>
     </view>
     <view class="no-holiday" wx:else>
