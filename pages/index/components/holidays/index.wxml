@@ -45,7 +45,7 @@
             <view class="date-text">{{item.day}}</view>
             
             <!-- 农历日期 -->
-            <view class="lunar-date" wx:if="{{item.lunar}}">{{item.lunar.day || item.lunar.display}}</view>
+            <view class="lunar-date" wx:if="{{item.lunar}}">{{item.lunar.display || item.lunar.day}}</view>
             
             <!-- 假期标记 -->
             <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
