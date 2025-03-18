@@ -13,3 +13,6 @@ $RECYCLE.BIN/
 # Node.js
 node_modules/
 package-lock.json
+
+# 敏感配置文件
+config.js

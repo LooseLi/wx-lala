@@ -38,6 +38,9 @@ exports.main = async (event, context) => {
             value: obj.time,
           },
         },
+        // 使用订阅消息模板ID
+        // 注意：云函数中无法直接引用项目根目录的配置文件
+        // 如需修改，请直接更新此处的模板ID
         templateId: 'GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII',
         miniprogramState: 'trial',
       });
