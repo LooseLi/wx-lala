@@ -173,11 +173,11 @@
 
 /* 节假日和调休日样式 */
 .holiday {
-  background-color: #e4f8e9;
+  background-color: #ffebe6;
 }
 
 .workday {
-  background-color: #ffebe6;
+  background-color: #f2f2f7;
 }
 
 /* 连续假期样式 */
@@ -204,7 +204,7 @@
   top: 5rpx;
   right: 5rpx;
   font-size: 20rpx;
-  color: #34c759;
+  color: #ff3b30;
   font-weight: bold;
   z-index: 2;
 }
@@ -215,7 +215,7 @@
   top: 5rpx;
   right: 5rpx;
   font-size: 20rpx;
-  color: #ff3b30;
+  color: #8e8e93;
   font-weight: bold;
   z-index: 2;
 }
@@ -309,13 +309,13 @@
 }
 
 .holiday-type {
-  background-color: #e4f8e9;
-  color: #34c759;
+  background-color: #ffebe6;
+  color: #ff3b30;
 }
 
 .workday-type {
-  background-color: #ffebe6;
-  color: #ff3b30;
+  background-color: #f2f2f7;
+  color: #8e8e93;
 }
 
 .no-holiday {
