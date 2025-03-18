@@ -3,10 +3,7 @@ App({
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
   onLaunch: function () {
-    wx.cloud.init({
-      // env: 'cloud1-5g2h5bs5d6613df6'
-      env: 'lala-tsum-6gem2abq66c46985',
-    });
+    wx.cloud.init();
   },
 
   globalData: {},
