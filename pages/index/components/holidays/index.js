@@ -38,6 +38,12 @@ const customFestivals = [
     isLunar: false,
   },
   {
+    name: '腊八节',
+    date: '腊月-初八',
+    tips: '尝尝腊八粥吧~',
+    isLunar: true,
+  },
+  {
     name: '除夕',
     date: '腊月-廿九',
     tips: '吃年夜饭啦~',
@@ -138,7 +144,7 @@ Page({
     nextYear: new Date().getFullYear() + 1,
     activeYear: new Date().getFullYear(), // 当前选中的年份
     currentMonth: new Date().getMonth(), // 当前选中的月份（0-11）
-    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+    weekdays: ['一', '二', '三', '四', '五', '六', '日'],
     months: [], // 三个月的日历数据（上个月、当前月、下个月）
     currentIndex: 1, // 当前显示的是中间月份
     holidayData: [], // 节假日数据
@@ -320,7 +326,10 @@ Page({
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const weekday = this.data.weekdays[date.getDay()];
+    // 调整星期几的计算，适应周一为一周的第一天
+    let dayIndex = date.getDay() - 1;
+    if (dayIndex === -1) dayIndex = 6; // 如果是周日，转换为6
+    const weekday = this.data.weekdays[dayIndex];
 
     // 格式化日期字符串
     const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -493,8 +502,10 @@ Page({
     // 获取当前月的最后一天
     const lastDayOfMonth = new Date(year, month + 1, 0);
 
-    // 获取当前月第一天是星期几（0-6）
-    const firstDayWeekday = firstDayOfMonth.getDay();
+    // 获取当前月第一天是星期几（0-6，0表示周日）
+    // 转换为周一为一周的第一天（0-6，0表示周一，6表示周日）
+    let firstDayWeekday = firstDayOfMonth.getDay() - 1;
+    if (firstDayWeekday === -1) firstDayWeekday = 6; // 如果是周日，转换为6
     // 获取当前月的总天数
     const daysInMonth = lastDayOfMonth.getDate();
 
@@ -810,13 +821,15 @@ Page({
    * 处理节假日数据，添加星期几信息
    */
   processHolidayData(data) {
-    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
     return data.map(item => {
       // 创建日期对象
       const date = new Date(item.date);
-      // 获取星期几
-      const weekday = weekdays[date.getDay()];
+      // 获取星期几，调整为周一为一周的第一天
+      let dayIndex = date.getDay() - 1;
+      if (dayIndex === -1) dayIndex = 6; // 如果是周日，转换为6
+      const weekday = weekdays[dayIndex];
       // 获取月和日
       const month = date.getMonth() + 1;
       const day = date.getDate();
