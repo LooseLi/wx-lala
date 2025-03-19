@@ -3,7 +3,7 @@
     <view class="check-in-info">
       <view class="continuous-days">
         <text class="days-number">{{continuousDays}}</text>
-        <text class="days-text">连续打卡</text>
+        <text class="days-text">连续签到</text>
         <text class="streak-dates" wx:if="{{currentStreak.startDate}}">
           {{currentStreak.startDate}} 至 {{currentStreak.endDate}}
         </text>
@@ -15,8 +15,8 @@
     </view>
     <view class="button-group">
       <view class="check-in-button {{isCheckedIn ? 'checked' : ''}} {{loading ? 'loading' : ''}}" hover-class="button-hover" bindtap="handleCheckIn">
-        <text wx:if="{{!isCheckedIn}}">{{loading ? '打卡中...' : '打卡'}}</text>
-        <text wx:else>已打卡</text>
+        <text wx:if="{{!isCheckedIn}}">{{loading ? '签到中...' : '签到'}}</text>
+        <text wx:else>已签到</text>
       </view>
       <view class="makeup-button" hover-class="button-hover" bindtap="showMakeupDialog">
         补签
@@ -33,7 +33,7 @@
 
       <view class="dialog-header">
         <!-- <text class="dialog-title">补签打卡</text> -->
-        <text class="dialog-subtitle">可补签近30天内未打卡的日期</text>
+        <text class="dialog-subtitle">只能补签近30天内未签到的日期喔～</text>
       </view>
 
       <!-- 日历组件 -->

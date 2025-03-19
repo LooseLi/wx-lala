@@ -107,7 +107,7 @@ Component({
 
           // 显示打卡成功动画和提示
           wx.showToast({
-            title: '打卡成功',
+            title: '签到成功，我们有救啦',
             icon: 'success',
           });
 
@@ -135,7 +135,7 @@ Component({
       } catch (error) {
         console.error('打卡失败：', error);
         wx.showToast({
-          title: '打卡失败，请重试',
+          title: '签到失败，请重试喔～',
           icon: 'none',
         });
       } finally {

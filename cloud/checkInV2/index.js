@@ -88,7 +88,7 @@ exports.main = async (event, context) => {
       .get();
 
     if (monthRecord.data.length > 0) {
-      return { success: false, message: '今日已打卡' };
+      return { success: false, message: '今日已签到~' };
     }
 
     // 2. 获取所有打卡记录
@@ -174,14 +174,14 @@ exports.main = async (event, context) => {
 
     return {
       success: true,
-      message: '打卡成功',
+      message: '签到成功，太棒啦～',
       data: {
         continuousDays,
         rewards: { points },
       },
     };
   } catch (error) {
-    console.error('打卡失败：', error);
+    console.error('签到失败：', error);
     return {
       success: false,
       error: error.message,
