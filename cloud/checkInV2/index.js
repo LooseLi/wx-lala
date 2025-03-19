@@ -112,7 +112,7 @@ exports.main = async (event, context) => {
     // 计算额外积分
     if (continuousDays > 1) {
       // 连续签到额外积分
-      points += Math.min(Math.floor(continuousDays / 7) * 5, 20);
+      points += Math.min(Math.floor(continuousDays / 7) * 5, 15);
     }
 
     // 3. 更新月度记录
