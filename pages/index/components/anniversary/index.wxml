@@ -1,42 +1,52 @@
 <view class="wrap">
-  <view class="add-wrap">
-    <image src="../images/anniversary/icon-add.png" bindtap="onAdd"></image>
-  </view>
-  <view class="anniversary-list">
-    <view class="anniversary" wx:for="{{list}}" wx:key="id" data-event-index="{{item}}" bindtap="onUpdate">
-      <image wx:if="{{item.canEdit}}" class="icon-delete" src="../images/anniversary/icon-delete.png" data-event-index="{{item}}" catchtap="onDelete"></image>
-      <view class="left">
-        <view>{{item.name}}</view>
-        <view>{{item.date}}</view>
+  <!-- iOS风格的操作栏 -->
+  <view class="ios-action-bar">
+    <view class="ios-status-bar"></view>
+    <view class="ios-action-content">
+      <view class="spacer"></view>
+      <view class="ios-add-button" bindtap="onAdd">
+        <text class="ios-icon">+</text>
       </view>
-      <view class="right"><text>{{item.days}}</text> 天</view>
     </view>
   </view>
 
+  <!-- 纪念日列表 -->
+  <view class="anniversary-list">
+    <view class="anniversary-card" wx:for="{{list}}" wx:key="id" data-event-index="{{item}}" bindtap="onUpdate">
+      <view wx:if="{{item.canEdit}}" class="ios-delete-button" data-event-index="{{item}}" catchtap="onDelete">
+        <text class="ios-delete-icon">×</text>
+      </view>
+      <view class="anniversary-content">
+        <view class="anniversary-title">{{item.name}}</view>
+        <view class="anniversary-date">{{item.date}}</view>
+        <view class="anniversary-days"><text>{{item.days}}</text> 天</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- iOS风格的弹出对话框 -->
   <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true">
     <view class="weui-mask weui-transition {{dialog ? 'weui-transition_show' : ''}}" bindtap="closeDialog" aria-role="button" aria-label="关闭"></view>
     <view class="weui-half-screen-dialog weui-half-screen-dialog_large weui-transition {{dialog ? 'weui-transition_show' : ''}}">
       <view class="weui-half-screen-dialog__hd">
         <view class="weui-half-screen-dialog__hd__side" bindtap="closeDialog">
-          <view aria-role="button" class="weui-btn_icon">关闭<i class="weui-icon-close-thin"></i></view>
+          <view class="ios-close-btn">
+            <text class="ios-close-icon">×</text>
+          </view>
         </view>
         <view class="weui-half-screen-dialog__hd__main">
           <strong class="weui-half-screen-dialog__title">创建纪念日</strong>
         </view>
       </view>
-      <view class="weui-half-screen-dialog__bd" style="padding-top: 32px; height: 50px;">
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell weui-cell_active">
-            <view class="weui-cell__bd">
-              <input class="weui-input" value="{{name}}" placeholder-class="weui-input__placeholder" bindinput="bindInputChange" placeholder="这是我们的什么纪念日" />
-            </view>
+      <view class="weui-half-screen-dialog__bd">
+        <view class="ios-form-group">
+          <view class="ios-form-item">
+            <input class="ios-input" value="{{name}}" placeholder-class="ios-input-placeholder" bindinput="bindInputChange" placeholder="这是我们的什么纪念日" />
           </view>
-          <view class="weui-cell weui-cell_active">
-            <view class="weui-cell__bd">
-              <picker mode="date" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2016-09-01" bindchange="bindDateChange">
-                <view class="weui-input">{{date}}</view>
-              </picker>
-            </view>
+          <view class="ios-form-item">
+            <picker mode="date" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2016-09-01" bindchange="bindDateChange">
+              <view class="ios-input">{{date}}</view>
+            </picker>
           </view>
         </view>
       </view>
