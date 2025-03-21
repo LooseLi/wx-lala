@@ -262,6 +262,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 设置 tabBar 选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 1 // 我的页面
+      })
+    }
+
     if (this.data.isAuth) {
       // 刷新打卡组件状态
       const checkInComponent = this.selectComponent('#checkIn');
