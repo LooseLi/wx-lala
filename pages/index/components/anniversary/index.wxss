@@ -102,27 +102,29 @@ page {
 }
 
 .anniversary-title {
-  font-size: 17px;
-  font-weight: 500;
-  color: #000;
+  font-size: 16px;
+  font-weight: normal;
+  color: #333333;
   margin-bottom: 4px;
 }
 
 .anniversary-date {
-  font-size: 14px;
-  color: #8e8e93;
-  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: normal;
+  color: #333333;
+  margin-bottom: 6px;
 }
 
 .anniversary-days {
-  font-size: 15px;
-  color: #000;
+  font-size: 16px;
+  color: #333333;
 }
 
 .anniversary-days text {
   font-size: 20px;
-  font-weight: 600;
-  color: #007aff;
+  font-weight: 500;
+  color: #ff6b8b;
+  margin-right: 4px;
 }
 
 /* 删除按钮样式 */
