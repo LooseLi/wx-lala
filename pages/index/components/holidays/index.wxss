@@ -167,7 +167,7 @@
 
 /* 自定义节日样式 */
 .custom-festival {
-  color: #4a90e2; /* 淡蓝色 */
+  color: #e26b4a; /* 醒目红色 */
   font-weight: 500;
 }
 
