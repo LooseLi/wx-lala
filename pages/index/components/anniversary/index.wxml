@@ -51,9 +51,7 @@
         </view>
       </view>
       <view class="weui-half-screen-dialog__ft">
-        <view class="weui-half-screen-dialog__btn-area">
-          <view aria-role="button" class="weui-btn weui-btn_primary" bindtap="onSave">保存</view>
-        </view>
+        <view class="ios-button ios-button-primary" bindtap="onSave">保存</view>
       </view>
     </view>
   </view>
