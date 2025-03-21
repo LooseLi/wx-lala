@@ -100,7 +100,7 @@ page {
   border-radius: 6px;
   margin-bottom: 14px;
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: left;
@@ -109,7 +109,7 @@ page {
 .event-icon {
   width: 40px;
   height: 40px;
-  margin: 0 10px 0 20px;
+  margin: 0 10px 0 16px;
 }
 
 .event:nth-child(2n + 1) {
