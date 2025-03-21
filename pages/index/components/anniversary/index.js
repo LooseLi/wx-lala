@@ -103,6 +103,16 @@ Page({
 
   // 保存
   onSave() {
+    // 验证表单
+    if (!this.data.name || this.data.name.trim() === '') {
+      wx.showToast({
+        title: '这是什么纪念日呀~',
+        icon: 'none',
+        duration: 2000,
+      });
+      return;
+    }
+
     if (this.data.type === 'add') {
       this.add();
     }
