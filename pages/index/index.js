@@ -232,16 +232,4 @@ Page({
     // 可以在这里添加其他打卡成功后的操作
     console.log('打卡成功：', checkInData);
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-    // 设置 tabBar 选中状态
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({
-        selected: 0 // 首页
-      })
-    }
-  },
 });
