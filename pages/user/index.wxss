@@ -19,7 +19,7 @@ view {
 .user-wrap {
   width: 100%;
   min-height: 100vh;
-  background-color: #f2f2f7;
+  background-color: var(--background-primary);
   padding: 32rpx;
   padding-top: calc(32rpx + env(safe-area-inset-top));
   box-sizing: border-box;
@@ -30,12 +30,13 @@ view {
   display: flex;
   align-items: center;
   padding: 32rpx;
-  background-color: #ffffff;
+  background-color: var(--background-secondary);
   border-radius: 24rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  box-shadow: var(--card-shadow);
   position: relative;
   overflow: hidden;
+  border: 1rpx solid var(--border-color);
 }
 
 /* 头像区域 */
@@ -51,7 +52,7 @@ view {
 }
 
 .avatar-container:active .avatar {
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--border-color-active);
 }
 
 .avatar {
@@ -61,8 +62,8 @@ view {
   object-fit: cover;
   border-radius: 20rpx;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: inset 0 0 0.5px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--inset-shadow);
   transition: all 0.2s ease;
 }
 
@@ -78,23 +79,23 @@ view {
   bottom: 8rpx;
   width: 48rpx;
   height: 48rpx;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(var(--neutral-color-rgb), 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--text-inverted);
   font-size: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  box-shadow: var(--small-shadow);
   z-index: 1;
   transition: all 0.2s ease;
 }
 
 .edit-icon:active {
   transform: scale(0.95);
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(var(--neutral-color-rgb), 0.8);
 }
 
 /* 昵称区域 */
@@ -108,7 +109,7 @@ view {
 .nickname {
   font-size: 34rpx;
   font-weight: 500;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .nickname-container .edit-icon {
@@ -119,7 +120,7 @@ view {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #007aff;
+  color: var(--primary-color);
   font-size: 20rpx;
   transition: all 0.2s ease;
   opacity: 0.85;
@@ -163,7 +164,7 @@ view {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(var(--neutral-color-rgb), 0.4);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
@@ -171,13 +172,14 @@ view {
 .dialog-content {
   position: relative;
   width: 650rpx;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--background-secondary);
   border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  box-shadow: var(--modal-shadow);
   transform: scale(1.1);
   transition: transform 0.3s ease;
   z-index: 1;
+  border: 1rpx solid var(--border-color);
 }
 
 .edit-dialog.show .dialog-content {
@@ -189,7 +191,7 @@ view {
   text-align: center;
   font-size: 34rpx;
   font-weight: 500;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .dialog-body {
@@ -200,9 +202,34 @@ view {
   display: flex;
   align-items: center;
   margin-top: 5rpx;
-  background: rgba(142, 142, 147, 0.12);
+  background: var(--input-background);
   border-radius: 14rpx;
   padding: 0 15rpx;
+  border: 1rpx solid var(--border-color);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.input-container::after {
+  content: '';
+  position: absolute;
+  top: -1rpx;
+  left: -1rpx;
+  right: -1rpx;
+  bottom: -1rpx;
+  border-radius: 16rpx;
+  pointer-events: none;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.input-container:focus-within {
+  border-color: transparent;
+}
+
+.input-container:focus-within::after {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2rpx rgba(var(--primary-color-rgb), 0.3);
 }
 
 .dialog-body input {
@@ -212,20 +239,22 @@ view {
   padding: 0 10rpx;
   font-size: 32rpx;
   box-sizing: border-box;
-  color: #000;
+  color: var(--text-primary);
   border: none;
 }
 
+
+
 .char-counter {
   font-size: 24rpx;
-  color: #8e8e93;
+  color: var(--text-tertiary);
   margin-left: 10rpx;
   white-space: nowrap;
 }
 
 .dialog-footer {
   display: flex;
-  border-top: 0.5px solid rgba(60, 60, 67, 0.15);
+  border-top: 0.5px solid var(--border-color);
 }
 
 .dialog-footer button {
@@ -246,12 +275,12 @@ view {
 }
 
 .dialog-footer .cancel-btn {
-  color: #8e8e93;
+  color: var(--text-tertiary);
   font-weight: 400;
 }
 
 .dialog-footer .confirm-btn {
-  color: #007aff;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -262,11 +291,11 @@ view {
   top: 15%;
   height: 70%;
   width: 0.5px;
-  background: rgba(60, 60, 67, 0.15);
+  background: var(--border-color);
 }
 
 .button-hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
+  background-color: var(--button-hover-bg) !important;
   opacity: 0.9;
 }
 
@@ -276,7 +305,7 @@ view {
 
 .tips {
   text-align: center;
-  color: #434343;
+  color: var(--text-secondary);
 }
 
 .btn-login {
