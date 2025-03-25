@@ -120,30 +120,24 @@
           <strong class="weui-half-screen-dialog__title">创建倒计时</strong>
         </view>
       </view>
-      <view class="weui-half-screen-dialog__bd" style="padding-top: 32px; height: 50px;">
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell weui-cell_active">
-            <view class="weui-cell__bd">
-              <input class="weui-input" value="{{name}}" placeholder-class="weui-input__placeholder" bindinput="bindInputChange" placeholder="这是什么倒计时鸭" />
-            </view>
+      <view class="weui-half-screen-dialog__bd">
+        <view class="ios-form-group">
+          <view class="ios-form-item">
+            <input class="ios-input" value="{{name}}" placeholder-class="ios-input-placeholder" bindinput="bindInputChange" placeholder="这是什么倒计时鸭" />
           </view>
-          <view class="weui-cell weui-cell_active">
-            <view class="weui-cell__bd">
-              <picker mode="date" class="date-picker" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2022-01-01" bindchange="bindDateChange">
-                <view class="weui-input date-picker-text">{{date}}</view>
-              </picker>
-            </view>
+          <view class="ios-form-item">
+            <picker mode="date" class="date-picker" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2022-01-01" bindchange="bindDateChange">
+              <view class="ios-input date-picker-text">{{date}}</view>
+            </picker>
           </view>
-          <view class="weui-cell weui-cell_active">
-            <view class="weui-cell__bd">
-              <input class="weui-input" value="{{content}}" placeholder-class="weui-input__placeholder" bindinput="bindContentChange" placeholder="留下当天想说的话吧(选填)" />
-            </view>
+          <view class="ios-form-item">
+            <input class="ios-input" value="{{content}}" placeholder-class="ios-input-placeholder" bindinput="bindContentChange" placeholder="留下当天想说的话吧(选填)" />
           </view>
         </view>
       </view>
       <view class="weui-half-screen-dialog__ft">
         <view class="weui-half-screen-dialog__btn-area">
-          <view aria-role="button" class="weui-btn weui-btn_primary" bindtap="onSave">保存</view>
+          <view aria-role="button" class="ios-button" bindtap="onSave">保存</view>
         </view>
       </view>
     </view>
