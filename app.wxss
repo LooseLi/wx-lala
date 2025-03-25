@@ -1,4 +1,5 @@
 @import 'weui.wxss';
+@import '/styles/theme.wxss';
 
 page,
 view,
@@ -10,11 +11,30 @@ navigator {
   box-sizing: border-box;
 }
 
-/* 主题颜色 */
+/* 全局样式 */
 page {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  font-size: 28rpx;
+  font-family: -apple-system, 'SF Pro Text', sans-serif;
+
+  /* 保留原有的变量以兼容现有代码 */
   --backgroundColorButton: #e95f6f;
   --fontColor: #e95f6f;
-  font-size: 28rpx;
+}
+
+/* 添加过渡效果，使主题切换更平滑 */
+page,
+view,
+text,
+button,
+input,
+image {
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* 字体大小 */
