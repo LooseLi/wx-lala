@@ -1,6 +1,6 @@
 .container {
   padding: 32rpx;
-  background-color: #f8f8f8;
+  background-color: var(--background-primary);
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -14,19 +14,20 @@
 .title {
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 20rpx;
 }
 
 .year-selector {
   display: flex;
   justify-content: center;
-  background-color: #fff;
+  background-color: var(--background-secondary);
   border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
   margin: 0 auto;
   /* width: 80%; */
+  border: 1rpx solid var(--border-color);
 }
 
 .year-btn {
@@ -34,13 +35,13 @@
   text-align: center;
   padding: 20rpx 0;
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
   position: relative;
   transition: all 0.3s;
 }
 
 .year-btn.active {
-  color: #007aff;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -52,7 +53,7 @@
   transform: translateX(-50%);
   width: 40rpx;
   height: 6rpx;
-  background-color: #007aff;
+  background-color: var(--primary-color);
   border-radius: 3rpx;
 }
 
@@ -77,24 +78,26 @@
 
 .nav-icon {
   font-size: 28rpx;
-  color: #007aff;
+  color: var(--primary-color);
 }
 
 .current-month {
   font-size: 32rpx;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin: 0 30rpx;
 }
 
 /* 星期头部 */
 .weekday-header {
   display: flex;
-  background-color: #fff;
+  background-color: var(--background-secondary);
   border-radius: 16rpx 16rpx 0 0;
   overflow: hidden;
   margin-bottom: 2rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
+  border-bottom: none;
 }
 
 .weekday-item {
@@ -102,7 +105,7 @@
   text-align: center;
   padding: 20rpx 0;
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 日历滑动区域 */
@@ -113,17 +116,19 @@
 
 /* 日历网格 */
 .calendar-grid {
-  background-color: #fff;
+  background-color: var(--background-secondary);
   border-radius: 0 0 16rpx 16rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
   margin-bottom: 30rpx;
   height: 100%;
+  border: 1rpx solid var(--border-color);
+  border-top: none;
 }
 
 .calendar-row {
   display: flex;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid var(--border-color-light);
 }
 
 .calendar-row:last-child {
@@ -138,7 +143,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  border-right: 1rpx solid #f5f5f5;
+  border-right: 1rpx solid var(--border-color-light);
   padding: 8rpx 0;
 }
 
@@ -152,14 +157,14 @@
 
 .date-text {
   font-size: 32rpx;
-  color: #333;
+  color: var(--text-primary);
   z-index: 2;
 }
 
 /* 农历日期样式 */
 .lunar-date {
   font-size: 18rpx;
-  color: #888;
+  color: var(--text-tertiary);
   margin-top: -4rpx;
   line-height: 1;
   z-index: 2;
@@ -173,11 +178,11 @@
 
 /* 节假日和调休日样式 */
 .holiday {
-  background-color: #ffebe6;
+  background-color: var(--holiday-background);
 }
 
 .workday {
-  background-color: #f2f2f7;
+  background-color: var(--workday-background);
 }
 
 /* 连续假期样式 */
@@ -204,7 +209,7 @@
   top: 5rpx;
   right: 5rpx;
   font-size: 20rpx;
-  color: #ff3b30;
+  color: var(--holiday-color);
   font-weight: bold;
   z-index: 2;
 }
@@ -220,6 +225,12 @@
   z-index: 2;
 }
 
+@media (prefers-color-scheme: dark) {
+  .workday-tag {
+    color: #c7c7cc;
+  }
+}
+
 /* 今天和选中日期的样式 */
 .today {
   position: relative;
@@ -231,7 +242,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 80rpx;
-  background-color: #007aff;
+  background-color: var(--primary-color);
   z-index: 1;
 }
 
@@ -256,18 +267,19 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 80rpx;
-  border: 2rpx solid #007aff;
+  border: 2rpx solid var(--primary-color);
   box-sizing: border-box;
   z-index: 1;
 }
 
 /* 选中日期信息 */
 .selected-date-info {
-  background-color: #fff;
+  background-color: var(--background-secondary);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
 }
 
 .date-header {
@@ -279,14 +291,14 @@
 
 .lunar-info {
   font-size: 24rpx;
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 8rpx;
 }
 
 .selected-date {
   font-size: 32rpx;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .holiday-details {
@@ -298,7 +310,7 @@
 .holiday-name {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .holiday-type {
@@ -309,18 +321,24 @@
 }
 
 .holiday-type {
-  background-color: #ffebe6;
-  color: #ff3b30;
+  background-color: var(--holiday-background);
+  color: var(--holiday-color);
 }
 
 .workday-type {
-  background-color: #f2f2f7;
+  background-color: var(--workday-background);
   color: #8e8e93;
+}
+
+@media (prefers-color-scheme: dark) {
+  .workday-type {
+    color: #c7c7cc;
+  }
 }
 
 .no-holiday {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
   text-align: center;
   padding: 20rpx 0;
 }
@@ -334,13 +352,13 @@
 .festival-name {
   font-size: 30rpx;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 10rpx;
 }
 
 .festival-tips {
   font-size: 26rpx;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -374,7 +392,7 @@
 
 .legend-text {
   font-size: 24rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 /* 底部 */
@@ -385,6 +403,6 @@
 
 .tips {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
   line-height: 1.5;
 }

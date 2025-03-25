@@ -42,6 +42,16 @@ page {
   --checkin-days-color: var(--primary-color);
   --checkin-points-color: var(--success-color);
 
+  /* 假期日历组件颜色 */
+  --holiday-background: #ffebe6;
+  --holiday-color: #ff3b30;
+  --workday-background: #f2f2f7;
+  --border-color-light: #f5f5f5;
+  --input-background: rgba(142, 142, 147, 0.12);
+  --button-hover-bg: rgba(0, 0, 0, 0.05);
+  --neutral-color-rgb: 0, 0, 0;
+  --text-inverted: #ffffff;
+
   /* 导航栏颜色 */
   --nav-background: #daecff;
   --nav-text: #000000;
@@ -78,6 +88,16 @@ page {
     --tabbar-border: #38383a;
     --tabbar-text-normal: #8c8c8c;
     --tabbar-text-selected: #0a84ff;
+
+    /* 假期日历组件颜色 - 深色模式 */
+    --holiday-background: rgba(255, 69, 58, 0.2);
+    --holiday-color: #ff453a;
+    --workday-background: rgba(180, 180, 190, 0.25);
+    --border-color-light: rgba(255, 255, 255, 0.1);
+    --input-background: rgba(142, 142, 147, 0.2);
+    --button-hover-bg: rgba(255, 255, 255, 0.1);
+    --neutral-color-rgb: 255, 255, 255;
+    --text-inverted: #000000;
 
     /* 深色模式下的功能颜色RGB值 */
     --primary-color-rgb: 10, 132, 255;
