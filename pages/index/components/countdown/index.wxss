@@ -1,7 +1,7 @@
 page {
-  background-color: #f2f2f7;
+  background-color: var(--background-primary);
   font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 14px;
   line-height: 1.4;
   padding-bottom: 20px;
@@ -14,7 +14,16 @@ page {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   overflow: hidden;
-  background-color: #f2f2f7;
+  background-color: var(--background-primary);
+}
+
+.weui-half-screen-dialog__bd {
+  padding: 16px;
+  background-color: var(--background-primary);
+}
+
+.weui-half-screen-dialog__ft {
+  background-color: var(--background-primary);
 }
 
 .weui-half-screen-dialog__hd {
@@ -43,7 +52,7 @@ page {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(var(--text-secondary-rgb), 0.2);
   position: relative;
 }
 
@@ -54,7 +63,7 @@ page {
   left: 50%;
   right: 0;
   font-size: 20px;
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
   line-height: 1;
   transform: translate(-50%, -50%);
@@ -70,27 +79,62 @@ page {
 .weui-half-screen-dialog__title {
   font-size: 17px;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   text-align: center;
 }
 
 /* 对话框输入框样式 */
 .weui-cell {
-  background-color: #ffffff;
+  background-color: var(--background-secondary);
   border-radius: 10px;
   margin: 8px 16px;
   padding: 12px 16px;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.weui-cells {
+  background-color: var(--background-primary);
+  margin: 0;
+  border: none;
+}
+
+.weui-cells_after-title {
+  margin: 0;
+  border: none;
+}
+
+/* 移除weui默认的分隔线 */
+.weui-cell:before,
+.weui-cells:before,
+.weui-cells:after {
+  border: none !important;
 }
 
 .weui-input {
   height: 24px;
   line-height: 24px;
   font-size: 15px;
+  color: var(--text-primary);
+}
+
+/* 日期选择器样式适配 */
+.date-picker {
+  width: 100%;
+}
+
+/* 确保日期选择器内部文字颜色与主题一致 */
+.date-picker-text {
+  color: var(--text-primary) !important;
+}
+
+.weui-input__placeholder {
+  color: var(--text-tertiary);
 }
 
 /* 对话框按钮样式 */
 .weui-btn_primary {
-  background: linear-gradient(135deg, #36b4ff, #1e90ff);
+  background: var(--primary-gradient);
   border-radius: 10px;
   font-size: 16px;
   font-weight: 500;
@@ -101,6 +145,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ffffff;
 }
 
 /* 关闭按钮样式 */
@@ -108,7 +153,7 @@ page {
   width: 30px;
   height: 30px;
   border-radius: 15px;
-  background-color: #e5e5ea;
+  background-color: rgba(var(--text-secondary-rgb), 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,7 +162,7 @@ page {
 
 .ios-close-icon {
   font-size: 24px;
-  color: #8e8e93;
+  color: var(--text-secondary);
   line-height: 24px;
 }
 
@@ -126,13 +171,14 @@ page {
   width: calc(100% - 32px);
   margin: 0 auto 12px;
   padding: 16px;
-  background: #fff;
+  background: var(--background-secondary);
   border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
   z-index: 2;
   font-size: 14px;
-  color: #000000;
+  color: var(--text-primary);
   overflow: hidden;
+  border: 1rpx solid var(--border-color);
 }
 
 .title {
@@ -146,7 +192,7 @@ page {
   position: absolute;
   right: 8px;
   top: 8px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(var(--error-color-rgb), 0.2);
   border-radius: 10px;
   padding: 4px;
   box-sizing: border-box;
@@ -179,18 +225,18 @@ page {
 }
 
 .countdown-days {
-  color: #8e8e93;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
 .holiday-time {
   font-size: 13px;
-  color: #8e8e93;
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 
 .holiday-content {
-  color: #8e8e93;
+  color: var(--text-secondary);
   /* margin-top: 6px; */
   font-size: 13px;
 }
@@ -199,7 +245,7 @@ page {
 .greeting-text {
   font-size: 15px;
   font-weight: 500;
-  background-image: linear-gradient(to right, #36b4ff, #1e90ff, #5a6cff);
+  background-image: var(--primary-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -234,19 +280,19 @@ page {
 }
 
 .holiday-name-day {
-  color: #36b4ff;
+  color: var(--primary-color);
   font-size: 24px;
   font-weight: 600;
   margin: 0 6px;
 }
 
 .day-text {
-  color: #8e8e93;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
 .day-prefix {
-  color: #8e8e93;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
@@ -266,13 +312,13 @@ page {
 .empty-title {
   font-size: 17px;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .empty-subtitle {
   font-size: 13px;
-  color: #8e8e93;
+  color: var(--text-secondary);
   text-align: center;
   max-width: 80%;
 }
@@ -280,7 +326,7 @@ page {
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  color: #8e8e93;
+  color: var(--text-secondary);
   margin: 16px 16px 8px;
 }
 
@@ -321,16 +367,16 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #36b4ff, #1e90ff);
+  background: var(--primary-gradient);
   border-radius: 18px;
   color: white;
-  box-shadow: 0 2px 8px rgba(54, 180, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.3);
   transition: all 0.2s ease;
 }
 
 .ios-add-button:active {
   transform: scale(0.95);
-  background: linear-gradient(135deg, #2aa0e5, #1880e0);
+  opacity: 0.9;
 }
 
 .ios-icon {
@@ -348,10 +394,11 @@ page {
 
 .ios-segment-control {
   display: flex;
-  background-color: #e5e5ea;
+  background-color: rgba(var(--text-tertiary-rgb), 0.2);
   border-radius: 8px;
   overflow: hidden;
   height: 32px;
+  padding: 1px;
 }
 
 .ios-segment {
@@ -360,15 +407,17 @@ page {
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  color: #8e8e93;
+  color: var(--text-secondary);
   transition: all 0.2s ease;
+  /* 预留边框空间，防止切换时位移 */
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-weight: 600;
 }
 
 .ios-segment-active {
-  background-color: #ffffff;
-  color: #000000;
-  border-radius: 7px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  margin: 1px;
-  font-weight: 500;
+  background-color: var(--background-secondary);
+  color: var(--primary-color);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
 }

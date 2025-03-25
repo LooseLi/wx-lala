@@ -18,7 +18,7 @@ page {
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
   /* 功能颜色 */
-  --primary-color: #007aff;
+  --primary-color: #36b4ff;
   --primary-color-rgb: 0, 122, 255;
   --primary-gradient: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
   --success-color: #32d74b;

@@ -129,8 +129,8 @@
           </view>
           <view class="weui-cell weui-cell_active">
             <view class="weui-cell__bd">
-              <picker mode="date" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2022-01-01" bindchange="bindDateChange">
-                <view class="weui-input">{{date}}</view>
+              <picker mode="date" class="date-picker" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2022-01-01" bindchange="bindDateChange">
+                <view class="weui-input date-picker-text">{{date}}</view>
               </picker>
             </view>
           </view>
