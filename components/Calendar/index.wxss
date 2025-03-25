@@ -1,8 +1,8 @@
 .calendar-container {
-  background: #fff;
+  background: var(--background-secondary);
   border-radius: 12px;
   padding: 0;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  /* box-shadow: var(--card-shadow); */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,13 +53,13 @@ swiper-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .arrow-left.disabled,
 .arrow-right.disabled {
   opacity: 0.3;
-  color: #ccc;
+  color: var(--text-tertiary);
 }
 
 .arrow-left::after {
@@ -77,6 +77,7 @@ swiper-item {
   font-weight: 500;
   margin: 0 40rpx;
   text-align: center;
+  color: var(--text-primary);
 }
 
 /* 星期表头 */
@@ -86,7 +87,7 @@ swiper-item {
   margin: 0 auto;
   text-align: center;
   padding: 10rpx 20rpx;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
   width: 100%;
   max-width: 650rpx;
   box-sizing: border-box;
@@ -94,7 +95,7 @@ swiper-item {
 
 .weekday-item {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 日历主体 */
@@ -108,7 +109,7 @@ swiper-item {
   grid-template-columns: repeat(7, 1fr);
   gap: 2rpx;
   padding: 0 20rpx;
-  background: #fff;
+  background: var(--background-secondary);
   width: 100%;
   max-width: 650rpx;
   margin: 0 auto;
@@ -135,6 +136,7 @@ swiper-item {
   margin: 0 auto;
   /* 确保日期数字居中 */
   text-align: center;
+  color: var(--text-primary);
 }
 
 /* 日期状态样式 */
@@ -143,36 +145,36 @@ swiper-item {
 }
 
 .today .day-content {
-  background: rgba(0, 122, 255, 0.1);
-  color: #007aff;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--primary-color);
 }
 
 .checked .day-content {
-  color: #007aff;
+  color: var(--primary-color);
 }
 
 .makeup .day-content {
-  color: #007aff;
+  color: var(--primary-color);
 }
 
 .can-makeup .day-content {
-  border: 1px dashed rgba(0, 122, 255, 0.6);
-  color: #007aff;
+  border: 1px dashed rgba(var(--primary-color-rgb), 0.6);
+  color: var(--primary-color);
 }
 
 .can-makeup.selected .day-content {
-  background: rgba(0, 122, 255, 0.15);
-  border: 1px dashed #007aff;
-  color: #007aff;
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border: 1px dashed var(--primary-color);
+  color: var(--primary-color);
 }
 
 .selected .day-content {
-  background: #007aff;
+  background: var(--primary-color);
   color: white;
 }
 
 .disabled .day-content {
-  color: #ccc;
+  color: var(--text-tertiary);
 }
 
 .check-icon {
@@ -180,9 +182,9 @@ swiper-item {
   position: absolute;
   bottom: -2rpx;
   right: -2rpx;
-  color: #007aff;
-  /* 添加白色背景确保可见性 */
-  background: white;
+  color: var(--primary-color);
+  /* 添加背景确保可见性 */
+  background: var(--background-secondary);
   border-radius: 50%;
   width: 24rpx;
   height: 24rpx;
@@ -190,7 +192,7 @@ swiper-item {
   align-items: center;
   justify-content: center;
   /* 添加投影提高可见性 */
-  box-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
 }
 
 /* 底部图例 */
@@ -199,7 +201,7 @@ swiper-item {
   justify-content: center;
   gap: 40rpx;
   padding: 20rpx 0 10rpx;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--border-color);
   margin-top: 20rpx;
 }
 
@@ -216,22 +218,22 @@ swiper-item {
 }
 
 .legend-dot.checked {
-  background: #007aff;
+  background: var(--primary-color);
 }
 
 .legend-dot.makeup {
-  background: #007aff;
+  background: var(--primary-color);
 }
 
 .legend-dot.can-makeup {
-  border: 1px solid rgba(0, 122, 255, 0.3);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
 }
 
 .legend-dot.disabled {
-  background: #ccc;
+  background: var(--text-tertiary);
 }
 
 .legend-item text {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }

@@ -33,7 +33,7 @@
 
       <view class="dialog-header">
         <!-- <text class="dialog-title">补签打卡</text> -->
-        <text class="dialog-subtitle">只能补签近30天内未签到的日期喔～</text>
+        <text class="dialog-subtitle">只能补签近 30 天内未签到的日期喔～</text>
       </view>
 
       <!-- 日历组件 -->
@@ -44,7 +44,7 @@
         <view class="confirm-info">
           <view class="points-icon">✨</view>
           <view class="points-detail">
-            <text class="points-text">补签将消耗30积分</text>
+            <text class="points-text">补签将消耗 30 积分</text>
             <text class="points-available">可用积分：{{currentPoints}}</text>
           </view>
         </view>

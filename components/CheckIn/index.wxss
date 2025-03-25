@@ -5,15 +5,15 @@
 }
 
 .check-in-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--background-secondary);
   border-radius: 32rpx;
   padding: 40rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
   backdrop-filter: blur(20rpx);
-  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  border: 1rpx solid var(--border-color);
 }
 
 .button-group {
@@ -38,7 +38,7 @@
 
 .streak-dates {
   font-size: 24rpx;
-  color: #86868b;
+  color: var(--text-secondary);
   margin-top: 8rpx;
   font-family: -apple-system, 'SF Pro Text';
 }
@@ -47,7 +47,7 @@
 .points-number {
   font-size: 56rpx;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
   line-height: 1.1;
   font-family: -apple-system, 'SF Pro Display';
 }
@@ -55,12 +55,12 @@
 .days-text,
 .points-text {
   font-size: 28rpx;
-  color: #86868b;
+  color: var(--text-secondary);
   font-family: -apple-system, 'SF Pro Text';
 }
 
 .check-in-button {
-  background: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
+  background: var(--button-primary);
   color: white;
   padding: 20rpx 0;
   border-radius: 48rpx;
@@ -91,7 +91,7 @@
 }
 
 .check-in-button.checked {
-  background: linear-gradient(135deg, #32d74b 0%, #28cd41 100%);
+  background: var(--button-success);
 }
 
 @keyframes scaleIn {
@@ -116,8 +116,8 @@
 
 /* 补签按钮 */
 .makeup-button {
-  background: rgba(255, 149, 0, 0.1);
-  color: #ff9500;
+  background: rgba(var(--warning-color-rgb), 0.1);
+  color: var(--warning-color);
   padding: 20rpx 0;
   border-radius: 48rpx;
   font-size: 32rpx;
@@ -159,7 +159,7 @@
 .dialog-content {
   position: relative;
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--background-secondary);
   border-radius: 32rpx 32rpx 0 0;
   padding: 32rpx 24rpx;
   box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
@@ -172,7 +172,8 @@
 .dialog-indicator {
   width: 36rpx;
   height: 4rpx;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--text-tertiary);
+  opacity: 0.3;
   border-radius: 4rpx;
   margin: 0 auto 24rpx;
 }
@@ -197,7 +198,7 @@
 .dialog-title {
   font-size: 40rpx;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 12rpx;
   font-family: -apple-system, 'SF Pro Display';
@@ -205,7 +206,7 @@
 
 .dialog-subtitle {
   font-size: 28rpx;
-  color: #86868b;
+  color: var(--text-secondary);
   font-family: -apple-system, 'SF Pro Text';
 }
 
@@ -213,7 +214,7 @@
 .makeup-confirm {
   margin-top: 32rpx;
   padding: 24rpx;
-  background: rgba(0, 122, 255, 0.05);
+  background: rgba(var(--primary-color-rgb), 0.05);
   border-radius: 16rpx;
   transform: translateY(20rpx);
   opacity: 0;
@@ -242,20 +243,16 @@
   gap: 4rpx;
 }
 
-.points-text {
-  color: #1d1d1f;
-  font-size: 28rpx;
-  font-family: -apple-system, 'SF Pro Text';
-}
+/* 已合并到上方统一的文本样式中 */
 
 .points-available {
-  color: #86868b;
+  color: var(--text-secondary);
   font-size: 24rpx;
   font-family: -apple-system, 'SF Pro Text';
 }
 
 .confirm-button {
-  background: linear-gradient(135deg, #0a84ff 0%, #0066ff 100%);
+  background: var(--button-primary);
   color: white;
   padding: 24rpx;
   border-radius: 16rpx;
@@ -263,7 +260,7 @@
   font-size: 32rpx;
   font-weight: 600;
   font-family: -apple-system, 'SF Pro Text';
-  box-shadow: 0 4rpx 8rpx rgba(0, 102, 255, 0.2);
+  box-shadow: 0 4rpx 8rpx rgba(var(--primary-color-rgb), 0.2);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -273,8 +270,8 @@
 }
 
 .confirm-button.disabled {
-  background: linear-gradient(135deg, #d1d1d6 0%, #c7c7cc 100%);
-  color: rgba(255, 255, 255, 0.8);
+  background: var(--button-disabled);
+  color: var(--text-disabled);
   box-shadow: none;
 }
 
@@ -290,7 +287,7 @@
   align-items: center;
   margin-bottom: 20rpx;
   font-size: 28rpx;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .points-available {
@@ -298,7 +295,7 @@
 }
 
 .confirm-button {
-  background: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
+  background: var(--button-primary);
   color: white;
   padding: 24rpx;
   border-radius: 16rpx;
@@ -313,8 +310,8 @@
 }
 
 .confirm-button.disabled {
-  background: #e5e5ea;
-  color: #8e8e93;
+  background: var(--button-disabled);
+  color: var(--text-disabled);
   pointer-events: none;
 }
 
@@ -327,23 +324,7 @@
   opacity: 0.8;
 }
 
-/* 为了适应深色模式 */
-@media (prefers-color-scheme: dark) {
-  .check-in-card {
-    background: rgba(30, 30, 30, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .days-number,
-  .points-number {
-    color: #ffffff;
-  }
-
-  .days-text,
-  .points-text {
-    color: #98989d;
-  }
-}
+/* 已使用全局主题变量替代深色模式媒体查询 */
 
 .check-in-button:active {
   transform: scale(0.95);
