@@ -57,10 +57,6 @@
         
         <!-- 图片上传区域 -->
         <view class="ios-form-group">
-          <view class="ios-form-item">
-            <view class="image-upload-title">纪念日照片</view>
-          </view>
-          
           <!-- 图片预览区域 -->
           <view class="ios-form-item" wx:if="{{tempImages.length > 0 || uploadedImages.length > 0}}">
             <view class="image-preview-area">
@@ -88,7 +84,7 @@
               <text class="upload-icon">+</text>
               <text class="upload-text">添加照片</text>
             </view>
-            <view class="image-tip">最多可以选择9张图片</view>
+            <view class="image-tip">最多可以选择 6 张图片</view>
           </view>
         </view>
       </view>
