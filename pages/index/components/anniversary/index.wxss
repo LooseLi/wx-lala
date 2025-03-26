@@ -177,8 +177,8 @@ page {
 /* 删除按钮样式 */
 .ios-delete-button {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 2px;
+  top: 2px;
   width: 24px;
   height: 24px;
   border-radius: 12px;
