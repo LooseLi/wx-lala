@@ -83,8 +83,24 @@ Page({
 
   // 选择图片
   chooseImages() {
+    // 计算当前已有的图片总数（已上传的 + 临时选择的）
+    const currentImageCount = this.data.uploadedImages.length + this.data.tempImages.length;
+
+    // 计算还可以选择的图片数量
+    const remainingCount = Math.max(0, 6 - currentImageCount);
+
+    // 如果已经达到最大图片数量，提示用户并返回
+    if (remainingCount <= 0) {
+      wx.showToast({
+        title: '最多只能上传6张图片',
+        icon: 'none',
+        duration: 2000,
+      });
+      return;
+    }
+
     wx.chooseMedia({
-      count: 6, // 最多可以选择的图片张数，最多6张
+      count: remainingCount, // 动态设置可选图片数量
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
       camera: 'back',
@@ -100,11 +116,8 @@ Page({
         const currentTempImages = this.data.tempImages;
         const allImages = [...currentTempImages, ...newTempImages];
 
-        // 限制图片数量最多6张
-        const finalImages = allImages.slice(0, 6);
-
         this.setData({
-          tempImages: finalImages,
+          tempImages: allImages,
         });
       },
     });
