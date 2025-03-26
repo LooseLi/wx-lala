@@ -1,0 +1,70 @@
+.container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.result-box {
+  background-color: #f5f5f7;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  min-height: 60px;
+}
+
+.result-text {
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.ios-button {
+  background: linear-gradient(to right, #007aff, #5ac8fa);
+  color: white;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 20px;
+  margin-top: 15px;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+  border: none;
+}
+
+.ios-button:active {
+  opacity: 0.8;
+}
+
+.ios-button[disabled] {
+  background: linear-gradient(to right, #8e8e93, #aeaeb2);
+  opacity: 0.7;
+}

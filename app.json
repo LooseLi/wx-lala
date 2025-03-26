@@ -4,6 +4,7 @@
     "pages/user/index",
     "pages/index/components/countdown/index",
     "pages/index/components/anniversary/index",
+    "pages/index/components/anniversary/callCloudFunction",
     "pages/index/components/things/index",
     "pages/index/components/holidays/index",
     "components/DateTimePicker/index"

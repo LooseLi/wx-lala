@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="title">云函数调用工具</view>
+  
+  <view class="card">
+    <view class="card-title">更新纪念日图片字段</view>
+    <view class="description">此操作将为所有没有images字段的纪念日记录添加空的images数组</view>
+    
+    <view class="result-box">
+      <text class="result-text">{{result}}</text>
+    </view>
+    
+    <button class="ios-button" bindtap="callUpdateFunction" disabled="{{isLoading}}">
+      {{isLoading ? '处理中...' : '调用云函数'}}
+    </button>
+  </view>
+</view>
