@@ -20,6 +20,11 @@
         <view class="anniversary-title">{{item.name}}</view>
         <view class="anniversary-date">{{item.date}}</view>
         <view class="anniversary-days"><text>{{item.days}}</text> 天</view>
+        <!-- 图片图标，只有当有图片时才显示 -->
+        <view class="anniversary-images-icon" wx:if="{{item.images && item.images.length > 0}}" catchtap="viewImages" data-event-index="{{item}}">
+          <text class="images-count">{{item.images.length}}</text>
+          <text class="images-icon">📷</text>
+        </view>
       </view>
     </view>
   </view>
@@ -47,6 +52,43 @@
             <picker mode="date" class="date-picker" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2016-09-01" bindchange="bindDateChange">
               <view class="ios-input date-picker-text">{{date}}</view>
             </picker>
+          </view>
+        </view>
+        
+        <!-- 图片上传区域 -->
+        <view class="ios-form-group">
+          <view class="ios-form-item">
+            <view class="image-upload-title">纪念日照片</view>
+          </view>
+          
+          <!-- 图片预览区域 -->
+          <view class="ios-form-item" wx:if="{{tempImages.length > 0 || uploadedImages.length > 0}}">
+            <view class="image-preview-area">
+              <!-- 显示临时选择的图片 -->
+              <view class="image-preview-item" wx:for="{{tempImages}}" wx:key="index">
+                <image class="preview-image" src="{{item.tempFilePath}}" mode="aspectFill" bindtap="previewImage" data-index="{{index}}"></image>
+                <view class="delete-image-btn" catchtap="deleteImage" data-index="{{index}}">
+                  <text class="delete-icon">×</text>
+                </view>
+              </view>
+              
+              <!-- 显示已上传的图片 -->
+              <view class="image-preview-item" wx:for="{{uploadedImages}}" wx:key="index">
+                <image class="preview-image" src="{{item.fileID}}" mode="aspectFill" bindtap="previewUploadedImage" data-index="{{index}}"></image>
+                <view class="delete-image-btn" catchtap="deleteUploadedImage" data-index="{{index}}">
+                  <text class="delete-icon">×</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 图片上传按钮 -->
+          <view class="ios-form-item">
+            <view class="image-upload-btn" bindtap="chooseImages">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">添加照片</text>
+            </view>
+            <view class="image-tip">最多可以选择9张图片</view>
           </view>
         </view>
       </view>
