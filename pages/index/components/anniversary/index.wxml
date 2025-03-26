@@ -16,14 +16,25 @@
       <view wx:if="{{item.canEdit}}" class="ios-delete-button" data-event-index="{{item}}" catchtap="onDelete">
         <text class="ios-delete-icon">×</text>
       </view>
-      <view class="anniversary-content">
+      <view class="anniversary-card-container">
+        <!-- 标题独立一行 -->
         <view class="anniversary-title">{{item.name}}</view>
-        <view class="anniversary-date">{{item.date}}</view>
-        <view class="anniversary-days"><text>{{item.days}}</text> 天</view>
-        <!-- 图片图标，只有当有图片时才显示 -->
-        <view class="anniversary-images-icon" wx:if="{{item.images && item.images.length > 0}}" catchtap="viewImages" data-event-index="{{item}}">
-          <text class="images-count">{{item.images.length}}</text>
-          <text class="images-icon">📷</text>
+        
+        <!-- 日期天数和图片图标的容器 -->
+        <view class="anniversary-info-container">
+          <!-- 左侧日期和天数 -->
+          <view class="anniversary-info-left">
+            <view class="anniversary-date">{{item.date}}</view>
+            <view class="anniversary-days"><text>{{item.days}}</text> 天</view>
+          </view>
+          
+          <!-- 右侧图片图标 -->
+          <view class="anniversary-info-right" wx:if="{{item.images && item.images.length > 0}}" catchtap="viewImages" data-event-index="{{item}}">
+            <view class="anniversary-images-icon">
+              <image class="images-icon" src="cloud://lala-tsum-6gem2abq66c46985.6c61-lala-tsum-6gem2abq66c46985-1308328307/anniversaryImages/icon-picture.png" mode="aspectFit"></image>
+              <!-- 隐藏图片数量显示 -->
+            </view>
+          </view>
         </view>
       </view>
     </view>
