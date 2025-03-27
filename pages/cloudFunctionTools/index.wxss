@@ -1,0 +1,129 @@
+.container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #f5f5f7;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.tools-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tool-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  position: relative;
+}
+
+.tool-header {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tool-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.tool-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.ios-button {
+  background: linear-gradient(to right, #007aff, #5ac8fa);
+  color: white;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 20px;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+  border: none;
+  width: 100%;
+}
+
+.ios-button:active {
+  opacity: 0.8;
+}
+
+.ios-button[disabled] {
+  background: linear-gradient(to right, #8e8e93, #aeaeb2);
+  opacity: 0.7;
+}
+
+.add-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px dashed #ccc;
+  cursor: pointer;
+  min-height: 120px;
+}
+
+.add-icon {
+  font-size: 32px;
+  color: #007aff;
+  margin-bottom: 8px;
+}
+
+.add-text {
+  font-size: 16px;
+  color: #007aff;
+}
+
+.result-container {
+  margin-top: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.result-header {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.result-content {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  word-break: break-all;
+  white-space: pre-wrap;
+  background-color: #f5f5f7;
+  border-radius: 8px;
+  padding: 12px;
+}
