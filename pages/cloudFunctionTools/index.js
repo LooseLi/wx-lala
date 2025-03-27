@@ -5,8 +5,24 @@ Page({
       {
         name: '更新纪念日图片字段',
         description: '为所有没有images字段的纪念日记录添加空的images数组',
-        functionName: 'updateAnniversaryImages',
+        functionName: 'dbOperations',
         id: 'updateImages',
+        params: {
+          operation: 'addField',
+          collection: 'anniversaryList',
+          data: { images: [] }
+        }
+      },
+      {
+        name: '查询纪念日记录',
+        description: '查询所有纪念日记录，检查数据完整性',
+        functionName: 'dbOperations',
+        id: 'queryAnniversary',
+        params: {
+          operation: 'queryRecords',
+          collection: 'anniversaryList',
+          options: { limit: 100 }
+        }
       },
       // 未来可以在这里添加更多工具
     ],
@@ -34,6 +50,7 @@ Page({
 
     wx.cloud.callFunction({
       name: tool.functionName,
+      data: tool.params || {},
       success: res => {
         console.log(`云函数 ${tool.functionName} 调用成功:`, res.result);
 
