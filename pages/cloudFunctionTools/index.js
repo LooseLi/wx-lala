@@ -6,37 +6,37 @@ Page({
         name: '更新纪念日图片字段',
         description: '为所有没有images字段的纪念日记录添加空的images数组',
         functionName: 'updateAnniversaryImages',
-        id: 'updateImages'
+        id: 'updateImages',
       },
       // 未来可以在这里添加更多工具
     ],
     currentResult: '',
-    isLoading: false
+    isLoading: false,
   },
 
   // 调用指定的云函数
   callCloudFunction(e) {
     const toolId = e.currentTarget.dataset.id;
     const tool = this.data.tools.find(item => item.id === toolId);
-    
+
     if (!tool) {
       wx.showToast({
         title: '工具不存在',
-        icon: 'none'
+        icon: 'none',
       });
       return;
     }
 
     this.setData({
       isLoading: true,
-      currentResult: `正在调用云函数 ${tool.functionName}...`
+      currentResult: `正在调用云函数 ${tool.functionName}...`,
     });
 
     wx.cloud.callFunction({
       name: tool.functionName,
       success: res => {
         console.log(`云函数 ${tool.functionName} 调用成功:`, res.result);
-        
+
         let resultText = '';
         if (res.result.success) {
           resultText = `成功完成操作，${res.result.message || ''}`;
@@ -45,32 +45,32 @@ Page({
           }
           wx.showToast({
             title: '操作成功',
-            icon: 'success'
+            icon: 'success',
           });
         } else {
           resultText = `操作失败: ${res.result.message || '未知错误'}`;
           wx.showToast({
             title: '操作失败',
-            icon: 'none'
+            icon: 'none',
           });
         }
 
         this.setData({
           currentResult: resultText,
-          isLoading: false
+          isLoading: false,
         });
       },
       fail: err => {
         console.error(`云函数 ${tool.functionName} 调用失败:`, err);
         this.setData({
           currentResult: `调用失败: ${JSON.stringify(err)}`,
-          isLoading: false
+          isLoading: false,
         });
         wx.showToast({
           title: '操作失败',
-          icon: 'none'
+          icon: 'none',
         });
-      }
+      },
     });
   },
 
@@ -78,7 +78,7 @@ Page({
   addNewTool() {
     wx.showToast({
       title: '此功能正在开发中',
-      icon: 'none'
+      icon: 'none',
     });
-  }
+  },
 });
