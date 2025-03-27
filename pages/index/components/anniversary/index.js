@@ -377,26 +377,17 @@ Page({
   // 更新
   onUpdate(e) {
     const obj = e.currentTarget.dataset.eventIndex;
-    this.setData({
-      name: obj.name,
-      date: obj.date,
-      id: obj._id,
-      type: 'update',
-      uploadedImages: obj.images || [], // 加载已有图片
-      tempImages: [], // 清空临时图片
-    });
-    this.openDialog();
-    // if (obj.canEdit) {
-    //   this.setData({
-    //     name: obj.name,
-    //     date: obj.date,
-    //     id: obj._id,
-    //     type: 'update',
-    //     uploadedImages: obj.images || [], // 加载已有图片
-    //     tempImages: [], // 清空临时图片
-    //   });
-    //   this.openDialog();
-    // }
+    if (obj.canEdit) {
+      this.setData({
+        name: obj.name,
+        date: obj.date,
+        id: obj._id,
+        type: 'update',
+        uploadedImages: obj.images || [], // 加载已有图片
+        tempImages: [], // 清空临时图片
+      });
+      this.openDialog();
+    }
   },
 
   // 查看纪念日图片
