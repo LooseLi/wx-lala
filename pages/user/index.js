@@ -214,27 +214,132 @@ Page({
       success: res => {
         const tempFilePath = res.tempFilePaths[0];
 
+        // 显示加载中提示
+        wx.showLoading({
+          title: '头像上传中...',
+          mask: true,
+        });
+
         // 获取openid前8位作为用户文件夹名
         const userFolder = this.data.openid.substring(0, 8);
 
-        // 上传到云存储，使用优化的文件路径结构
-        wx.cloud.uploadFile({
-          cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
-          filePath: tempFilePath,
-          success: res => {
-            const avatar = res.fileID;
+        // 查询用户当前头像记录
+        this.cleanupOldAvatars(userFolder)
+          .then(() => {
+            // 上传到云存储，使用优化的文件路径结构
+            wx.cloud.uploadFile({
+              cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
+              filePath: tempFilePath,
+              success: res => {
+                const avatar = res.fileID;
+                wx.hideLoading();
 
-            // 更新本地和数据库
-            this.updateUserInfo({
-              avatar,
+                // 更新本地和数据库
+                this.updateUserInfo({
+                  avatar,
+                  previousAvatar: this.data.avatar, // 保存上一次头像路径
+                  avatarHistory: [avatar, this.data.avatar].filter(Boolean), // 更新头像历史记录
+                });
+              },
+              fail: err => {
+                wx.hideLoading();
+                wx.showToast({
+                  title: '上传失败',
+                  icon: 'none',
+                });
+              },
             });
-          },
-          fail: err => {
-            wx.showToast({
-              title: '上传失败',
-              icon: 'none',
+          })
+          .catch(err => {
+            wx.hideLoading();
+            console.error('清理旧头像失败:', err);
+            // 即使清理失败也继续上传
+            this.uploadAvatarWithoutCleanup(userFolder, tempFilePath);
+          });
+      },
+    });
+  },
+
+  // 清理旧头像，保留最近一次的
+  async cleanupOldAvatars(userFolder) {
+    try {
+      // 要保留的头像文件ID
+      const keepFileIDs = [this.data.avatar, this.data.previousAvatar].filter(Boolean);
+
+      // 如果没有头像记录，直接返回
+      if (keepFileIDs.length === 0) {
+        return;
+      }
+
+      // 如果有当前头像和上一次头像，删除其他旧头像
+      if (keepFileIDs.length >= 2) {
+        // 查询数据库获取用户历史头像记录
+        const userRecord = await db
+          .collection('userInfo')
+          .where({
+            openid: this.data.openid,
+          })
+          .field({
+            avatarHistory: true,
+          })
+          .get();
+
+        // 如果有历史记录并且超过两个
+        if (
+          userRecord.data[0] &&
+          userRecord.data[0].avatarHistory &&
+          userRecord.data[0].avatarHistory.length > 2
+        ) {
+          // 取最旧的头像记录（跳过最新的两个）
+          const oldAvatars = userRecord.data[0].avatarHistory.slice(2);
+
+          if (oldAvatars.length > 0) {
+            // 删除旧头像文件
+            await wx.cloud.deleteFile({
+              fileList: oldAvatars,
             });
-          },
+            console.log('已清理', oldAvatars.length, '个旧头像文件');
+
+            // 更新数据库中的头像历史记录，只保留最新的两个
+            await db
+              .collection('userInfo')
+              .where({
+                openid: this.data.openid,
+              })
+              .update({
+                data: {
+                  avatarHistory: userRecord.data[0].avatarHistory.slice(0, 2),
+                },
+              });
+          }
+        }
+      }
+    } catch (err) {
+      console.error('清理旧头像失败:', err);
+      // 即使清理失败也不影响上传新头像
+    }
+  },
+
+  // 备用方法：如果清理失败，直接上传
+  uploadAvatarWithoutCleanup(userFolder, tempFilePath) {
+    wx.cloud.uploadFile({
+      cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
+      filePath: tempFilePath,
+      success: res => {
+        const avatar = res.fileID;
+        wx.hideLoading();
+
+        // 更新本地和数据库
+        this.updateUserInfo({
+          avatar,
+          previousAvatar: this.data.avatar, // 保存上一次头像路径
+        });
+      },
+      fail: err => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '上传失败',
+          icon: 'none',
         });
       },
     });
