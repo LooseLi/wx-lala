@@ -1,6 +1,4 @@
 {
   "navigationBarTitleText": "我的",
-  "usingComponents": {
-    "date-time-picker": "../../components/DateTimePicker"
-  }
+  "usingComponents": {}
 }

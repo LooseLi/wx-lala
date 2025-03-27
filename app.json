@@ -6,8 +6,7 @@
     "pages/index/components/anniversary/index",
     "pages/cloudFunctionTools/index",
     "pages/index/components/things/index",
-    "pages/index/components/holidays/index",
-    "components/DateTimePicker/index"
+    "pages/index/components/holidays/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,5 +1,4 @@
 const db = wx.cloud.database();
-const todos = db.collection('todos');
 const userInfo = db.collection('userInfo');
 const plugins = require('../../utils/plugins');
 
@@ -14,15 +13,8 @@ Page({
     nickname: '',
     isAuth: false,
     openid: '',
-    dialog: false,
     showNicknameEdit: false, // 显示昵称编辑弹窗
     editingNickname: '', // 正在编辑的昵称
-    todoObj: {
-      title: '',
-      time: '',
-    },
-    todoTitle: '',
-    todoTime: '',
     dialogAnimation: false,
     checkInData: null,
   },
@@ -151,90 +143,8 @@ Page({
     });
   },
 
-  closeDialog() {
-    this.setData({
-      dialog: false,
-    });
-    this.resetData();
-  },
+  // 待办事项相关功能已移除
 
-  resetData() {
-    this.setData({
-      todoTitle: '',
-      todoTime: '',
-    });
-  },
-
-  // 添加待办
-  addTodo() {
-    this.openDialog();
-  },
-
-  bindTodoChange(e) {
-    this.setData({
-      todoTitle: e.detail.value,
-    });
-  },
-
-  // 年月日时分秒选择器
-  onChangeTime(e) {},
-
-  requestSubscribeMessage() {
-    wx.requestSubscribeMessage({
-      tmplIds: ['GqXCTV7Ws4p-ADpD40fZz1mIfMd6Ab_71jOqkmKdkII'],
-      success: res => {
-        this.sendMessage();
-      },
-      fail: err => {
-        console.log(err);
-      },
-      complete: () => {},
-    });
-  },
-
-  // 发送消息
-  sendMessage() {
-    console.log(this.data.todoTitle);
-    console.log(this.data.todoTime);
-    wx.cloud.callFunction({
-      name: 'sendMsg',
-      data: {
-        title: this.data.todoTitle,
-        time: this.data.todoTime,
-      },
-      success: res => {
-        console.log(res);
-        this.closeDialog();
-      },
-      fail: err => {
-        console.log(err);
-      },
-    });
-  },
-
-  // 添加待办事项到数据库
-  add() {
-    let todoTime = this.data.todoTime.replace(/-/g, '/') + ':00:00';
-    const todoGetTime = new Date(todoTime).getTime();
-    todos.add({
-      data: {
-        title: this.data.todoTitle,
-        time: new Date(todoTime),
-        timestamp: todoGetTime,
-      },
-    });
-  },
-
-  // 确认添加
-  onSave() {
-    wx.getSetting({
-      withSubscriptions: true,
-      success: async res => {
-        await this.add();
-        this.requestSubscribeMessage();
-      },
-    });
-  },
 
   /**
    * 生命周期函数--监听页面加载
