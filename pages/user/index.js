@@ -145,7 +145,6 @@ Page({
 
   // 待办事项相关功能已移除
 
-
   /**
    * 生命周期函数--监听页面加载
    */
@@ -215,9 +214,12 @@ Page({
       success: res => {
         const tempFilePath = res.tempFilePaths[0];
 
-        // 上传到云存储
+        // 获取openid前8位作为用户文件夹名
+        const userFolder = this.data.openid.substring(0, 8);
+
+        // 上传到云存储，使用优化的文件路径结构
         wx.cloud.uploadFile({
-          cloudPath: `avatar/${this.data.openid}_${Date.now()}.jpg`,
+          cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
           filePath: tempFilePath,
           success: res => {
             const avatar = res.fileID;
