@@ -397,6 +397,12 @@ Page({
 
     const item = e.currentTarget.dataset.eventIndex;
     if (item.images && item.images.length > 0) {
+      // 显示加载中提示
+      wx.showLoading({
+        title: '回忆生成中...',
+        mask: true, // 添加蒙层防止用户触摸操作
+      });
+
       // 提取所有图片的fileID用于预览
       const imageUrls = item.images.map(img => img.fileID);
 
@@ -406,13 +412,21 @@ Page({
         showmenu: true, // 显示长按菜单，允许用户保存图片
         success: () => {
           console.log('图片预览成功');
+          // 预览成功后隐藏loading
+          wx.hideLoading();
         },
         fail: err => {
           console.error('图片预览失败:', err);
+          // 预览失败后隐藏loading并显示错误提示
+          wx.hideLoading();
           wx.showToast({
             title: '图片加载失败',
             icon: 'none',
           });
+        },
+        complete: () => {
+          // 确保在任何情况下都隐藏loading
+          wx.hideLoading();
         },
       });
     }
