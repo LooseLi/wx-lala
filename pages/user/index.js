@@ -223,23 +223,75 @@ Page({
         // 获取openid前8位作为用户文件夹名
         const userFolder = this.data.openid.substring(0, 8);
 
-        // 查询用户当前头像记录
-        this.cleanupOldAvatars(userFolder)
-          .then(() => {
+        // 先查询数据库获取当前的头像历史记录
+        db.collection('userInfo')
+          .where({
+            openid: this.data.openid,
+          })
+          .get()
+          .then(res => {
+            // 获取当前用户记录
+            const user = res.data[0] || {};
+            const currentAvatarHistory = user.avatarHistory || [];
+            console.log('当前头像历史记录:', currentAvatarHistory);
+
             // 上传到云存储，使用优化的文件路径结构
             wx.cloud.uploadFile({
               cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
               filePath: tempFilePath,
               success: res => {
-                const avatar = res.fileID;
-                wx.hideLoading();
+                const newAvatar = res.fileID;
+                console.log('新头像上传成功，文件ID:', newAvatar);
+
+                // 保存当前头像作为上一个头像
+                const previousAvatar = this.data.avatar;
+                console.log('上一个头像:', previousAvatar);
+
+                // 计算新的头像历史记录（只保留最新的两个）
+                const newAvatarHistory = [newAvatar];
+                if (previousAvatar) {
+                  newAvatarHistory.push(previousAvatar);
+                }
+                console.log('新的头像历史记录:', newAvatarHistory);
+
+                // 计算需要删除的头像文件
+                const keepFileIDs = newAvatarHistory;
+                const filesToDelete = currentAvatarHistory.filter(fileID => {
+                  // 检查这个fileID是否应该保留
+                  return !keepFileIDs.some(keepID => {
+                    // 如果两个ID完全相等，或者一个包含另一个，则认为是同一个文件
+                    return (
+                      keepID === fileID ||
+                      (keepID && fileID && (keepID.includes(fileID) || fileID.includes(keepID)))
+                    );
+                  });
+                });
+                console.log('需要删除的旧头像:', filesToDelete);
 
                 // 更新本地和数据库
                 this.updateUserInfo({
-                  avatar,
-                  previousAvatar: this.data.avatar, // 保存上一次头像路径
-                  avatarHistory: [avatar, this.data.avatar].filter(Boolean), // 更新头像历史记录
+                  avatar: newAvatar,
+                  previousAvatar: previousAvatar,
+                  avatarHistory: newAvatarHistory,
                 });
+
+                // 删除旧头像文件
+                if (filesToDelete.length > 0) {
+                  wx.cloud.deleteFile({
+                    fileList: filesToDelete,
+                    success: res => {
+                      console.log('删除旧头像成功:', res);
+                      wx.hideLoading();
+                    },
+                    fail: err => {
+                      console.error('删除旧头像失败:', err);
+                      wx.hideLoading();
+                    },
+                  });
+                } else {
+                  console.log('没有需要删除的旧头像');
+                  wx.hideLoading();
+                }
               },
               fail: err => {
                 wx.hideLoading();
@@ -251,10 +303,8 @@ Page({
             });
           })
           .catch(err => {
+            console.error('查询用户信息失败:', err);
             wx.hideLoading();
-            console.error('清理旧头像失败:', err);
-            // 即使清理失败也继续上传
-            this.uploadAvatarWithoutCleanup(userFolder, tempFilePath);
           });
       },
     });
@@ -263,61 +313,109 @@ Page({
   // 清理旧头像，保留最近一次的
   async cleanupOldAvatars(userFolder) {
     try {
-      // 要保留的头像文件ID
-      const keepFileIDs = [this.data.avatar, this.data.previousAvatar].filter(Boolean);
+      console.log('开始清理旧头像...');
 
-      // 如果没有头像记录，直接返回
-      if (keepFileIDs.length === 0) {
+      // 查询数据库获取用户历史头像记录
+      const userRecord = await db
+        .collection('userInfo')
+        .where({
+          openid: this.data.openid,
+        })
+        .get();
+
+      // 检查用户记录是否存在
+      if (!userRecord.data || userRecord.data.length === 0) {
+        console.log('用户记录不存在，无需清理');
         return;
       }
 
-      // 如果有当前头像和上一次头像，删除其他旧头像
-      if (keepFileIDs.length >= 2) {
-        // 查询数据库获取用户历史头像记录
-        const userRecord = await db
+      // 获取当前用户记录
+      const user = userRecord.data[0];
+
+      // 初始化头像历史记录（如果不存在）
+      if (!user.avatarHistory) {
+        console.log('用户没有头像历史记录，初始化空数组');
+        await db
           .collection('userInfo')
-          .where({
-            openid: this.data.openid,
-          })
-          .field({
-            avatarHistory: true,
-          })
-          .get();
+          .where({ openid: this.data.openid })
+          .update({
+            data: { avatarHistory: [] },
+          });
+        return;
+      }
 
-        // 如果有历史记录并且超过两个
-        if (
-          userRecord.data[0] &&
-          userRecord.data[0].avatarHistory &&
-          userRecord.data[0].avatarHistory.length > 2
-        ) {
-          // 取最旧的头像记录（跳过最新的两个）
-          const oldAvatars = userRecord.data[0].avatarHistory.slice(2);
+      // 要保留的头像文件ID
+      const keepFileIDs = [this.data.avatar, this.data.previousAvatar].filter(Boolean);
+      console.log('当前保留的头像:', keepFileIDs);
 
-          if (oldAvatars.length > 0) {
-            // 删除旧头像文件
-            await wx.cloud.deleteFile({
-              fileList: oldAvatars,
+      // 详细输出头像历史记录和当前头像，用于调试
+      console.log('数据库中的头像历史记录:', user.avatarHistory);
+      console.log('当前头像:', this.data.avatar);
+      console.log('上一个头像:', this.data.previousAvatar);
+
+      // 由于文件ID可能有不同的格式或前缀，我们使用部分匹配而不是完全相等
+      // 找出需要删除的旧头像
+      const filesToDelete = user.avatarHistory.filter(fileID => {
+        // 检查这个fileID是否应该保留
+        return !keepFileIDs.some(keepID => {
+          // 如果两个ID完全相等，或者一个包含另一个，则认为是同一个文件
+          return (
+            keepID === fileID ||
+            (keepID && fileID && (keepID.includes(fileID) || fileID.includes(keepID)))
+          );
+        });
+      });
+
+      console.log('需要删除的旧头像:', filesToDelete);
+
+      // 如果有需要删除的头像
+      if (filesToDelete.length > 0) {
+        try {
+          // 删除旧头像文件
+          const deleteResult = await wx.cloud.deleteFile({
+            fileList: filesToDelete,
+          });
+
+          console.log('删除结果:', deleteResult);
+
+          // 更新数据库中的头像历史记录，只保留当前头像和上一个头像
+          await db
+            .collection('userInfo')
+            .where({
+              openid: this.data.openid,
+            })
+            .update({
+              data: {
+                avatarHistory: keepFileIDs.filter(Boolean),
+              },
             });
-            console.log('已清理', oldAvatars.length, '个旧头像文件');
 
-            // 更新数据库中的头像历史记录，只保留最新的两个
-            await db
-              .collection('userInfo')
-              .where({
-                openid: this.data.openid,
-              })
-              .update({
-                data: {
-                  avatarHistory: userRecord.data[0].avatarHistory.slice(0, 2),
-                },
-              });
-          }
+          console.log('成功清理数据库中', filesToDelete.length, '个旧头像记录');
+        } catch (deleteErr) {
+          console.error('删除旧头像文件失败:', deleteErr);
         }
+      } else {
+        console.log('没有需要删除的旧头像文件');
       }
     } catch (err) {
       console.error('清理旧头像失败:', err);
       // 即使清理失败也不影响上传新头像
     }
+  },
+
+  // 更新头像历史记录数组
+  updateAvatarHistory(newAvatar) {
+    // 获取当前用户信息
+    const userInfo = wx.getStorageSync('userInfo') || {};
+
+    // 初始化历史记录数组
+    let history = userInfo.avatarHistory || [];
+
+    // 将新头像添加到历史记录最前面
+    history = [newAvatar, ...history.filter(item => item !== newAvatar)];
+
+    // 只保留最近两个头像记录
+    return history.slice(0, 2);
   },
 
   // 备用方法：如果清理失败，直接上传
@@ -333,6 +431,7 @@ Page({
         this.updateUserInfo({
           avatar,
           previousAvatar: this.data.avatar, // 保存上一次头像路径
+          avatarHistory: this.updateAvatarHistory(avatar), // 更新头像历史记录
         });
       },
       fail: err => {
