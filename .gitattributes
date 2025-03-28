@@ -1,6 +1,7 @@
 *.wxml linguist-language=HTML
 *.wxss linguist-language=CSS
 *.wxs linguist-language=JavaScript
+*.js linguist-language=JavaScript
 *.json linguist-language=JSON
 project.config.json linguist-language=JSON
 sitemap.json linguist-language=JSON
