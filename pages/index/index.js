@@ -201,30 +201,29 @@ Page({
         })
         .end();
       const arr = res.list.map(item => item.name);
-      
+
       // 更新页面显示
       this.setData({
         foods: arr,
       });
-      
+
       // 保存当天的食物数据和日期（覆盖之前的数据）
       const today = this.formatDate(new Date());
       wx.setStorageSync('randomFoodData', {
         foods: arr,
         date: today,
-        timestamp: Date.now() // 添加时间戳，便于排序和调试
+        timestamp: Date.now(), // 添加时间戳，便于排序和调试
       });
-      
     } catch (error) {
       console.error('获取随机食物失败:', error);
       plugins.showToast({
-        title: '获取食物失败，请重试'
+        title: '获取食物失败，请重试',
       });
     } finally {
       wx.hideLoading();
     }
   },
-  
+
   // 格式化日期为 YYYY-MM-DD 格式
   formatDate(date) {
     const year = date.getFullYear();
@@ -232,21 +231,21 @@ Page({
     const day = date.getDate();
     return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
   },
-  
+
   // 检查本地存储中的食物数据
   checkStoredFoodData() {
     const today = this.formatDate(new Date());
     const storedData = wx.getStorageSync('randomFoodData');
-    
+
     if (storedData && storedData.date === today) {
       // 如果有当天的数据，显示它
       this.setData({
-        foods: storedData.foods
+        foods: storedData.foods,
       });
     } else {
       // 如果没有当天的数据，清空显示
       this.setData({
-        foods: []
+        foods: [],
       });
       // 清除过期数据
       wx.removeStorageSync('randomFoodData');
@@ -259,7 +258,7 @@ Page({
   onLoad: async function (options) {
     // 检查本地存储中的食物数据
     this.checkStoredFoodData();
-    
+
     // 获取用户openid并存储
     wx.cloud.callFunction({
       name: 'getOpenId',
@@ -271,11 +270,11 @@ Page({
     await this.getWeatherList();
     this.beforeGetLocation();
   },
-  
+
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function () {
     // 每次显示页面时检查本地存储中的食物数据
     // 这样可以确保在跨天时重置数据
     this.checkStoredFoodData();
