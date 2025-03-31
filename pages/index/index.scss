@@ -1,0 +1,191 @@
+// 定义变量
+$transparent-black-bg: rgba(0, 0, 0, 0.3);
+$card-bg: rgba(0, 0, 0, 0.45);
+$box-shadow: 0px 2px 8px rgba(23, 22, 81, 0.3);
+$standard-width: calc(100% - 24px);
+$white-text: #fff;
+$light-text: #fafafa;
+$standard-border-radius: 12px;
+$small-border-radius: 6px;
+$standard-margin: 20px;
+$icon-size-small: 26px;
+$icon-size-medium: 35px;
+$icon-size-large: 40px;
+
+// 定义混合器(Mixins)
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin card-style {
+  background: $transparent-black-bg;
+  box-shadow: $box-shadow;
+  border-radius: $small-border-radius;
+}
+
+@mixin standard-container {
+  width: $standard-width;
+  margin: 0 auto;
+}
+
+// 页面样式
+page {
+  background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546');
+  background-size: 100% 100%;
+}
+
+// 容器样式
+.container {
+  width: 100%;
+}
+
+.bg {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+// 天气卡片
+.weather-card {
+  position: relative;
+  width: $standard-width;
+  margin: $standard-margin auto;
+  padding: 12px;
+  background: $card-bg;
+  box-shadow: $box-shadow;
+  border-radius: $standard-border-radius;
+  text-align: center;
+  z-index: 2;
+  font-size: 14px;
+  color: $light-text;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+// 位置信息
+.location {
+  @include flex-align-center;
+  margin-top: 6px;
+}
+
+.icon-dingwei {
+  width: $icon-size-small;
+  height: $icon-size-small;
+  margin-right: 4px;
+}
+
+.temperature {
+  font-size: 48px;
+  padding: 14px 0;
+}
+
+// 通用布局
+.wrap {
+  @include flex-center;
+}
+
+.line {
+  margin: 0 6px;
+}
+
+// 风力信息
+.wind {
+  margin: 6px 0;
+}
+
+.windpower {
+  margin-right: 20px;
+}
+
+// 天气图标和信息
+.icon-weather {
+  width: $icon-size-medium;
+  height: $icon-size-medium;
+  margin-right: 6px;
+}
+
+.weather {
+  @include flex-align-center;
+}
+
+// 渐变文字
+.meet {
+  background: linear-gradient(90deg, #ffa940 20%, #85a5ff 76%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 16px;
+}
+
+// 事件列表
+.event-list {
+  @include standard-container;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+// 事件项
+.event {
+  width: calc((100% - 20px) / 2);
+  height: 66px;
+  @include card-style;
+  margin-bottom: 14px;
+  color: $white-text;
+  font-size: 13px;
+  @include flex-align-center;
+  justify-content: left;
+
+  // 使用嵌套选择器
+  &-icon {
+    width: $icon-size-large;
+    height: $icon-size-large;
+    margin: 0 10px 0 16px;
+  }
+
+  // 使用嵌套的伪类选择器
+  &:nth-child(2n + 1) {
+    margin-right: 20px;
+  }
+}
+
+// 食物区域
+.eat-wrap {
+  @include standard-container;
+  margin: 40px auto $standard-margin;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 食物相关元素
+.food {
+  // 食物名称
+  &-name {
+    width: 100%;
+    margin-right: 12px;
+    flex: 1;
+    @include card-style;
+    height: 40px;
+    font-weight: bold;
+    color: $white-text;
+    @include flex-center;
+  }
+
+  // 食物随机按钮
+  &-random {
+    width: $icon-size-large;
+    height: $icon-size-large;
+  }
+
+  // 食物列表按钮
+  &-list {
+    width: $icon-size-large;
+    height: $icon-size-large;
+  }
+}
