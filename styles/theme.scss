@@ -1,0 +1,100 @@
+/**
+ * 主题变量系统
+ * 集中管理所有颜色和样式变量，支持深色模式
+ */
+
+// 定义基础颜色变量
+$background-primary: #f5f5f7;
+$background-secondary: #ffffff;
+$card-background: rgba(255, 255, 255, 0.9);
+$text-primary: #1d1d1f;
+$text-primary-rgb: 29, 29, 31;
+$text-secondary: #86868b;
+$text-secondary-rgb: 134, 134, 139;
+$text-tertiary: #98989d;
+$text-tertiary-rgb: 152, 152, 157;
+$border-color: rgba(0, 0, 0, 0.1);
+$card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+// 定义功能颜色变量
+$primary-color: #36b4ff;
+$primary-color-rgb: 0, 122, 255;
+$primary-gradient: linear-gradient(135deg, #0a84ff 0%, #007aff 100%);
+$success-color: #32d74b;
+$success-color-rgb: 50, 215, 75;
+$success-gradient: linear-gradient(135deg, #32d74b 0%, #28cd41 100%);
+$warning-color: #ff9500;
+$warning-color-rgb: 255, 149, 0;
+$warning-gradient: linear-gradient(135deg, #ff9f0a 0%, #ff9500 100%);
+$error-color: #ff3b30;
+$error-color-rgb: 255, 59, 48;
+
+// 组件特定颜色变量
+$button-primary: $primary-gradient;
+$button-success: $success-gradient;
+$button-warning-bg: rgba($warning-color-rgb, 0.1);
+$button-warning-text: $warning-color;
+$button-disabled: linear-gradient(135deg, #d1d1d6 0%, #c7c7cc 100%);
+$text-disabled: rgba(255, 255, 255, 0.8);
+
+// 签到组件特定颜色变量
+$checkin-days-color: $primary-color;
+$checkin-points-color: $success-color;
+
+// 将变量应用到页面
+page {
+  /* 基础颜色 - 浅色模式 */
+  --background-primary: #{$background-primary};
+  --background-secondary: #{$background-secondary};
+  --card-background: #{$card-background};
+  --text-primary: #{$text-primary};
+  --text-primary-rgb: #{$text-primary-rgb};
+  --text-secondary: #{$text-secondary};
+  --text-secondary-rgb: #{$text-secondary-rgb};
+  --text-tertiary: #{$text-tertiary};
+  --text-tertiary-rgb: #{$text-tertiary-rgb};
+  --border-color: #{$border-color};
+  --card-shadow: #{$card-shadow};
+
+  /* 功能颜色 */
+  --primary-color: #{$primary-color};
+  --primary-color-rgb: #{$primary-color-rgb};
+  --primary-gradient: #{$primary-gradient};
+  --success-color: #{$success-color};
+  --success-color-rgb: #{$success-color-rgb};
+  --success-gradient: #{$success-gradient};
+  --warning-color: #{$warning-color};
+  --warning-color-rgb: #{$warning-color-rgb};
+  --warning-gradient: #{$warning-gradient};
+  --error-color: #{$error-color};
+  --error-color-rgb: #{$error-color-rgb};
+
+  /* 组件特定颜色 */
+  --button-primary: var(--primary-gradient);
+  --button-success: var(--success-gradient);
+  --button-warning-bg: #{$button-warning-bg};
+  --button-warning-text: var(--warning-color);
+  --button-disabled: #{$button-disabled};
+  --text-disabled: #{$text-disabled};
+
+  /* 签到组件特定颜色 */
+  --checkin-days-color: var(--primary-color);
+  --checkin-points-color: var(--success-color);
+}
+
+// 深色模式样式
+@media (prefers-color-scheme: dark) {
+  page {
+    --background-primary: #1c1c1e;
+    --background-secondary: #2c2c2e;
+    --card-background: rgba(44, 44, 46, 0.9);
+    --text-primary: #ffffff;
+    --text-primary-rgb: 255, 255, 255;
+    --text-secondary: #ebebf0;
+    --text-secondary-rgb: 235, 235, 240;
+    --text-tertiary: #aeaeb2;
+    --text-tertiary-rgb: 174, 174, 178;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
