@@ -1,0 +1,184 @@
+// 定义变量
+$primary-color: #007aff;
+$primary-gradient: linear-gradient(to right, #007aff, #5ac8fa);
+$disabled-gradient: linear-gradient(to right, #8e8e93, #aeaeb2);
+$background-color: #f5f5f7;
+$card-background: #fff;
+$text-primary: #333;
+$text-secondary: #666;
+$border-color: #eee;
+$shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-button: 0 2px 6px rgba(0, 122, 255, 0.3);
+
+// 间距变量
+$spacing-small: 8px;
+$spacing-medium: 16px;
+$spacing-large: 20px;
+$spacing-xl: 24px;
+
+// 圆角变量
+$border-radius-small: 8px;
+$border-radius-medium: 12px;
+$border-radius-large: 20px;
+
+// 字体大小变量
+$font-small: 14px;
+$font-medium: 16px;
+$font-large: 18px;
+$font-xl: 24px;
+$font-xxl: 32px;
+
+// 混合器
+@mixin card {
+  background-color: $card-background;
+  border-radius: $border-radius-medium;
+  box-shadow: $shadow-light;
+  padding: $spacing-medium;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// 基础容器样式
+.container {
+  padding: $spacing-large;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: $background-color;
+  min-height: 100vh;
+}
+
+// 头部区域
+.header {
+  margin-bottom: $spacing-large;
+  text-align: center;
+
+  .title {
+    font-size: $font-xl;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: $font-small;
+    color: $text-secondary;
+    margin-bottom: $spacing-large;
+  }
+}
+
+// 工具容器
+.tools-container {
+  @include flex-column;
+  gap: $spacing-medium;
+}
+
+// 工具卡片
+.tool-card {
+  @include card;
+  position: relative;
+
+  // 工具卡片头部
+  .tool-header {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // 工具名称
+  .tool-name {
+    font-size: $font-large;
+    font-weight: 500;
+    color: $text-primary;
+  }
+
+  // 工具描述
+  .tool-description {
+    font-size: $font-small;
+    color: $text-secondary;
+    margin-bottom: $spacing-medium;
+    line-height: 1.5;
+  }
+
+  // 添加新工具卡片样式
+  &.add-tool {
+    @include flex-column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px dashed #ccc;
+    cursor: pointer;
+    min-height: 120px;
+  }
+}
+
+// 添加图标
+.add-icon {
+  font-size: $font-xxl;
+  color: $primary-color;
+  margin-bottom: $spacing-small;
+}
+
+// 添加文本
+.add-text {
+  font-size: $font-medium;
+  color: $primary-color;
+}
+
+// iOS风格按钮
+.ios-button {
+  background: $primary-gradient;
+  color: white;
+  border-radius: $border-radius-large;
+  font-size: $font-medium;
+  font-weight: 500;
+  padding: $spacing-small $spacing-large;
+  box-shadow: $shadow-button;
+  border: none;
+  width: 100%;
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  &[disabled] {
+    background: $disabled-gradient;
+    opacity: 0.7;
+  }
+}
+
+// 结果容器
+.result-container {
+  margin-top: $spacing-xl;
+  @include card;
+
+  // 结果头部
+  .result-header {
+    font-size: $font-medium;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 12px;
+    padding-bottom: $spacing-small;
+    border-bottom: 1px solid $border-color;
+  }
+
+  // 结果内容
+  .result-content {
+    font-size: $font-small;
+    color: $text-primary;
+    line-height: 1.6;
+    word-break: break-all;
+    white-space: pre-wrap;
+    background-color: $background-color;
+    border-radius: $border-radius-small;
+    padding: 12px;
+  }
+}

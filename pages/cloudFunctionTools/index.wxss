@@ -9,15 +9,13 @@
   margin-bottom: 20px;
   text-align: center;
 }
-
-.title {
+.header .title {
   font-size: 24px;
   font-weight: 500;
   color: #333;
   margin-bottom: 6px;
 }
-
-.subtitle {
+.header .subtitle {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
@@ -36,49 +34,24 @@
   padding: 16px;
   position: relative;
 }
-
-.tool-header {
+.tool-card .tool-header {
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-.tool-name {
+.tool-card .tool-name {
   font-size: 18px;
   font-weight: 500;
   color: #333;
 }
-
-.tool-description {
+.tool-card .tool-description {
   font-size: 14px;
   color: #666;
   margin-bottom: 16px;
   line-height: 1.5;
 }
-
-.ios-button {
-  background: linear-gradient(to right, #007aff, #5ac8fa);
-  color: white;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 8px 20px;
-  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
-  border: none;
-  width: 100%;
-}
-
-.ios-button:active {
-  opacity: 0.8;
-}
-
-.ios-button[disabled] {
-  background: linear-gradient(to right, #8e8e93, #aeaeb2);
-  opacity: 0.7;
-}
-
-.add-tool {
+.tool-card.add-tool {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,6 +73,25 @@
   color: #007aff;
 }
 
+.ios-button {
+  background: linear-gradient(to right, #007aff, #5ac8fa);
+  color: white;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 20px;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+  border: none;
+  width: 100%;
+}
+.ios-button:active {
+  opacity: 0.8;
+}
+.ios-button[disabled] {
+  background: linear-gradient(to right, #8e8e93, #aeaeb2);
+  opacity: 0.7;
+}
+
 .result-container {
   margin-top: 24px;
   background-color: #fff;
@@ -107,8 +99,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
 }
-
-.result-header {
+.result-container .result-header {
   font-size: 16px;
   font-weight: 500;
   color: #333;
@@ -116,8 +107,7 @@
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
-
-.result-content {
+.result-container .result-content {
   font-size: 14px;
   color: #333;
   line-height: 1.6;
