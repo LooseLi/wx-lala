@@ -11,7 +11,6 @@ view {
   display: flex;
   align-items: center;
 }
-
 .remind-text {
   color: rgba(0, 0, 0, 0.38);
 }
@@ -32,27 +31,11 @@ view {
   padding: 32rpx;
   background-color: var(--background-secondary);
   border-radius: 24rpx;
-  margin-bottom: 32rpx;
   box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
+  margin-bottom: 32rpx;
   position: relative;
   overflow: hidden;
-  border: 1rpx solid var(--border-color);
-}
-
-/* 头像区域 */
-.avatar-container {
-  position: relative;
-  width: 160rpx;
-  height: 160rpx;
-  transition: transform 0.2s ease;
-}
-
-.avatar-container:active {
-  transform: scale(0.98);
-}
-
-.avatar-container:active .avatar {
-  border-color: var(--border-color-active);
 }
 
 .avatar {
@@ -66,13 +49,24 @@ view {
   box-shadow: var(--inset-shadow);
   transition: all 0.2s ease;
 }
+.avatar-container {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  transition: transform 0.2s ease;
+}
+.avatar-container:active {
+  transform: scale(0.98);
+}
+.avatar-container:active .avatar {
+  border-color: var(--border-color-active);
+}
 
 .user-info {
   flex: 1;
   margin-left: 30rpx;
 }
 
-/* 编辑图标 */
 .edit-icon {
   position: absolute;
   right: 8rpx;
@@ -92,18 +86,9 @@ view {
   z-index: 1;
   transition: all 0.2s ease;
 }
-
 .edit-icon:active {
   transform: scale(0.95);
   background: rgba(var(--neutral-color-rgb), 0.8);
-}
-
-/* 昵称区域 */
-.nickname-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16rpx;
-  padding: 4rpx 0;
 }
 
 .nickname {
@@ -111,7 +96,18 @@ view {
   font-weight: 500;
   color: var(--text-primary);
 }
-
+.nickname-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+  padding: 4rpx 0;
+}
+.nickname-container:active {
+  opacity: 0.7;
+}
+.nickname-container:active .edit-icon {
+  transform: scale(0.9);
+}
 .nickname-container .edit-icon {
   position: relative;
   margin-left: 16rpx;
@@ -131,17 +127,9 @@ view {
   transform: translateY(2rpx);
 }
 
-.nickname-container:active {
-  opacity: 0.7;
-}
-
-.nickname-container:active .edit-icon {
-  transform: scale(0.9);
-}
-
-/* 编辑弹窗 */
 .edit-dialog {
   position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -153,9 +141,11 @@ view {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-
 .edit-dialog.show {
   opacity: 1;
+}
+.edit-dialog.show .dialog-content {
+  transform: scale(1);
 }
 
 .mask {
@@ -181,11 +171,6 @@ view {
   z-index: 1;
   border: 1rpx solid var(--border-color);
 }
-
-.edit-dialog.show .dialog-content {
-  transform: scale(1);
-}
-
 .dialog-header {
   padding: 30rpx 20rpx;
   text-align: center;
@@ -193,9 +178,55 @@ view {
   font-weight: 500;
   color: var(--text-primary);
 }
-
 .dialog-body {
   padding: 20rpx 30rpx 40rpx;
+}
+.dialog-body input {
+  flex: 1;
+  height: 90rpx;
+  background: transparent;
+  padding: 0 10rpx;
+  font-size: 32rpx;
+  box-sizing: border-box;
+  color: var(--text-primary);
+  border: none;
+}
+.dialog-footer {
+  display: flex;
+  border-top: 0.5px solid var(--border-color);
+}
+.dialog-footer button {
+  flex: 1;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  font-size: 32rpx;
+  padding: 24rpx 0;
+  line-height: 1.2;
+  height: auto;
+  position: relative;
+}
+.dialog-footer button::after {
+  border: none;
+}
+.dialog-footer .cancel-btn {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+.dialog-footer .confirm-btn {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+.dialog-footer .confirm-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 0.5px;
+  background: var(--border-color);
 }
 
 .input-container {
@@ -209,7 +240,6 @@ view {
   transition: all 0.2s ease;
   position: relative;
 }
-
 .input-container::after {
   content: '';
   position: absolute;
@@ -222,76 +252,19 @@ view {
   border: 2rpx solid transparent;
   transition: all 0.2s ease;
 }
-
 .input-container:focus-within {
   border-color: transparent;
 }
-
 .input-container:focus-within::after {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2rpx rgba(var(--primary-color-rgb), 0.3);
 }
-
-.dialog-body input {
-  flex: 1;
-  height: 90rpx;
-  background: transparent;
-  padding: 0 10rpx;
-  font-size: 32rpx;
-  box-sizing: border-box;
-  color: var(--text-primary);
-  border: none;
-}
-
-
 
 .char-counter {
   font-size: 24rpx;
   color: var(--text-tertiary);
   margin-left: 10rpx;
   white-space: nowrap;
-}
-
-.dialog-footer {
-  display: flex;
-  border-top: 0.5px solid var(--border-color);
-}
-
-.dialog-footer button {
-  flex: 1;
-  border-radius: 0;
-  border: none;
-  background: transparent;
-  font-size: 32rpx;
-  padding: 24rpx 0;
-  margin: 0;
-  line-height: 1.2;
-  height: auto;
-  position: relative;
-}
-
-.dialog-footer button::after {
-  border: none;
-}
-
-.dialog-footer .cancel-btn {
-  color: var(--text-tertiary);
-  font-weight: 400;
-}
-
-.dialog-footer .confirm-btn {
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.dialog-footer .confirm-btn::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 15%;
-  height: 70%;
-  width: 0.5px;
-  background: var(--border-color);
 }
 
 .button-hover {
@@ -327,18 +300,15 @@ view {
   overflow: hidden;
   transition: all 0.3s ease;
 }
-
 .ios-button::after {
   border: none;
 }
-
 .ios-button-text {
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
-
 .ios-button-hover {
   transform: scale(0.98);
   box-shadow: 0 1px 4px rgba(0, 122, 255, 0.2);

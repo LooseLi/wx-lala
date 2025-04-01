@@ -1,0 +1,390 @@
+// 定义变量
+$standard-padding: 32rpx;
+$standard-margin: 16rpx;
+$border-radius-large: 24rpx;
+$border-radius-medium: 20rpx;
+$border-radius-small: 14rpx;
+$avatar-size: 160rpx;
+$transition-standard: all 0.2s ease;
+$transition-modal: all 0.3s ease;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-align {
+  display: flex;
+  align-items: center;
+}
+
+@mixin absolute-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@mixin card-style {
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-large;
+  box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
+}
+
+@mixin button-reset {
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+
+  &::after {
+    border: none;
+  }
+}
+
+// 基础样式
+view {
+  width: 100%;
+  position: relative;
+}
+
+// 微信UI组件覆盖
+.weui-half-screen-dialog_large {
+  top: 300px;
+}
+
+// 提醒时间
+.remind {
+  &-time {
+    @include flex-align;
+  }
+
+  &-text {
+    color: rgba(0, 0, 0, 0.38);
+  }
+}
+
+// 用户页面容器
+.user-wrap {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  padding: $standard-padding;
+  padding-top: calc(#{$standard-padding} + env(safe-area-inset-top));
+  box-sizing: border-box;
+}
+
+// 用户信息区域
+.user-info-wrap {
+  width: 100%;
+  @include flex-align;
+  padding: $standard-padding;
+  @include card-style;
+  margin-bottom: $standard-padding;
+  position: relative;
+  overflow: hidden;
+}
+
+// 头像区域
+.avatar {
+  &-container {
+    position: relative;
+    width: $avatar-size;
+    height: $avatar-size;
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+
+      .avatar {
+        border-color: var(--border-color-active);
+      }
+    }
+  }
+
+  // 头像样式
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: $border-radius-medium;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--inset-shadow);
+  transition: $transition-standard;
+}
+
+// 用户信息
+.user-info {
+  flex: 1;
+  margin-left: 30rpx;
+}
+
+// 编辑图标
+.edit-icon {
+  position: absolute;
+  right: 8rpx;
+  bottom: 8rpx;
+  width: 48rpx;
+  height: 48rpx;
+  background: rgba(var(--neutral-color-rgb), 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 50%;
+  color: var(--text-inverted);
+  font-size: 28rpx;
+  @include flex-center;
+  box-shadow: var(--small-shadow);
+  z-index: 1;
+  transition: $transition-standard;
+
+  &:active {
+    transform: scale(0.95);
+    background: rgba(var(--neutral-color-rgb), 0.8);
+  }
+}
+
+// 昵称区域
+.nickname {
+  &-container {
+    @include flex-align;
+    margin-bottom: $standard-margin;
+    padding: 4rpx 0;
+
+    &:active {
+      opacity: 0.7;
+
+      .edit-icon {
+        transform: scale(0.9);
+      }
+    }
+
+    // 昵称编辑图标特殊样式
+    .edit-icon {
+      position: relative;
+      margin-left: $standard-margin;
+      width: 32rpx;
+      height: 32rpx;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-size: 20rpx;
+      transition: $transition-standard;
+      opacity: 0.85;
+      background: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      box-shadow: none;
+      transform: translateY(2rpx);
+    }
+  }
+
+  // 昵称文本
+  font-size: 34rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+// 编辑弹窗
+.edit-dialog {
+  position: fixed;
+  @include absolute-fill;
+  z-index: 999;
+  @include flex-center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.show {
+    opacity: 1;
+
+    .dialog-content {
+      transform: scale(1);
+    }
+  }
+}
+
+// 遮罩层
+.mask {
+  @include absolute-fill;
+  background: rgba(var(--neutral-color-rgb), 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+// 对话框内容
+.dialog {
+  &-content {
+    position: relative;
+    width: 650rpx;
+    background: var(--background-secondary);
+    border-radius: $border-radius-medium;
+    overflow: hidden;
+    box-shadow: var(--modal-shadow);
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+    z-index: 1;
+    border: 1rpx solid var(--border-color);
+  }
+
+  &-header {
+    padding: 30rpx 20rpx;
+    text-align: center;
+    font-size: 34rpx;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  &-body {
+    padding: 20rpx 30rpx 40rpx;
+
+    input {
+      flex: 1;
+      height: 90rpx;
+      background: transparent;
+      padding: 0 10rpx;
+      font-size: 32rpx;
+      box-sizing: border-box;
+      color: var(--text-primary);
+      border: none;
+    }
+  }
+
+  &-footer {
+    display: flex;
+    border-top: 0.5px solid var(--border-color);
+
+    button {
+      flex: 1;
+      border-radius: 0;
+      @include button-reset;
+      font-size: 32rpx;
+      padding: 24rpx 0;
+      line-height: 1.2;
+      height: auto;
+      position: relative;
+    }
+
+    .cancel-btn {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .confirm-btn {
+      color: var(--primary-color);
+      font-weight: 500;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 15%;
+        height: 70%;
+        width: 0.5px;
+        background: var(--border-color);
+      }
+    }
+  }
+}
+
+// 输入容器
+.input-container {
+  @include flex-align;
+  margin-top: 5rpx;
+  background: var(--input-background);
+  border-radius: $border-radius-small;
+  padding: 0 15rpx;
+  border: 1rpx solid var(--border-color);
+  transition: $transition-standard;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1rpx;
+    left: -1rpx;
+    right: -1rpx;
+    bottom: -1rpx;
+    border-radius: 16rpx;
+    pointer-events: none;
+    border: 2rpx solid transparent;
+    transition: $transition-standard;
+  }
+
+  &:focus-within {
+    border-color: transparent;
+
+    &::after {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2rpx rgba(var(--primary-color-rgb), 0.3);
+    }
+  }
+}
+
+// 字符计数器
+.char-counter {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  margin-left: 10rpx;
+  white-space: nowrap;
+}
+
+// 按钮悬停状态
+.button-hover {
+  background-color: var(--button-hover-bg) !important;
+  opacity: 0.9;
+}
+
+// 发现区域
+.found {
+  width: 100%;
+}
+
+// 提示文本
+.tips {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+// 登录按钮
+.btn-login {
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+// iOS风格按钮
+.ios-button {
+  background: linear-gradient(145deg, #3b9bff, #0051ff);
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  transition: $transition-modal;
+
+  &::after {
+    border: none;
+  }
+
+  &-text {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  &-hover {
+    transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(0, 122, 255, 0.2);
+    background: linear-gradient(145deg, #1e8aff, #0045ff);
+  }
+}
