@@ -1,0 +1,266 @@
+// 定义变量
+$border-radius: 12px;
+$day-size: 56rpx;
+$icon-size-small: 24rpx;
+$icon-size-medium: 32rpx;
+$gap-small: 8rpx;
+$gap-medium: 20rpx;
+$gap-large: 40rpx;
+$legend-dot-size: 16rpx;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin grid-layout($columns) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+}
+
+// 日历容器
+.calendar-container {
+  background: var(--background-secondary);
+  border-radius: $border-radius;
+  padding: 0;
+  /* box-shadow: var(--card-shadow); */
+  @include flex-column-center;
+  height: 700rpx;
+}
+
+.calendar-body {
+  flex: 1;
+  width: 100%;
+}
+
+// 轮播组件
+swiper {
+  height: 100%;
+
+  &-item {
+    height: 100%;
+  }
+}
+
+// 日历头部
+.calendar-header {
+  margin-bottom: 10rpx;
+}
+
+.header-wrap {
+  @include flex-center;
+  padding: 15rpx 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.date-navigator {
+  display: flex;
+  align-items: center;
+  gap: $gap-medium;
+  width: 400rpx;
+  /* 限制整体宽度 */
+  justify-content: space-between;
+  /* 两端对齐 */
+}
+
+// 箭头按钮
+.arrow {
+  &-left,
+  &-right {
+    width: 60rpx;
+    height: 60rpx;
+    @include flex-center;
+    color: var(--text-secondary);
+
+    &.disabled {
+      opacity: 0.3;
+      color: var(--text-tertiary);
+    }
+  }
+
+  &-left::after {
+    content: '<';
+    font-size: $icon-size-medium;
+  }
+
+  &-right::after {
+    content: '>';
+    font-size: $icon-size-medium;
+  }
+}
+
+.current-date {
+  font-size: $icon-size-medium;
+  font-weight: 500;
+  margin: 0 $gap-large;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+// 星期表头
+.weekday {
+  &-header {
+    @include grid-layout(7);
+    margin: 0 auto;
+    text-align: center;
+    padding: 10rpx $gap-medium;
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 650rpx;
+    box-sizing: border-box;
+  }
+
+  &-item {
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+  }
+}
+
+// 日历主体
+.calendar-body {
+  width: 100%;
+  padding: 10rpx 0;
+}
+
+.days-grid {
+  @include grid-layout(7);
+  gap: 2rpx;
+  padding: 0 $gap-medium;
+  background: var(--background-secondary);
+  width: 100%;
+  max-width: 650rpx;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+// 日期项
+.day {
+  &-item {
+    aspect-ratio: 1;
+    @include flex-center;
+    position: relative;
+  }
+
+  &-content {
+    width: $day-size;
+    height: $day-size;
+    @include flex-center;
+    border-radius: 50%;
+    font-size: 26rpx;
+    position: relative;
+    margin: 0 auto;
+    /* 确保日期数字居中 */
+    text-align: center;
+    color: var(--text-primary);
+  }
+}
+
+// 日期状态样式
+.empty {
+  pointer-events: none;
+}
+
+.today .day-content {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--primary-color);
+}
+
+.checked .day-content {
+  color: var(--primary-color);
+}
+
+.makeup .day-content {
+  color: var(--primary-color);
+}
+
+.can-makeup {
+  .day-content {
+    border: 1px dashed rgba(var(--primary-color-rgb), 0.6);
+    color: var(--primary-color);
+  }
+
+  &.selected .day-content {
+    background: rgba(var(--primary-color-rgb), 0.15);
+    border: 1px dashed var(--primary-color);
+    color: var(--primary-color);
+  }
+}
+
+.selected .day-content {
+  background: var(--primary-color);
+  color: white;
+}
+
+.disabled .day-content {
+  color: var(--text-tertiary);
+}
+
+.check-icon {
+  font-size: 18rpx;
+  position: absolute;
+  bottom: -2rpx;
+  right: -2rpx;
+  color: var(--primary-color);
+  /* 添加背景确保可见性 */
+  background: var(--background-secondary);
+  border-radius: 50%;
+  width: $icon-size-small;
+  height: $icon-size-small;
+  @include flex-center;
+  /* 添加投影提高可见性 */
+  box-shadow: var(--card-shadow);
+}
+
+// 底部图例
+.calendar-footer {
+  display: flex;
+  justify-content: center;
+  gap: $gap-large;
+  padding: $gap-medium 0 10rpx;
+  border-top: 1px solid var(--border-color);
+  margin-top: $gap-medium;
+}
+
+.legend {
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: $gap-small;
+
+    text {
+      font-size: 24rpx;
+      color: var(--text-tertiary);
+    }
+  }
+
+  &-dot {
+    width: $legend-dot-size;
+    height: $legend-dot-size;
+    border-radius: 50%;
+
+    &.checked {
+      background: var(--primary-color);
+    }
+
+    &.makeup {
+      background: var(--primary-color);
+    }
+
+    &.can-makeup {
+      border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+    }
+
+    &.disabled {
+      background: var(--text-tertiary);
+    }
+  }
+}

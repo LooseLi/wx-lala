@@ -1,0 +1,416 @@
+// 定义变量
+$border-radius-large: 18px;
+$border-radius-medium: 12px;
+$border-radius-small: 10px;
+$border-radius-mini: 8px;
+$padding-large: 16px;
+$padding-medium: 12px;
+$padding-small: 8px;
+$margin-large: 16px;
+$margin-medium: 8px;
+$margin-small: 4px;
+$font-size-large: 17px;
+$font-size-medium: 16px;
+$font-size-small: 15px;
+$font-size-mini: 13px;
+$font-size-micro: 12px;
+$font-weight-bold: 600;
+$font-weight-medium: 500;
+$font-weight-normal: normal;
+$icon-size-large: 32px;
+$icon-size-medium: 24px;
+$icon-size-small: 20px;
+$icon-size-mini: 18px;
+$status-bar-height: 20px;
+$action-bar-height: 44px;
+$button-height: 44px;
+$anniversary-pink: #ff6b8b;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin circle-button($size, $bg-color) {
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+  background-color: $bg-color;
+  @include flex-center;
+}
+
+// 页面基础样式
+page {
+  background-color: var(--background-primary);
+  font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.4;
+  padding-bottom: 20px;
+  padding-top: $action-bar-height; /* 为导航栏预留空间 */
+}
+
+// iOS风格的弹出对话框
+.weui-half-screen-dialog {
+  &_large {
+    top: auto;
+    border-top-left-radius: $border-radius-medium;
+    border-top-right-radius: $border-radius-medium;
+    overflow: hidden;
+    background-color: var(--background-primary);
+  }
+
+  &__hd {
+    display: flex;
+    align-items: center;
+    padding: $padding-small $padding-large;
+    position: relative;
+
+    &__side {
+      position: absolute;
+      left: $padding-small;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &__main {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-large;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  &__bd {
+    padding: $padding-large;
+  }
+}
+
+.wrap {
+  margin-top: 0;
+}
+
+// iOS风格的操作栏
+.ios-action-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--background-primary);
+  z-index: 1000;
+}
+
+.ios-status-bar {
+  height: $status-bar-height; /* 状态栏高度 */
+}
+
+.ios-action-content {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: $action-bar-height;
+  padding: 0 $padding-large;
+}
+
+.spacer {
+  flex: 1;
+}
+
+// 添加按钮
+.ios-add-button {
+  width: 36px;
+  height: 36px;
+  @include flex-center;
+  background: var(--primary-gradient);
+  border-radius: $border-radius-large;
+  color: white;
+  box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.3);
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+}
+
+.ios-icon {
+  font-size: $icon-size-medium;
+  font-weight: 300;
+  line-height: $icon-size-medium;
+}
+
+// 纪念日列表样式
+.anniversary-list {
+  width: calc(100% - 32px);
+  margin: $margin-large auto 0;
+  padding-top: 50px; /* 为操作栏预留空间 */
+}
+
+// 纪念日卡片
+.anniversary-card {
+  position: relative;
+  width: 100%;
+  background: var(--background-secondary);
+  border-radius: $border-radius-medium;
+  box-shadow: var(--card-shadow);
+  margin-bottom: $margin-large;
+  padding: $padding-large;
+  overflow: hidden;
+  border: 1rpx solid var(--border-color);
+
+  &-container {
+    @include flex-column;
+    width: 100%;
+  }
+}
+
+// 日期天数和图片图标的容器
+.anniversary-info {
+  &-container {
+    @include flex-between;
+    margin-top: $margin-medium;
+  }
+
+  &-left {
+    @include flex-column;
+  }
+
+  &-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+// 纪念日标题和日期
+.anniversary {
+  &-title {
+    font-size: $font-size-medium;
+    font-weight: $font-weight-normal;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    width: 100%;
+  }
+
+  &-date {
+    font-size: $font-size-mini;
+    font-weight: $font-weight-normal;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  &-days {
+    font-size: $font-size-mini;
+    color: var(--text-secondary);
+
+    text {
+      font-size: 20px;
+      font-weight: $font-weight-medium;
+      color: $anniversary-pink;
+      margin-right: $margin-small;
+    }
+  }
+
+  // 纪念日图片图标样式
+  &-images-icon {
+    @include flex-column;
+    align-items: center;
+    color: var(--primary-color);
+  }
+}
+
+// 图片计数和图标
+.images {
+  &-count {
+    font-size: $font-size-mini;
+    margin-top: 2px;
+    color: $anniversary-pink;
+    font-weight: $font-weight-medium;
+  }
+
+  &-icon {
+    width: $icon-size-large;
+    height: $icon-size-large;
+  }
+}
+
+// 删除按钮样式
+.ios-delete-button {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  @include circle-button($icon-size-medium, rgba(var(--text-secondary-rgb), 0.2));
+  z-index: 10;
+}
+
+// 关闭按钮样式
+.ios-close {
+  &-btn {
+    @include circle-button(30px, rgba(var(--text-secondary-rgb), 0.2));
+    margin: $margin-medium;
+  }
+
+  &-icon {
+    font-size: $icon-size-medium;
+    color: var(--text-secondary);
+    line-height: $icon-size-medium;
+  }
+}
+
+.ios-delete-icon {
+  font-size: $icon-size-mini;
+  color: var(--text-secondary);
+  line-height: $icon-size-mini;
+}
+
+// 表单样式
+.ios-form {
+  &-group {
+    background-color: var(--background-secondary);
+    border-radius: $border-radius-small;
+    overflow: hidden;
+    margin-bottom: $margin-large;
+    border: 0.5px solid var(--border-color);
+  }
+
+  &-item {
+    padding: $padding-medium $padding-large;
+    border-bottom: 0.5px solid var(--border-color);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// 输入框样式
+.ios-input {
+  height: $icon-size-medium;
+  line-height: $icon-size-medium;
+  font-size: $font-size-small;
+  width: 100%;
+  color: var(--text-primary);
+
+  &-placeholder {
+    color: var(--text-tertiary);
+  }
+}
+
+// 图片上传区域样式
+.image {
+  &-upload-title {
+    font-size: $font-size-small;
+    color: var(--text-primary);
+    margin-bottom: $margin-small;
+  }
+
+  &-preview-area {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -4px;
+  }
+
+  &-preview-item {
+    position: relative;
+    width: calc(33.333% - 8px);
+    margin: $margin-small;
+    height: 80px;
+    border-radius: $border-radius-mini;
+    overflow: hidden;
+    background-color: #f2f2f7;
+  }
+
+  &-upload-btn {
+    @include flex-center;
+    height: $button-height;
+    background: var(--primary-gradient);
+    border-radius: $border-radius-mini;
+    color: white;
+    margin-bottom: $margin-medium;
+  }
+
+  &-tip {
+    font-size: $font-size-micro;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+}
+
+// 预览图片
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// 删除图片按钮
+.delete-image-btn {
+  position: absolute;
+  right: $margin-small;
+  top: $margin-small;
+  @include circle-button(20px, rgba(0, 0, 0, 0.5));
+  z-index: 10;
+}
+
+// 上传按钮图标和文本
+.upload {
+  &-icon {
+    font-size: $icon-size-small;
+    margin-right: 6px;
+  }
+
+  &-text {
+    font-size: $font-size-small;
+  }
+}
+
+// 日期选择器样式
+.date-picker {
+  width: 100%;
+
+  &-text {
+    color: var(--text-primary) !important;
+  }
+}
+
+// 按钮样式
+.ios-button {
+  border-radius: $border-radius-small;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  height: $button-height;
+  line-height: $button-height;
+  text-align: center;
+  @include flex-center;
+  margin: $margin-large;
+
+  &-primary {
+    background: var(--primary-gradient);
+    color: #ffffff;
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+}

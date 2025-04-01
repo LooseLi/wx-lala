@@ -1,0 +1,248 @@
+// 定义变量
+$background-color: #f2f4f5;
+$white: #fff;
+$black: #000;
+$text-secondary: rgba(0, 0, 0, 0.6);
+$pink: #ffadd2;
+$light-gray: #fafafa;
+$border-radius-large: 12px;
+$border-radius-medium: 4px;
+$border-radius-small: 2px;
+$padding-large: 24px;
+$padding-medium: 12px;
+$padding-small: 10px;
+$padding-mini: 6px;
+$margin-large: 30px;
+$margin-medium: 20px;
+$margin-small: 12px;
+$margin-mini: 8px;
+$font-size-large: 16px;
+$font-size-medium: 14px;
+$font-size-small: 12px;
+$font-weight-medium: 500;
+$shadow-standard: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+$things-width: calc((100% - 24px) / 3);
+$things-height: 140px;
+$picture-height: 100px;
+$button-height: 42px;
+$icon-add-size: 100px;
+$icon-triangle-size: 8px;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card-shadow {
+  box-shadow: $shadow-standard;
+}
+
+@mixin button-style {
+  background: var(--backgroundColorButton);
+  color: $white;
+  text-align: center;
+  border-radius: 30px;
+}
+
+// 页面基础样式
+page {
+  background-color: $background-color;
+  padding-bottom: 20px;
+}
+
+// 内容包装
+.wrap {
+  padding: 50px $padding-medium 0;
+}
+
+// 弹出对话框样式
+.weui-half-screen-dialog {
+  &_large {
+    top: 200px;
+    background-color: #f0f0f0;
+  }
+
+  &__bd {
+    padding-bottom: 0;
+  }
+
+  &__ft {
+    padding: 0;
+  }
+}
+
+// 单元格样式
+.weui-cell {
+  text-align: center;
+  padding: $padding-medium;
+
+  &::before {
+    border-top: none;
+  }
+}
+
+// 上传背景区域
+.upload-bg {
+  width: 300px;
+  height: 300px;
+  margin: $margin-large auto $margin-medium;
+  border-radius: $border-radius-large;
+  overflow: hidden;
+  @include card-shadow;
+  @include flex-column-center;
+}
+
+// 添加图标
+.icon-add {
+  width: $icon-add-size;
+  height: $icon-add-size;
+
+  &-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// 添加提示文本
+.add-tips {
+  margin-top: $padding-medium;
+  font-size: $font-size-medium;
+  color: $pink;
+}
+
+// 总数包装
+.total-wrap {
+  font-size: $font-size-large;
+  color: $black;
+  text-align: center;
+  margin-bottom: $margin-medium;
+}
+
+// 已完成文本
+.done {
+  font-size: $font-size-large;
+  color: var(--fontColor);
+}
+
+// 对话框名称
+.dialog-name {
+  font-size: $font-size-large;
+  text-align: center;
+  font-weight: $font-weight-medium;
+}
+
+// 事项列表包装
+.things-wrap {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+// 单个事项卡片
+.things {
+  width: $things-width;
+  height: $things-height;
+  padding: $padding-mini;
+  text-align: center;
+  border-radius: $border-radius-medium;
+  background: $white;
+  @include card-shadow;
+  margin-right: $margin-small;
+  margin-bottom: $margin-small;
+
+  &:nth-child(3n) {
+    margin-right: 0;
+  }
+}
+
+// 图片区域
+.picture {
+  width: 100%;
+  height: $picture-height;
+  margin-bottom: $margin-mini;
+}
+
+// 无图片占位
+.no-picture {
+  width: 100%;
+  height: $picture-height;
+  margin-bottom: $margin-mini;
+  padding: $padding-large;
+  background: $light-gray;
+}
+
+// 图片样式
+image {
+  width: 100%;
+  height: 100%;
+}
+
+// 文本样式
+text {
+  font-size: $font-size-small;
+  color: $text-secondary;
+}
+
+// 裁剪器背景
+.cropper-bg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: $black;
+  z-index: 9999;
+}
+
+// 主按钮样式
+.weui-btn_primary {
+  background: var(--backgroundColorButton);
+}
+
+// 裁剪图片按钮
+.button-cropper-image {
+  position: relative;
+  top: 40px;
+  color: $white;
+  height: $button-height;
+  width: calc(100% - 60px);
+  border-radius: 30px;
+  line-height: $button-height;
+  text-align: center;
+  margin: 0 auto;
+  background: var(--backgroundColorButton);
+}
+
+// 选择器
+picker {
+  margin-bottom: 10px;
+}
+
+// 选择器包装
+.picker-wrap {
+  display: inline-block;
+  background: var(--backgroundColorButton);
+  padding: 0 10px 2px;
+  border-radius: $border-radius-medium;
+}
+
+// 选择器样式
+.picker {
+  color: $white;
+  margin-right: 10px;
+}
+
+// 三角形图标
+.icon-triangle {
+  width: $icon-triangle-size;
+  height: $icon-triangle-size;
+}

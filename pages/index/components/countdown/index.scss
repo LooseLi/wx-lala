@@ -1,0 +1,281 @@
+// 定义变量
+$border-radius-large: 15px;
+$border-radius-medium: 12px;
+$border-radius-small: 10px;
+$padding-large: 16px;
+$padding-medium: 12px;
+$padding-small: 8px;
+$margin-large: 16px;
+$margin-medium: 12px;
+$margin-small: 8px;
+$font-size-large: 17px;
+$font-size-medium: 16px;
+$font-size-small: 15px;
+$font-size-mini: 14px;
+$font-weight-bold: 600;
+$font-weight-medium: 500;
+$icon-size-large: 24px;
+$icon-size-medium: 20px;
+$button-height: 44px;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin circle-button($size, $bg-color) {
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+  background-color: $bg-color;
+  @include flex-center;
+}
+
+// 页面基础样式
+page {
+  background-color: var(--background-primary);
+  font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+  color: var(--text-primary);
+  font-size: $font-size-mini;
+  line-height: 1.4;
+  padding-bottom: 20px;
+  padding-top: 44px; /* 为导航栏预留空间 */
+}
+
+// 弹出对话框
+.weui-half-screen-dialog {
+  &_large {
+    top: auto;
+    border-top-left-radius: $border-radius-medium;
+    border-top-right-radius: $border-radius-medium;
+    overflow: hidden;
+    background-color: var(--background-primary);
+  }
+
+  &__bd {
+    padding: $padding-large;
+    background-color: var(--background-primary);
+  }
+
+  &__ft {
+    background-color: var(--background-primary);
+  }
+
+  &__btn-area {
+    width: 100%;
+  }
+
+  &__hd {
+    display: flex;
+    align-items: center;
+    padding: $padding-small 24px;
+    position: relative;
+
+    &__side {
+      position: absolute;
+      left: $padding-small;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &__main {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-large;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    text-align: center;
+  }
+}
+
+.wrap {
+  margin-top: 0;
+}
+
+// 关闭按钮
+.ios-close-btn {
+  @include circle-button(30px, rgba(var(--text-secondary-rgb), 0.2));
+  margin: $margin-small;
+  position: relative;
+
+  &-small {
+    @include circle-button(28px, rgba(var(--text-secondary-rgb), 0.2));
+    position: relative;
+  }
+}
+
+.ios-close-icon {
+  font-size: $icon-size-large;
+  color: var(--text-secondary);
+  line-height: $icon-size-large;
+
+  &-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: $icon-size-medium;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// 表单样式
+.ios-form {
+  &-group {
+    background-color: var(--background-secondary);
+    border-radius: $border-radius-small;
+    overflow: hidden;
+    margin-bottom: $margin-large;
+    border: 0.5px solid var(--border-color);
+  }
+
+  &-item {
+    padding: $padding-medium $padding-large;
+    border-bottom: 0.5px solid var(--border-color);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// 输入框样式
+.ios-input {
+  height: 24px;
+  line-height: 24px;
+  font-size: $font-size-small;
+  width: 100%;
+  color: var(--text-primary);
+
+  &-placeholder {
+    color: var(--text-tertiary);
+  }
+}
+
+// 日期选择器样式
+.date-picker {
+  width: 100%;
+
+  &-text {
+    color: var(--text-primary) !important;
+  }
+}
+
+// 按钮样式
+.ios-button {
+  border-radius: $border-radius-small;
+  background: var(--primary-gradient);
+  color: white;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  height: $button-height;
+  line-height: $button-height;
+  margin: $margin-large;
+  text-align: center;
+  @include flex-center;
+  box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.3);
+  width: calc(100% - 32px);
+}
+
+// 卡片样式
+.holiday-card {
+  position: relative;
+  width: calc(100% - 32px);
+  margin: 0 auto $margin-medium;
+  padding: $padding-large;
+  background: var(--background-secondary);
+  border-radius: $border-radius-medium;
+  box-shadow: var(--card-shadow);
+  z-index: 2;
+  font-size: $font-size-mini;
+  color: var(--text-primary);
+  overflow: hidden;
+  border: 1rpx solid var(--border-color);
+}
+
+// 标题样式
+.title {
+  padding: 0 $padding-medium;
+  margin: 30px 0 5px;
+}
+
+// 删除图标
+.icon-delete {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: $padding-small;
+  top: $padding-small;
+  background-color: rgba(var(--error-color-rgb), 0.2);
+  border-radius: 10px;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+// 倒计时卡片内容
+.countdown-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.countdown-info {
+  @include flex-column;
+  gap: $margin-small;
+}
+
+.countdown-title {
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  color: var(--text-primary);
+}
+
+.countdown-date {
+  font-size: $font-size-small;
+  color: var(--text-secondary);
+}
+
+.countdown-days {
+  font-size: 28px;
+  font-weight: $font-weight-bold;
+  color: var(--primary-color);
+
+  &-text {
+    font-size: $font-size-small;
+    color: var(--text-secondary);
+    margin-left: 4px;
+  }
+}
+
+// 添加按钮
+.add-countdown {
+  @include flex-center;
+  width: calc(100% - 32px);
+  height: $button-height;
+  margin: $margin-large auto;
+  background: var(--primary-gradient);
+  border-radius: $border-radius-small;
+  color: white;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.3);
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}

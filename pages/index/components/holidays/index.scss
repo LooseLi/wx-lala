@@ -1,0 +1,425 @@
+// 定义变量
+$border-radius-large: 16rpx;
+$border-radius-medium: 10rpx;
+$border-radius-small: 3rpx;
+$padding-large: 32rpx;
+$padding-medium: 20rpx;
+$padding-small: 10rpx;
+$margin-large: 30rpx;
+$margin-medium: 20rpx;
+$margin-small: 8rpx;
+$font-size-xlarge: 40rpx;
+$font-size-large: 36rpx;
+$font-size-medium: 32rpx;
+$font-size-small: 28rpx;
+$font-size-mini: 24rpx;
+$font-size-micro: 20rpx;
+$font-size-nano: 18rpx;
+$font-weight-bold: bold;
+$font-weight-medium: 500;
+$font-weight-normal: normal;
+$cell-height: 120rpx;
+$date-circle-size: 80rpx;
+$legend-marker-size: 20rpx;
+$holiday-color: #e26b4a;
+$workday-color-light: #8e8e93;
+$workday-color-dark: #c7c7cc;
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin circle-button($size) {
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+  @include flex-center;
+}
+
+@mixin card-style {
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-large;
+  box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
+}
+
+// 容器样式
+.container {
+  padding: $padding-large;
+  background-color: var(--background-primary);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+// 头部样式
+.header {
+  text-align: center;
+  margin-bottom: $margin-large;
+}
+
+.title {
+  font-size: $font-size-xlarge;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  margin-bottom: $margin-medium;
+}
+
+// 年份选择器
+.year-selector {
+  display: flex;
+  justify-content: center;
+  @include card-style;
+  margin: 0 auto;
+  /* width: 80%; */
+
+  .year-btn {
+    flex: 1;
+    text-align: center;
+    padding: $padding-medium 0;
+    font-size: $font-size-small;
+    color: var(--text-secondary);
+    position: relative;
+    transition: all 0.3s;
+
+    &.active {
+      color: var(--primary-color);
+      font-weight: $font-weight-medium;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40rpx;
+        height: 6rpx;
+        background-color: var(--primary-color);
+        border-radius: $border-radius-small;
+      }
+    }
+  }
+}
+
+// 月份导航
+.month-navigator {
+  @include flex-center;
+  margin: $margin-large 0;
+
+  .nav-btn {
+    @include circle-button(50rpx);
+  }
+
+  .nav-icon {
+    font-size: $font-size-small;
+    color: var(--primary-color);
+  }
+
+  .current-month {
+    font-size: $font-size-medium;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+    margin: 0 $margin-large;
+  }
+}
+
+// 星期头部
+.weekday-header {
+  display: flex;
+  @include card-style;
+  border-radius: $border-radius-large $border-radius-large 0 0;
+  margin-bottom: 2rpx;
+  border-bottom: none;
+
+  .weekday-item {
+    flex: 1;
+    text-align: center;
+    padding: $padding-medium 0;
+    font-size: $font-size-mini;
+    color: var(--text-tertiary);
+  }
+}
+
+// 日历滑动区域
+.calendar-swiper {
+  height: 600rpx;
+  width: 100%;
+}
+
+// 日历网格
+.calendar-grid {
+  @include card-style;
+  border-radius: 0 0 $border-radius-large $border-radius-large;
+  margin-bottom: $margin-large;
+  height: 100%;
+  border-top: none;
+
+  .calendar-row {
+    display: flex;
+    border-bottom: 1rpx solid var(--border-color-light);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .calendar-cell {
+    flex: 1;
+    height: $cell-height;
+    @include flex-column;
+    justify-content: center;
+    position: relative;
+    border-right: 1rpx solid var(--border-color-light);
+    padding: $margin-small 0;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.other-month {
+      opacity: 0.3;
+    }
+
+    &.holiday {
+      background-color: var(--holiday-background);
+    }
+
+    &.workday {
+      background-color: var(--workday-background);
+    }
+
+    // 连续假期样式
+    &.first-day,
+    &.middle-day,
+    &.last-day {
+      border-radius: 0;
+
+      &.last-day {
+        border-radius: 0;
+      }
+    }
+  }
+}
+
+// 日期文本
+.date-text {
+  font-size: $font-size-medium;
+  color: var(--text-primary);
+  z-index: 2;
+}
+
+// 农历日期
+.lunar-date {
+  font-size: $font-size-nano;
+  color: var(--text-tertiary);
+  margin-top: -4rpx;
+  line-height: 1;
+  z-index: 2;
+
+  &.custom-festival {
+    color: $holiday-color;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// 假期和调休标记
+.holiday-tag,
+.workday-tag {
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  font-size: $font-size-micro;
+  font-weight: $font-weight-bold;
+  z-index: 2;
+}
+
+.holiday-tag {
+  color: var(--holiday-color);
+}
+
+.workday-tag {
+  color: $workday-color-light;
+
+  @media (prefers-color-scheme: dark) {
+    color: $workday-color-dark;
+  }
+}
+
+// 今天和选中日期样式
+.today,
+.selected {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: $date-circle-size;
+    height: $date-circle-size;
+    border-radius: $date-circle-size;
+    z-index: 1;
+  }
+}
+
+.today {
+  &::after {
+    background-color: var(--primary-color);
+  }
+
+  .date-text,
+  .lunar-date {
+    color: #fff;
+    z-index: 2;
+  }
+
+  .date-text {
+    font-weight: $font-weight-medium;
+  }
+}
+
+.selected {
+  &::after {
+    border: 2rpx solid var(--primary-color);
+    box-sizing: border-box;
+  }
+}
+
+// 选中日期信息
+.selected-date-info {
+  @include card-style;
+  padding: $margin-large;
+  margin-bottom: $margin-large;
+
+  .date-header {
+    margin-bottom: $margin-medium;
+    @include flex-column;
+
+    .selected-date {
+      font-size: $font-size-medium;
+      font-weight: $font-weight-medium;
+      color: var(--text-primary);
+    }
+
+    .lunar-info {
+      font-size: $font-size-mini;
+      color: var(--text-secondary);
+      margin-top: $margin-small;
+    }
+  }
+
+  .holiday-details {
+    @include flex-between;
+
+    .holiday-name {
+      font-size: $font-size-large;
+      font-weight: $font-weight-bold;
+      color: var(--text-primary);
+    }
+
+    .holiday-type,
+    .workday-type {
+      padding: $padding-small $padding-medium;
+      border-radius: $border-radius-medium;
+      font-size: $font-size-mini;
+      font-weight: $font-weight-medium;
+    }
+
+    .holiday-type {
+      background-color: var(--holiday-background);
+      color: var(--holiday-color);
+    }
+
+    .workday-type {
+      background-color: var(--workday-background);
+      color: $workday-color-light;
+
+      @media (prefers-color-scheme: dark) {
+        color: $workday-color-dark;
+      }
+    }
+  }
+
+  .no-holiday {
+    font-size: $font-size-small;
+    color: var(--text-tertiary);
+    text-align: center;
+    padding: $padding-medium 0;
+  }
+}
+
+// 自定义节日详情
+.festival-details {
+  padding: $padding-medium $margin-large;
+  text-align: center;
+
+  .festival-name {
+    font-size: 30rpx;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+    margin-bottom: $padding-small;
+  }
+
+  .festival-tips {
+    font-size: 26rpx;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
+// 图例
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $margin-large;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 $padding-medium;
+
+    .legend-marker {
+      width: $legend-marker-size;
+      height: $legend-marker-size;
+      border-radius: $legend-marker-size / 2;
+      margin-right: $padding-small;
+
+      &.holiday-marker {
+        background-color: #34c759;
+      }
+
+      &.workday-marker {
+        background-color: #ff3b30;
+      }
+    }
+
+    .legend-text {
+      font-size: $font-size-mini;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+// 底部
+.footer {
+  text-align: center;
+  margin-top: $padding-medium;
+
+  .tips {
+    font-size: $font-size-mini;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
+}

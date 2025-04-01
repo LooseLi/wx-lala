@@ -1,0 +1,333 @@
+// 定义变量
+$border-radius-large: 32rpx;
+$border-radius-medium: 16rpx;
+$border-radius-button: 48rpx;
+$padding-large: 40rpx;
+$padding-medium: 32rpx;
+$padding-small: 24rpx;
+$padding-button: 20rpx;
+$gap-large: 32rpx;
+$gap-medium: 24rpx;
+$gap-small: 16rpx;
+$gap-mini: 8rpx;
+$font-size-large: 56rpx;
+$font-size-medium: 32rpx;
+$font-size-small: 28rpx;
+$font-size-mini: 24rpx;
+$font-weight-bold: 600;
+$font-weight-medium: 500;
+$transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-spring: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+$font-family-display: -apple-system, 'SF Pro Display';
+$font-family-text: -apple-system, 'SF Pro Text';
+
+// 定义混合器
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin button-base {
+  padding: $padding-button 0;
+  border-radius: $border-radius-button;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  transition: $transition-standard;
+  font-family: $font-family-text;
+  text-align: center;
+  width: 100%;
+}
+
+// 签到容器
+.check-in-container {
+  width: 100%;
+  /* padding: 32rpx; */
+  box-sizing: border-box;
+}
+
+// 签到卡片
+.check-in-card {
+  background: var(--background-secondary);
+  border-radius: $border-radius-large;
+  padding: $padding-large;
+  @include flex-between;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid var(--border-color);
+}
+
+// 按钮组
+.button-group {
+  @include flex-column;
+  gap: $gap-small;
+  min-width: 160rpx;
+}
+
+// 签到信息
+.check-in-info {
+  @include flex-column;
+  gap: $gap-large;
+}
+
+// 连续天数和积分信息
+.continuous-days,
+.points-info {
+  @include flex-column;
+  gap: $gap-mini;
+}
+
+// 连续签到日期
+.streak-dates {
+  font-size: $font-size-mini;
+  color: var(--text-secondary);
+  margin-top: $gap-mini;
+  font-family: $font-family-text;
+}
+
+// 天数和积分数字
+.days-number,
+.points-number {
+  font-size: $font-size-large;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  line-height: 1.1;
+  font-family: $font-family-display;
+}
+
+// 天数和积分文本
+.days-text,
+.points-text {
+  font-size: $font-size-small;
+  color: var(--text-secondary);
+  font-family: $font-family-text;
+}
+
+// 签到按钮
+.check-in-button {
+  @include button-base;
+  background: var(--button-primary);
+  color: white;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:active {
+    transform: scale(0.95);
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &.checked {
+    background: var(--button-success);
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.loading {
+    opacity: 0.8;
+  }
+}
+
+// 按钮动画
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// 补签按钮
+.makeup-button {
+  @include button-base;
+  background: rgba(var(--warning-color-rgb), 0.1);
+  color: var(--warning-color);
+
+  &:active {
+    background: rgba(255, 149, 0, 0.2);
+  }
+}
+
+// 补签弹窗
+.makeup-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+// 弹窗遮罩
+.dialog-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+// 弹窗内容
+.dialog-content {
+  position: relative;
+  width: 100%;
+  background: var(--background-secondary);
+  border-radius: $border-radius-large $border-radius-large 0 0;
+  padding: $padding-medium $padding-small;
+  box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: 90vh;
+}
+
+// 弹窗指示器
+.dialog-indicator {
+  width: 36rpx;
+  height: 4rpx;
+  background: var(--text-tertiary);
+  opacity: 0.3;
+  border-radius: 4rpx;
+  margin: 0 auto $padding-small;
+}
+
+// 弹窗动画
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// 弹窗头部
+.dialog-header {
+  text-align: center;
+  margin-bottom: $gap-large;
+}
+
+// 弹窗标题
+.dialog-title {
+  font-size: 40rpx;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+  font-family: $font-family-display;
+}
+
+// 弹窗副标题
+.dialog-subtitle {
+  font-size: $font-size-small;
+  color: var(--text-secondary);
+  font-family: $font-family-text;
+}
+
+// 补签确认区域
+.makeup-confirm {
+  margin-top: 40rpx;
+  padding-top: 30rpx;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  transform: translateY(20rpx);
+  opacity: 0;
+  transition: $transition-spring;
+
+  &.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// 确认信息
+.confirm-info {
+  @include flex-between;
+  margin-bottom: $padding-small;
+  font-size: $font-size-small;
+  color: var(--text-primary);
+}
+
+// 积分图标
+.points-icon {
+  font-size: 36rpx;
+}
+
+// 积分详情
+.points-detail {
+  @include flex-column;
+  gap: 4rpx;
+}
+
+// 可用积分
+.points-available {
+  color: #86868b;
+}
+
+// 确认按钮
+.confirm-button {
+  background: var(--button-primary);
+  color: white;
+  padding: $padding-small;
+  border-radius: $border-radius-medium;
+  text-align: center;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  transition: all 0.3s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    background: var(--button-disabled);
+    color: var(--text-disabled);
+    pointer-events: none;
+  }
+}
+
+// 按钮悬停状态
+.button-hover {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
