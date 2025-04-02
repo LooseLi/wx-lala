@@ -26,7 +26,7 @@ function compileSass() {
 // 编译指定的SCSS文件
 function compileSingleSass() {
   if (!options.file) {
-    console.error('请指定要编译的文件，例如：gulp sass-file --file=components/DateTimePicker/index.scss');
+    console.error('请指定要编译的文件，例如：gulp sass-file --file=components/AnniversaryCard/index.scss');
     return Promise.resolve();
   }
   
