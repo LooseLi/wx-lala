@@ -160,8 +160,20 @@ Page({
     // 设置状态为正在获取openid
     this.setData({ loginState: 'getting-openid' });
 
-    // 获取openid
-    this.getOpenId();
+    // 先检查本地是否已存储openid
+    const storedOpenid = wx.getStorageSync('openid');
+
+    if (storedOpenid) {
+      console.log('从本地存储获取openid');
+      // 直接使用本地存储的openid
+      this.setData({ openid: storedOpenid });
+      // 检查用户是否存在
+      this.checkUserExists(storedOpenid);
+    } else {
+      console.log('本地无openid，调用云函数获取');
+      // 本地没有存储openid，调用云函数获取
+      this.getOpenId();
+    }
   },
 
   /**
@@ -172,13 +184,27 @@ Page({
       // 显示加载状态
       this.setData({ loading: true });
 
-      // 调用云函数获取openid
-      const openIdRes = await wx.cloud.callFunction({
-        name: 'getOpenId',
-      });
-      const openid = openIdRes.result.OPENID;
+      // 先检查本地存储
+      const storedOpenid = wx.getStorageSync('openid');
 
-      // 保存openid
+      let openid;
+      if (storedOpenid) {
+        // 使用本地存储的openid
+        openid = storedOpenid;
+        console.log('使用本地存储的openid:', openid);
+      } else {
+        // 调用云函数获取openid
+        const openIdRes = await wx.cloud.callFunction({
+          name: 'getOpenId',
+        });
+        openid = openIdRes.result.OPENID;
+
+        // 保存到本地存储
+        wx.setStorageSync('openid', openid);
+        console.log('从云函数获取openid:', openid);
+      }
+
+      // 保存openid到页面数据
       this.setData({ openid });
 
       // 如果已经登录，不需要继续检查用户是否存在
