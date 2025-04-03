@@ -38,12 +38,18 @@ Page({
       },
       {
         id: 3,
+        icon: './images/event/icon-todo.png',
+        title: '待办清单',
+        page: '/pages/index/components/todo/index',
+      },
+      {
+        id: 4,
         icon: './images/event/icon-more.png',
         title: '想想要新加些啥',
         page: '',
       },
       // {
-      //   id: 3,
+      //   id: 5,
       //   icon: './images/event/icon-things.png',
       //   title: '100 件小事',
       //   page: '/pages/index/components/things/index'
