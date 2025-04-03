@@ -1,0 +1,327 @@
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+  background-color: #f6f6f6;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 筛选区域 */
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+  padding: 6rpx 20rpx;
+  background-color: #f2f2f2;
+  border-radius: 8rpx;
+}
+
+/* 待办事项列表 */
+.todo-list {
+  flex: 1;
+  margin-bottom: 120rpx;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.todo-item.completed {
+  background-color: #f9f9f9;
+}
+
+.todo-content {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.todo-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6rpx;
+}
+
+.todo-checkbox.checked {
+  border-color: #07c160;
+  background-color: #e8f8f0;
+}
+
+.todo-info {
+  flex: 1;
+}
+
+.todo-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  word-break: break-all;
+}
+
+.completed-text {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.todo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10rpx;
+}
+
+.todo-category,
+.todo-priority,
+.todo-date {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  margin-right: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.todo-category {
+  background-color: #e8f4ff;
+  color: #1989fa;
+}
+
+.todo-priority {
+  background-color: #fff2e8;
+  color: #ff7f24;
+}
+
+.priority-1 {
+  background-color: #ffebeb;
+  color: #f43f3b;
+}
+
+.priority-2 {
+  background-color: #fff2e8;
+  color: #ff7f24;
+}
+
+.priority-3 {
+  background-color: #e8f8f0;
+  color: #07c160;
+}
+
+.todo-date {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.todo-desc {
+  font-size: 28rpx;
+  color: #666;
+  word-break: break-all;
+}
+
+.todo-actions {
+  display: flex;
+  align-items: center;
+}
+
+.action-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10rpx;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+
+.loading {
+  width: 60rpx;
+  height: 60rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #07c160;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-top: 20rpx;
+}
+
+/* 空提示 */
+.empty-tip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 30rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background-color: #07c160;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.3);
+  z-index: 100;
+}
+
+/* 表单弹窗 */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  width: 90%;
+  max-width: 600rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.form-title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.close-btn {
+  padding: 10rpx;
+}
+
+.form-content {
+  padding: 30rpx;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.form-input,
+.form-textarea,
+.form-picker {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+}
+
+.form-textarea {
+  height: 180rpx;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20rpx 30rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 16rpx 40rpx;
+  font-size: 30rpx;
+  border-radius: 8rpx;
+  margin-left: 20rpx;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.save-btn {
+  background-color: #07c160;
+  color: #fff;
+}

@@ -1,1 +1,107 @@
-<view>待办清单</view>
+<view class="container">
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <view class="filter-item">
+      <text class="filter-label">状态：</text>
+      <picker bindchange="onStatusFilterChange" value="{{statusIndex}}" range="{{statusOptions}}">
+        <view class="picker-text">{{statusOptions[statusIndex]}}</view>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <text class="filter-label">分类：</text>
+      <picker bindchange="onCategoryFilterChange" value="{{categoryIndex}}" range="{{categories}}">
+        <view class="picker-text">{{categories[categoryIndex]}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 待办事项列表 -->
+  <view class="todo-list">
+    <block wx:if="{{loading}}">
+      <view class="loading-container">
+        <view class="loading"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+    </block>
+    <block wx:elif="{{todos.length === 0}}">
+      <view class="empty-tip">
+        <text>{{emptyTip}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="todo-item {{item.completed ? 'completed' : ''}}" wx:for="{{todos}}" wx:key="_id">
+        <view class="todo-content" bindtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
+          <view class="todo-checkbox {{item.completed ? 'checked' : ''}}">
+            <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+          </view>
+          <view class="todo-info">
+            <view class="todo-title {{item.completed ? 'completed-text' : ''}}">{{item.title}}</view>
+            <view class="todo-meta">
+              <text class="todo-category">{{item.category}}</text>
+              <text class="todo-priority priority-{{item.priority}}">{{priorities[item.priority-1]}}</text>
+              <text wx:if="{{item.dueDate}}" class="todo-date">截止: {{formatDisplayDate(item.dueDate)}}</text>
+            </view>
+            <view wx:if="{{item.description}}" class="todo-desc {{item.completed ? 'completed-text' : ''}}">{{item.description}}</view>
+          </view>
+        </view>
+        <view class="todo-actions">
+          <view class="action-btn edit" catchtap="showEditForm" data-id="{{item._id}}">
+            <icon type="info" size="18" color="#10aeff"/>
+          </view>
+          <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
+            <icon type="cancel" size="18" color="#f43f3b"/>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="showAddForm">
+    <icon type="add" size="24" color="#ffffff"/>
+  </view>
+
+  <!-- 表单弹窗 -->
+  <view class="form-modal" wx:if="{{showForm}}">
+    <view class="form-container">
+      <view class="form-header">
+        <text class="form-title">{{editMode ? '编辑待办事项' : '添加待办事项'}}</text>
+        <view class="close-btn" bindtap="closeForm">
+          <icon type="cancel" size="20" color="#999"/>
+        </view>
+      </view>
+      <view class="form-content">
+        <view class="form-item">
+          <text class="form-label">标题</text>
+          <input class="form-input" value="{{newTodo.title}}" bindinput="onTitleInput" placeholder="请输入待办事项标题" maxlength="50"/>
+        </view>
+        <view class="form-item">
+          <text class="form-label">描述</text>
+          <textarea class="form-textarea" value="{{newTodo.description}}" bindinput="onDescriptionInput" placeholder="请输入描述（选填）" maxlength="200"/>
+        </view>
+        <view class="form-item">
+          <text class="form-label">分类</text>
+          <picker bindchange="onCategoryChange" value="{{categoryIndex}}" range="{{categories}}">
+            <view class="form-picker">{{categories[categoryIndex]}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="form-label">优先级</text>
+          <picker bindchange="onPriorityChange" value="{{priorityIndex}}" range="{{priorities}}">
+            <view class="form-picker">{{priorities[priorityIndex]}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="form-label">截止日期</text>
+          <picker mode="date" bindchange="onDateChange" value="{{newTodo.dueDate}}">
+            <view class="form-picker">{{newTodo.dueDate ? newTodo.dueDate : '请选择日期（选填）'}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="form-footer">
+        <button class="cancel-btn" bindtap="closeForm">取消</button>
+        <button class="save-btn" bindtap="saveTodo">保存</button>
+      </view>
+    </view>
+  </view>
+</view>
