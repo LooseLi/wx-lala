@@ -30,11 +30,6 @@
   border: 0.5px solid var(--border-color);
 }
 
-.completed-group {
-  background-color: var(--background-tertiary);
-  opacity: 0.9;
-}
-
 .group-header {
   display: flex;
   align-items: center;
@@ -53,9 +48,6 @@
 .group-count {
   font-size: 13px;
   color: var(--text-secondary);
-  margin-right: 20rpx;
-  background-color: rgba(var(--text-tertiary-rgb), 0.2);
-  border-radius: 20rpx;
   padding: 4rpx 16rpx;
 }
 
@@ -126,9 +118,9 @@
 }
 
 .todo-checkbox.checked {
-  border-color: var(--primary-color);
-  background-color: var(--primary-color);
-  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
+  /* border-color: #999; */
+  /* background-color: var(--background-secondary); */
+  /* box-shadow: 0 2rpx 8rpx rgba(153, 153, 153, 0.3); */
 }
 
 .todo-info {
@@ -223,8 +215,8 @@
 /* 添加按钮 */
 .add-btn {
   position: fixed;
-  right: 40rpx;
-  bottom: 40rpx;
+  right: 50rpx;
+  bottom: 50rpx;
   width: 100rpx;
   height: 100rpx;
   background: var(--primary-gradient);
