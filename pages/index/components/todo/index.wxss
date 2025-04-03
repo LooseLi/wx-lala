@@ -3,60 +3,74 @@
   display: flex;
   flex-direction: column;
   padding: 20rpx;
-  background-color: #f6f6f6;
+  background-color: var(--background-primary);
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
+  font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+  color: var(--text-primary);
+  padding-bottom: 20px;
+  padding-top: 44px; /* 为导航栏预留空间 */
 }
 
 /* 待办事项列表 */
 .todo-list {
   flex: 1;
   margin-bottom: 120rpx;
+  padding: 0 8rpx;
 }
 
 /* 分组样式 */
 .todo-group {
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
   border-radius: 12rpx;
-  background-color: #fff;
+  background-color: var(--background-secondary);
   overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
+  border: 0.5px solid var(--border-color);
 }
 
 .completed-group {
-  background-color: #f9f9f9;
+  background-color: var(--background-tertiary);
+  opacity: 0.9;
 }
 
 .group-header {
   display: flex;
   align-items: center;
   padding: 24rpx 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 0.5px solid var(--border-color);
   position: relative;
 }
 
 .group-title {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
   flex: 1;
 }
 
 .group-count {
-  font-size: 28rpx;
-  color: #999;
+  font-size: 13px;
+  color: var(--text-secondary);
   margin-right: 20rpx;
-  background-color: #f5f5f5;
+  background-color: rgba(var(--text-tertiary-rgb), 0.2);
   border-radius: 20rpx;
   padding: 4rpx 16rpx;
 }
 
 .group-arrow {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 12px;
+  color: var(--text-secondary);
   transform: rotate(180deg);
   transition: transform 0.3s;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--text-tertiary-rgb), 0.1);
+  border-radius: 12px;
 }
 
 .group-arrow.expanded {
@@ -71,8 +85,9 @@
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 20rpx 30rpx;
+  padding: 24rpx 30rpx;
   position: relative;
+  transition: background-color 0.2s;
 }
 
 .todo-item:after {
@@ -81,33 +96,40 @@
   left: 90rpx;
   right: 30rpx;
   bottom: 0;
-  height: 1rpx;
-  background-color: #f0f0f0;
+  height: 0.5px;
+  background-color: var(--border-color);
 }
 
 .todo-item:last-child:after {
   display: none;
 }
 
+.todo-item:active {
+  background-color: var(--background-hover);
+}
+
 .todo-item.completed {
-  background-color: #f9f9f9;
+  background-color: var(--background-tertiary);
 }
 
 .todo-checkbox {
-  width: 40rpx;
-  height: 40rpx;
-  border: 2rpx solid #ddd;
+  width: 44rpx;
+  height: 44rpx;
+  border: 2rpx solid var(--border-color);
   border-radius: 50%;
   margin-right: 20rpx;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
+  background-color: var(--background-tertiary);
 }
 
 .todo-checkbox.checked {
-  border-color: #07c160;
-  background-color: #07c160;
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
+  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
 }
 
 .todo-info {
@@ -117,20 +139,23 @@
 }
 
 .todo-title {
-  font-size: 30rpx;
-  color: #333;
+  font-size: 16px;
+  color: var(--text-primary);
   margin-bottom: 6rpx;
   word-break: break-all;
+  font-weight: 500;
 }
 
 .completed-text {
-  color: #999;
+  color: var(--text-secondary);
   text-decoration: line-through;
+  opacity: 0.8;
 }
 
 .todo-date {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4rpx;
 }
 
 .todo-actions {
@@ -145,6 +170,12 @@
   justify-content: center;
   align-items: center;
   margin-left: 10rpx;
+  border-radius: 30rpx;
+  transition: all 0.2s ease;
+}
+
+.action-btn.delete {
+  background-color: rgba(var(--error-color-rgb), 0.1);
 }
 
 /* 加载中 */
@@ -159,10 +190,11 @@
 .loading {
   width: 60rpx;
   height: 60rpx;
-  border: 6rpx solid #f3f3f3;
-  border-top: 6rpx solid #07c160;
+  border: 6rpx solid rgba(var(--text-tertiary-rgb), 0.2);
+  border-top: 6rpx solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.1);
 }
 
 @keyframes spin {
@@ -175,19 +207,22 @@
 }
 
 .loading-text {
-  font-size: 28rpx;
-  color: #999;
+  font-size: 14px;
+  color: var(--text-secondary);
   margin-top: 20rpx;
+  font-weight: 500;
 }
 
 /* 空提示 */
 .empty-tip {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 100rpx 0;
-  color: #999;
-  font-size: 30rpx;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
 }
 
 /* 添加按钮 */
@@ -197,13 +232,19 @@
   bottom: 40rpx;
   width: 100rpx;
   height: 100rpx;
-  background-color: #07c160;
+  background: var(--primary-gradient);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(var(--primary-color-rgb), 0.3);
   z-index: 100;
+  transition: all 0.2s ease;
+}
+
+.add-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
 }
 
 /* 表单弹窗 */
@@ -223,47 +264,59 @@
 .form-container {
   width: 90%;
   max-width: 600rpx;
-  background-color: #fff;
-  border-radius: 12rpx;
+  background-color: var(--background-primary);
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  border: 0.5px solid var(--border-color);
 }
 
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #eee;
+  padding: 16px 24rpx;
+  border-bottom: 0.5px solid var(--border-color);
 }
 
 .form-title {
-  font-size: 34rpx;
-  font-weight: 500;
-  color: #333;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  flex: 1;
 }
 
 .close-btn {
-  padding: 10rpx;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background-color: rgba(var(--text-secondary-rgb), 0.1);
+  position: relative;
 }
 
 .form-content {
-  padding: 30rpx;
+  padding: 24rpx;
   flex: 1;
   overflow-y: auto;
 }
 
 .form-item {
-  margin-bottom: 30rpx;
+  margin-bottom: 24rpx;
 }
 
 .form-label {
   display: block;
-  font-size: 28rpx;
-  color: #666;
+  font-size: 14px;
+  color: var(--text-secondary);
   margin-bottom: 10rpx;
+  font-weight: 500;
 }
 
 .form-input,
@@ -271,46 +324,53 @@
 .form-picker {
   width: 100%;
   padding: 20rpx;
-  border: 1rpx solid #eee;
-  border-radius: 8rpx;
-  font-size: 30rpx;
+  border: 0.5px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 15px;
   box-sizing: border-box;
-  background-color: #f9f9f9;
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
 }
 
 /* 日期选项按钮样式 */
 .date-options {
   display: flex;
   margin-bottom: 20rpx;
+  background-color: rgba(var(--text-tertiary-rgb), 0.1);
+  border-radius: 10px;
+  padding: 4rpx;
+  border: 0.5px solid var(--border-color);
 }
 
 .date-option {
   flex: 1;
   text-align: center;
   padding: 16rpx 0;
-  margin: 0 10rpx;
-  border-radius: 8rpx;
-  font-size: 28rpx;
-  background-color: #f5f5f5;
-  color: #666;
+  margin: 4rpx;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
   transition: all 0.3s;
+  font-weight: 500;
 }
 
 .date-option:first-child {
-  margin-left: 0;
+  margin-left: 4rpx;
 }
 
 .date-option:last-child {
-  margin-right: 0;
+  margin-right: 4rpx;
 }
 
 .date-option.active {
-  background-color: #07c160;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
 }
 
 .future-date-picker {
-  margin-top: 10rpx;
+  margin-top: 16rpx;
+  width: 100%;
 }
 
 .form-textarea {
@@ -319,25 +379,39 @@
 
 .form-footer {
   display: flex;
-  justify-content: flex-end;
-  padding: 20rpx 30rpx;
-  border-top: 1rpx solid #eee;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-top: 0.5px solid var(--border-color);
 }
 
 .cancel-btn,
 .save-btn {
-  padding: 16rpx 40rpx;
-  font-size: 30rpx;
-  border-radius: 8rpx;
-  margin-left: 20rpx;
+  padding: 16rpx 0;
+  font-size: 16px;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+  height: 44px;
+  line-height: 44px;
+  transition: all 0.2s ease;
 }
 
 .cancel-btn {
-  background-color: #f5f5f5;
-  color: #666;
+  background-color: rgba(var(--text-tertiary-rgb), 0.1);
+  color: var(--text-secondary);
+  margin-right: 12rpx;
 }
 
 .save-btn {
-  background-color: #07c160;
-  color: #fff;
+  background: var(--primary-gradient);
+  color: white;
+  margin-left: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
+}
+
+.cancel-btn:active,
+.save-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
