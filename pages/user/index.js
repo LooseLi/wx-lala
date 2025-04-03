@@ -17,6 +17,7 @@ Page({
     editingNickname: '', // 正在编辑的昵称
     dialogAnimation: false,
     checkInData: null,
+    isLoggingIn: false, // 标记是否正在登录中，防止重复登录
   },
 
   // 打卡成功的回调
@@ -64,11 +65,17 @@ Page({
           loading: false,
         });
       } else {
+        // 用户不存在，设置openid
         this.setData({
           openid,
           loading: false,
-          isAuth: false,
+          isAuth: false, // 设置为未登录状态
         });
+
+        // 直接在这里调用自动登录，确保登录成功
+        setTimeout(() => {
+          this.autoLogin();
+        }, 100); // 小延时确保数据已经设置完成
       }
     } catch (err) {
       console.error('初始化失败:', err);
@@ -83,7 +90,7 @@ Page({
     }
   },
 
-  // 一键登录
+  // 一键登录 - 仍然保留此方法用于用户手动点击登录按钮的情况
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
@@ -137,6 +144,77 @@ Page({
     });
   },
 
+  // 自动登录 - 无需用户点击登录按钮
+  autoLogin() {
+    console.log('执行自动登录');
+
+    // 防止重复登录，检查是否已在登录过程中
+    if (this.data.isLoggingIn) {
+      console.log('登录过程已在进行中，已跳过');
+      return;
+    }
+
+    // 标记正在登录中
+    this.setData({ isLoggingIn: true });
+
+    // 生成默认用户信息
+    const defaultAvatar = '/static/images/default-avatar.jpg';
+    const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
+
+    // 构建用户信息对象
+    const userInfo = {
+      avatar: defaultAvatar,
+      nickname: defaultNickname,
+      isAuth: true,
+      updateTime: new Date(),
+    };
+
+    // 存储用户信息到本地
+    wx.setStorageSync('userInfo', userInfo);
+
+    // 更新页面显示
+    this.setData({
+      ...userInfo,
+      isLoggingIn: false, // 登录完成，重置状态
+    });
+
+    // 先检查数据库中是否已存在该用户
+    db.collection('userInfo')
+      .where({
+        openid: this.data.openid,
+      })
+      .get()
+      .then(res => {
+        if (res.data.length === 0) {
+          // 用户不存在，添加新用户
+          return db.collection('userInfo').add({
+            data: {
+              ...userInfo, // 展开用户信息对象
+              openid: this.data.openid,
+              createTime: new Date(), // 创建时间
+            },
+          });
+        } else {
+          console.log('用户已存在，不需要重复添加');
+          return { success: true };
+        }
+      })
+      .then(res => {
+        // 刷新打卡组件状态
+        setTimeout(() => {
+          const checkInComponent = this.selectComponent('#checkIn');
+          if (checkInComponent) {
+            checkInComponent.checkTodayStatus();
+          }
+        }, 1500); // 等待 1.5 秒确保数据已经存储
+        console.log('用户信息处理成功：', res);
+      })
+      .catch(err => {
+        console.error('用户信息处理失败：', err);
+        this.setData({ isLoggingIn: false }); // 出错时也要重置状态
+      });
+  },
+
   openDialog() {
     this.setData({
       dialog: true,
@@ -149,8 +227,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.handleTabBarChange();
-
     // 从本地存储读取用户信息
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
@@ -159,6 +235,11 @@ Page({
         nickname: userInfo.nickname,
         isAuth: true,
       });
+    }
+
+    // 如果没有用户信息，调用handleTabBarChange获取openid
+    if (!userInfo || !userInfo.isAuth) {
+      this.handleTabBarChange();
     }
   },
 
@@ -171,12 +252,29 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if (this.data.isAuth) {
-      // 刷新打卡组件状态
+    // 每次显示页面时检查登录状态
+    const storedUserInfo = wx.getStorageSync('userInfo');
+
+    if (storedUserInfo && storedUserInfo.isAuth) {
+      // 已登录，刷新打卡组件状态
+      this.setData({
+        isAuth: true,
+        avatar: storedUserInfo.avatar,
+        nickname: storedUserInfo.nickname,
+      });
+
       const checkInComponent = this.selectComponent('#checkIn');
       if (checkInComponent) {
         checkInComponent.checkTodayStatus();
       }
+    } else if (this.data.openid && !this.data.isAuth) {
+      // 有openid但未登录，自动登录
+      console.log('在onShow中检测到有openid但未登录，执行自动登录');
+      this.autoLogin();
+    } else if (!this.data.openid) {
+      // 没有openid，重新获取
+      console.log('在onShow中检测到没有openid，重新获取');
+      this.handleTabBarChange();
     }
   },
 
