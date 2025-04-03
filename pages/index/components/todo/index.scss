@@ -1,0 +1,462 @@
+// 变量定义
+$border-radius-sm: 12rpx;
+$border-radius-md: 16rpx;
+$border-radius-lg: 20px;
+$border-radius-circle: 50%;
+
+$spacing-xs: 10rpx;
+$spacing-sm: 20rpx;
+$spacing-md: 30rpx;
+$spacing-lg: 40rpx;
+
+$font-size-xs: 13px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 17px;
+$font-size-xl: 40px;
+
+$transition-normal: all 0.2s ease;
+$transition-slow: all 0.3s ease;
+
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-sm;
+  background-color: var(--background-primary);
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+  color: var(--text-primary);
+  padding-bottom: 20px;
+  padding-top: 44px; /* 为导航栏预留空间 */
+}
+
+/* 待办事项列表 */
+.todo-list {
+  flex: 1;
+  margin-bottom: 120rpx;
+  padding: 0 8rpx;
+}
+
+/* 分组样式 */
+.todo-group {
+  margin-bottom: 24rpx;
+  border-radius: $border-radius-sm;
+  background-color: var(--background-secondary);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 0.5px solid var(--border-color);
+
+  .group-header {
+    display: flex;
+    align-items: center;
+    padding: 24rpx $spacing-md;
+    border-bottom: 0.5px solid var(--border-color);
+    position: relative;
+
+    .group-title {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .group-count {
+      font-size: $font-size-xs;
+      color: var(--text-secondary);
+      padding: 4rpx 16rpx;
+    }
+
+    .group-arrow {
+      font-size: $font-size-sm;
+      color: var(--text-secondary);
+      transform: rotate(180deg);
+      transition: transform 0.3s;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+
+      &.expanded {
+        transform: rotate(0deg);
+      }
+    }
+  }
+
+  .group-content {
+    padding: 10rpx 0;
+  }
+}
+
+/* 待办事项样式 */
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx $spacing-md;
+  position: relative;
+  transition: background-color 0.2s;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 90rpx;
+    right: $spacing-md;
+    bottom: 0;
+    height: 0.5px;
+    background-color: var(--border-color);
+  }
+
+  &:last-child:after {
+    display: none;
+  }
+
+  &:active {
+    background-color: var(--background-hover);
+  }
+
+  &.completed {
+    background-color: var(--background-tertiary);
+  }
+
+  .todo-checkbox {
+    width: 44rpx;
+    height: 44rpx;
+    border: 2rpx solid var(--border-color);
+    border-radius: $border-radius-circle;
+    margin-right: $spacing-sm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    transition: $transition-normal;
+    background-color: var(--background-tertiary);
+
+    &.checked {
+      // 注释掉的样式
+      // border-color: #999;
+      // background-color: var(--background-secondary);
+      // box-shadow: 0 2rpx 8rpx rgba(153, 153, 153, 0.3);
+    }
+  }
+
+  .todo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .todo-title {
+      font-size: $font-size-md;
+      color: var(--text-primary);
+      margin-bottom: 6rpx;
+      word-break: break-all;
+      font-weight: 500;
+    }
+
+    .todo-date {
+      font-size: $font-size-xs;
+      color: var(--text-secondary);
+      margin-top: 4rpx;
+    }
+  }
+
+  .todo-actions {
+    display: flex;
+    align-items: center;
+
+    .action-btn {
+      width: 60rpx;
+      height: 60rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 10rpx;
+      border-radius: 30rpx;
+      transition: $transition-normal;
+    }
+  }
+}
+
+.completed-text {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+
+  .loading {
+    width: 60rpx;
+    height: 60rpx;
+    border: 6rpx solid rgba(var(--text-tertiary-rgb), 0.2);
+    border-top: 6rpx solid var(--primary-color);
+    border-radius: $border-radius-circle;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.1);
+  }
+
+  .loading-text {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    margin-top: $spacing-sm;
+    font-weight: 500;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 空提示 */
+.empty-tip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: var(--text-secondary);
+  font-size: $font-size-sm;
+  font-weight: 500;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  right: 50rpx;
+  bottom: 50rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: var(--primary-gradient);
+  border-radius: $border-radius-circle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(var(--primary-color-rgb), 0.3);
+  z-index: 100;
+  transition: $transition-normal;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+
+  .add-icon {
+    font-size: $font-size-xl;
+    font-weight: 300;
+    color: white;
+    line-height: 40px;
+  }
+}
+
+/* 表单弹窗 */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  z-index: 1000;
+  transition: $transition-slow;
+
+  /* 弹窗遮罩层 */
+  .form-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  .form-container {
+    width: 100%;
+    background-color: var(--background-primary);
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+
+    &.slide-in {
+      transform: translateY(0);
+    }
+
+    &.slide-out {
+      transform: translateY(100%);
+    }
+  }
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24rpx 16px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0.5px;
+    background-color: var(--border-color);
+    transform: scaleY(0.5);
+  }
+
+  .form-title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    flex: 1;
+  }
+}
+
+.close-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.form-content {
+  padding: 90rpx $spacing-md 24rpx;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* 提供iOS风格的滚动效果 */
+
+  .form-item {
+    margin-bottom: 24rpx;
+  }
+
+  .form-label {
+    display: block;
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    margin-bottom: 10rpx;
+    font-weight: 500;
+  }
+}
+
+.form-input,
+.form-textarea,
+.form-picker {
+  width: 100%;
+  min-height: 80rpx;
+  padding: $spacing-sm;
+  border: 1px solid var(--border-color);
+  border-radius: $border-radius-sm;
+  font-size: $font-size-md;
+  box-sizing: border-box;
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  margin-top: 10rpx;
+}
+
+.form-textarea {
+  height: 180rpx;
+}
+
+/* 日期选项按钮样式 */
+.date-options {
+  display: flex;
+  margin: 24rpx 0;
+  justify-content: space-between;
+  gap: 20rpx;
+
+  .date-option {
+    flex: 1;
+    text-align: center;
+    padding: 20rpx 0;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    transition: $transition-slow;
+    font-weight: 500;
+    background-color: var(--background-secondary);
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+
+    &.active {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4rpx 12rpx rgba(var(--primary-color-rgb), 0.3);
+      transform: translateY(-2rpx);
+    }
+  }
+}
+
+.future-date-picker {
+  margin-top: 16rpx;
+  width: 100%;
+}
+
+.form-footer {
+  padding: 16px $spacing-md 40px; /* 底部增加更多间距，适应底部安全区域 */
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 0.5px;
+    background-color: var(--border-color);
+    transform: scaleY(0.5);
+  }
+
+  .save-btn {
+    padding: 0;
+    font-size: $font-size-lg;
+    border-radius: $border-radius-sm;
+    text-align: center;
+    font-weight: 500;
+    height: 50px;
+    line-height: 50px;
+    transition: $transition-normal;
+    background-color: var(--primary-color);
+    background-image: linear-gradient(135deg, #0a84ff, #007aff);
+    color: white;
+    box-shadow: 0 4rpx 12rpx rgba(var(--primary-color-rgb), 0.3);
+    width: 100%;
+
+    &.full-width {
+      width: 100%;
+    }
+
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+  }
+}
