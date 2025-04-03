@@ -16,7 +16,7 @@
       <!-- 今天 -->
       <view class="todo-group" wx:if="{{todoGroups.today.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="today">
-          <view class="group-title">{{todoGroups.today.title}}</view>
+          <view class="group-title">{{todoGroups.today.title}} <text class="date-info">{{todoGroups.today.dateInfo}}</text></view>
           <view class="group-count">{{todoGroups.today.count}}</view>
           <view class="group-arrow {{todoGroups.today.expanded ? 'expanded' : 'collapsed'}}">^</view>
         </view>
@@ -27,7 +27,6 @@
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
-              <view class="todo-date">{{formatDisplayDate(item.createTime)}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
@@ -41,7 +40,7 @@
       <!-- 明天 -->
       <view class="todo-group" wx:if="{{todoGroups.tomorrow.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="tomorrow">
-          <view class="group-title">{{todoGroups.tomorrow.title}}</view>
+          <view class="group-title">{{todoGroups.tomorrow.title}} <text class="date-info">{{todoGroups.tomorrow.dateInfo}}</text></view>
           <view class="group-count">{{todoGroups.tomorrow.count}}</view>
           <view class="group-arrow {{todoGroups.tomorrow.expanded ? 'expanded' : 'collapsed'}}">^</view>
         </view>
@@ -52,7 +51,6 @@
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
-              <view class="todo-date">{{formatDisplayDate(item.createTime)}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
@@ -77,7 +75,6 @@
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
-              <view class="todo-date">{{formatDisplayDate(item.createTime)}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
@@ -102,7 +99,6 @@
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title completed-text">{{item.title}}</view>
-              <view class="todo-date">{{formatDisplayDate(item.createTime)}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">

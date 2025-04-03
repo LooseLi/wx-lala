@@ -61,6 +61,13 @@ $transition-slow: all 0.3s ease;
       font-weight: 600;
       color: var(--text-primary);
       flex: 1;
+
+      .date-info {
+        font-size: $font-size-xs;
+        color: var(--text-secondary);
+        font-weight: normal;
+        margin-left: $spacing-xs;
+      }
     }
 
     .group-count {

@@ -7,8 +7,8 @@ Page({
    */
   data: {
     todoGroups: {
-      today: { title: '今天', todos: [], expanded: true, count: 0 },
-      tomorrow: { title: '明天', todos: [], expanded: true, count: 0 },
+      today: { title: '今天', todos: [], expanded: true, count: 0, dateInfo: '' },
+      tomorrow: { title: '明天', todos: [], expanded: true, count: 0, dateInfo: '' },
       future: { title: '', todos: [], expanded: true, count: 0, date: '' },
       completed: { title: '已完成', todos: [], expanded: true, count: 0 },
     },
@@ -29,6 +29,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
+    this.updateDateInfo();
     this.loadTodos();
   },
 
@@ -36,6 +37,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.updateDateInfo();
     this.loadTodos();
   },
 
@@ -93,10 +95,22 @@ Page({
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // 初始化分组
+    // 初始化分组，保留原有的 dateInfo 字段
     const groups = {
-      today: { title: '今天', todos: [], expanded: true, count: 0 },
-      tomorrow: { title: '明天', todos: [], expanded: true, count: 0 },
+      today: {
+        title: '今天',
+        todos: [],
+        expanded: true,
+        count: 0,
+        dateInfo: this.data.todoGroups.today.dateInfo || '',
+      },
+      tomorrow: {
+        title: '明天',
+        todos: [],
+        expanded: true,
+        count: 0,
+        dateInfo: this.data.todoGroups.tomorrow.dateInfo || '',
+      },
       future: { title: '', todos: [], expanded: true, count: 0, date: '' },
       completed: { title: '已完成', todos: [], expanded: true, count: 0 },
     };
@@ -477,6 +491,46 @@ Page({
   formatDisplayDate: function (date) {
     const d = new Date(date);
     return `${d.getMonth() + 1}月${d.getDate()}日`;
+  },
+
+  /**
+   * 更新日期信息
+   */
+  updateDateInfo: function () {
+    const d = new Date();
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+    // 今天的日期信息
+    const todayInfo = `${d.getMonth() + 1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+
+    // 明天的日期信息
+    const tomorrow = new Date(d);
+    tomorrow.setDate(d.getDate() + 1);
+    const tomorrowInfo = `${tomorrow.getMonth() + 1}月${tomorrow.getDate()}日 ${weekdays[tomorrow.getDay()]}`;
+
+    this.setData({
+      'todoGroups.today.dateInfo': todayInfo,
+      'todoGroups.tomorrow.dateInfo': tomorrowInfo,
+    });
+  },
+
+  /**
+   * 格式化显示日期和星期几
+   */
+  formatDateWithWeekday: function (dateType) {
+    const d = new Date();
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+    if (dateType === 'today') {
+      // 今天
+      return `${d.getMonth() + 1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+    } else if (dateType === 'tomorrow') {
+      // 明天
+      const tomorrow = new Date(d);
+      tomorrow.setDate(d.getDate() + 1);
+      return `${tomorrow.getMonth() + 1}月${tomorrow.getDate()}日 ${weekdays[tomorrow.getDay()]}`;
+    }
+    return '';
   },
 
   /**
