@@ -181,6 +181,12 @@ Page({
       // 保存openid
       this.setData({ openid });
 
+      // 如果已经登录，不需要继续检查用户是否存在
+      if (this.data.loginState === 'logged-in') {
+        this.setData({ loading: false });
+        return;
+      }
+
       // 检查用户是否存在
       this.checkUserExists(openid);
     } catch (err) {
@@ -202,11 +208,11 @@ Page({
    */
   checkUserExists: async function (openid) {
     try {
-      // 查询数据库
-      const res = await userInfo.get();
-      const userRecord = res.data.find(item => item.openid === openid);
+      // 直接查询当前用户的记录，而不是获取所有用户
+      const res = await db.collection('userInfo').where({ openid: openid }).get();
 
-      if (userRecord) {
+      if (res.data && res.data.length > 0) {
+        const userRecord = res.data[0];
         // 用户存在，设置用户信息
         this.setData({
           avatar: userRecord.avatar,
@@ -292,16 +298,49 @@ Page({
         avatar: userInfo.avatar,
         nickname: userInfo.nickname,
         isAuth: true,
+        loading: false,
         loginState: 'logged-in',
       });
 
-      // 检查是否有openid，没有则获取
-      if (!this.data.openid) {
-        this.getOpenId();
-      }
+      // 获取openid并检查数据库中是否有该用户数据
+      this.getOpenIdAndSyncData(userInfo);
     } else {
       // 未登录，开始登录流程
       this.startLoginProcess();
+    }
+  },
+
+  /**
+   * 获取openid并同步数据到数据库
+   */
+  getOpenIdAndSyncData: async function (localUserInfo) {
+    try {
+      const openIdRes = await wx.cloud.callFunction({
+        name: 'getOpenId',
+      });
+      const openid = openIdRes.result.OPENID;
+
+      // 保存openid
+      this.setData({ openid });
+
+      // 检查数据库中是否存在该用户
+      const res = await db.collection('userInfo').where({ openid: openid }).get();
+
+      if (!(res.data && res.data.length > 0)) {
+        console.log('本地有用户数据但数据库中不存在，添加到数据库');
+        // 构建用户信息对象
+        const userInfo = {
+          avatar: localUserInfo.avatar,
+          nickname: localUserInfo.nickname,
+          isAuth: true,
+          updateTime: new Date(),
+        };
+
+        // 添加到数据库
+        this.addUserToDatabase(userInfo);
+      }
+    } catch (err) {
+      console.error('获取openid或同步数据失败:', err);
     }
   },
 
