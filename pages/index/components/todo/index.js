@@ -253,6 +253,7 @@ Page({
     // 默认设置为今天
     const today = this.formatDate(new Date());
 
+    // 先设置弹窗可见但在底部
     this.setData({
       showForm: true,
       showDatePicker: false,
@@ -263,6 +264,7 @@ Page({
         dueDate: today,
         dateType: 'today',
       },
+      formAnimation: 'slide-in', // 添加入场动画类
     });
   },
 
@@ -298,6 +300,7 @@ Page({
         showDatePicker: dateType === 'future',
         editMode: true,
         currentTodoId: id,
+        formAnimation: 'slide-in', // 添加入场动画类
         newTodo: {
           title: todo.title,
           dueDate: todo.dueDate ? this.formatDate(todo.dueDate) : null,
@@ -311,7 +314,13 @@ Page({
    * 关闭表单
    */
   closeForm: function () {
-    this.setData({ showForm: false });
+    // 先添加离场动画
+    this.setData({ formAnimation: 'slide-out' });
+
+    // 等待动画完成后再隐藏表单
+    setTimeout(() => {
+      this.setData({ showForm: false });
+    }, 300);
   },
 
   /**

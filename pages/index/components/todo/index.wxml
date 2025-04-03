@@ -31,7 +31,7 @@
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#f43f3b"/>
+                <icon type="cancel" size="18" color="#999"/>
               </view>
             </view>
           </view>
@@ -56,7 +56,7 @@
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#f43f3b"/>
+                <icon type="cancel" size="18" color="#999"/>
               </view>
             </view>
           </view>
@@ -81,7 +81,7 @@
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#f43f3b"/>
+                <icon type="cancel" size="18" color="#999"/>
               </view>
             </view>
           </view>
@@ -106,7 +106,7 @@
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#f43f3b"/>
+                <icon type="cancel" size="18" color="#999"/>
               </view>
             </view>
           </view>
@@ -121,21 +121,17 @@
   </view>
 
   <!-- 表单弹窗 -->
-  <view class="form-modal" wx:if="{{showForm}}">
-    <view class="form-container">
-      <view class="form-header">
-        <text class="form-title">{{editMode ? '编辑待办事项' : '添加待办事项'}}</text>
-        <view class="close-btn" bindtap="closeForm">
-          <icon type="cancel" size="20" color="#999"/>
-        </view>
+  <view class="form-modal" wx:if="{{showForm}}" catchtouchmove="true">
+    <view class="form-mask" bindtap="closeForm"></view>
+    <view class="form-container {{formAnimation}}">
+      <view class="close-btn" bindtap="closeForm">
+        <icon type="cancel" size="20" color="#999"/>
       </view>
       <view class="form-content">
         <view class="form-item">
-          <text class="form-label">内容</text>
-          <input class="form-input" value="{{newTodo.title}}" bindinput="onTitleInput" placeholder="请输入待办事项内容" maxlength="50"/>
+          <input class="form-input" value="{{newTodo.title}}" bindinput="onTitleInput" placeholder="将事情记录在案！" maxlength="50"/>
         </view>
         <view class="form-item">
-          <text class="form-label">日期</text>
           <view class="date-options">
             <view class="date-option {{newTodo.dateType === 'today' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="today">今天</view>
             <view class="date-option {{newTodo.dateType === 'tomorrow' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="tomorrow">明天</view>
@@ -147,8 +143,7 @@
         </view>
       </view>
       <view class="form-footer">
-        <button class="cancel-btn" bindtap="closeForm">取消</button>
-        <button class="save-btn" bindtap="saveTodo">保存</button>
+        <button class="save-btn full-width" bindtap="saveTodo">{{editMode ? '保存修改' : '新增待办'}}</button>
       </view>
     </view>
   </view>

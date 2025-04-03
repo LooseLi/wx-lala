@@ -69,7 +69,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(var(--text-tertiary-rgb), 0.1);
   border-radius: 12px;
 }
 
@@ -174,10 +173,6 @@
   transition: all 0.2s ease;
 }
 
-.action-btn.delete {
-  background-color: rgba(var(--error-color-rgb), 0.1);
-}
-
 /* 加载中 */
 .loading-container {
   display: flex;
@@ -261,32 +256,64 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-end;
   z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* 弹窗遮罩层 */
+.form-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .form-container {
-  width: 90%;
-  max-width: 600rpx;
+  width: 100%;
   background-color: var(--background-primary);
-  border-radius: 12px;
+  border-radius: 20px 20px 0 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
-  border: 0.5px solid var(--border-color);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+/* 动画类 */
+.slide-in {
+  transform: translateY(0);
+}
+
+.slide-out {
+  transform: translateY(100%);
 }
 
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24rpx;
-  border-bottom: 0.5px solid var(--border-color);
+  padding: 20px 24rpx 16px;
+  position: relative;
+}
+
+.form-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.5px;
+  background-color: var(--border-color);
+  transform: scaleY(0.5);
 }
 
 .form-title {
@@ -298,20 +325,23 @@
 }
 
 .close-btn {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background-color: rgba(var(--text-secondary-rgb), 0.1);
-  position: relative;
+  border-radius: 18px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 }
 
 .form-content {
-  padding: 24rpx;
+  padding: 90rpx 30rpx 24rpx;
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* 提供iOS风格的滚动效果 */
 }
 
 .form-item {
@@ -330,49 +360,43 @@
 .form-textarea,
 .form-picker {
   width: 100%;
+  min-height: 80rpx;
   padding: 20rpx;
-  border: 0.5px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 12rpx;
+  font-size: 16px;
   box-sizing: border-box;
   background-color: var(--background-secondary);
   color: var(--text-primary);
+  margin-top: 10rpx;
 }
 
 /* 日期选项按钮样式 */
 .date-options {
   display: flex;
-  margin-bottom: 20rpx;
-  background-color: rgba(var(--text-tertiary-rgb), 0.1);
-  border-radius: 10px;
-  padding: 4rpx;
-  border: 0.5px solid var(--border-color);
+  margin: 24rpx 0;
+  justify-content: space-between;
+  gap: 20rpx;
 }
 
 .date-option {
   flex: 1;
   text-align: center;
-  padding: 16rpx 0;
-  margin: 4rpx;
-  border-radius: 8px;
+  padding: 20rpx 0;
+  border-radius: 12px;
   font-size: 14px;
   color: var(--text-secondary);
   transition: all 0.3s;
   font-weight: 500;
-}
-
-.date-option:first-child {
-  margin-left: 4rpx;
-}
-
-.date-option:last-child {
-  margin-right: 4rpx;
+  background-color: var(--background-secondary);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .date-option.active {
   background-color: var(--primary-color);
   color: white;
-  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(var(--primary-color-rgb), 0.3);
+  transform: translateY(-2rpx);
 }
 
 .future-date-picker {
@@ -380,44 +404,55 @@
   width: 100%;
 }
 
+.form-picker {
+  min-height: 80rpx;
+  padding: 20rpx;
+  border: 1px solid var(--border-color);
+  border-radius: 12rpx;
+  background-color: var(--background-secondary);
+  font-size: 16px;
+}
+
 .form-textarea {
   height: 180rpx;
 }
 
 .form-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 20rpx 24rpx;
-  border-top: 0.5px solid var(--border-color);
+  padding: 16px 30rpx 40px; /* 底部增加更多间距，适应底部安全区域 */
+  position: relative;
 }
 
-.cancel-btn,
+.form-footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0.5px;
+  background-color: var(--border-color);
+  transform: scaleY(0.5);
+}
+
 .save-btn {
-  padding: 16rpx 0;
-  font-size: 16px;
-  border-radius: 10px;
-  flex: 1;
+  padding: 0;
+  font-size: 17px;
+  border-radius: 12px;
   text-align: center;
   font-weight: 500;
-  height: 44px;
-  line-height: 44px;
+  height: 50px;
+  line-height: 50px;
   transition: all 0.2s ease;
-}
-
-.cancel-btn {
-  background-color: rgba(var(--text-tertiary-rgb), 0.1);
-  color: var(--text-secondary);
-  margin-right: 12rpx;
-}
-
-.save-btn {
-  background: var(--primary-gradient);
+  background-color: var(--primary-color);
+  background-image: linear-gradient(135deg, #0a84ff, #007aff);
   color: white;
-  margin-left: 12rpx;
-  box-shadow: 0 2rpx 8rpx rgba(var(--primary-color-rgb), 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(var(--primary-color-rgb), 0.3);
+  width: 100%;
 }
 
-.cancel-btn:active,
+.save-btn.full-width {
+  width: 100%;
+}
+
 .save-btn:active {
   transform: scale(0.98);
   opacity: 0.9;
