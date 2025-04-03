@@ -2,11 +2,7 @@ const db = wx.cloud.database();
 const userInfo = db.collection('userInfo');
 const plugins = require('../../utils/plugins');
 
-// pages/user/index.js
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
     loading: true,
     avatar: '',
@@ -101,10 +97,8 @@ Page({
     });
   },
 
-  // 自动登录 - 无需用户点击登录按钮
+  // 自动登录
   autoLogin() {
-    console.log('执行自动登录');
-
     // 如果不是正在获取openid状态，直接返回
     if (this.data.loginState !== 'getting-openid') {
       console.log('登录状态错误，当前状态:', this.data.loginState);
@@ -145,8 +139,6 @@ Page({
     });
   },
 
-  // 待办事项相关功能已移除
-
   /**
    * 开始登录流程
    */
@@ -160,18 +152,13 @@ Page({
     // 设置状态为正在获取openid
     this.setData({ loginState: 'getting-openid' });
 
-    // 先检查本地是否已存储openid
     const storedOpenid = wx.getStorageSync('openid');
 
     if (storedOpenid) {
-      console.log('从本地存储获取openid');
-      // 直接使用本地存储的openid
       this.setData({ openid: storedOpenid });
       // 检查用户是否存在
       this.checkUserExists(storedOpenid);
     } else {
-      console.log('本地无openid，调用云函数获取');
-      // 本地没有存储openid，调用云函数获取
       this.getOpenId();
     }
   },
@@ -189,11 +176,8 @@ Page({
 
       let openid;
       if (storedOpenid) {
-        // 使用本地存储的openid
         openid = storedOpenid;
-        console.log('使用本地存储的openid:', openid);
       } else {
-        // 调用云函数获取openid
         const openIdRes = await wx.cloud.callFunction({
           name: 'getOpenId',
         });
@@ -204,7 +188,6 @@ Page({
         console.log('从云函数获取openid:', openid);
       }
 
-      // 保存openid到页面数据
       this.setData({ openid });
 
       // 如果已经登录，不需要继续检查用户是否存在
@@ -315,7 +298,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 从本地存储读取用户信息
     const userInfo = wx.getStorageSync('userInfo');
 
     if (userInfo && userInfo.isAuth) {
@@ -346,14 +328,12 @@ Page({
       });
       const openid = openIdRes.result.OPENID;
 
-      // 保存openid
       this.setData({ openid });
 
       // 检查数据库中是否存在该用户
       const res = await db.collection('userInfo').where({ openid: openid }).get();
 
       if (res.data && res.data.length > 0) {
-        // 数据库中存在用户数据，使用数据库中的数据更新本地和页面
         const userRecord = res.data[0];
 
         // 更新页面显示
@@ -372,16 +352,9 @@ Page({
           isAuth: true,
           updateTime: new Date(),
         });
-
-        console.log('从数据库获取并更新了最新用户数据');
       } else {
-        // 数据库中不存在用户数据，但本地有
-        console.log('本地有用户数据但数据库中不存在，添加到数据库');
-
-        // 获取本地用户信息
         const localUserInfo = wx.getStorageSync('userInfo');
 
-        // 构建用户信息对象
         const userInfo = {
           avatar: localUserInfo.avatar,
           nickname: localUserInfo.nickname,
@@ -392,12 +365,9 @@ Page({
         // 添加到数据库
         this.addUserToDatabase(userInfo);
 
-        // 关闭加载状态
         this.setData({ loading: false });
       }
     } catch (err) {
-      console.error('获取openid或数据库数据失败:', err);
-      // 出错时关闭加载状态
       this.setData({ loading: false });
     }
   },
@@ -411,20 +381,16 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    // 只负责刷新组件状态，不处理登录逻辑
     if (this.data.isAuth && this.data.loginState === 'logged-in') {
-      // 已登录，刷新打卡组件状态
       const checkInComponent = this.selectComponent('#checkIn');
       if (checkInComponent) {
         checkInComponent.checkTodayStatus();
       }
     }
 
-    // 检查登录状态，如果是idle状态但应该登录，则重新开始登录流程
     if (this.data.loginState === 'idle' && !this.data.isAuth) {
       const userInfo = wx.getStorageSync('userInfo');
       if (!userInfo || !userInfo.isAuth) {
-        console.log('在onShow中检测到需要登录，开始登录流程');
         this.startLoginProcess();
       }
     }
