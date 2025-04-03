@@ -6,22 +6,18 @@ Page({
    * 页面的初始数据
    */
   data: {
-    todos: [],
+    todoGroups: {
+      today: { title: '今天', todos: [], expanded: true, count: 0 },
+      tomorrow: { title: '明天', todos: [], expanded: true, count: 0 },
+      future: { title: '', todos: [], expanded: true, count: 0, date: '' },
+      completed: { title: '已完成', todos: [], expanded: true, count: 0 },
+    },
     loading: false,
     showForm: false,
     newTodo: {
       title: '',
-      description: '',
-      priority: 2, // 默认中优先级
-      category: '默认',
       dueDate: null,
     },
-    categories: ['默认', '工作', '生活', '学习', '其他'],
-    categoryIndex: 0,
-    priorities: ['高', '中', '低'],
-    priorityIndex: 1, // 默认中优先级
-    statusOptions: ['全部', '未完成', '已完成'],
-    statusIndex: 0,
     editMode: false,
     currentTodoId: '',
     emptyTip: '暂无待办事项，点击下方按钮添加',
@@ -54,27 +50,19 @@ Page({
       return;
     }
 
-    // 构建查询条件
-    const queryData = {};
-
-    // 根据状态筛选
-    if (this.data.statusIndex > 0) {
-      queryData.status = this.data.statusIndex === 1 ? false : true;
-    }
-
-    // 根据分类筛选
-    if (this.data.categoryIndex > 0) {
-      queryData.category = this.data.categories[this.data.categoryIndex];
-    }
-
     this.setData({ loading: true });
 
     wx.cloud.callFunction({
       name: 'getTodos',
-      data: queryData,
+      data: {},
       success: res => {
+        const todos = res.result.data || [];
+        // 按日期分组待办事项
+        const todoGroups = this.groupTodosByDate(todos);
+
         this.setData({
-          todos: res.result.data || [],
+          todos: todos,
+          todoGroups: todoGroups,
           loading: false,
         });
       },
@@ -92,6 +80,109 @@ Page({
   /**
    * 切换待办事项状态
    */
+  /**
+   * 按日期分组待办事项
+   */
+  groupTodosByDate: function (todos) {
+    // 获取今天、明天的日期
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // 初始化分组
+    const groups = {
+      today: { title: '今天', todos: [], expanded: true, count: 0 },
+      tomorrow: { title: '明天', todos: [], expanded: true, count: 0 },
+      future: { title: '', todos: [], expanded: true, count: 0, date: '' },
+      completed: { title: '已完成', todos: [], expanded: true, count: 0 },
+    };
+
+    // 未来日期的待办事项
+    let futureDate = null;
+
+    // 分组待办事项
+    todos.forEach(todo => {
+      if (todo.completed) {
+        groups.completed.todos.push(todo);
+        groups.completed.count++;
+        return;
+      }
+
+      if (!todo.dueDate) {
+        // 没有日期的待办事项归为今天
+        groups.today.todos.push(todo);
+        groups.today.count++;
+        return;
+      }
+
+      const dueDate = new Date(todo.dueDate);
+      dueDate.setHours(0, 0, 0, 0);
+
+      if (dueDate.getTime() === today.getTime()) {
+        groups.today.todos.push(todo);
+        groups.today.count++;
+      } else if (dueDate.getTime() === tomorrow.getTime()) {
+        groups.tomorrow.todos.push(todo);
+        groups.tomorrow.count++;
+      } else if (dueDate > today) {
+        // 如果有多个未来日期，只显示最近的一个
+        if (!futureDate || dueDate < futureDate) {
+          futureDate = dueDate;
+          groups.future.date = this.formatDate(dueDate);
+          groups.future.title = `${dueDate.getMonth() + 1}月${dueDate.getDate()}日 ${this.getWeekDay(dueDate)}`;
+        }
+
+        if (dueDate.getTime() === futureDate.getTime()) {
+          groups.future.todos.push(todo);
+          groups.future.count++;
+        }
+      }
+    });
+
+    // 排序：按创建时间降序
+    Object.keys(groups).forEach(key => {
+      groups[key].todos.sort((a, b) => {
+        return new Date(b.createTime) - new Date(a.createTime);
+      });
+    });
+
+    // 返回分组结果，由调用方统一处理数据更新
+    return groups;
+  },
+
+  /**
+   * 获取星期几
+   */
+  getWeekDay: function (date) {
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    return weekDays[date.getDay()];
+  },
+
+  /**
+   * 切换分组展开/折叠状态
+   */
+  toggleGroup: function (e) {
+    console.log('toggleGroup', e.currentTarget.dataset);
+    const { group } = e.currentTarget.dataset;
+
+    // 安全检查：确保组数据存在
+    if (!this.data.todoGroups || !this.data.todoGroups[group]) {
+      console.warn(`组 ${group} 不存在或未初始化`);
+      return;
+    }
+
+    const expanded = this.data.todoGroups[group].expanded;
+
+    this.setData({
+      [`todoGroups.${group}.expanded`]: !expanded,
+    });
+  },
+
+  /**
+   * 切换待办事项状态
+   */
   toggleTodoStatus: function (e) {
     const { id, completed } = e.currentTarget.dataset;
 
@@ -101,20 +192,13 @@ Page({
         updateTime: new Date(),
       },
       success: () => {
-        // 更新本地数据
-        const todoList = this.data.todos.map(todo => {
-          if (todo._id === id) {
-            return { ...todo, completed: !completed };
-          }
-          return todo;
-        });
-
-        this.setData({ todos: todoList });
-
         wx.showToast({
           title: completed ? '已设为未完成' : '已完成',
           icon: 'success',
         });
+
+        // 重新加载数据以更新分组
+        this.loadTodos();
       },
       fail: err => {
         console.error('更新状态失败:', err);
@@ -139,14 +223,13 @@ Page({
         if (res.confirm) {
           todos.doc(id).remove({
             success: () => {
-              // 更新本地数据
-              const todoList = this.data.todos.filter(todo => todo._id !== id);
-              this.setData({ todos: todoList });
-
               wx.showToast({
                 title: '删除成功',
                 icon: 'success',
               });
+
+              // 重新加载数据
+              this.loadTodos();
             },
             fail: err => {
               console.error('删除失败:', err);
@@ -165,19 +248,17 @@ Page({
    * 显示添加待办事项表单
    */
   showAddForm: function () {
+    // 默认设置为今天
+    const today = this.formatDate(new Date());
+
     this.setData({
       showForm: true,
       editMode: false,
       currentTodoId: '',
       newTodo: {
         title: '',
-        description: '',
-        priority: 2,
-        category: '默认',
-        dueDate: null,
+        dueDate: today,
       },
-      categoryIndex: 0,
-      priorityIndex: 1,
     });
   },
 
@@ -189,25 +270,14 @@ Page({
     const todo = this.data.todos.find(item => item._id === id);
 
     if (todo) {
-      // 找到分类索引
-      const categoryIndex = this.data.categories.findIndex(cat => cat === todo.category);
-
-      // 找到优先级索引
-      const priorityIndex = todo.priority - 1;
-
       this.setData({
         showForm: true,
         editMode: true,
         currentTodoId: id,
         newTodo: {
           title: todo.title,
-          description: todo.description || '',
-          priority: todo.priority,
-          category: todo.category,
           dueDate: todo.dueDate ? this.formatDate(todo.dueDate) : null,
         },
-        categoryIndex: categoryIndex >= 0 ? categoryIndex : 0,
-        priorityIndex: priorityIndex >= 0 ? priorityIndex : 1,
       });
     }
   },
@@ -229,37 +299,6 @@ Page({
   },
 
   /**
-   * 输入描述
-   */
-  onDescriptionInput: function (e) {
-    this.setData({
-      'newTodo.description': e.detail.value,
-    });
-  },
-
-  /**
-   * 选择分类
-   */
-  onCategoryChange: function (e) {
-    const index = parseInt(e.detail.value);
-    this.setData({
-      categoryIndex: index,
-      'newTodo.category': this.data.categories[index],
-    });
-  },
-
-  /**
-   * 选择优先级
-   */
-  onPriorityChange: function (e) {
-    const index = parseInt(e.detail.value);
-    this.setData({
-      priorityIndex: index,
-      'newTodo.priority': index + 1, // 优先级从1开始
-    });
-  },
-
-  /**
    * 选择截止日期
    */
   onDateChange: function (e) {
@@ -269,37 +308,22 @@ Page({
   },
 
   /**
-   * 选择状态筛选
-   */
-  onStatusFilterChange: function (e) {
-    this.setData(
-      {
-        statusIndex: parseInt(e.detail.value),
-      },
-      this.loadTodos,
-    );
-  },
-
-  /**
-   * 选择分类筛选
-   */
-  onCategoryFilterChange: function (e) {
-    this.setData(
-      {
-        categoryIndex: parseInt(e.detail.value),
-      },
-      this.loadTodos,
-    );
-  },
-
-  /**
    * 保存待办事项
    */
   saveTodo: function () {
     // 表单验证
     if (!this.data.newTodo.title.trim()) {
       wx.showToast({
-        title: '请填写待办事项标题',
+        title: '请填写待办事项内容',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 日期必填验证
+    if (!this.data.newTodo.dueDate) {
+      wx.showToast({
+        title: '请选择日期',
         icon: 'none',
       });
       return;
@@ -307,9 +331,6 @@ Page({
 
     const todoData = {
       title: this.data.newTodo.title.trim(),
-      description: this.data.newTodo.description.trim(),
-      priority: this.data.newTodo.priority,
-      category: this.data.newTodo.category,
       dueDate: this.data.newTodo.dueDate ? new Date(this.data.newTodo.dueDate) : null,
       updateTime: new Date(),
     };
