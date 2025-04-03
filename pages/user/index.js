@@ -17,7 +17,8 @@ Page({
     editingNickname: '', // 正在编辑的昵称
     dialogAnimation: false,
     checkInData: null,
-    isLoggingIn: false, // 标记是否正在登录中，防止重复登录
+    // 登录状态标记，可能的值: 'idle', 'getting-openid', 'logging-in', 'logged-in'
+    loginState: 'idle',
   },
 
   // 打卡成功的回调
@@ -38,56 +39,12 @@ Page({
     });
   },
 
-  // 监听
+  // 该方法已被拆分到 startLoginProcess、getOpenId 和 checkUserExists 中
+  // 保留空方法以防止其他地方调用出错
   async handleTabBarChange() {
-    try {
-      this.setData({
-        loading: true,
-      });
-
-      // 获取OpenID
-      const openIdRes = await wx.cloud.callFunction({
-        name: 'getOpenId',
-      });
-      const openid = openIdRes.result.OPENID;
-
-      // 获取用户信息
-      const res = await userInfo.get();
-      const userRecord = res.data.find(item => item.openid === openid);
-
-      // 更新状态
-      if (userRecord) {
-        this.setData({
-          openid,
-          avatar: userRecord.avatar,
-          nickname: userRecord.nickname,
-          isAuth: true,
-          loading: false,
-        });
-      } else {
-        // 用户不存在，设置openid
-        this.setData({
-          openid,
-          loading: false,
-          isAuth: false, // 设置为未登录状态
-        });
-
-        // 直接在这里调用自动登录，确保登录成功
-        setTimeout(() => {
-          this.autoLogin();
-        }, 100); // 小延时确保数据已经设置完成
-      }
-    } catch (err) {
-      console.error('初始化失败:', err);
-      this.setData({
-        loading: false,
-        isAuth: false,
-      });
-      wx.showToast({
-        title: '加载失败，请重试',
-        icon: 'none',
-      });
-    }
+    console.log('该方法已被弃用，请使用 startLoginProcess');
+    // 调用新的登录流程
+    this.startLoginProcess();
   },
 
   // 一键登录 - 仍然保留此方法用于用户手动点击登录按钮的情况
@@ -148,14 +105,14 @@ Page({
   autoLogin() {
     console.log('执行自动登录');
 
-    // 防止重复登录，检查是否已在登录过程中
-    if (this.data.isLoggingIn) {
-      console.log('登录过程已在进行中，已跳过');
+    // 如果不是正在获取openid状态，直接返回
+    if (this.data.loginState !== 'getting-openid') {
+      console.log('登录状态错误，当前状态:', this.data.loginState);
       return;
     }
 
-    // 标记正在登录中
-    this.setData({ isLoggingIn: true });
+    // 设置状态为正在登录
+    this.setData({ loginState: 'logging-in' });
 
     // 生成默认用户信息
     const defaultAvatar = '/static/images/default-avatar.jpg';
@@ -175,44 +132,11 @@ Page({
     // 更新页面显示
     this.setData({
       ...userInfo,
-      isLoggingIn: false, // 登录完成，重置状态
+      loading: false,
     });
 
-    // 先检查数据库中是否已存在该用户
-    db.collection('userInfo')
-      .where({
-        openid: this.data.openid,
-      })
-      .get()
-      .then(res => {
-        if (res.data.length === 0) {
-          // 用户不存在，添加新用户
-          return db.collection('userInfo').add({
-            data: {
-              ...userInfo, // 展开用户信息对象
-              openid: this.data.openid,
-              createTime: new Date(), // 创建时间
-            },
-          });
-        } else {
-          console.log('用户已存在，不需要重复添加');
-          return { success: true };
-        }
-      })
-      .then(res => {
-        // 刷新打卡组件状态
-        setTimeout(() => {
-          const checkInComponent = this.selectComponent('#checkIn');
-          if (checkInComponent) {
-            checkInComponent.checkTodayStatus();
-          }
-        }, 1500); // 等待 1.5 秒确保数据已经存储
-        console.log('用户信息处理成功：', res);
-      })
-      .catch(err => {
-        console.error('用户信息处理失败：', err);
-        this.setData({ isLoggingIn: false }); // 出错时也要重置状态
-      });
+    // 添加到数据库
+    this.addUserToDatabase(userInfo);
   },
 
   openDialog() {
@@ -224,22 +148,160 @@ Page({
   // 待办事项相关功能已移除
 
   /**
+   * 开始登录流程
+   */
+  startLoginProcess: function () {
+    // 如果已经在登录过程中，直接返回
+    if (this.data.loginState !== 'idle') {
+      console.log('登录过程已在进行中，状态:', this.data.loginState);
+      return;
+    }
+
+    // 设置状态为正在获取openid
+    this.setData({ loginState: 'getting-openid' });
+
+    // 获取openid
+    this.getOpenId();
+  },
+
+  /**
+   * 获取用户openid
+   */
+  getOpenId: async function () {
+    try {
+      // 显示加载状态
+      this.setData({ loading: true });
+
+      // 调用云函数获取openid
+      const openIdRes = await wx.cloud.callFunction({
+        name: 'getOpenId',
+      });
+      const openid = openIdRes.result.OPENID;
+
+      // 保存openid
+      this.setData({ openid });
+
+      // 检查用户是否存在
+      this.checkUserExists(openid);
+    } catch (err) {
+      console.error('获取openid失败:', err);
+      this.setData({
+        loading: false,
+        loginState: 'idle',
+      });
+
+      wx.showToast({
+        title: '登录失败，请重试',
+        icon: 'none',
+      });
+    }
+  },
+
+  /**
+   * 检查用户是否存在
+   */
+  checkUserExists: async function (openid) {
+    try {
+      // 查询数据库
+      const res = await userInfo.get();
+      const userRecord = res.data.find(item => item.openid === openid);
+
+      if (userRecord) {
+        // 用户存在，设置用户信息
+        this.setData({
+          avatar: userRecord.avatar,
+          nickname: userRecord.nickname,
+          isAuth: true,
+          loading: false,
+          loginState: 'logged-in',
+        });
+
+        // 保存到本地存储
+        wx.setStorageSync('userInfo', {
+          avatar: userRecord.avatar,
+          nickname: userRecord.nickname,
+          isAuth: true,
+          updateTime: new Date(),
+        });
+      } else {
+        // 用户不存在，自动登录
+        this.autoLogin();
+      }
+    } catch (err) {
+      console.error('检查用户失败:', err);
+      this.setData({
+        loading: false,
+        loginState: 'idle',
+      });
+    }
+  },
+
+  /**
+   * 将用户添加到数据库
+   */
+  addUserToDatabase: function (userInfo) {
+    // 检查是否已存在该用户
+    db.collection('userInfo')
+      .where({ openid: this.data.openid })
+      .count()
+      .then(res => {
+        if (res.total === 0) {
+          // 用户不存在，添加新用户
+          return db.collection('userInfo').add({
+            data: {
+              ...userInfo,
+              openid: this.data.openid,
+              createTime: new Date(),
+            },
+          });
+        } else {
+          console.log('用户已存在，不需要添加');
+          return { success: true };
+        }
+      })
+      .then(res => {
+        // 设置登录完成状态
+        this.setData({ loginState: 'logged-in' });
+
+        // 刷新打卡组件状态
+        setTimeout(() => {
+          const checkInComponent = this.selectComponent('#checkIn');
+          if (checkInComponent) {
+            checkInComponent.checkTodayStatus();
+          }
+        }, 1000);
+
+        console.log('用户信息处理成功:', res);
+      })
+      .catch(err => {
+        console.error('用户信息处理失败:', err);
+        this.setData({ loginState: 'idle' });
+      });
+  },
+
+  /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     // 从本地存储读取用户信息
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
+
+    if (userInfo && userInfo.isAuth) {
+      // 已登录，直接设置状态
       this.setData({
         avatar: userInfo.avatar,
         nickname: userInfo.nickname,
         isAuth: true,
+        loginState: 'logged-in',
       });
-    }
 
-    // 如果没有用户信息，调用handleTabBarChange获取openid
-    if (!userInfo || !userInfo.isAuth) {
-      this.handleTabBarChange();
+      // 检查是否有openid，没有则获取
+      if (!this.data.openid) {
+        this.getOpenId();
+      }
+    } else {
+      // 未登录，开始登录流程
+      this.startLoginProcess();
     }
   },
 
@@ -252,29 +314,22 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    // 每次显示页面时检查登录状态
-    const storedUserInfo = wx.getStorageSync('userInfo');
-
-    if (storedUserInfo && storedUserInfo.isAuth) {
+    // 只负责刷新组件状态，不处理登录逻辑
+    if (this.data.isAuth && this.data.loginState === 'logged-in') {
       // 已登录，刷新打卡组件状态
-      this.setData({
-        isAuth: true,
-        avatar: storedUserInfo.avatar,
-        nickname: storedUserInfo.nickname,
-      });
-
       const checkInComponent = this.selectComponent('#checkIn');
       if (checkInComponent) {
         checkInComponent.checkTodayStatus();
       }
-    } else if (this.data.openid && !this.data.isAuth) {
-      // 有openid但未登录，自动登录
-      console.log('在onShow中检测到有openid但未登录，执行自动登录');
-      this.autoLogin();
-    } else if (!this.data.openid) {
-      // 没有openid，重新获取
-      console.log('在onShow中检测到没有openid，重新获取');
-      this.handleTabBarChange();
+    }
+
+    // 检查登录状态，如果是idle状态但应该登录，则重新开始登录流程
+    if (this.data.loginState === 'idle' && !this.data.isAuth) {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo.isAuth) {
+        console.log('在onShow中检测到需要登录，开始登录流程');
+        this.startLoginProcess();
+      }
     }
   },
 
