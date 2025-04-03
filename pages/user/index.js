@@ -293,17 +293,17 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
 
     if (userInfo && userInfo.isAuth) {
-      // 已登录，直接设置状态
+      // 先从本地设置状态，但后续会从数据库更新
       this.setData({
         avatar: userInfo.avatar,
         nickname: userInfo.nickname,
         isAuth: true,
-        loading: false,
+        loading: true, // 保持加载状态，直到从数据库获取最新数据
         loginState: 'logged-in',
       });
 
-      // 获取openid并检查数据库中是否有该用户数据
-      this.getOpenIdAndSyncData(userInfo);
+      // 获取openid并从数据库获取最新用户数据
+      this.getOpenIdAndFetchLatestData();
     } else {
       // 未登录，开始登录流程
       this.startLoginProcess();
@@ -311,9 +311,9 @@ Page({
   },
 
   /**
-   * 获取openid并同步数据到数据库
+   * 获取openid并从数据库获取最新用户数据
    */
-  getOpenIdAndSyncData: async function (localUserInfo) {
+  getOpenIdAndFetchLatestData: async function () {
     try {
       const openIdRes = await wx.cloud.callFunction({
         name: 'getOpenId',
@@ -326,8 +326,35 @@ Page({
       // 检查数据库中是否存在该用户
       const res = await db.collection('userInfo').where({ openid: openid }).get();
 
-      if (!(res.data && res.data.length > 0)) {
+      if (res.data && res.data.length > 0) {
+        // 数据库中存在用户数据，使用数据库中的数据更新本地和页面
+        const userRecord = res.data[0];
+
+        // 更新页面显示
+        this.setData({
+          avatar: userRecord.avatar,
+          nickname: userRecord.nickname,
+          isAuth: true,
+          loading: false,
+          loginState: 'logged-in',
+        });
+
+        // 更新本地存储，确保与数据库一致
+        wx.setStorageSync('userInfo', {
+          avatar: userRecord.avatar,
+          nickname: userRecord.nickname,
+          isAuth: true,
+          updateTime: new Date(),
+        });
+
+        console.log('从数据库获取并更新了最新用户数据');
+      } else {
+        // 数据库中不存在用户数据，但本地有
         console.log('本地有用户数据但数据库中不存在，添加到数据库');
+
+        // 获取本地用户信息
+        const localUserInfo = wx.getStorageSync('userInfo');
+
         // 构建用户信息对象
         const userInfo = {
           avatar: localUserInfo.avatar,
@@ -338,9 +365,14 @@ Page({
 
         // 添加到数据库
         this.addUserToDatabase(userInfo);
+
+        // 关闭加载状态
+        this.setData({ loading: false });
       }
     } catch (err) {
-      console.error('获取openid或同步数据失败:', err);
+      console.error('获取openid或数据库数据失败:', err);
+      // 出错时关闭加载状态
+      this.setData({ loading: false });
     }
   },
 
