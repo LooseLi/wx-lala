@@ -114,9 +114,7 @@
 .todo-item .todo-info .todo-title {
   font-size: 16px;
   color: var(--text-primary);
-  margin-bottom: 6rpx;
   word-break: break-all;
-  font-weight: 500;
 }
 .todo-item .todo-info .todo-date {
   font-size: 13px;
@@ -141,7 +139,7 @@
 .completed-text {
   color: var(--text-secondary);
   text-decoration: line-through;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 /* 加载中 */

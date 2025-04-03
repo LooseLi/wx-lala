@@ -151,9 +151,7 @@ $transition-slow: all 0.3s ease;
     .todo-title {
       font-size: $font-size-md;
       color: var(--text-primary);
-      margin-bottom: 6rpx;
       word-break: break-all;
-      font-weight: 500;
     }
 
     .todo-date {
@@ -183,7 +181,7 @@ $transition-slow: all 0.3s ease;
 .completed-text {
   color: var(--text-secondary);
   text-decoration: line-through;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 /* 加载中 */
