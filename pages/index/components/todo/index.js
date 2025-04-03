@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
 const todos = db.collection('todos');
+const { dateFormat } = require('../../../../utils/base');
 
 Page({
   /**
@@ -147,7 +148,7 @@ Page({
         if (!futureDate || dueDate < futureDate) {
           futureDate = dueDate;
           groups.future.date = this.formatDate(dueDate);
-          groups.future.title = `${dueDate.getMonth() + 1}月${dueDate.getDate()}日 ${this.getWeekDay(dueDate)}`;
+          groups.future.title = `${dateFormat(dueDate, 'M.d')} ${this.getWeekDay(dueDate)}`;
         }
 
         if (dueDate.getTime() === futureDate.getTime()) {
@@ -489,8 +490,7 @@ Page({
    * 格式化显示日期
    */
   formatDisplayDate: function (date) {
-    const d = new Date(date);
-    return `${d.getMonth() + 1}月${d.getDate()}日`;
+    return dateFormat(date, 'M.d');
   },
 
   /**
@@ -501,12 +501,12 @@ Page({
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
     // 今天的日期信息
-    const todayInfo = `${d.getMonth() + 1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+    const todayInfo = `${dateFormat(d, 'M.d')} ${weekdays[d.getDay()]}`;
 
     // 明天的日期信息
     const tomorrow = new Date(d);
     tomorrow.setDate(d.getDate() + 1);
-    const tomorrowInfo = `${tomorrow.getMonth() + 1}月${tomorrow.getDate()}日 ${weekdays[tomorrow.getDay()]}`;
+    const tomorrowInfo = `${dateFormat(tomorrow, 'M.d')} ${weekdays[tomorrow.getDay()]}`;
 
     this.setData({
       'todoGroups.today.dateInfo': todayInfo,
@@ -523,12 +523,12 @@ Page({
 
     if (dateType === 'today') {
       // 今天
-      return `${d.getMonth() + 1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+      return `${dateFormat(d, 'M.d')} ${weekdays[d.getDay()]}`;
     } else if (dateType === 'tomorrow') {
       // 明天
       const tomorrow = new Date(d);
       tomorrow.setDate(d.getDate() + 1);
-      return `${tomorrow.getMonth() + 1}月${tomorrow.getDate()}日 ${weekdays[tomorrow.getDay()]}`;
+      return `${dateFormat(tomorrow, 'M.d')} ${weekdays[tomorrow.getDay()]}`;
     }
     return '';
   },
