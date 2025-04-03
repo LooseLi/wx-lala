@@ -17,7 +17,9 @@ Page({
     newTodo: {
       title: '',
       dueDate: null,
+      dateType: 'today', // 新增：日期类型（today, tomorrow, future）
     },
+    showDatePicker: false, // 新增：是否显示日期选择器
     editMode: false,
     currentTodoId: '',
     emptyTip: '暂无待办事项，点击下方按钮添加',
@@ -253,11 +255,13 @@ Page({
 
     this.setData({
       showForm: true,
+      showDatePicker: false,
       editMode: false,
       currentTodoId: '',
       newTodo: {
         title: '',
         dueDate: today,
+        dateType: 'today',
       },
     });
   },
@@ -270,13 +274,34 @@ Page({
     const todo = this.data.todos.find(item => item._id === id);
 
     if (todo) {
+      // 确定日期类型
+      let dateType = 'future';
+      if (todo.dueDate) {
+        const dueDate = new Date(todo.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        if (dueDate.getTime() === today.getTime()) {
+          dateType = 'today';
+        } else if (dueDate.getTime() === tomorrow.getTime()) {
+          dateType = 'tomorrow';
+        }
+      }
+
       this.setData({
         showForm: true,
+        showDatePicker: dateType === 'future',
         editMode: true,
         currentTodoId: id,
         newTodo: {
           title: todo.title,
           dueDate: todo.dueDate ? this.formatDate(todo.dueDate) : null,
+          dateType: dateType,
         },
       });
     }
@@ -299,7 +324,30 @@ Page({
   },
 
   /**
-   * 选择截止日期
+   * 选择日期类型
+   */
+  onDateTypeSelect: function (e) {
+    const dateType = e.currentTarget.dataset.type;
+    let dueDate = this.data.newTodo.dueDate;
+
+    // 根据选择的日期类型设置日期
+    if (dateType === 'today') {
+      dueDate = this.formatDate(new Date());
+    } else if (dateType === 'tomorrow') {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dueDate = this.formatDate(tomorrow);
+    }
+
+    this.setData({
+      'newTodo.dateType': dateType,
+      'newTodo.dueDate': dueDate,
+      showDatePicker: dateType === 'future',
+    });
+  },
+
+  /**
+   * 选择具体日期（日期选择器）
    */
   onDateChange: function (e) {
     this.setData({
@@ -320,8 +368,18 @@ Page({
       return;
     }
 
-    // 日期必填验证
-    if (!this.data.newTodo.dueDate) {
+    // 日期处理
+    let dueDate = this.data.newTodo.dueDate;
+    const dateType = this.data.newTodo.dateType;
+
+    // 根据日期类型设置最终日期
+    if (dateType === 'today') {
+      dueDate = this.formatDate(new Date());
+    } else if (dateType === 'tomorrow') {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dueDate = this.formatDate(tomorrow);
+    } else if (dateType === 'future' && !dueDate) {
       wx.showToast({
         title: '请选择日期',
         icon: 'none',
@@ -331,7 +389,7 @@ Page({
 
     const todoData = {
       title: this.data.newTodo.title.trim(),
-      dueDate: this.data.newTodo.dueDate ? new Date(this.data.newTodo.dueDate) : null,
+      dueDate: dueDate ? new Date(dueDate) : null,
       updateTime: new Date(),
     };
 

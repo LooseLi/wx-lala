@@ -136,8 +136,13 @@
         </view>
         <view class="form-item">
           <text class="form-label">日期</text>
-          <picker mode="date" bindchange="onDateChange" value="{{newTodo.dueDate}}">
-            <view class="form-picker">{{newTodo.dueDate ? newTodo.dueDate : '请选择日期'}}</view>
+          <view class="date-options">
+            <view class="date-option {{newTodo.dateType === 'today' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="today">今天</view>
+            <view class="date-option {{newTodo.dateType === 'tomorrow' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="tomorrow">明天</view>
+            <view class="date-option {{newTodo.dateType === 'future' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="future">其他时间</view>
+          </view>
+          <picker wx:if="{{showDatePicker}}" mode="date" bindchange="onDateChange" value="{{newTodo.dueDate}}" class="future-date-picker">
+            <view class="form-picker">{{newTodo.dueDate ? newTodo.dueDate : '请选择具体日期'}}</view>
           </picker>
         </view>
       </view>

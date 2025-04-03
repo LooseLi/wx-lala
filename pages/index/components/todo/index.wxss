@@ -278,6 +278,41 @@
   background-color: #f9f9f9;
 }
 
+/* 日期选项按钮样式 */
+.date-options {
+  display: flex;
+  margin-bottom: 20rpx;
+}
+
+.date-option {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  margin: 0 10rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background-color: #f5f5f5;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.date-option:first-child {
+  margin-left: 0;
+}
+
+.date-option:last-child {
+  margin-right: 0;
+}
+
+.date-option.active {
+  background-color: #07c160;
+  color: #fff;
+}
+
+.future-date-picker {
+  margin-top: 10rpx;
+}
+
 .form-textarea {
   height: 180rpx;
 }
