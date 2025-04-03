@@ -247,6 +247,13 @@
   opacity: 0.9;
 }
 
+.add-icon {
+  font-size: 40px;
+  font-weight: 300;
+  color: white;
+  line-height: 40px;
+}
+
 /* 表单弹窗 */
 .form-modal {
   position: fixed;

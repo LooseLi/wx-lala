@@ -117,7 +117,7 @@
 
   <!-- 添加按钮 -->
   <view class="add-btn" bindtap="showAddForm">
-    <icon type="add" size="24" color="#ffffff"/>
+    <text class="add-icon">+</text>
   </view>
 
   <!-- 表单弹窗 -->
