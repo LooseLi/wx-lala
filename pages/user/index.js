@@ -35,14 +35,6 @@ Page({
     });
   },
 
-  // 该方法已被拆分到 startLoginProcess、getOpenId 和 checkUserExists 中
-  // 保留空方法以防止其他地方调用出错
-  async handleTabBarChange() {
-    console.log('该方法已被弃用，请使用 startLoginProcess');
-    // 调用新的登录流程
-    this.startLoginProcess();
-  },
-
   // 一键登录 - 仍然保留此方法用于用户手动点击登录按钮的情况
   getUserProfile(e) {
     wx.getUserProfile({
@@ -131,12 +123,6 @@ Page({
 
     // 添加到数据库
     this.addUserToDatabase(userInfo);
-  },
-
-  openDialog() {
-    this.setData({
-      dialog: true,
-    });
   },
 
   /**
