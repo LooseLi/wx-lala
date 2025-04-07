@@ -18,115 +18,133 @@
         <view class="group-header" bindtap="toggleGroup" data-group="overdue">
           <view class="group-title overdue-title">{{todoGroups.overdue.title}}</view>
           <view class="group-count">{{todoGroups.overdue.count}}</view>
-          <view class="group-arrow {{todoGroups.overdue.expanded ? 'expanded' : 'collapsed'}}">^</view>
+          <view class="group-arrow {{todoGroups.overdue.expanded ? 'expanded' : 'collapsed'}}">
+            ^
+          </view>
         </view>
         <view class="group-content" wx:if="{{todoGroups.overdue.expanded}}">
           <view class="todo-item" wx:for="{{todoGroups.overdue.todos}}" wx:key="_id">
             <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
+              <view class="todo-date" wx:if="{{item.formattedFullDate}}">
+                {{item.formattedFullDate}}
+              </view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999"/>
+                <icon type="cancel" size="18" color="#999" />
               </view>
             </view>
           </view>
         </view>
       </view>
-
       <!-- 今天 -->
       <view class="todo-group" wx:if="{{todoGroups.today.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="today">
-          <view class="group-title">{{todoGroups.today.title}} <text class="date-info">{{todoGroups.today.dateInfo}}</text></view>
+          <view class="group-title">
+            {{todoGroups.today.title}}
+            <text class="date-info">{{todoGroups.today.dateInfo}}</text>
+          </view>
           <view class="group-count">{{todoGroups.today.count}}</view>
-          <view class="group-arrow {{todoGroups.today.expanded ? 'expanded' : 'collapsed'}}">^</view>
+          <view class="group-arrow {{todoGroups.today.expanded ? 'expanded' : 'collapsed'}}">
+            ^
+          </view>
         </view>
         <view class="group-content" wx:if="{{todoGroups.today.expanded}}">
           <view class="todo-item" wx:for="{{todoGroups.today.todos}}" wx:key="_id">
             <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999"/>
+                <icon type="cancel" size="18" color="#999" />
               </view>
             </view>
           </view>
         </view>
       </view>
-
       <!-- 明天 -->
       <view class="todo-group" wx:if="{{todoGroups.tomorrow.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="tomorrow">
-          <view class="group-title">{{todoGroups.tomorrow.title}} <text class="date-info">{{todoGroups.tomorrow.dateInfo}}</text></view>
+          <view class="group-title">
+            {{todoGroups.tomorrow.title}}
+            <text class="date-info">{{todoGroups.tomorrow.dateInfo}}</text>
+          </view>
           <view class="group-count">{{todoGroups.tomorrow.count}}</view>
-          <view class="group-arrow {{todoGroups.tomorrow.expanded ? 'expanded' : 'collapsed'}}">^</view>
+          <view class="group-arrow {{todoGroups.tomorrow.expanded ? 'expanded' : 'collapsed'}}">
+            ^
+          </view>
         </view>
         <view class="group-content" wx:if="{{todoGroups.tomorrow.expanded}}">
           <view class="todo-item" wx:for="{{todoGroups.tomorrow.todos}}" wx:key="_id">
             <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999"/>
+                <icon type="cancel" size="18" color="#999" />
               </view>
             </view>
           </view>
         </view>
       </view>
-
       <!-- 未来日期 -->
       <view class="todo-group" wx:if="{{todoGroups.future.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="future">
           <view class="group-title">{{todoGroups.future.title}}</view>
           <view class="group-count">{{todoGroups.future.count}}</view>
-          <view class="group-arrow {{todoGroups.future.expanded ? 'expanded' : 'collapsed'}}">^</view>
+          <view class="group-arrow {{todoGroups.future.expanded ? 'expanded' : 'collapsed'}}">
+            ^
+          </view>
         </view>
         <view class="group-content" wx:if="{{todoGroups.future.expanded}}">
           <view class="todo-item" wx:for="{{todoGroups.future.todos}}" wx:key="_id">
             <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title">{{item.title}}</view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999"/>
+                <icon type="cancel" size="18" color="#999" />
               </view>
             </view>
           </view>
         </view>
       </view>
-
       <!-- 已完成 -->
       <view class="todo-group completed-group" wx:if="{{todoGroups.completed.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="completed">
           <view class="group-title">{{todoGroups.completed.title}}</view>
           <view class="group-count">{{todoGroups.completed.count}}</view>
-          <view class="group-arrow {{todoGroups.completed.expanded ? 'expanded' : 'collapsed'}}">^</view>
+          <view class="group-arrow {{todoGroups.completed.expanded ? 'expanded' : 'collapsed'}}">
+            ^
+          </view>
         </view>
         <view class="group-content" wx:if="{{todoGroups.completed.expanded}}">
           <view class="todo-item completed" wx:for="{{todoGroups.completed.todos}}" wx:key="_id">
             <view class="todo-checkbox checked" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon type="success" size="18" color="#07c160"/>
+              <icon type="success" size="18" color="#07c160" />
             </view>
             <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
               <view class="todo-title completed-text">{{item.title}}</view>
+              <view class="todo-date completed-date" wx:if="{{item.formattedFullDate}}">
+                {{item.formattedFullDate}}
+              </view>
             </view>
             <view class="todo-actions">
               <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999"/>
+                <icon type="cancel" size="18" color="#999" />
               </view>
             </view>
           </view>
@@ -134,28 +152,32 @@
       </view>
     </block>
   </view>
-
   <!-- 添加按钮 -->
   <view class="add-btn" bindtap="showAddForm">
     <text class="add-icon">+</text>
   </view>
-
   <!-- 表单弹窗 -->
   <view class="form-modal" wx:if="{{showForm}}" catchtouchmove="true">
     <view class="form-mask" bindtap="closeForm"></view>
     <view class="form-container {{formAnimation}}">
       <view class="close-btn" bindtap="closeForm">
-        <icon type="cancel" size="20" color="#999"/>
+        <icon type="cancel" size="20" color="#999" />
       </view>
       <view class="form-content">
         <view class="form-item">
-          <input class="form-input" value="{{newTodo.title}}" bindinput="onTitleInput" placeholder="将事情记录在案！" maxlength="50"/>
+          <input class="form-input" value="{{newTodo.title}}" bindinput="onTitleInput" placeholder="将事情记录在案！" maxlength="50" />
         </view>
         <view class="form-item">
           <view class="date-options">
-            <view class="date-option {{newTodo.dateType === 'today' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="today">今天</view>
-            <view class="date-option {{newTodo.dateType === 'tomorrow' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="tomorrow">明天</view>
-            <view class="date-option {{newTodo.dateType === 'future' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="future">其他时间</view>
+            <view class="date-option {{newTodo.dateType === 'today' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="today">
+              今天
+            </view>
+            <view class="date-option {{newTodo.dateType === 'tomorrow' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="tomorrow">
+              明天
+            </view>
+            <view class="date-option {{newTodo.dateType === 'future' ? 'active' : ''}}" bindtap="onDateTypeSelect" data-type="future">
+              其他时间
+            </view>
           </view>
           <picker wx:if="{{showDatePicker}}" mode="date" bindchange="onDateChange" value="{{newTodo.dueDate}}" class="future-date-picker">
             <view class="form-picker">{{newTodo.dueDate ? newTodo.dueDate : '请选择具体日期'}}</view>
@@ -163,7 +185,9 @@
         </view>
       </view>
       <view class="form-footer">
-        <button class="save-btn full-width" bindtap="saveTodo">{{editMode ? '保存修改' : '新增待办'}}</button>
+        <button class="save-btn full-width" bindtap="saveTodo">
+          {{editMode ? '保存修改' : '新增待办'}}
+        </button>
       </view>
     </view>
   </view>

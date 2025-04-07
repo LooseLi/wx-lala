@@ -90,6 +90,13 @@ Page({
    * 按日期分组待办事项
    */
   groupTodosByDate: function (todos) {
+    // 预处理每个待办事项，添加格式化后的日期
+    todos.forEach(todo => {
+      if (todo.dueDate) {
+        todo.formattedFullDate = this.formatFullDate(todo.dueDate);
+      }
+    });
+
     // 获取今天、明天的日期
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -506,6 +513,13 @@ Page({
    */
   formatDisplayDate: function (date) {
     return dateFormat(date, 'M.d');
+  },
+
+  /**
+   * 格式化完整日期（年.月.日）
+   */
+  formatFullDate: function (date) {
+    return dateFormat(date, 'yyyy.M.d');
   },
 
   /**

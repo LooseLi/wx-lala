@@ -169,6 +169,10 @@ $transition-slow: all 0.3s ease;
       font-size: $font-size-xs;
       color: var(--text-secondary);
       margin-top: 4rpx;
+
+      &.completed-date {
+        text-decoration: line-through;
+      }
     }
   }
 
