@@ -49,6 +49,9 @@
   font-weight: normal;
   margin-left: 10rpx;
 }
+.todo-group .group-header .group-title.overdue-title {
+  color: #e64340;
+}
 .todo-group .group-header .group-count {
   font-size: 13px;
   color: var(--text-secondary);

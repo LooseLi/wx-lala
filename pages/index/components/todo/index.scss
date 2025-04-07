@@ -68,6 +68,10 @@ $transition-slow: all 0.3s ease;
         font-weight: normal;
         margin-left: $spacing-xs;
       }
+
+      &.overdue-title {
+        color: #e64340; // 微信小程序红色
+      }
     }
 
     .group-count {

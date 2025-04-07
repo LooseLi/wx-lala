@@ -8,6 +8,7 @@ Page({
    */
   data: {
     todoGroups: {
+      overdue: { title: '已逾期', todos: [], expanded: true, count: 0 },
       today: { title: '今天', todos: [], expanded: true, count: 0, dateInfo: '' },
       tomorrow: { title: '明天', todos: [], expanded: true, count: 0, dateInfo: '' },
       future: { title: '', todos: [], expanded: true, count: 0, date: '' },
@@ -98,6 +99,12 @@ Page({
 
     // 初始化分组，保留原有的 dateInfo 字段
     const groups = {
+      overdue: {
+        title: '已逾期',
+        todos: [],
+        expanded: true,
+        count: 0,
+      },
       today: {
         title: '今天',
         todos: [],
@@ -137,6 +144,14 @@ Page({
       const dueDate = new Date(todo.dueDate);
       dueDate.setHours(0, 0, 0, 0);
 
+      // 检查是否逾期（到期日期早于今天）
+      if (dueDate < today) {
+        groups.overdue.todos.push(todo);
+        groups.overdue.count++;
+        return;
+      }
+
+      // 已经在前面处理了逾期任务，这里只处理今天及以后的任务
       if (dueDate.getTime() === today.getTime()) {
         groups.today.todos.push(todo);
         groups.today.count++;

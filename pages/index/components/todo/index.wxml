@@ -7,12 +7,36 @@
         <text class="loading-text">加载中...</text>
       </view>
     </block>
-    <block wx:elif="{{!todoGroups.today.count && !todoGroups.tomorrow.count && !todoGroups.future.count && !todoGroups.completed.count}}">
+    <block wx:elif="{{!todoGroups.overdue.count && !todoGroups.today.count && !todoGroups.tomorrow.count && !todoGroups.future.count && !todoGroups.completed.count}}">
       <view class="empty-tip">
         <text>{{emptyTip}}</text>
       </view>
     </block>
     <block wx:else>
+      <!-- 已逾期 -->
+      <view class="todo-group overdue-group" wx:if="{{todoGroups.overdue.count > 0}}">
+        <view class="group-header" bindtap="toggleGroup" data-group="overdue">
+          <view class="group-title overdue-title">{{todoGroups.overdue.title}}</view>
+          <view class="group-count">{{todoGroups.overdue.count}}</view>
+          <view class="group-arrow {{todoGroups.overdue.expanded ? 'expanded' : 'collapsed'}}">^</view>
+        </view>
+        <view class="group-content" wx:if="{{todoGroups.overdue.expanded}}">
+          <view class="todo-item" wx:for="{{todoGroups.overdue.todos}}" wx:key="_id">
+            <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
+              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160"/>
+            </view>
+            <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
+              <view class="todo-title">{{item.title}}</view>
+            </view>
+            <view class="todo-actions">
+              <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
+                <icon type="cancel" size="18" color="#999"/>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 今天 -->
       <view class="todo-group" wx:if="{{todoGroups.today.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="today">
