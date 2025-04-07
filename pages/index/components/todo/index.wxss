@@ -130,9 +130,6 @@
   color: var(--text-secondary);
   margin-top: 4rpx;
 }
-.todo-item .todo-info .todo-date.completed-date {
-  text-decoration: line-through;
-}
 .todo-item .todo-actions {
   display: flex;
   align-items: center;
