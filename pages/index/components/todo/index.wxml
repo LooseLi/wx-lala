@@ -97,16 +97,20 @@
           </view>
         </view>
       </view>
-      <!-- 未来日期（多个分组） -->
-      <block wx:for="{{todoGroups.futureDates}}" wx:for-index="dateKey" wx:for-item="dateGroup" wx:key="dateKey">
-        <view class="todo-group" wx:if="{{dateGroup.count > 0}}">
+      <!-- 引入 helper.wxs 模块 -->
+      <wxs module="helper" src="./helper.wxs"></wxs>
+      <!-- 未来日期（多个分组，按日期先后顺序排序） -->
+      <block wx:for="{{sortedFutureDateKeys}}" wx:for-item="dateKey" wx:key="*this">
+        <view class="todo-group" wx:if="{{todoGroups.futureDates[dateKey].count > 0}}">
           <view class="group-header" bindtap="toggleGroup" data-group="futureDates" data-date="{{dateKey}}">
-            <view class="group-title">{{dateGroup.title}}</view>
-            <view class="group-count">{{dateGroup.count}}</view>
-            <view class="group-arrow {{dateGroup.expanded ? 'expanded' : 'collapsed'}}">^</view>
+            <view class="group-title">{{todoGroups.futureDates[dateKey].title}}</view>
+            <view class="group-count">{{todoGroups.futureDates[dateKey].count}}</view>
+            <view class="group-arrow {{todoGroups.futureDates[dateKey].expanded ? 'expanded' : 'collapsed'}}">
+              ^
+            </view>
           </view>
-          <view class="group-content" wx:if="{{dateGroup.expanded}}">
-            <view class="todo-item" wx:for="{{dateGroup.todos}}" wx:key="_id">
+          <view class="group-content" wx:if="{{todoGroups.futureDates[dateKey].expanded}}">
+            <view class="todo-item" wx:for="{{todoGroups.futureDates[dateKey].todos}}" wx:key="_id">
               <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
                 <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
               </view>

@@ -66,12 +66,13 @@ Page({
         const todos = res.result.data || [];
         // 按日期分组待办事项
         const groupResult = this.groupTodosByDate(todos);
-        const { hasFutureTodos, ...todoGroups } = groupResult;
+        const { hasFutureTodos, sortedFutureDateKeys, ...todoGroups } = groupResult;
 
         this.setData({
           todos: todos,
           todoGroups: todoGroups,
           hasFutureTodos: hasFutureTodos, // 将是否有未来待办事项的标志设置到 data 中
+          sortedFutureDateKeys: sortedFutureDateKeys, // 将排序后的日期键数组设置到 data 中
           loading: false,
         });
       },
@@ -204,8 +205,14 @@ Page({
     // 计算是否有未来待办事项
     const hasFutureTodos = Object.keys(groups.futureDates).length > 0;
 
+    // 对未来日期进行排序，按日期先后顺序
+    const sortedFutureDateKeys = Object.keys(groups.futureDates).sort((a, b) => {
+      // 将日期字符串转换为日期对象进行比较
+      return new Date(a) - new Date(b);
+    });
+
     // 返回分组结果，由调用方统一处理数据更新
-    return { ...groups, hasFutureTodos };
+    return { ...groups, hasFutureTodos, sortedFutureDateKeys };
   },
 
   /**

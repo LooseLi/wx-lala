@@ -1,0 +1,10 @@
+/**
+ * 辅助函数模块
+ */
+var getDateGroup = function (futureDates, dateKey) {
+  return futureDates[dateKey];
+};
+
+module.exports = {
+  getDateGroup: getDateGroup,
+};
