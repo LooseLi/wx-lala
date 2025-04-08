@@ -1,4 +1,4 @@
-// \u4e91\u51fd\u6570\u5165\u53e3\u6587\u4ef6
+// 云函数入口文件
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
@@ -78,15 +78,10 @@ exports.main = async (event, context) => {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     const yearMonth = `${year}-${String(month).padStart(2, '0')}`;
+    const todayStr = now.toISOString().split('T')[0];
 
-    // 1. 获取本月和上月的签到记录
-    const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    const lastYearMonth = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`;
-
-    const [currentMonthRecord, lastMonthRecord] = await Promise.all([
-      db.collection('checkInMonthly').where({ userId, yearMonth }).get(),
-      db.collection('checkInMonthly').where({ userId, yearMonth: lastYearMonth }).get(),
-    ]);
+    // 1. 获取所有月份的签到记录
+    const allMonthlyRecords = await db.collection('checkInMonthly').where({ userId }).get();
 
     // 2. 用户状态获取逻辑已移除（userCheckInStatus集合已删除）
 
@@ -94,31 +89,22 @@ exports.main = async (event, context) => {
     const pointsRecord = await db.collection('userPoints').where({ userId }).get();
 
     // 4. 处理签到状态
-    const isCheckedIn =
-      currentMonthRecord.data.length > 0 && currentMonthRecord.data[0].checkInDays.includes(day);
+    const currentMonthRecord = allMonthlyRecords.data.find(
+      record => record.yearMonth === yearMonth,
+    );
+    const isCheckedIn = currentMonthRecord && currentMonthRecord.checkInDays.includes(day);
 
     // 5. 获取所有签到日期并计算连续天数
-    const allDates = [];
+    // 从所有月份记录中提取签到日期
+    const allDates = allMonthlyRecords.data.reduce((acc, month) => {
+      const dates = month.checkInDays.map(d => `${month.yearMonth}-${String(d).padStart(2, '0')}`);
+      return [...acc, ...dates];
+    }, []);
 
-    // 添加本月签到日期
-    if (currentMonthRecord.data.length > 0) {
-      allDates.push(
-        ...currentMonthRecord.data[0].checkInDays.map(
-          d => `${yearMonth}-${String(d).padStart(2, '0')}`,
-        ),
-      );
-    }
+    // 按日期排序
+    const sortedDates = [...allDates].sort();
 
-    // 添加上月签到日期
-    if (lastMonthRecord.data.length > 0) {
-      allDates.push(
-        ...lastMonthRecord.data[0].checkInDays.map(
-          d => `${lastYearMonth}-${String(d).padStart(2, '0')}`,
-        ),
-      );
-    }
-
-    const continuousDays = calculateContinuousDays(allDates);
+    const continuousDays = calculateContinuousDays(sortedDates);
     // userCheckInStatus集合已删除，使用默认值
     const currentStreak = { startDate: '', endDate: '' };
 
