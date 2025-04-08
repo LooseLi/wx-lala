@@ -11,7 +11,8 @@ Page({
       overdue: { title: '已逾期', todos: [], expanded: true, count: 0 },
       today: { title: '今天', todos: [], expanded: true, count: 0, dateInfo: '' },
       tomorrow: { title: '明天', todos: [], expanded: true, count: 0, dateInfo: '' },
-      future: { title: '', todos: [], expanded: true, count: 0, date: '' },
+      // 将单一future改为futureDates对象，支持多个未来日期
+      futureDates: {}, // 格式: { 'YYYY-MM-DD': { title: '日期显示', todos: [], expanded: true, count: 0 } }
       completed: { title: '已完成', todos: [], expanded: true, count: 0 },
     },
     loading: false,
@@ -64,11 +65,13 @@ Page({
       success: res => {
         const todos = res.result.data || [];
         // 按日期分组待办事项
-        const todoGroups = this.groupTodosByDate(todos);
+        const groupResult = this.groupTodosByDate(todos);
+        const { hasFutureTodos, ...todoGroups } = groupResult;
 
         this.setData({
           todos: todos,
           todoGroups: todoGroups,
+          hasFutureTodos: hasFutureTodos, // 将是否有未来待办事项的标志设置到 data 中
           loading: false,
         });
       },
@@ -83,9 +86,6 @@ Page({
     });
   },
 
-  /**
-   * 切换待办事项状态
-   */
   /**
    * 按日期分组待办事项
    */
@@ -126,12 +126,10 @@ Page({
         count: 0,
         dateInfo: this.data.todoGroups.tomorrow.dateInfo || '',
       },
-      future: { title: '', todos: [], expanded: true, count: 0, date: '' },
+      // 初始化 futureDates 为空对象，将在处理过程中填充
+      futureDates: {},
       completed: { title: '已完成', todos: [], expanded: true, count: 0 },
     };
-
-    // 未来日期的待办事项
-    let futureDate = null;
 
     // 分组待办事项
     todos.forEach(todo => {
@@ -166,29 +164,48 @@ Page({
         groups.tomorrow.todos.push(todo);
         groups.tomorrow.count++;
       } else if (dueDate > today) {
-        // 如果有多个未来日期，只显示最近的一个
-        if (!futureDate || dueDate < futureDate) {
-          futureDate = dueDate;
-          groups.future.date = this.formatDate(dueDate);
-          groups.future.title = `${dateFormat(dueDate, 'M.d')} ${this.getWeekDay(dueDate)}`;
+        // 处理未来日期 - 为每个不同的未来日期创建一个分组
+        const dateStr = this.formatDate(dueDate); // 格式：YYYY-MM-DD
+
+        // 如果这个日期还没有分组，创建一个新的分组
+        if (!groups.futureDates[dateStr]) {
+          groups.futureDates[dateStr] = {
+            title: `${dateFormat(dueDate, 'M.d')} ${this.getWeekDay(dueDate)}`,
+            todos: [],
+            expanded: true, // 默认展开
+            count: 0,
+            date: dateStr, // 保存日期字符串，方便后续处理
+          };
         }
 
-        if (dueDate.getTime() === futureDate.getTime()) {
-          groups.future.todos.push(todo);
-          groups.future.count++;
-        }
+        // 将待办事项添加到对应日期的分组中
+        groups.futureDates[dateStr].todos.push(todo);
+        groups.futureDates[dateStr].count++;
       }
     });
 
     // 排序：按创建时间降序
     Object.keys(groups).forEach(key => {
-      groups[key].todos.sort((a, b) => {
+      if (key !== 'futureDates') {
+        // 跳过 futureDates，它需要特殊处理
+        groups[key].todos.sort((a, b) => {
+          return new Date(b.createTime) - new Date(a.createTime);
+        });
+      }
+    });
+
+    // 为 futureDates 中的每个日期分组排序
+    Object.keys(groups.futureDates).forEach(dateStr => {
+      groups.futureDates[dateStr].todos.sort((a, b) => {
         return new Date(b.createTime) - new Date(a.createTime);
       });
     });
 
+    // 计算是否有未来待办事项
+    const hasFutureTodos = Object.keys(groups.futureDates).length > 0;
+
     // 返回分组结果，由调用方统一处理数据更新
-    return groups;
+    return { ...groups, hasFutureTodos };
   },
 
   /**
@@ -204,9 +221,25 @@ Page({
    */
   toggleGroup: function (e) {
     console.log('toggleGroup', e.currentTarget.dataset);
-    const { group } = e.currentTarget.dataset;
+    const { group, date } = e.currentTarget.dataset;
 
-    // 安全检查：确保组数据存在
+    // 如果是未来日期分组，需要特殊处理
+    if (group === 'futureDates' && date) {
+      // 安全检查：确保该日期分组存在
+      if (!this.data.todoGroups.futureDates || !this.data.todoGroups.futureDates[date]) {
+        console.warn(`日期分组 ${date} 不存在或未初始化`);
+        return;
+      }
+
+      const expanded = this.data.todoGroups.futureDates[date].expanded;
+
+      this.setData({
+        [`todoGroups.futureDates.${date}.expanded`]: !expanded,
+      });
+      return;
+    }
+
+    // 其他常规分组的处理
     if (!this.data.todoGroups || !this.data.todoGroups[group]) {
       console.warn(`组 ${group} 不存在或未初始化`);
       return;

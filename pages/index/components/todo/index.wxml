@@ -7,7 +7,7 @@
         <text class="loading-text">加载中...</text>
       </view>
     </block>
-    <block wx:elif="{{!todoGroups.overdue.count && !todoGroups.today.count && !todoGroups.tomorrow.count && !todoGroups.future.count && !todoGroups.completed.count}}">
+    <block wx:elif="{{!todoGroups.overdue.count && !todoGroups.today.count && !todoGroups.tomorrow.count && !hasFutureTodos && !todoGroups.completed.count}}">
       <view class="empty-tip">
         <text>{{emptyTip}}</text>
       </view>
@@ -97,31 +97,31 @@
           </view>
         </view>
       </view>
-      <!-- 未来日期 -->
-      <view class="todo-group" wx:if="{{todoGroups.future.count > 0}}">
-        <view class="group-header" bindtap="toggleGroup" data-group="future">
-          <view class="group-title">{{todoGroups.future.title}}</view>
-          <view class="group-count">{{todoGroups.future.count}}</view>
-          <view class="group-arrow {{todoGroups.future.expanded ? 'expanded' : 'collapsed'}}">
-            ^
+      <!-- 未来日期（多个分组） -->
+      <block wx:for="{{todoGroups.futureDates}}" wx:for-index="dateKey" wx:for-item="dateGroup" wx:key="dateKey">
+        <view class="todo-group" wx:if="{{dateGroup.count > 0}}">
+          <view class="group-header" bindtap="toggleGroup" data-group="futureDates" data-date="{{dateKey}}">
+            <view class="group-title">{{dateGroup.title}}</view>
+            <view class="group-count">{{dateGroup.count}}</view>
+            <view class="group-arrow {{dateGroup.expanded ? 'expanded' : 'collapsed'}}">^</view>
           </view>
-        </view>
-        <view class="group-content" wx:if="{{todoGroups.future.expanded}}">
-          <view class="todo-item" wx:for="{{todoGroups.future.todos}}" wx:key="_id">
-            <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
-              <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
-            </view>
-            <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
-              <view class="todo-title">{{item.title}}</view>
-            </view>
-            <view class="todo-actions">
-              <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
-                <icon type="cancel" size="18" color="#999" />
+          <view class="group-content" wx:if="{{dateGroup.expanded}}">
+            <view class="todo-item" wx:for="{{dateGroup.todos}}" wx:key="_id">
+              <view class="todo-checkbox {{item.completed ? 'checked' : ''}}" catchtap="toggleTodoStatus" data-id="{{item._id}}" data-completed="{{item.completed}}">
+                <icon wx:if="{{item.completed}}" type="success" size="18" color="#07c160" />
+              </view>
+              <view class="todo-info" bindtap="showEditForm" data-id="{{item._id}}">
+                <view class="todo-title">{{item.title}}</view>
+              </view>
+              <view class="todo-actions">
+                <view class="action-btn delete" catchtap="deleteTodo" data-id="{{item._id}}">
+                  <icon type="cancel" size="18" color="#999" />
+                </view>
               </view>
             </view>
           </view>
         </view>
-      </view>
+      </block>
       <!-- 已完成 -->
       <view class="todo-group completed-group" wx:if="{{todoGroups.completed.count > 0}}">
         <view class="group-header" bindtap="toggleGroup" data-group="completed">
