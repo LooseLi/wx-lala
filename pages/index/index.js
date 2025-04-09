@@ -14,6 +14,7 @@ Page({
     meetContent: '', //提示语
     today: null, //今日天气
     hasAuth: false, //是否有位置权限
+    todayUncompletedCount: 0, // 今日未完成待办数量
     unknow:
       'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
@@ -275,6 +276,9 @@ Page({
 
     await this.getWeatherList();
     this.beforeGetLocation();
+    
+    // 获取今日未完成待办数量
+    this.getTodayUncompletedCount();
   },
 
   /**
@@ -284,6 +288,24 @@ Page({
     // 每次显示页面时检查本地存储中的食物数据
     // 这样可以确保在跨天时重置数据
     this.checkStoredFoodData();
+    
+    // 获取今日未完成待办数量
+    this.getTodayUncompletedCount();
+  },
+  
+  /**
+   * 获取今日未完成待办数量
+   */
+  getTodayUncompletedCount: function() {
+    // 从本地存储中获取今日未完成待办数量
+    const uncompletedCount = wx.getStorageSync('todayUncompletedCount') || 0;
+    
+    // 更新数据
+    this.setData({
+      todayUncompletedCount: uncompletedCount
+    });
+    
+    console.log('首页获取到今日未完成待办数量：', uncompletedCount);
   },
 
   // 打卡成功的回调

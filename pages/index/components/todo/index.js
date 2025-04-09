@@ -68,13 +68,19 @@ Page({
         const groupResult = this.groupTodosByDate(todos);
         const { hasFutureTodos, sortedFutureDateKeys, ...todoGroups } = groupResult;
 
-        this.setData({
-          todos: todos,
-          todoGroups: todoGroups,
-          hasFutureTodos: hasFutureTodos, // 将是否有未来待办事项的标志设置到 data 中
-          sortedFutureDateKeys: sortedFutureDateKeys, // 将排序后的日期键数组设置到 data 中
-          loading: false,
-        });
+        this.setData(
+          {
+            todos: todos,
+            todoGroups: todoGroups,
+            hasFutureTodos: hasFutureTodos, // 将是否有未来待办事项的标志设置到 data 中
+            sortedFutureDateKeys: sortedFutureDateKeys, // 将排序后的日期键数组设置到 data 中
+            loading: false,
+          },
+          () => {
+            // 数据加载完成后更新未完成待办数量
+            this.updateTodayUncompletedCount();
+          },
+        );
       },
       fail: err => {
         console.error('获取待办事项失败:', err);
@@ -278,6 +284,9 @@ Page({
 
         // 重新加载数据以更新分组
         this.loadTodos();
+
+        // 状态变化后直接更新未完成待办数量
+        this.updateTodayUncompletedCount();
       },
       fail: err => {
         console.error('更新状态失败:', err);
@@ -618,5 +627,32 @@ Page({
       title: '待办清单',
       path: '/pages/index/components/todo/index',
     };
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+    // 页面卸载时更新未完成待办数量
+    this.updateTodayUncompletedCount();
+  },
+
+  /**
+   * 计算并更新今日未完成待办数量
+   */
+  updateTodayUncompletedCount: function () {
+    // 确保 todoGroups 和 today 分组存在
+    if (!this.data.todoGroups || !this.data.todoGroups.today) {
+      wx.setStorageSync('todayUncompletedCount', 0);
+      return;
+    }
+
+    // 计算今日未完成待办数量
+    const todayTodos = this.data.todoGroups.today.todos || [];
+    const uncompletedCount = todayTodos.filter(todo => !todo.completed).length;
+
+    // 将数量保存到本地存储
+    wx.setStorageSync('todayUncompletedCount', uncompletedCount);
+    console.log('今日未完成待办数量：', uncompletedCount);
   },
 });

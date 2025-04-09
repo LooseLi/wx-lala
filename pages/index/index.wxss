@@ -1,5 +1,5 @@
 page {
-  background-image: url("https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546");
+  background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546');
   background-size: 100% 100%;
 }
 
@@ -25,7 +25,7 @@ page {
   z-index: 2;
   font-size: 14px;
   color: #fafafa;
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .location {
@@ -102,12 +102,33 @@ page {
   align-items: center;
   justify-content: left;
 }
+.event-icon-container {
+  position: relative;
+  margin: 0 10px 0 16px;
+}
+
 .event-icon {
   width: 40px;
   height: 40px;
-  margin: 0 10px 0 16px;
 }
-.event:nth-child(2n+1) {
+
+.todo-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 9px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+.event:nth-child(2n + 1) {
   margin-right: 20px;
 }
 

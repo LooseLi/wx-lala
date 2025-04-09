@@ -2,7 +2,6 @@
   <view class="card" wx:if="{{isShowMeet}}">
     <text class="meet">{{meetContent}}</text>
   </view>
-
   <!-- 今天吃什么 -->
   <view class="eat-wrap">
     <text wx:if="{{!foods.length}}" class="food-name">今天吃什么？骰子帮你决定👉</text>
@@ -16,7 +15,6 @@
       <image class="food-list" src="./images/food/icon-eat-list.png"></image>
     </view> -->
   </view>
-
   <!-- 天气 -->
   <view class="weather-card">
     <block wx:if="{{hasAuth}}">
@@ -42,11 +40,16 @@
       <image class="noAuth" src="./images/noAuth.png" mode="aspectFit" lazy-load />
     </view>
   </view>
-
   <!-- 事件列表 -->
   <view class="event-list">
     <view class="event" data-event-index="{{item.id}}" wx:for="{{events}}" wx:key="id" bindtap="eventClick">
-      <image class="event-icon" src="{{item.icon}}"></image>
+      <view class="event-icon-container">
+        <image class="event-icon" src="{{item.icon}}"></image>
+        <!-- 为待办清单（id=3）添加未完成数量徽标 -->
+        <view wx:if="{{item.id === 3 && todayUncompletedCount > 0}}" class="todo-badge">
+          {{todayUncompletedCount}}
+        </view>
+      </view>
       <text>{{item.title}}</text>
     </view>
   </view>
