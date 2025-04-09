@@ -639,20 +639,23 @@ Page({
 
   /**
    * 计算并更新今日未完成待办数量
+   * 使用云函数更新，确保多设备数据一致性
    */
   updateTodayUncompletedCount: function () {
-    // 确保 todoGroups 和 today 分组存在
-    if (!this.data.todoGroups || !this.data.todoGroups.today) {
-      wx.setStorageSync('todayUncompletedCount', 0);
-      return;
-    }
-
-    // 计算今日未完成待办数量
-    const todayTodos = this.data.todoGroups.today.todos || [];
-    const uncompletedCount = todayTodos.filter(todo => !todo.completed).length;
-
-    // 将数量保存到本地存储
-    wx.setStorageSync('todayUncompletedCount', uncompletedCount);
-    console.log('今日未完成待办数量：', uncompletedCount);
+    // 调用云函数获取今日未完成待办数量
+    // 这里不需要处理返回结果，因为首页会在显示时自动获取最新数量
+    // 这个方法仅用于触发云端重新计算
+    wx.cloud.callFunction({
+      name: 'getTodos',
+      data: {
+        action: 'getTodayUncompletedCount',
+      },
+      success: res => {
+        console.log('触发云函数更新今日未完成待办数量成功');
+      },
+      fail: err => {
+        console.error('触发云函数更新今日未完成待办数量失败:', err);
+      },
+    });
   },
 });

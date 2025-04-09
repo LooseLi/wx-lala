@@ -297,15 +297,36 @@ Page({
    * 获取今日未完成待办数量
    */
   getTodayUncompletedCount: function () {
-    // 从本地存储中获取今日未完成待办数量
-    const uncompletedCount = wx.getStorageSync('todayUncompletedCount') || 0;
+    // 调用云函数获取今日未完成待办数量
+    wx.cloud.callFunction({
+      name: 'getTodos',
+      data: {
+        action: 'getTodayUncompletedCount',
+      },
+      success: res => {
+        if (res.result && res.result.success) {
+          const uncompletedCount = res.result.count || 0;
 
-    // 更新数据
-    this.setData({
-      todayUncompletedCount: uncompletedCount,
+          // 更新数据
+          this.setData({
+            todayUncompletedCount: uncompletedCount,
+          });
+
+          console.log('从云函数获取到今日未完成待办数量：', uncompletedCount);
+        } else {
+          console.error('获取今日未完成待办数量失败:', res);
+          this.setData({
+            todayUncompletedCount: 0,
+          });
+        }
+      },
+      fail: err => {
+        console.error('调用云函数获取今日未完成待办数量失败:', err);
+        this.setData({
+          todayUncompletedCount: 0,
+        });
+      },
     });
-
-    console.log('首页获取到今日未完成待办数量：', uncompletedCount);
   },
 
   // 打卡成功的回调
