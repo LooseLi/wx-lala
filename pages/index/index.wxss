@@ -112,10 +112,22 @@ page {
   height: 40px;
 }
 
+.event-title-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.title-badge-container {
+  position: relative;
+  display: inline-block;
+}
+
 .todo-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -8px;
+  left: 100%; /* 定位在文本右侧 */
+  margin-left: 0; /* 微调位置，使其更靠近文本 */
   min-width: 18px;
   height: 18px;
   background-color: #ff4d4f;

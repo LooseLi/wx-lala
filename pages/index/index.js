@@ -276,7 +276,7 @@ Page({
 
     await this.getWeatherList();
     this.beforeGetLocation();
-    
+
     // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
   },
@@ -288,23 +288,23 @@ Page({
     // 每次显示页面时检查本地存储中的食物数据
     // 这样可以确保在跨天时重置数据
     this.checkStoredFoodData();
-    
+
     // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
   },
-  
+
   /**
    * 获取今日未完成待办数量
    */
-  getTodayUncompletedCount: function() {
+  getTodayUncompletedCount: function () {
     // 从本地存储中获取今日未完成待办数量
     const uncompletedCount = wx.getStorageSync('todayUncompletedCount') || 0;
-    
+
     // 更新数据
     this.setData({
-      todayUncompletedCount: uncompletedCount
+      todayUncompletedCount: uncompletedCount,
     });
-    
+
     console.log('首页获取到今日未完成待办数量：', uncompletedCount);
   },
 

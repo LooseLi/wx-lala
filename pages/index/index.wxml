@@ -45,12 +45,16 @@
     <view class="event" data-event-index="{{item.id}}" wx:for="{{events}}" wx:key="id" bindtap="eventClick">
       <view class="event-icon-container">
         <image class="event-icon" src="{{item.icon}}"></image>
-        <!-- 为待办清单（id=3）添加未完成数量徽标 -->
-        <view wx:if="{{item.id === 3 && todayUncompletedCount > 0}}" class="todo-badge">
-          {{todayUncompletedCount}}
+      </view>
+      <view class="event-title-container">
+        <view class="title-badge-container">
+          <text>{{item.title}}</text>
+          <!-- 为待办清单（id=3）添加未完成数量徽标 -->
+          <view wx:if="{{item.id === 3 && todayUncompletedCount > 0}}" class="todo-badge">
+            {{todayUncompletedCount}}
+          </view>
         </view>
       </view>
-      <text>{{item.title}}</text>
     </view>
   </view>
 </view>
