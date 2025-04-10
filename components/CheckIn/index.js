@@ -107,7 +107,7 @@ Component({
 
           // 显示打卡成功动画和提示
           wx.showToast({
-            title: '签到成功，我们有救啦',
+            title: '签到成功啦~',
             icon: 'success',
           });
 
