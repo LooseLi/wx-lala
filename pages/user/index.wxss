@@ -274,6 +274,11 @@ view {
 
 .found {
   width: 100%;
+  text-align: center;
+}
+
+.found image {
+  width: 250px;
 }
 
 .tips {
