@@ -1,6 +1,7 @@
 const db = wx.cloud.database();
 const userInfo = db.collection('userInfo');
 const plugins = require('../../utils/plugins');
+const themeManager = require('../../utils/themeManager'); // 引入主题管理模块
 
 Page({
   data: {
@@ -15,6 +16,7 @@ Page({
     checkInData: null,
     // 登录状态标记，可能的值: 'idle', 'getting-openid', 'logging-in', 'logged-in'
     loginState: 'idle',
+    themeBackground: '', // 主题背景图片
   },
 
   // 打卡成功的回调
@@ -263,6 +265,12 @@ Page({
       // 未登录，开始登录流程
       this.startLoginProcess();
     }
+
+    // 监听主题变化
+    themeManager.onThemeChange(this.handleThemeChange.bind(this));
+
+    // 应用当前主题背景
+    this.applyThemeBackground();
   },
 
   /**
@@ -339,6 +347,9 @@ Page({
         this.startLoginProcess();
       }
     }
+
+    // 应用当前主题背景
+    this.applyThemeBackground();
   },
 
   /**
@@ -365,6 +376,36 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {},
+
+  /**
+   * 处理主题变化
+   * @param {Object} theme 新的主题对象
+   */
+  handleThemeChange(theme) {
+    if (theme) {
+      // 优先使用处理后的URL，如果没有则使用原始图片路径
+      const backgroundImage = theme.themeImageUrl || theme.themeImage || '';
+      this.setData({
+        themeBackground: backgroundImage,
+      });
+    }
+  },
+
+  /**
+   * 应用当前主题背景
+   */
+  applyThemeBackground() {
+    const app = getApp();
+    const currentTheme = app.globalData.currentTheme;
+
+    if (currentTheme) {
+      // 优先使用处理后的URL，如果没有则使用原始图片路径
+      const backgroundImage = currentTheme.themeImageUrl || currentTheme.themeImage || '';
+      this.setData({
+        themeBackground: backgroundImage,
+      });
+    }
+  },
 
   // 编辑头像
   editAvatar() {

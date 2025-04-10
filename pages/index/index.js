@@ -3,6 +3,7 @@ const weatherDB = db.collection('weatherList'); // 天气icon
 const foodDB = db.collection('foodList'); // 吃什么
 const API = require('../../utils/api');
 const plugins = require('../../utils/plugins');
+const themeManager = require('../../utils/themeManager'); // 引入主题管理模块
 
 Page({
   /**
@@ -15,6 +16,7 @@ Page({
     today: null, //今日天气
     hasAuth: false, //是否有位置权限
     todayUncompletedCount: 0, // 今日未完成待办数量
+    themeBackground: '', // 主题背景图片
     unknow:
       'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
@@ -279,6 +281,12 @@ Page({
 
     // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
+
+    // 监听主题变化
+    themeManager.onThemeChange(this.handleThemeChange.bind(this));
+
+    // 应用当前主题背景
+    this.applyThemeBackground();
   },
 
   /**
@@ -291,6 +299,9 @@ Page({
 
     // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
+
+    // 应用当前主题背景
+    this.applyThemeBackground();
   },
 
   /**
@@ -338,5 +349,35 @@ Page({
 
     // 可以在这里添加其他打卡成功后的操作
     console.log('打卡成功：', checkInData);
+  },
+
+  /**
+   * 处理主题变化
+   * @param {Object} theme 新的主题对象
+   */
+  handleThemeChange(theme) {
+    if (theme) {
+      // 优先使用处理后的URL，如果没有则使用原始图片路径
+      const backgroundImage = theme.themeImageUrl || theme.themeImage || '';
+      this.setData({
+        themeBackground: backgroundImage,
+      });
+    }
+  },
+
+  /**
+   * 应用当前主题背景
+   */
+  applyThemeBackground() {
+    const app = getApp();
+    const currentTheme = app.globalData.currentTheme;
+
+    if (currentTheme) {
+      // 优先使用处理后的URL，如果没有则使用原始图片路径
+      const backgroundImage = currentTheme.themeImageUrl || currentTheme.themeImage || '';
+      this.setData({
+        themeBackground: backgroundImage,
+      });
+    }
   },
 });

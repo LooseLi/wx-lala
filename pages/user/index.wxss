@@ -18,7 +18,7 @@ view {
 .user-wrap {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--background-primary);
+  /* background-color: var(--background-primary); */
   padding: 32rpx;
   padding-top: calc(32rpx + env(safe-area-inset-top));
   box-sizing: border-box;
@@ -220,7 +220,7 @@ view {
   font-weight: 500;
 }
 .dialog-footer .confirm-btn::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 15%;
@@ -241,7 +241,7 @@ view {
   position: relative;
 }
 .input-container::after {
-  content: "";
+  content: '';
   position: absolute;
   top: -1rpx;
   left: -1rpx;

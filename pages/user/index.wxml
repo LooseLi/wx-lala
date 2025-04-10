@@ -1,4 +1,4 @@
-<view>
+<view style="background-image: url('{{themeBackground}}'); background-size: cover; background-position: center; min-height: 100vh;">
   <view class="user-wrap" wx:if="{{!loading}}">
     <view class="user-info-wrap" wx:if="{{isAuth}}">
       <view class="avatar-container" bindtap="editAvatar">
@@ -18,7 +18,6 @@
         <text class="ios-button-text">登录</text>
       </button>
     </view>
-
     <!-- 编辑昵称弹窗 -->
     <view class="edit-dialog {{showNicknameEdit ? 'show' : ''}}" wx:if="{{showNicknameEdit}}">
       <view class="mask" bindtap="closeNicknameEdit"></view>
@@ -31,15 +30,15 @@
           </view>
         </view>
         <view class="dialog-footer">
-          <button class="cancel-btn" hover-class="button-hover" bindtap="closeNicknameEdit">取消</button>
+          <button class="cancel-btn" hover-class="button-hover" bindtap="closeNicknameEdit">
+            取消
+          </button>
           <button class="confirm-btn" hover-class="button-hover" bindtap="saveNickname">保存</button>
         </view>
       </view>
     </view>
-
     <!-- 打卡组件 -->
     <check-in id="checkIn" wx:if="{{isAuth}}" bind:checkInSuccess="onCheckInSuccess" />
-
     <view class="todo-wrap">
       <!-- <view class="todo-add">
         <button bindtap="addTodo">添加待办提醒</button>
@@ -48,10 +47,6 @@
     <image bindtap="handleUser" class="found" src="./images/found.svg" mode="widthFix" lazy-load></image>
     <!-- <view class="tips">紧锣密鼓筹备中...</view> -->
   </view>
-
   <!-- 待办事项功能已移除 -->
-
-  <loading hidden="{{!loading}}">
-    加载中...
-  </loading>
+  <loading hidden="{{!loading}}">加载中...</loading>
 </view>

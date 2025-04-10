@@ -1,57 +1,59 @@
-<view class="container">
-  <view class="card" wx:if="{{isShowMeet}}">
-    <text class="meet">{{meetContent}}</text>
-  </view>
-  <!-- 今天吃什么 -->
-  <view class="eat-wrap">
-    <text wx:if="{{!foods.length}}" class="food-name">今天吃什么？骰子帮你决定👉</text>
-    <view wx:else class="food-name">
-      <text class="icon-eat-text">{{foods[0]}} or {{foods[1]}}</text>
+<view style="background-image: url('{{themeBackground}}'); background-size: cover; background-position: center; min-height: 100vh;">
+  <view class="container">
+    <view class="card" wx:if="{{isShowMeet}}">
+      <text class="meet">{{meetContent}}</text>
     </view>
-    <view class="food-random" bindtap="randomFood">
-      <image class="food-random" src="./images/food/icon-eat-img.png"></image>
-    </view>
-    <!-- <view class="food-list">
+    <!-- 今天吃什么 -->
+    <view class="eat-wrap">
+      <text wx:if="{{!foods.length}}" class="food-name">今天吃什么？骰子帮你决定👉</text>
+      <view wx:else class="food-name">
+        <text class="icon-eat-text">{{foods[0]}} or {{foods[1]}}</text>
+      </view>
+      <view class="food-random" bindtap="randomFood">
+        <image class="food-random" src="./images/food/icon-eat-img.png"></image>
+      </view>
+      <!-- <view class="food-list">
       <image class="food-list" src="./images/food/icon-eat-list.png"></image>
     </view> -->
-  </view>
-  <!-- 天气 -->
-  <view class="weather-card">
-    <block wx:if="{{hasAuth}}">
-      <view class="location">
-        <image class="icon-dingwei" src="./images/dingwei.png"></image>
-        <view>{{today.province}}-{{today.city}}</view>
-      </view>
-      <view class="temperature">{{today.temperature}}º</view>
-      <view class="wrap">
-        <view class="info weather">
-          <image bindtap="handleTips" class="icon-weather" src="{{today.icon}}"></image>
-          <view>{{today.weather}}</view>
-        </view>
-        <view class="info line">|</view>
-        <view class="info">湿度：{{today.humidity}}%</view>
-      </view>
-      <view class="wrap wind">
-        <view class="info windpower">风力：{{today.windpower}} 级</view>
-        <view class="info">风向：{{today.winddirection}}风</view>
-      </view>
-    </block>
-    <view wx:else bindtap="handleNoAuth">
-      <image class="noAuth" src="./images/noAuth.png" mode="aspectFit" lazy-load />
     </view>
-  </view>
-  <!-- 事件列表 -->
-  <view class="event-list">
-    <view class="event" data-event-index="{{item.id}}" wx:for="{{events}}" wx:key="id" bindtap="eventClick">
-      <view class="event-icon-container">
-        <image class="event-icon" src="{{item.icon}}"></image>
+    <!-- 天气 -->
+    <view class="weather-card">
+      <block wx:if="{{hasAuth}}">
+        <view class="location">
+          <image class="icon-dingwei" src="./images/dingwei.png"></image>
+          <view>{{today.province}}-{{today.city}}</view>
+        </view>
+        <view class="temperature">{{today.temperature}}º</view>
+        <view class="wrap">
+          <view class="info weather">
+            <image bindtap="handleTips" class="icon-weather" src="{{today.icon}}"></image>
+            <view>{{today.weather}}</view>
+          </view>
+          <view class="info line">|</view>
+          <view class="info">湿度：{{today.humidity}}%</view>
+        </view>
+        <view class="wrap wind">
+          <view class="info windpower">风力：{{today.windpower}} 级</view>
+          <view class="info">风向：{{today.winddirection}}风</view>
+        </view>
+      </block>
+      <view wx:else bindtap="handleNoAuth">
+        <image class="noAuth" src="./images/noAuth.png" mode="aspectFit" lazy-load />
       </view>
-      <view class="event-title-container">
-        <view class="title-badge-container">
-          <text>{{item.title}}</text>
-          <!-- 为待办清单（id=3）添加未完成数量徽标 -->
-          <view wx:if="{{item.id === 3 && todayUncompletedCount > 0}}" class="todo-badge">
-            {{todayUncompletedCount}}
+    </view>
+    <!-- 事件列表 -->
+    <view class="event-list">
+      <view class="event" data-event-index="{{item.id}}" wx:for="{{events}}" wx:key="id" bindtap="eventClick">
+        <view class="event-icon-container">
+          <image class="event-icon" src="{{item.icon}}"></image>
+        </view>
+        <view class="event-title-container">
+          <view class="title-badge-container">
+            <text>{{item.title}}</text>
+            <!-- 为待办清单（id=3）添加未完成数量徽标 -->
+            <view wx:if="{{item.id === 3 && todayUncompletedCount > 0}}" class="todo-badge">
+              {{todayUncompletedCount}}
+            </view>
           </view>
         </view>
       </view>

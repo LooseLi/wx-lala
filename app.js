@@ -1,12 +1,22 @@
+// 引入主题管理模块
+const themeManager = require('./utils/themeManager');
+
 App({
   /**
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
   onLaunch: function () {
-    wx.cloud.init();
+    // 初始化云开发环境
+    wx.cloud.init({
+      env: wx.cloud.DYNAMIC_CURRENT_ENV, // 自动获取当前环境ID
+      traceUser: true, // 是否在将用户访问记录到云开发控制台
+    });
 
     // 初始化主题设置
     this.initThemeSettings();
+
+    // 加载应用主题
+    this.loadAppTheme();
 
     // 监听系统主题变化
     wx.onThemeChange(({ theme }) => {
@@ -28,6 +38,8 @@ App({
   globalData: {
     systemTheme: 'light', // 系统当前主题模式
     userTheme: 'auto', // 用户主题偏好设置：'auto'(跟随系统),'light'(浅色),'dark'(深色)
+    currentTheme: null, // 当前使用的主题
+    themeChangeListeners: [], // 主题变化监听器
   },
 
   getTopPages: () => {
@@ -166,6 +178,11 @@ App({
         console.error('显示时检测主题出错：', e);
       }
     }
+
+    // 确保主题已加载
+    if (!this.globalData.currentTheme) {
+      this.loadAppTheme();
+    }
   },
 
   /**
@@ -177,4 +194,29 @@ App({
    * 当小程序发生脚本错误，或者 api 调用失败时，会触发 onError 并带上错误信息
    */
   onError: function (msg) {},
+
+  /**
+   * 加载应用主题
+   */
+  loadAppTheme: async function () {
+    try {
+      // 获取用户openid
+      const openid = wx.getStorageSync('openid');
+
+      // 加载主题
+      const theme = await themeManager.loadTheme(openid);
+
+      if (theme) {
+        this.globalData.currentTheme = theme;
+        console.log('成功加载主题:', theme.name);
+
+        // 应用主题
+        themeManager.applyTheme(theme);
+      } else {
+        console.warn('未找到可用主题');
+      }
+    } catch (error) {
+      console.error('加载应用主题失败:', error);
+    }
+  },
 });
