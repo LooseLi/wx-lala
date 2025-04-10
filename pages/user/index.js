@@ -20,9 +20,6 @@ Page({
   // 打卡成功的回调
   onCheckInSuccess(e) {
     const checkInData = e.detail;
-    console.log('打卡成功：', checkInData);
-
-    // 如果需要，可以在这里更新页面上的其他数据
     this.setData({
       checkInData: checkInData,
     });
@@ -40,30 +37,25 @@ Page({
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: res => {
-        // 生成默认用户信息
         const defaultAvatar = '/static/images/default-avatar.jpg';
         const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
 
-        // 构建用户信息对象
         const userInfo = {
           avatar: defaultAvatar,
           nickname: defaultNickname,
           isAuth: true,
-          originalAvatar: res.userInfo.avatarUrl, // 保存原始头像
-          originalNickname: res.userInfo.nickName, // 保存原始昵称
+          originalAvatar: res.userInfo.avatarUrl,
+          originalNickname: res.userInfo.nickName,
           updateTime: new Date(),
         };
 
-        // 存储用户信息到本地
         wx.setStorageSync('userInfo', userInfo);
 
-        // 更新页面显示
         this.setData(userInfo);
 
-        // 存储到数据库
         db.collection('userInfo').add({
           data: {
-            ...userInfo, // 展开用户信息对象
+            ...userInfo,
             openid: this.data.openid,
             createTime: new Date(), // 创建时间
           },
@@ -75,12 +67,10 @@ Page({
                 checkInComponent.checkTodayStatus();
               }
             }, 1500); // 等待 1.5 秒确保数据已经存储
-            console.log('用户信息存储成功：', res);
           },
         });
       },
       fail: err => {
-        console.error('获取用户信息失败：', err);
         wx.showToast({
           title: '获取信息失败',
           icon: 'none',
@@ -91,20 +81,15 @@ Page({
 
   // 自动登录
   autoLogin() {
-    // 如果不是正在获取openid状态，直接返回
     if (this.data.loginState !== 'getting-openid') {
-      console.log('登录状态错误，当前状态:', this.data.loginState);
       return;
     }
 
-    // 设置状态为正在登录
     this.setData({ loginState: 'logging-in' });
 
-    // 生成默认用户信息
     const defaultAvatar = '/static/images/default-avatar.jpg';
     const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
 
-    // 构建用户信息对象
     const userInfo = {
       avatar: defaultAvatar,
       nickname: defaultNickname,
@@ -112,10 +97,8 @@ Page({
       updateTime: new Date(),
     };
 
-    // 存储用户信息到本地
     wx.setStorageSync('userInfo', userInfo);
 
-    // 更新页面显示
     this.setData({
       ...userInfo,
       loading: false,
@@ -129,20 +112,16 @@ Page({
    * 开始登录流程
    */
   startLoginProcess: function () {
-    // 如果已经在登录过程中，直接返回
     if (this.data.loginState !== 'idle') {
-      console.log('登录过程已在进行中，状态:', this.data.loginState);
       return;
     }
 
-    // 设置状态为正在获取openid
     this.setData({ loginState: 'getting-openid' });
 
     const storedOpenid = wx.getStorageSync('openid');
 
     if (storedOpenid) {
       this.setData({ openid: storedOpenid });
-      // 检查用户是否存在
       this.checkUserExists(storedOpenid);
     } else {
       this.getOpenId();
@@ -154,10 +133,8 @@ Page({
    */
   getOpenId: async function () {
     try {
-      // 显示加载状态
       this.setData({ loading: true });
 
-      // 先检查本地存储
       const storedOpenid = wx.getStorageSync('openid');
 
       let openid;
@@ -169,28 +146,22 @@ Page({
         });
         openid = openIdRes.result.OPENID;
 
-        // 保存到本地存储
         wx.setStorageSync('openid', openid);
-        console.log('从云函数获取openid:', openid);
       }
 
       this.setData({ openid });
 
-      // 如果已经登录，不需要继续检查用户是否存在
       if (this.data.loginState === 'logged-in') {
         this.setData({ loading: false });
         return;
       }
 
-      // 检查用户是否存在
       this.checkUserExists(openid);
     } catch (err) {
-      console.error('获取openid失败:', err);
       this.setData({
         loading: false,
         loginState: 'idle',
       });
-
       wx.showToast({
         title: '登录失败，请重试',
         icon: 'none',
@@ -203,12 +174,10 @@ Page({
    */
   checkUserExists: async function (openid) {
     try {
-      // 直接查询当前用户的记录，而不是获取所有用户
       const res = await db.collection('userInfo').where({ openid: openid }).get();
 
       if (res.data && res.data.length > 0) {
         const userRecord = res.data[0];
-        // 用户存在，设置用户信息
         this.setData({
           avatar: userRecord.avatar,
           nickname: userRecord.nickname,
@@ -217,7 +186,6 @@ Page({
           loginState: 'logged-in',
         });
 
-        // 保存到本地存储
         wx.setStorageSync('userInfo', {
           avatar: userRecord.avatar,
           nickname: userRecord.nickname,
@@ -229,7 +197,6 @@ Page({
         this.autoLogin();
       }
     } catch (err) {
-      console.error('检查用户失败:', err);
       this.setData({
         loading: false,
         loginState: 'idle',
@@ -256,26 +223,20 @@ Page({
             },
           });
         } else {
-          console.log('用户已存在，不需要添加');
           return { success: true };
         }
       })
       .then(res => {
-        // 设置登录完成状态
         this.setData({ loginState: 'logged-in' });
 
-        // 刷新打卡组件状态
         setTimeout(() => {
           const checkInComponent = this.selectComponent('#checkIn');
           if (checkInComponent) {
             checkInComponent.checkTodayStatus();
           }
         }, 1000);
-
-        console.log('用户信息处理成功:', res);
       })
       .catch(err => {
-        console.error('用户信息处理失败:', err);
         this.setData({ loginState: 'idle' });
       });
   },
@@ -292,7 +253,7 @@ Page({
         avatar: userInfo.avatar,
         nickname: userInfo.nickname,
         isAuth: true,
-        loading: true, // 保持加载状态，直到从数据库获取最新数据
+        loading: true,
         loginState: 'logged-in',
       });
 
@@ -322,7 +283,6 @@ Page({
       if (res.data && res.data.length > 0) {
         const userRecord = res.data[0];
 
-        // 更新页面显示
         this.setData({
           avatar: userRecord.avatar,
           nickname: userRecord.nickname,
@@ -348,7 +308,6 @@ Page({
           updateTime: new Date(),
         };
 
-        // 添加到数据库
         this.addUserToDatabase(userInfo);
 
         this.setData({ loading: false });
@@ -416,7 +375,6 @@ Page({
       success: res => {
         const tempFilePath = res.tempFilePaths[0];
 
-        // 显示加载中提示
         wx.showLoading({
           title: '头像上传中...',
           mask: true,
@@ -435,7 +393,6 @@ Page({
             // 获取当前用户记录
             const user = res.data[0] || {};
             const currentAvatarHistory = user.avatarHistory || [];
-            console.log('当前头像历史记录:', currentAvatarHistory);
 
             // 上传到云存储，使用优化的文件路径结构
             wx.cloud.uploadFile({
@@ -443,18 +400,15 @@ Page({
               filePath: tempFilePath,
               success: res => {
                 const newAvatar = res.fileID;
-                console.log('新头像上传成功，文件ID:', newAvatar);
 
                 // 保存当前头像作为上一个头像
                 const previousAvatar = this.data.avatar;
-                console.log('上一个头像:', previousAvatar);
 
                 // 计算新的头像历史记录（只保留最新的两个）
                 const newAvatarHistory = [newAvatar];
                 if (previousAvatar) {
                   newAvatarHistory.push(previousAvatar);
                 }
-                console.log('新的头像历史记录:', newAvatarHistory);
 
                 // 计算需要删除的头像文件
                 const keepFileIDs = newAvatarHistory;
@@ -468,7 +422,6 @@ Page({
                     );
                   });
                 });
-                console.log('需要删除的旧头像:', filesToDelete);
 
                 // 更新本地和数据库
                 this.updateUserInfo({
@@ -482,16 +435,13 @@ Page({
                   wx.cloud.deleteFile({
                     fileList: filesToDelete,
                     success: res => {
-                      console.log('删除旧头像成功:', res);
                       wx.hideLoading();
                     },
                     fail: err => {
-                      console.error('删除旧头像失败:', err);
                       wx.hideLoading();
                     },
                   });
                 } else {
-                  console.log('没有需要删除的旧头像');
                   wx.hideLoading();
                 }
               },
@@ -505,7 +455,6 @@ Page({
             });
           })
           .catch(err => {
-            console.error('查询用户信息失败:', err);
             wx.hideLoading();
           });
       },
@@ -515,8 +464,6 @@ Page({
   // 清理旧头像，保留最近一次的
   async cleanupOldAvatars(userFolder) {
     try {
-      console.log('开始清理旧头像...');
-
       // 查询数据库获取用户历史头像记录
       const userRecord = await db
         .collection('userInfo')
@@ -527,7 +474,6 @@ Page({
 
       // 检查用户记录是否存在
       if (!userRecord.data || userRecord.data.length === 0) {
-        console.log('用户记录不存在，无需清理');
         return;
       }
 
@@ -536,7 +482,6 @@ Page({
 
       // 初始化头像历史记录（如果不存在）
       if (!user.avatarHistory) {
-        console.log('用户没有头像历史记录，初始化空数组');
         await db
           .collection('userInfo')
           .where({ openid: this.data.openid })
@@ -548,14 +493,7 @@ Page({
 
       // 要保留的头像文件ID
       const keepFileIDs = [this.data.avatar, this.data.previousAvatar].filter(Boolean);
-      console.log('当前保留的头像:', keepFileIDs);
 
-      // 详细输出头像历史记录和当前头像，用于调试
-      console.log('数据库中的头像历史记录:', user.avatarHistory);
-      console.log('当前头像:', this.data.avatar);
-      console.log('上一个头像:', this.data.previousAvatar);
-
-      // 由于文件ID可能有不同的格式或前缀，我们使用部分匹配而不是完全相等
       // 找出需要删除的旧头像
       const filesToDelete = user.avatarHistory.filter(fileID => {
         // 检查这个fileID是否应该保留
@@ -568,8 +506,6 @@ Page({
         });
       });
 
-      console.log('需要删除的旧头像:', filesToDelete);
-
       // 如果有需要删除的头像
       if (filesToDelete.length > 0) {
         try {
@@ -577,8 +513,6 @@ Page({
           const deleteResult = await wx.cloud.deleteFile({
             fileList: filesToDelete,
           });
-
-          console.log('删除结果:', deleteResult);
 
           // 更新数据库中的头像历史记录，只保留当前头像和上一个头像
           await db
@@ -591,18 +525,9 @@ Page({
                 avatarHistory: keepFileIDs.filter(Boolean),
               },
             });
-
-          console.log('成功清理数据库中', filesToDelete.length, '个旧头像记录');
-        } catch (deleteErr) {
-          console.error('删除旧头像文件失败:', deleteErr);
-        }
-      } else {
-        console.log('没有需要删除的旧头像文件');
+        } catch (deleteErr) {}
       }
-    } catch (err) {
-      console.error('清理旧头像失败:', err);
-      // 即使清理失败也不影响上传新头像
-    }
+    } catch (err) {}
   },
 
   // 更新头像历史记录数组
@@ -711,10 +636,8 @@ Page({
     };
     wx.setStorageSync('userInfo', newUserInfo);
 
-    // 更新页面显示
     this.setData(data);
 
-    // 更新数据库
     db.collection('userInfo')
       .where({
         openid: this.data.openid,
