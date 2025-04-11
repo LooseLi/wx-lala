@@ -1,3 +1,4 @@
+@charset "UTF-8";
 page {
   /* background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546'); */
   /* background-size: 100% 100%; */
@@ -113,6 +114,7 @@ page {
   align-items: center;
   justify-content: left;
 }
+
 .event-icon-container {
   position: relative;
   margin: 0 10px 0 16px;
@@ -151,6 +153,7 @@ page {
   padding: 0 4px;
   box-sizing: border-box;
 }
+
 .event:nth-child(2n + 1) {
   margin-right: 20px;
 }
@@ -178,10 +181,12 @@ page {
   justify-content: center;
   align-items: center;
 }
+
 .food-random {
   width: 40px;
   height: 40px;
 }
+
 .food-list {
   width: 40px;
   height: 40px;

@@ -2,7 +2,7 @@
 $transparent-black-bg: rgba(0, 0, 0, 0.3);
 $card-bg: rgba(0, 0, 0, 0.45);
 $box-shadow: 0px 2px 8px rgba(23, 22, 81, 0.3);
-$standard-width: calc(100% - 24px);
+$standard-width: 100%;
 $white-text: #fff;
 $light-text: #fafafa;
 $standard-border-radius: 12px;
@@ -30,20 +30,26 @@ $icon-size-large: 40px;
   border-radius: $small-border-radius;
 }
 
-@mixin standard-container {
-  width: $standard-width;
-  margin: 0 auto;
-}
-
 // 页面样式
 page {
-  background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546');
-  background-size: 100% 100%;
+  /* background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546'); */
+  /* background-size: 100% 100%; */
+}
+
+.page-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 // 容器样式
 .container {
   width: 100%;
+  flex: 1;
+  padding: 32rpx;
+  padding-top: calc(32rpx + env(safe-area-inset-top));
+  box-sizing: border-box;
 }
 
 .bg {
@@ -125,7 +131,8 @@ page {
 
 // 事件列表
 .event-list {
-  @include standard-container;
+  width: $standard-width;
+  margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
 }
@@ -141,23 +148,55 @@ page {
   @include flex-align-center;
   justify-content: left;
 
-  // 使用嵌套选择器
-  &-icon {
-    width: $icon-size-large;
-    height: $icon-size-large;
+  &-icon-container {
+    position: relative;
     margin: 0 10px 0 16px;
   }
 
-  // 使用嵌套的伪类选择器
+  &-icon {
+    width: $icon-size-large;
+    height: $icon-size-large;
+  }
+
+  &-title-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
   &:nth-child(2n + 1) {
     margin-right: 20px;
   }
 }
 
+// 标题徽章
+.title-badge-container {
+  position: relative;
+  display: inline-block;
+}
+
+.todo-badge {
+  position: absolute;
+  top: -8px;
+  left: 100%;
+  margin-left: 0;
+  min-width: 18px;
+  height: 18px;
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 9px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+
 // 食物区域
 .eat-wrap {
-  @include standard-container;
-  margin: 40px auto $standard-margin;
+  width: $standard-width;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -165,7 +204,6 @@ page {
 
 // 食物相关元素
 .food {
-  // 食物名称
   &-name {
     width: 100%;
     margin-right: 12px;
@@ -177,13 +215,11 @@ page {
     @include flex-center;
   }
 
-  // 食物随机按钮
   &-random {
     width: $icon-size-large;
     height: $icon-size-large;
   }
 
-  // 食物列表按钮
   &-list {
     width: $icon-size-large;
     height: $icon-size-large;
