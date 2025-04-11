@@ -198,7 +198,7 @@
 .add-btn {
   position: fixed;
   right: 50rpx;
-  bottom: 50rpx;
+  bottom: calc(50rpx + env(safe-area-inset-bottom));
   width: 100rpx;
   height: 100rpx;
   background: var(--primary-gradient);
