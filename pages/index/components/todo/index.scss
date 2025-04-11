@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 // 变量定义
 $border-radius-sm: 12rpx;
 $border-radius-md: 16rpx;
@@ -70,7 +72,7 @@ $transition-slow: all 0.3s ease;
       }
 
       &.overdue-title {
-        color: #e64340; // 微信小程序红色
+        color: #e64340;
       }
     }
 
@@ -99,7 +101,7 @@ $transition-slow: all 0.3s ease;
   }
 
   .group-content {
-    padding: 10rpx 0;
+    padding: $spacing-xs 0;
   }
 }
 
@@ -145,13 +147,6 @@ $transition-slow: all 0.3s ease;
     flex-shrink: 0;
     transition: $transition-normal;
     background-color: var(--background-tertiary);
-
-    &.checked {
-      // 注释掉的样式
-      // border-color: #999;
-      // background-color: var(--background-secondary);
-      // box-shadow: 0 2rpx 8rpx rgba(153, 153, 153, 0.3);
-    }
   }
 
   .todo-info {
@@ -182,7 +177,7 @@ $transition-slow: all 0.3s ease;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-left: 10rpx;
+      margin-left: $spacing-xs;
       border-radius: 30rpx;
       transition: $transition-normal;
     }
@@ -255,7 +250,7 @@ $transition-slow: all 0.3s ease;
   align-items: center;
   box-shadow: 0 4rpx 16rpx rgba(var(--primary-color-rgb), 0.3);
   z-index: 100;
-  transition: $transition-normal;
+  transition: all 0.2s ease;
 
   &:active {
     transform: scale(0.95);
