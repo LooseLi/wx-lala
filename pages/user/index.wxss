@@ -11,6 +11,7 @@ view {
   display: flex;
   align-items: center;
 }
+
 .remind-text {
   color: rgba(0, 0, 0, 0.38);
 }
@@ -49,15 +50,18 @@ view {
   box-shadow: var(--inset-shadow);
   transition: all 0.2s ease;
 }
+
 .avatar-container {
   position: relative;
   width: 160rpx;
   height: 160rpx;
   transition: transform 0.2s ease;
 }
+
 .avatar-container:active {
   transform: scale(0.98);
 }
+
 .avatar-container:active .avatar {
   border-color: var(--border-color-active);
 }
@@ -86,6 +90,7 @@ view {
   z-index: 1;
   transition: all 0.2s ease;
 }
+
 .edit-icon:active {
   transform: scale(0.95);
   background: rgba(var(--neutral-color-rgb), 0.8);
@@ -96,18 +101,22 @@ view {
   font-weight: 500;
   color: var(--text-primary);
 }
+
 .nickname-container {
   display: flex;
   align-items: center;
   margin-bottom: 16rpx;
   padding: 4rpx 0;
 }
+
 .nickname-container:active {
   opacity: 0.7;
 }
+
 .nickname-container:active .edit-icon {
   transform: scale(0.9);
 }
+
 .nickname-container .edit-icon {
   position: relative;
   margin-left: 16rpx;
@@ -141,9 +150,11 @@ view {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
+
 .edit-dialog.show {
   opacity: 1;
 }
+
 .edit-dialog.show .dialog-content {
   transform: scale(1);
 }
@@ -171,6 +182,7 @@ view {
   z-index: 1;
   border: 1rpx solid var(--border-color);
 }
+
 .dialog-header {
   padding: 30rpx 20rpx;
   text-align: center;
@@ -178,9 +190,11 @@ view {
   font-weight: 500;
   color: var(--text-primary);
 }
+
 .dialog-body {
   padding: 20rpx 30rpx 40rpx;
 }
+
 .dialog-body input {
   flex: 1;
   height: 90rpx;
@@ -191,10 +205,12 @@ view {
   color: var(--text-primary);
   border: none;
 }
+
 .dialog-footer {
   display: flex;
   border-top: 0.5px solid var(--border-color);
 }
+
 .dialog-footer button {
   flex: 1;
   border-radius: 0;
@@ -208,17 +224,21 @@ view {
   height: auto;
   position: relative;
 }
+
 .dialog-footer button::after {
   border: none;
 }
+
 .dialog-footer .cancel-btn {
   color: var(--text-tertiary);
   font-weight: 400;
 }
+
 .dialog-footer .confirm-btn {
   color: var(--primary-color);
   font-weight: 500;
 }
+
 .dialog-footer .confirm-btn::before {
   content: '';
   position: absolute;
@@ -240,6 +260,7 @@ view {
   transition: all 0.2s ease;
   position: relative;
 }
+
 .input-container::after {
   content: '';
   position: absolute;
@@ -252,9 +273,11 @@ view {
   border: 2rpx solid transparent;
   transition: all 0.2s ease;
 }
+
 .input-container:focus-within {
   border-color: transparent;
 }
+
 .input-container:focus-within::after {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2rpx rgba(var(--primary-color-rgb), 0.3);
@@ -305,15 +328,18 @@ view {
   overflow: hidden;
   transition: all 0.3s ease;
 }
+
 .ios-button::after {
   border: none;
 }
+
 .ios-button-text {
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
+
 .ios-button-hover {
   transform: scale(0.98);
   box-shadow: 0 1px 4px rgba(0, 122, 255, 0.2);

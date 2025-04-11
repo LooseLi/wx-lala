@@ -72,7 +72,7 @@ view {
 .user-wrap {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--background-primary);
+  /* background-color: var(--background-primary); */
   padding: $standard-padding;
   padding-top: calc(#{$standard-padding} + env(safe-area-inset-top));
   box-sizing: border-box;
@@ -91,22 +91,6 @@ view {
 
 // 头像区域
 .avatar {
-  &-container {
-    position: relative;
-    width: $avatar-size;
-    height: $avatar-size;
-    transition: transform 0.2s ease;
-
-    &:active {
-      transform: scale(0.98);
-
-      .avatar {
-        border-color: var(--border-color-active);
-      }
-    }
-  }
-
-  // 头像样式
   width: 100%;
   height: 100%;
   display: block;
@@ -116,6 +100,21 @@ view {
   border: 1px solid var(--border-color);
   box-shadow: var(--inset-shadow);
   transition: $transition-standard;
+
+  &-container {
+    position: relative;
+    width: $avatar-size;
+    height: $avatar-size;
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:active .avatar {
+      border-color: var(--border-color-active);
+    }
+  }
 }
 
 // 用户信息
@@ -150,6 +149,10 @@ view {
 
 // 昵称区域
 .nickname {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+
   &-container {
     @include flex-align;
     margin-bottom: $standard-margin;
@@ -157,13 +160,12 @@ view {
 
     &:active {
       opacity: 0.7;
-
-      .edit-icon {
-        transform: scale(0.9);
-      }
     }
 
-    // 昵称编辑图标特殊样式
+    &:active .edit-icon {
+      transform: scale(0.9);
+    }
+
     .edit-icon {
       position: relative;
       margin-left: $standard-margin;
@@ -183,17 +185,12 @@ view {
       transform: translateY(2rpx);
     }
   }
-
-  // 昵称文本
-  font-size: 34rpx;
-  font-weight: 500;
-  color: var(--text-primary);
 }
 
 // 编辑弹窗
 .edit-dialog {
-  position: fixed;
   @include absolute-fill;
+  position: fixed;
   z-index: 999;
   @include flex-center;
   opacity: 0;
@@ -216,78 +213,50 @@ view {
   -webkit-backdrop-filter: blur(5px);
 }
 
-// 对话框内容
-.dialog {
-  &-content {
-    position: relative;
-    width: 650rpx;
-    background: var(--background-secondary);
-    border-radius: $border-radius-medium;
-    overflow: hidden;
-    box-shadow: var(--modal-shadow);
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
-    z-index: 1;
-    border: 1rpx solid var(--border-color);
-  }
+// 弹窗内容
+.dialog-content {
+  position: relative;
+  width: 650rpx;
+  background: var(--background-secondary);
+  border-radius: $border-radius-medium;
+  overflow: hidden;
+  box-shadow: var(--modal-shadow);
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+  z-index: 1;
+  border: 1rpx solid var(--border-color);
+}
 
-  &-header {
-    padding: 30rpx 20rpx;
-    text-align: center;
-    font-size: 34rpx;
-    font-weight: 500;
+.dialog-header {
+  padding: 30rpx 20rpx;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.dialog-body {
+  padding: 20rpx 30rpx 40rpx;
+
+  input {
+    flex: 1;
+    height: 90rpx;
+    background: transparent;
+    padding: 0 10rpx;
+    font-size: 32rpx;
+    box-sizing: border-box;
     color: var(--text-primary);
+    border: none;
   }
+}
 
-  &-body {
-    padding: 20rpx 30rpx 40rpx;
+.dialog-footer {
+  display: flex;
+  border-top: 0.5px solid var(--border-color);
 
-    input {
-      flex: 1;
-      height: 90rpx;
-      background: transparent;
-      padding: 0 10rpx;
-      font-size: 32rpx;
-      box-sizing: border-box;
-      color: var(--text-primary);
-      border: none;
-    }
-  }
-
-  &-footer {
-    display: flex;
-    border-top: 0.5px solid var(--border-color);
-
-    button {
-      flex: 1;
-      border-radius: 0;
-      @include button-reset;
-      font-size: 32rpx;
-      padding: 24rpx 0;
-      line-height: 1.2;
-      height: auto;
-      position: relative;
-    }
-
-    .cancel-btn {
-      color: var(--text-tertiary);
-      font-weight: 400;
-    }
-
-    .confirm-btn {
-      color: var(--primary-color);
-      font-weight: 500;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 15%;
-        height: 70%;
-        width: 0.5px;
-        background: var(--border-color);
-      }
-    }
+  button {
+    flex: 1;
+    border-radius: 0;
   }
 }
 
