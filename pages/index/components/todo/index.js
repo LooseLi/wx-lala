@@ -12,7 +12,7 @@ Page({
       today: { title: '今天', todos: [], expanded: true, count: 0, dateInfo: '' },
       tomorrow: { title: '明天', todos: [], expanded: true, count: 0, dateInfo: '' },
       // 将单一future改为futureDates对象，支持多个未来日期
-      futureDates: {}, // 格式: { 'YYYY-MM-DD': { title: '日期显示', todos: [], expanded: true, count: 0 } }
+      futureDates: {},
       completed: { title: '已完成', todos: [], expanded: true, count: 0 },
     },
     loading: false,
@@ -22,7 +22,7 @@ Page({
       dueDate: null,
       dateType: 'today', // 新增：日期类型（today, tomorrow, future）
     },
-    showDatePicker: false, // 新增：是否显示日期选择器
+    showDatePicker: false,
     editMode: false,
     currentTodoId: '',
     emptyTip: '暂无待办事项，点击下方按钮添加',
@@ -72,18 +72,16 @@ Page({
           {
             todos: todos,
             todoGroups: todoGroups,
-            hasFutureTodos: hasFutureTodos, // 将是否有未来待办事项的标志设置到 data 中
-            sortedFutureDateKeys: sortedFutureDateKeys, // 将排序后的日期键数组设置到 data 中
+            hasFutureTodos: hasFutureTodos,
+            sortedFutureDateKeys: sortedFutureDateKeys,
             loading: false,
           },
           () => {
-            // 数据加载完成后更新未完成待办数量
             this.updateTodayUncompletedCount();
           },
         );
       },
       fail: err => {
-        console.error('获取待办事项失败:', err);
         this.setData({ loading: false });
         wx.showToast({
           title: '加载失败',
@@ -97,7 +95,6 @@ Page({
    * 按日期分组待办事项
    */
   groupTodosByDate: function (todos) {
-    // 预处理每个待办事项，添加格式化后的日期
     todos.forEach(todo => {
       if (todo.dueDate) {
         todo.formattedFullDate = this.formatFullDate(todo.dueDate);
@@ -156,14 +153,12 @@ Page({
       const dueDate = new Date(todo.dueDate);
       dueDate.setHours(0, 0, 0, 0);
 
-      // 检查是否逾期（到期日期早于今天）
       if (dueDate < today) {
         groups.overdue.todos.push(todo);
         groups.overdue.count++;
         return;
       }
 
-      // 已经在前面处理了逾期任务，这里只处理今天及以后的任务
       if (dueDate.getTime() === today.getTime()) {
         groups.today.todos.push(todo);
         groups.today.count++;
@@ -179,22 +174,19 @@ Page({
           groups.futureDates[dateStr] = {
             title: `${dateFormat(dueDate, 'M.d')} ${this.getWeekDay(dueDate)}`,
             todos: [],
-            expanded: true, // 默认展开
+            expanded: true,
             count: 0,
-            date: dateStr, // 保存日期字符串，方便后续处理
+            date: dateStr,
           };
         }
 
-        // 将待办事项添加到对应日期的分组中
         groups.futureDates[dateStr].todos.push(todo);
         groups.futureDates[dateStr].count++;
       }
     });
 
-    // 排序：按创建时间降序
     Object.keys(groups).forEach(key => {
       if (key !== 'futureDates') {
-        // 跳过 futureDates，它需要特殊处理
         groups[key].todos.sort((a, b) => {
           return new Date(b.createTime) - new Date(a.createTime);
         });
@@ -208,12 +200,10 @@ Page({
       });
     });
 
-    // 计算是否有未来待办事项
     const hasFutureTodos = Object.keys(groups.futureDates).length > 0;
 
     // 对未来日期进行排序，按日期先后顺序
     const sortedFutureDateKeys = Object.keys(groups.futureDates).sort((a, b) => {
-      // 将日期字符串转换为日期对象进行比较
       return new Date(a) - new Date(b);
     });
 
@@ -233,14 +223,12 @@ Page({
    * 切换分组展开/折叠状态
    */
   toggleGroup: function (e) {
-    console.log('toggleGroup', e.currentTarget.dataset);
     const { group, date } = e.currentTarget.dataset;
 
     // 如果是未来日期分组，需要特殊处理
     if (group === 'futureDates' && date) {
       // 安全检查：确保该日期分组存在
       if (!this.data.todoGroups.futureDates || !this.data.todoGroups.futureDates[date]) {
-        console.warn(`日期分组 ${date} 不存在或未初始化`);
         return;
       }
 
@@ -254,7 +242,6 @@ Page({
 
     // 其他常规分组的处理
     if (!this.data.todoGroups || !this.data.todoGroups[group]) {
-      console.warn(`组 ${group} 不存在或未初始化`);
       return;
     }
 
@@ -282,14 +269,11 @@ Page({
           icon: 'success',
         });
 
-        // 重新加载数据以更新分组
         this.loadTodos();
 
-        // 状态变化后直接更新未完成待办数量
         this.updateTodayUncompletedCount();
       },
       fail: err => {
-        console.error('更新状态失败:', err);
         wx.showToast({
           title: '操作失败',
           icon: 'none',
@@ -316,11 +300,9 @@ Page({
                 icon: 'success',
               });
 
-              // 重新加载数据
               this.loadTodos();
             },
             fail: err => {
-              console.error('删除失败:', err);
               wx.showToast({
                 title: '删除失败',
                 icon: 'none',
@@ -489,7 +471,6 @@ Page({
     };
 
     if (this.data.editMode) {
-      // 更新现有待办事项
       todos.doc(this.data.currentTodoId).update({
         data: todoData,
         success: () => {
@@ -501,7 +482,6 @@ Page({
           this.loadTodos();
         },
         fail: err => {
-          console.error('更新失败:', err);
           wx.showToast({
             title: '更新失败',
             icon: 'none',
@@ -509,7 +489,6 @@ Page({
         },
       });
     } else {
-      // 添加新待办事项
       const openid = wx.getStorageSync('openid');
       if (!openid) {
         wx.showToast({
@@ -519,7 +498,6 @@ Page({
         return;
       }
 
-      // 添加到数据库
       todos.add({
         data: {
           ...todoData,
@@ -536,7 +514,6 @@ Page({
           this.loadTodos();
         },
         fail: err => {
-          console.error('添加失败:', err);
           wx.showToast({
             title: '添加失败',
             icon: 'none',
@@ -578,10 +555,8 @@ Page({
     const d = new Date();
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
-    // 今天的日期信息
     const todayInfo = `${dateFormat(d, 'M.d')} ${weekdays[d.getDay()]}`;
 
-    // 明天的日期信息
     const tomorrow = new Date(d);
     tomorrow.setDate(d.getDate() + 1);
     const tomorrowInfo = `${dateFormat(tomorrow, 'M.d')} ${weekdays[tomorrow.getDay()]}`;
@@ -633,7 +608,6 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    // 页面卸载时更新未完成待办数量
     this.updateTodayUncompletedCount();
   },
 
@@ -642,20 +616,14 @@ Page({
    * 使用云函数更新，确保多设备数据一致性
    */
   updateTodayUncompletedCount: function () {
-    // 调用云函数获取今日未完成待办数量
     // 这里不需要处理返回结果，因为首页会在显示时自动获取最新数量
-    // 这个方法仅用于触发云端重新计算
     wx.cloud.callFunction({
       name: 'getTodos',
       data: {
         action: 'getTodayUncompletedCount',
       },
-      success: res => {
-        console.log('触发云函数更新今日未完成待办数量成功');
-      },
-      fail: err => {
-        console.error('触发云函数更新今日未完成待办数量失败:', err);
-      },
+      success: res => {},
+      fail: err => {},
     });
   },
 });
