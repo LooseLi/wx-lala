@@ -10,8 +10,8 @@ Page({
         params: {
           operation: 'addField',
           collection: 'anniversaryList',
-          data: { images: [] }
-        }
+          data: { images: [] },
+        },
       },
       {
         name: '查询纪念日记录',
@@ -21,8 +21,8 @@ Page({
         params: {
           operation: 'queryRecords',
           collection: 'anniversaryList',
-          options: { limit: 100 }
-        }
+          options: { limit: 100 },
+        },
       },
       // 未来可以在这里添加更多工具
     ],
@@ -52,8 +52,6 @@ Page({
       name: tool.functionName,
       data: tool.params || {},
       success: res => {
-        console.log(`云函数 ${tool.functionName} 调用成功:`, res.result);
-
         let resultText = '';
         if (res.result.success) {
           resultText = `成功完成操作，${res.result.message || ''}`;
@@ -78,7 +76,6 @@ Page({
         });
       },
       fail: err => {
-        console.error(`云函数 ${tool.functionName} 调用失败:`, err);
         this.setData({
           currentResult: `调用失败: ${JSON.stringify(err)}`,
           isLoading: false,

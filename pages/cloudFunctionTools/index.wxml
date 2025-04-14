@@ -3,7 +3,6 @@
     <view class="title">云函数工具箱</view>
     <view class="subtitle">用于批量处理数据库操作的实用工具集</view>
   </view>
-  
   <view class="tools-container">
     <block wx:for="{{tools}}" wx:key="id">
       <view class="tool-card">
@@ -16,14 +15,12 @@
         </button>
       </view>
     </block>
-    
     <!-- 添加新工具卡片（开发者功能） -->
     <view class="tool-card add-tool" bindtap="addNewTool">
       <view class="add-icon">+</view>
       <view class="add-text">添加新工具</view>
     </view>
   </view>
-  
   <!-- 结果显示区域 -->
   <view class="result-container" wx:if="{{currentResult}}">
     <view class="result-header">执行结果</view>

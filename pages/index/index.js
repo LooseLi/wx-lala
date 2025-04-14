@@ -1,6 +1,6 @@
 const db = wx.cloud.database();
-const weatherDB = db.collection('weatherList'); // 天气icon
-const foodDB = db.collection('foodList'); // 吃什么
+const weatherDB = db.collection('weatherList');
+const foodDB = db.collection('foodList');
 const API = require('../../utils/api');
 const plugins = require('../../utils/plugins');
 const themeManager = require('../../utils/themeManager'); // 引入主题管理模块
@@ -145,7 +145,7 @@ Page({
           lives.tips = arr[0].tips;
         } else {
           lives.icon = this.data.unknow;
-          lives.tips = '快截图！让松松去更新天气小图标吧～';
+          lives.tips = '快截图！让松松去更新天气小图标吧~';
         }
         this.setData({
           today: lives,
@@ -211,7 +211,6 @@ Page({
         .end();
       const arr = res.list.map(item => item.name);
 
-      // 更新页面显示
       this.setData({
         foods: arr,
       });
@@ -221,10 +220,9 @@ Page({
       wx.setStorageSync('randomFoodData', {
         foods: arr,
         date: today,
-        timestamp: Date.now(), // 添加时间戳，便于排序和调试
+        timestamp: Date.now(),
       });
     } catch (error) {
-      console.error('获取随机食物失败:', error);
       plugins.showToast({
         title: '获取食物失败，请重试',
       });
@@ -247,16 +245,13 @@ Page({
     const storedData = wx.getStorageSync('randomFoodData');
 
     if (storedData && storedData.date === today) {
-      // 如果有当天的数据，显示它
       this.setData({
         foods: storedData.foods,
       });
     } else {
-      // 如果没有当天的数据，清空显示
       this.setData({
         foods: [],
       });
-      // 清除过期数据
       wx.removeStorageSync('randomFoodData');
     }
   },
@@ -279,13 +274,10 @@ Page({
     await this.getWeatherList();
     this.beforeGetLocation();
 
-    // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
 
-    // 监听主题变化
     themeManager.onThemeChange(this.handleThemeChange.bind(this));
 
-    // 应用当前主题背景
     this.applyThemeBackground();
   },
 
@@ -294,7 +286,6 @@ Page({
    */
   onShow: function () {
     // 每次显示页面时检查本地存储中的食物数据
-    // 这样可以确保在跨天时重置数据
     this.checkStoredFoodData();
 
     // 获取今日未完成待办数量
@@ -318,21 +309,16 @@ Page({
         if (res.result && res.result.success) {
           const uncompletedCount = res.result.count || 0;
 
-          // 更新数据
           this.setData({
             todayUncompletedCount: uncompletedCount,
           });
-
-          console.log('从云函数获取到今日未完成待办数量：', uncompletedCount);
         } else {
-          console.error('获取今日未完成待办数量失败:', res);
           this.setData({
             todayUncompletedCount: 0,
           });
         }
       },
       fail: err => {
-        console.error('调用云函数获取今日未完成待办数量失败:', err);
         this.setData({
           todayUncompletedCount: 0,
         });
@@ -346,9 +332,6 @@ Page({
     this.setData({
       checkInData,
     });
-
-    // 可以在这里添加其他打卡成功后的操作
-    console.log('打卡成功：', checkInData);
   },
 
   /**
