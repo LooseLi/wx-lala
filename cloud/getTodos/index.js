@@ -99,9 +99,13 @@ exports.main = async (event, context) => {
  */
 async function getTodayUncompletedCount(openid) {
   try {
-    // 获取今天的日期范围
+    // 获取今天的日期范围（仅日期部分，不考虑时间）
     const today = new Date();
+
+    // 当天开始时间 (00:00:00.000)
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+
+    // 当天结束时间 (23:59:59.999)
     const endOfDay = new Date(
       today.getFullYear(),
       today.getMonth(),
@@ -112,13 +116,18 @@ async function getTodayUncompletedCount(openid) {
       999,
     );
 
+    // 明天开始时间，用于确定今天的上限
+    const startOfTomorrow = new Date(startOfDay);
+    startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
     // 查询今日未完成的待办事项数量
+    // 条件：未完成 + 截止日期在今天范围内（≥今天00:00:00 且 <明天00:00:00）
     const countResult = await db
       .collection('todos')
       .where({
         openid: openid,
         completed: false,
-        dueDate: _.gte(startOfDay).and(_.lte(endOfDay)),
+        dueDate: _.gte(startOfDay).and(_.lt(startOfTomorrow)),
       })
       .count();
 

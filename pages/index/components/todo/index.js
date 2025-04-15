@@ -151,7 +151,14 @@ Page({
       }
 
       const dueDate = new Date(todo.dueDate);
+      // 注意这里！设置时间为 00:00:00 用于比较日期
       dueDate.setHours(0, 0, 0, 0);
+
+      // 下面的比较逻辑：
+      // 如果 dueDate < today，归类为"已逾期"
+      // 如果 dueDate = today，归类为"今天"
+      // 如果 dueDate = tomorrow，归类为"明天"
+      // 如果 dueDate > today，归类为"未来"
 
       if (dueDate < today) {
         groups.overdue.todos.push(todo);
@@ -464,9 +471,16 @@ Page({
       return;
     }
 
+    // 创建日期对象并统一设置时间为 23:59:59
+    let dueDateObj = null;
+    if (dueDate) {
+      dueDateObj = new Date(dueDate);
+      dueDateObj.setHours(23, 59, 59, 999); // 设置为当天的最后一秒
+    }
+
     const todoData = {
       title: this.data.newTodo.title.trim(),
-      dueDate: dueDate ? new Date(dueDate) : null,
+      dueDate: dueDateObj,
       updateTime: new Date(),
     };
 
