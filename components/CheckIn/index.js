@@ -46,6 +46,18 @@ Component({
   },
 
   methods: {
+    /**
+     * 格式化日期为 YYYY-MM-DD 字符串
+     * @param {Date} date - 日期对象
+     * @returns {string} - 格式化后的日期字符串
+     */
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+
     // 检查今日打卡状态
     async checkTodayStatus() {
       console.log('开始检查打卡状态');
@@ -69,7 +81,10 @@ Component({
         console.log('签到状态查询结果：', result);
 
         if (result.success) {
-          const today = new Date().toISOString().split('T')[0];
+          // 使用本地时区的今天日期
+          const today = new Date();
+          const todayStr = this.formatDate(today);
+
           this.setData({
             isCheckedIn: result.data.isCheckedIn,
             continuousDays: result.data.continuousDays,
