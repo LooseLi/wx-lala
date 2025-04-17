@@ -99,40 +99,36 @@ exports.main = async (event, context) => {
  */
 async function getTodayUncompletedCount(openid) {
   try {
-    // 获取今天的日期范围（仅日期部分，不考虑时间）
+    // 获取今天的日期字符串（仅年月日，不含时间部分）
     const today = new Date();
+    const todayDateStr = formatDate(today); // 例如: "2023-04-15"
 
-    // 当天开始时间 (00:00:00.000)
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-
-    // 当天结束时间 (23:59:59.999)
-    const endOfDay = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      23,
-      59,
-      59,
-      999,
-    );
-
-    // 明天开始时间，用于确定今天的上限
-    const startOfTomorrow = new Date(startOfDay);
-    startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
-
-    // 查询今日未完成的待办事项数量
-    // 条件：未完成 + 截止日期在今天范围内（≥今天00:00:00 且 <明天00:00:00）
-    const countResult = await db
+    // 查询未完成的待办事项
+    const result = await db
       .collection('todos')
       .where({
         openid: openid,
         completed: false,
-        dueDate: _.gte(startOfDay).and(_.lt(startOfTomorrow)),
       })
-      .count();
+      .get();
+
+    // 手动筛选当天的待办事项
+    let todayTodos = 0;
+
+    result.data.forEach(todo => {
+      if (todo.dueDate) {
+        // 将 dueDate 转为日期字符串格式，只保留年月日
+        const dueDateStr = formatDate(new Date(todo.dueDate));
+
+        // 比较日期字符串
+        if (dueDateStr === todayDateStr) {
+          todayTodos++;
+        }
+      }
+    });
 
     return {
-      count: countResult.total,
+      count: todayTodos,
       success: true,
     };
   } catch (error) {
@@ -143,4 +139,16 @@ async function getTodayUncompletedCount(openid) {
       error,
     };
   }
+}
+
+/**
+ * 格式化日期为 YYYY-MM-DD 字符串
+ * @param {Date} date - 日期对象
+ * @returns {string} - 格式化后的日期字符串
+ */
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

@@ -101,12 +101,13 @@ Page({
       }
     });
 
-    // 获取今天、明天的日期
+    // 获取今天、明天的日期字符串
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayStr = this.formatDate(today);
 
-    const tomorrow = new Date(today);
+    const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = this.formatDate(tomorrow);
 
     // 初始化分组，保留原有的 dateInfo 字段
     const groups = {
@@ -150,36 +151,37 @@ Page({
         return;
       }
 
-      const dueDate = new Date(todo.dueDate);
-      // 注意这里！设置时间为 00:00:00 用于比较日期
-      dueDate.setHours(0, 0, 0, 0);
+      // 转换 dueDate 为日期字符串，仅包含年月日
+      const dueDateStr = this.formatDate(new Date(todo.dueDate));
 
-      // 下面的比较逻辑：
-      // 如果 dueDate < today，归类为"已逾期"
-      // 如果 dueDate = today，归类为"今天"
-      // 如果 dueDate = tomorrow，归类为"明天"
-      // 如果 dueDate > today，归类为"未来"
-
-      if (dueDate < today) {
+      // 直接使用字符串比较日期
+      // YYYY-MM-DD 格式的字符串可以直接比较大小
+      if (dueDateStr < todayStr) {
+        // 已逾期 - 日期早于今天
         groups.overdue.todos.push(todo);
         groups.overdue.count++;
         return;
       }
 
-      if (dueDate.getTime() === today.getTime()) {
+      // 使用日期字符串比较确定具体分类
+      if (dueDateStr === todayStr) {
+        // 今天
         groups.today.todos.push(todo);
         groups.today.count++;
-      } else if (dueDate.getTime() === tomorrow.getTime()) {
+      } else if (dueDateStr === tomorrowStr) {
+        // 明天
         groups.tomorrow.todos.push(todo);
         groups.tomorrow.count++;
-      } else if (dueDate > today) {
-        // 处理未来日期 - 为每个不同的未来日期创建一个分组
-        const dateStr = this.formatDate(dueDate); // 格式：YYYY-MM-DD
+      } else {
+        // 未来日期 - 为每个不同的未来日期创建一个分组
+        const dateStr = dueDateStr; // 直接使用格式化好的日期字符串
 
         // 如果这个日期还没有分组，创建一个新的分组
         if (!groups.futureDates[dateStr]) {
+          // 为了显示月日和星期，需要创建日期对象
+          const dateForTitle = new Date(dateStr);
           groups.futureDates[dateStr] = {
-            title: `${dateFormat(dueDate, 'M.d')} ${this.getWeekDay(dueDate)}`,
+            title: `${dateFormat(dateForTitle, 'M.d')} ${this.getWeekDay(dateForTitle)}`,
             todos: [],
             expanded: true,
             count: 0,
