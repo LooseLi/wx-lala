@@ -1,0 +1,39 @@
+<view class="container" style="padding-top: {{navHeight}}px;">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <view class="title">主题皮肤</view>
+    <view class="points">当前积分: {{userPoints}}</view>
+  </view>
+
+  <!-- 主题列表 -->
+  <view class="theme-list" wx:if="{{!loading}}">
+    <view class="theme-item {{item.current ? 'active' : ''}}" 
+          wx:for="{{themeList}}" 
+          wx:key="id"
+          data-id="{{item.id}}" 
+          bindtap="handleThemeClick">
+      <image class="theme-image" src="{{item.themeImage}}" mode="aspectFill" />
+      
+      <!-- 主题状态标签 -->
+      <view class="theme-label" wx:if="{{item.current || !item.unlocked}}">
+        <text class="status">{{item.current ? '使用中' : '解锁'}}</text>
+      </view>
+      
+      <!-- 锁定图标 -->
+      <view class="lock-icon" wx:if="{{!item.unlocked}}">
+        <text class="price">{{item.price}} 积分</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-icon"></view>
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && themeList.length === 0}}">
+    <text>暂无可用主题</text>
+  </view>
+</view> 

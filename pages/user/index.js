@@ -772,13 +772,8 @@ Page({
    * 跳转到主题页面
    */
   goToThemesPage() {
-    wx.showToast({
-      title: '主题页面开发中...',
-      icon: 'none',
+    wx.navigateTo({
+      url: '/pages/themes/index',
     });
-    // 在完成主题详情页后，使用以下代码跳转
-    // wx.navigateTo({
-    //   url: '/pages/themes/index'
-    // });
   },
 });

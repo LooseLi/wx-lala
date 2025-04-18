@@ -1,0 +1,142 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部导航 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.points {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  background-color: var(--background-secondary);
+  padding: 8rpx 16rpx;
+  border-radius: 30rpx;
+}
+
+/* 主题列表 */
+.theme-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.theme-item {
+  width: 48%;
+  position: relative;
+  margin-bottom: 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background-color: var(--background-secondary);
+  box-shadow: var(--card-shadow);
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.theme-item.active {
+  border-color: var(--primary-color);
+}
+
+.theme-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.theme-image {
+  width: 100%;
+  height: 400rpx;
+  display: block;
+  object-fit: cover;
+}
+
+/* 主题标签 */
+.theme-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10rpx 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.status {
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 锁定图标 */
+.lock-icon {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 30rpx;
+  padding: 6rpx 16rpx;
+}
+
+.price {
+  color: #fff;
+  font-size: 24rpx;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.loading-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--background-tertiary);
+  border-top-color: var(--primary-color);
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading text {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+/* 空状态 */
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty text {
+  font-size: 28rpx;
+  color: var(--text-tertiary);
+}
