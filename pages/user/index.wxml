@@ -38,6 +38,35 @@
     </view>
     <!-- 打卡组件 -->
     <check-in id="checkIn" wx:if="{{isAuth}}" bind:checkInSuccess="onCheckInSuccess" />
+
+    <!-- 主题皮肤入口 -->
+    <view class="theme-entry" wx:if="{{isAuth}}">
+      <view class="section-title">主题皮肤</view>
+      <view class="theme-preview">
+        <!-- 第一个主题 (免费) -->
+        <view class="theme-item {{currentTheme.id === previewThemes[0].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 0}}" data-theme-id="{{previewThemes[0].id}}" bind:tap="handleThemeClick">
+          <image src="{{previewThemes[0].themeImage}}" mode="aspectFill" />
+          <view class="theme-label" wx:if="{{currentTheme.id === previewThemes[0].id}}">
+            <text class="status">使用中</text>
+          </view>
+        </view>
+        
+        <!-- 第二个主题 (付费) -->
+        <view class="theme-item {{currentTheme.id === previewThemes[1].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 1}}" data-theme-id="{{previewThemes[1].id}}" bind:tap="handleThemeClick">
+          <image src="{{previewThemes[1].themeImage}}" mode="aspectFill" />
+          <view class="theme-label" wx:if="{{!previewThemes[1].unlocked || currentTheme.id === previewThemes[1].id}}">
+            <text class="status">{{!previewThemes[1].unlocked ? '解锁' : '使用中'}}</text>
+          </view>
+        </view>
+        
+        <!-- 更多主题按钮 -->
+        <view class="theme-more-item" bind:tap="goToThemesPage">
+          <view class="more-icon">+</view>
+          <view class="more-text">更多主题</view>
+        </view>
+      </view>
+    </view>
+
     <view class="found">
       <image bindtap="handleUser" src="./images/found.svg" mode="widthFix" lazy-load></image>
     </view>

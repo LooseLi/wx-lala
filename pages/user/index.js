@@ -17,6 +17,30 @@ Page({
     // 登录状态标记，可能的值: 'idle', 'getting-openid', 'logging-in', 'logged-in'
     loginState: 'idle',
     themeBackground: '', // 主题背景图片
+    // 主题相关数据
+    currentTheme: {
+      id: 'theme1',
+      isDefault: true,
+      price: 0,
+    },
+    previewThemes: [
+      {
+        id: 'theme1',
+        price: 0,
+        themeImage:
+          'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3325.jpeg?sign=388e88c2ac1bd2e2761ae1faad064a26&t=1744257722',
+        isDefault: true,
+        unlocked: true,
+      },
+      {
+        id: 'theme2',
+        price: 520,
+        themeImage:
+          'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3503.jpeg?sign=960f3fc0a5a2c31e84c3510156c33a0a&t=1744949018',
+        isDefault: false,
+        unlocked: false,
+      },
+    ],
   },
 
   // 打卡成功的回调
@@ -701,5 +725,60 @@ Page({
           icon: 'none',
         });
       });
+  },
+
+  /**
+   * 处理主题点击
+   */
+  handleThemeClick(e) {
+    const themeId = e.currentTarget.dataset.themeId;
+    // 找到点击的主题
+    const theme = this.data.previewThemes.find(t => t.id === themeId);
+    if (!theme) return;
+
+    // 如果是当前使用的主题，不做任何操作
+    if (this.data.currentTheme.id === themeId) {
+      return;
+    }
+
+    // 免费主题或已解锁的付费主题，直接切换
+    if (theme.price === 0 || theme.unlocked) {
+      wx.showToast({
+        title: `切换主题成功`,
+        icon: 'none',
+      });
+      this.setData({
+        currentTheme: theme,
+      });
+    } else {
+      // 未解锁的付费主题，显示解锁确认对话框
+      wx.showModal({
+        title: '解锁主题',
+        content: `确定使用 ${theme.price} 积分解锁该主题吗？`,
+        success: res => {
+          if (res.confirm) {
+            // 在正式开发时，这里需要调用解锁API
+            wx.showToast({
+              title: '解锁功能开发中...',
+              icon: 'none',
+            });
+          }
+        },
+      });
+    }
+  },
+
+  /**
+   * 跳转到主题页面
+   */
+  goToThemesPage() {
+    wx.showToast({
+      title: '主题页面开发中...',
+      icon: 'none',
+    });
+    // 在完成主题详情页后，使用以下代码跳转
+    // wx.navigateTo({
+    //   url: '/pages/themes/index'
+    // });
   },
 });
