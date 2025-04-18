@@ -5,6 +5,8 @@
 // 延迟初始化数据库，确保云API已经初始化
 let db = null;
 let themes = null;
+let userInfo = null;
+let userPoints = null;
 
 /**
  * 初始化数据库连接
@@ -12,7 +14,7 @@ let themes = null;
  */
 function initDatabase() {
   // 如果数据库已初始化，直接返回
-  if (db && themes) {
+  if (db && themes && userInfo && userPoints) {
     return true;
   }
 
@@ -28,6 +30,8 @@ function initDatabase() {
     try {
       db = wx.cloud.database();
       themes = db.collection('themes');
+      userInfo = db.collection('userInfo');
+      userPoints = db.collection('userPoints');
       return true;
     } catch (dbError) {
       console.error('获取数据库实例失败，可能是云环境未初始化:', dbError);
@@ -82,22 +86,18 @@ async function getUserTheme(openid) {
   }
 
   try {
-    // 查询用户-主题关系
-    const userThemeRes = await db
-      .collection('user_themes')
-      .where({
-        user_id: openid,
-        is_active: true,
-      })
-      .get();
+    // 查询用户信息获取当前主题ID
+    const userInfoRes = await userInfo.where({ openid }).get();
 
-    if (userThemeRes.data && userThemeRes.data.length > 0) {
-      // 获取主题详情
-      const themeId = userThemeRes.data[0].theme_id;
-      const themeRes = await themes.doc(themeId).get();
+    if (userInfoRes.data && userInfoRes.data.length > 0) {
+      const user = userInfoRes.data[0];
 
-      if (themeRes.data) {
-        return themeRes.data;
+      // 如果用户设置了当前主题，查询该主题详情
+      if (user.currentTheme) {
+        const themeRes = await themes.where({ id: user.currentTheme }).get();
+        if (themeRes.data && themeRes.data.length > 0) {
+          return themeRes.data[0];
+        }
       }
     }
 
@@ -147,6 +147,278 @@ async function loadTheme(openid) {
   } catch (error) {
     console.error('加载主题失败:', error);
     return null;
+  }
+}
+
+/**
+ * 获取用户可用的所有主题
+ * 包括默认主题、价格为0的主题和已解锁的付费主题
+ * @param {string} openid 用户openid
+ * @returns {Promise<Array>} 返回用户可用的主题列表
+ */
+async function getUserAvailableThemes(openid) {
+  if (!openid) {
+    console.error('获取用户可用主题失败: openid为空');
+    return [];
+  }
+
+  if (!initDatabase()) {
+    console.error('数据库未初始化，无法获取用户可用主题');
+    return [];
+  }
+
+  try {
+    // 获取所有主题
+    const themesRes = await themes.get();
+    if (!themesRes.data || themesRes.data.length === 0) {
+      return [];
+    }
+
+    // 获取用户信息（获取已解锁主题列表）
+    const userInfoRes = await userInfo.where({ openid }).get();
+    const user = userInfoRes.data && userInfoRes.data.length > 0 ? userInfoRes.data[0] : null;
+
+    // 获取用户当前使用的主题
+    const currentThemeId = user && user.currentTheme ? user.currentTheme : null;
+
+    // 处理主题列表，添加解锁状态
+    const availableThemes = themesRes.data.map(theme => {
+      // 默认主题或价格为0的主题自动解锁
+      let unlocked = theme.isDefault || theme.price === 0;
+
+      // 检查用户是否已解锁该主题
+      if (!unlocked && user && user.unlockedThemes) {
+        unlocked = user.unlockedThemes.some(item => item.themeId === theme.id);
+      }
+
+      return {
+        ...theme,
+        unlocked,
+        current: theme.id === currentThemeId,
+      };
+    });
+
+    // 排序：当前使用的主题 > 已解锁的主题 > 未解锁的主题
+    availableThemes.sort((a, b) => {
+      if (a.current) return -1;
+      if (b.current) return 1;
+      if (a.unlocked && !b.unlocked) return -1;
+      if (!a.unlocked && b.unlocked) return 1;
+      return (a.index || 0) - (b.index || 0);
+    });
+
+    return availableThemes;
+  } catch (error) {
+    console.error('获取用户可用主题失败:', error);
+    return [];
+  }
+}
+
+/**
+ * 检查主题是否已解锁
+ * @param {string} openid 用户openid
+ * @param {string} themeId 主题ID
+ * @returns {Promise<boolean>} 返回主题是否已解锁
+ */
+async function isThemeUnlocked(openid, themeId) {
+  if (!openid || !themeId) {
+    console.error('检查主题解锁状态失败: 参数不完整');
+    return false;
+  }
+
+  if (!initDatabase()) {
+    console.error('数据库未初始化，无法检查主题解锁状态');
+    return false;
+  }
+
+  try {
+    // 先查询主题信息
+    const themeRes = await themes.where({ id: themeId }).get();
+    if (!themeRes.data || themeRes.data.length === 0) {
+      return false;
+    }
+
+    const theme = themeRes.data[0];
+
+    // 默认主题或价格为0的主题自动解锁
+    if (theme.isDefault || theme.price === 0) {
+      return true;
+    }
+
+    // 查询用户是否已解锁该主题
+    const userInfoRes = await userInfo.where({ openid }).get();
+    if (!userInfoRes.data || userInfoRes.data.length === 0) {
+      return false;
+    }
+
+    const user = userInfoRes.data[0];
+
+    // 检查用户是否已解锁该主题
+    if (!user.unlockedThemes) {
+      return false;
+    }
+
+    return user.unlockedThemes.some(item => item.themeId === themeId);
+  } catch (error) {
+    console.error('检查主题解锁状态失败:', error);
+    return false;
+  }
+}
+
+/**
+ * 解锁主题
+ * @param {string} openid 用户openid
+ * @param {string} themeId 主题ID
+ * @returns {Promise<Object>} 返回解锁结果，包含success和message字段
+ */
+async function unlockTheme(openid, themeId) {
+  if (!openid || !themeId) {
+    return { success: false, message: '参数不完整' };
+  }
+
+  if (!initDatabase()) {
+    return { success: false, message: '数据库未初始化' };
+  }
+
+  try {
+    // 检查主题是否已解锁
+    const alreadyUnlocked = await isThemeUnlocked(openid, themeId);
+    if (alreadyUnlocked) {
+      return { success: true, message: '主题已解锁' };
+    }
+
+    // 获取主题信息
+    const themeRes = await themes.where({ id: themeId }).get();
+    if (!themeRes.data || themeRes.data.length === 0) {
+      return { success: false, message: '主题不存在' };
+    }
+
+    const theme = themeRes.data[0];
+    const themePrice = theme.price || 0;
+
+    // 获取用户积分
+    const userPointsRes = await userPoints.where({ userId: openid }).get();
+    if (!userPointsRes.data || userPointsRes.data.length === 0) {
+      return { success: false, message: '用户积分信息不存在' };
+    }
+
+    const pointsRecord = userPointsRes.data[0];
+    const currentPoints = pointsRecord.currentPoints || 0;
+
+    // 检查积分是否足够
+    if (currentPoints < themePrice) {
+      return { success: false, message: '积分不足' };
+    }
+
+    // 获取用户信息
+    const userInfoRes = await userInfo.where({ openid }).get();
+    if (!userInfoRes.data || userInfoRes.data.length === 0) {
+      return { success: false, message: '用户信息不存在' };
+    }
+
+    const user = userInfoRes.data[0];
+
+    // 开始事务处理
+    const transaction = {
+      success: false,
+      message: '未知错误',
+    };
+
+    // 1. 扣除积分
+    try {
+      await userPoints.where({ userId: openid }).update({
+        data: {
+          currentPoints: db.command.inc(-themePrice),
+          updatedAt: new Date(),
+        },
+      });
+
+      // 2. 更新用户解锁主题记录
+      const unlockRecord = {
+        themeId,
+        unlockTime: new Date(),
+        price: themePrice,
+      };
+
+      if (user.unlockedThemes) {
+        // 已有解锁记录，添加新记录
+        await userInfo.where({ openid }).update({
+          data: {
+            unlockedThemes: db.command.push(unlockRecord),
+          },
+        });
+      } else {
+        // 首次解锁，创建数组
+        await userInfo.where({ openid }).update({
+          data: {
+            unlockedThemes: [unlockRecord],
+          },
+        });
+      }
+
+      transaction.success = true;
+      transaction.message = '主题解锁成功';
+    } catch (error) {
+      console.error('解锁主题事务处理失败:', error);
+      transaction.message = '数据库操作失败';
+    }
+
+    return transaction;
+  } catch (error) {
+    console.error('解锁主题失败:', error);
+    return { success: false, message: '系统错误' };
+  }
+}
+
+/**
+ * 切换主题
+ * @param {string} openid 用户openid
+ * @param {string} themeId 主题ID
+ * @returns {Promise<Object>} 返回切换结果，包含success和message字段
+ */
+async function switchTheme(openid, themeId) {
+  if (!openid || !themeId) {
+    return { success: false, message: '参数不完整' };
+  }
+
+  if (!initDatabase()) {
+    return { success: false, message: '数据库未初始化' };
+  }
+
+  try {
+    // 检查主题是否存在
+    const themeRes = await themes.where({ id: themeId }).get();
+    if (!themeRes.data || themeRes.data.length === 0) {
+      return { success: false, message: '主题不存在' };
+    }
+
+    const theme = themeRes.data[0];
+
+    // 检查主题是否已解锁
+    const unlocked = await isThemeUnlocked(openid, themeId);
+    if (!unlocked) {
+      return { success: false, message: '主题未解锁' };
+    }
+
+    // 更新用户当前主题
+    await userInfo.where({ openid }).update({
+      data: {
+        currentTheme: themeId,
+        updatedAt: new Date(),
+      },
+    });
+
+    // 应用主题
+    await applyTheme(theme);
+
+    // 更新全局主题
+    const app = getApp();
+    app.globalData.currentTheme = theme;
+
+    return { success: true, message: '主题切换成功', theme };
+  } catch (error) {
+    console.error('切换主题失败:', error);
+    return { success: false, message: '系统错误' };
   }
 }
 
@@ -277,4 +549,8 @@ module.exports = {
   loadTheme,
   applyTheme,
   onThemeChange,
+  getUserAvailableThemes,
+  isThemeUnlocked,
+  unlockTheme,
+  switchTheme,
 };
