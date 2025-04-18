@@ -79,22 +79,52 @@ Page({
 
         this.setData(userInfo);
 
-        db.collection('userInfo').add({
-          data: {
-            ...userInfo,
-            openid: this.data.openid,
-            createTime: new Date(), // 创建时间
-          },
-          success: res => {
-            // 刷新打卡组件状态
-            setTimeout(() => {
-              const checkInComponent = this.selectComponent('#checkIn');
-              if (checkInComponent) {
-                checkInComponent.checkTodayStatus();
-              }
-            }, 1500); // 等待 1.5 秒确保数据已经存储
-          },
-        });
+        // 获取默认主题
+        themeManager
+          .getDefaultTheme()
+          .then(defaultTheme => {
+            // 添加用户到数据库
+            db.collection('userInfo').add({
+              data: {
+                ...userInfo,
+                openid: this.data.openid,
+                createTime: new Date(), // 创建时间
+                currentTheme: defaultTheme ? defaultTheme.id : 'theme1', // 设置默认主题
+              },
+              success: res => {
+                // 刷新打卡组件状态
+                setTimeout(() => {
+                  const checkInComponent = this.selectComponent('#checkIn');
+                  if (checkInComponent) {
+                    checkInComponent.checkTodayStatus();
+                  }
+                }, 1500); // 等待 1.5 秒确保数据已经存储
+              },
+              fail: err => {
+                console.error('用户手动登录数据保存失败:', err);
+              },
+            });
+          })
+          .catch(err => {
+            console.error('获取默认主题失败:', err);
+            // 即使获取默认主题失败，也尝试保存用户信息
+            db.collection('userInfo').add({
+              data: {
+                ...userInfo,
+                openid: this.data.openid,
+                createTime: new Date(), // 创建时间
+                currentTheme: 'theme1', // 使用硬编码的默认主题ID
+              },
+              success: res => {
+                setTimeout(() => {
+                  const checkInComponent = this.selectComponent('#checkIn');
+                  if (checkInComponent) {
+                    checkInComponent.checkTodayStatus();
+                  }
+                }, 1500);
+              },
+            });
+          });
       },
       fail: err => {
         wx.showToast({
@@ -130,7 +160,7 @@ Page({
       loading: false,
     });
 
-    // 添加到数据库
+    // 添加到数据库，会同时设置默认主题
     this.addUserToDatabase(userInfo);
   },
 
@@ -240,13 +270,17 @@ Page({
       .count()
       .then(res => {
         if (res.total === 0) {
-          // 用户不存在，添加新用户
-          return db.collection('userInfo').add({
-            data: {
-              ...userInfo,
-              openid: this.data.openid,
-              createTime: new Date(),
-            },
+          // 获取默认主题
+          return themeManager.getDefaultTheme().then(defaultTheme => {
+            // 用户不存在，添加新用户
+            return db.collection('userInfo').add({
+              data: {
+                ...userInfo,
+                openid: this.data.openid,
+                createTime: new Date(),
+                currentTheme: defaultTheme ? defaultTheme.id : 'theme1', // 设置默认主题
+              },
+            });
           });
         } else {
           return { success: true };
@@ -263,6 +297,7 @@ Page({
         }, 1000);
       })
       .catch(err => {
+        console.error('添加用户到数据库失败:', err);
         this.setData({ loginState: 'idle' });
       });
   },
