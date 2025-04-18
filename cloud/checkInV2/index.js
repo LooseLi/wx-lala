@@ -3,16 +3,24 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
-// 计算连续签到天数
-const calculateContinuousDays = dates => {
+/**
+ * 格式化日期为 YYYY-MM-DD 字符串
+ * @param {Date} date - 日期对象
+ * @returns {string} - 格式化后的日期字符串
+ */
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// 计算连续签到天数 - 使用纯字符串比较
+const calculateContinuousDays = (dates, todayStr) => {
   if (!dates || dates.length === 0) return 0;
 
   // 按日期排序
   const sortedDates = [...dates].sort();
-
-  // 获取今天的日期字符串
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
 
   // 获取最后一次打卡日期
   const lastCheckInDate = sortedDates[sortedDates.length - 1];
@@ -20,15 +28,20 @@ const calculateContinuousDays = dates => {
   // 如果今天已打卡，从今天往前数
   if (lastCheckInDate === todayStr) {
     let continuous = 1;
-    let lastDate = now;
+    let lastDateStr = todayStr;
 
     for (let i = sortedDates.length - 2; i >= 0; i--) {
-      const currentDate = new Date(sortedDates[i]);
-      const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000));
+      const currentDateStr = sortedDates[i];
 
-      if (dayDiff === 1) {
+      // 计算日期差
+      const [lastYear, lastMonth, lastDay] = lastDateStr.split('-').map(Number);
+      const lastDate = new Date(lastYear, lastMonth - 1, lastDay);
+      lastDate.setDate(lastDate.getDate() - 1);
+      const expectedDateStr = formatDate(lastDate);
+
+      if (currentDateStr === expectedDateStr) {
         continuous++;
-        lastDate = currentDate;
+        lastDateStr = currentDateStr;
       } else {
         break;
       }
@@ -37,22 +50,30 @@ const calculateContinuousDays = dates => {
   }
   // 如果今天未打卡，看是否是昨天
   else {
-    const yesterday = new Date(now);
+    // 计算昨天的日期
+    const [todayYear, todayMonth, todayDay] = todayStr.split('-').map(Number);
+    const today = new Date(todayYear, todayMonth - 1, todayDay);
+    const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const yesterdayStr = formatDate(yesterday);
 
     // 如果最后打卡日期是昨天，就从昨天开始数
     if (lastCheckInDate === yesterdayStr) {
       let continuous = 1;
-      let lastDate = yesterday;
+      let lastDateStr = yesterdayStr;
 
       for (let i = sortedDates.length - 2; i >= 0; i--) {
-        const currentDate = new Date(sortedDates[i]);
-        const dayDiff = Math.floor((lastDate - currentDate) / (24 * 60 * 60 * 1000));
+        const currentDateStr = sortedDates[i];
 
-        if (dayDiff === 1) {
+        // 计算日期差
+        const [lastYear, lastMonth, lastDay] = lastDateStr.split('-').map(Number);
+        const lastDate = new Date(lastYear, lastMonth - 1, lastDay);
+        lastDate.setDate(lastDate.getDate() - 1);
+        const expectedDateStr = formatDate(lastDate);
+
+        if (currentDateStr === expectedDateStr) {
           continuous++;
-          lastDate = currentDate;
+          lastDateStr = currentDateStr;
         } else {
           break;
         }
@@ -69,10 +90,30 @@ const calculateContinuousDays = dates => {
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const userId = wxContext.OPENID;
-  const now = new Date();
-  const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const day = now.getDate();
-  const dateStr = now.toISOString().split('T')[0];
+
+  // 使用前端传递的本地日期信息
+  let year, month, day, todayStr, yearMonth;
+  let now = new Date(); // 默认当前时间，用于时间戳
+
+  if (event.localDate) {
+    // 使用前端传递的日期信息
+    year = parseInt(event.localDate.year);
+    month = parseInt(event.localDate.month);
+    day = parseInt(event.localDate.day);
+    todayStr = event.localDate.dateStr;
+    yearMonth = `${year}-${month.toString().padStart(2, '0')}`;
+
+    console.log('使用前端传递的日期:', { year, month, day, todayStr, yearMonth });
+  } else {
+    // 兼容旧调用，使用云函数的日期（可能存在时区问题）
+    year = now.getFullYear();
+    month = now.getMonth() + 1;
+    day = now.getDate();
+    yearMonth = `${year}-${String(month).padStart(2, '0')}`;
+    todayStr = formatDate(now);
+
+    console.log('使用云函数本地日期:', { year, month, day, todayStr, yearMonth });
+  }
 
   const checkInMonthly = db.collection('checkInMonthly');
   const userPoints = db.collection('userPoints');
@@ -97,17 +138,17 @@ exports.main = async (event, context) => {
     // 获取所有月份的打卡记录
     const allMonthlyRecords = await checkInMonthly.where({ userId }).get();
 
-    // 获取所有打卡日期
+    // 获取所有打卡日期，统一转为 YYYY-MM-DD 格式
     const allDates = allMonthlyRecords.data.reduce((acc, month) => {
       const dates = month.checkInDays.map(d => `${month.yearMonth}-${String(d).padStart(2, '0')}`);
       return [...acc, ...dates];
     }, []);
 
     // 添加今天的日期（因为还未更新到数据库）
-    const allDatesWithToday = [...allDates, dateStr];
+    const allDatesWithToday = [...allDates, todayStr];
 
     // 使用统一的方法计算连续天数
-    const continuousDays = calculateContinuousDays(allDatesWithToday);
+    const continuousDays = calculateContinuousDays(allDatesWithToday, todayStr);
 
     // 计算额外积分
     if (continuousDays > 1) {
@@ -129,7 +170,7 @@ exports.main = async (event, context) => {
         data: {
           userId,
           yearMonth,
-          checkInDays: [day],
+          checkInDays: [Number(day)], // 确保存储为数字类型
           makeupDays: [],
           updatedAt: now,
         },
@@ -143,7 +184,7 @@ exports.main = async (event, context) => {
         })
         .update({
           data: {
-            checkInDays: _.addToSet(day),
+            checkInDays: _.addToSet(Number(day)), // 确保存储为数字类型
             updatedAt: now,
           },
         });

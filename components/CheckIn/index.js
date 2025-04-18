@@ -46,6 +46,18 @@ Component({
   },
 
   methods: {
+    /**
+     * 格式化日期为 YYYY-MM-DD 字符串
+     * @param {Date} date - 日期对象
+     * @returns {string} - 格式化后的日期字符串
+     */
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+
     // 检查今日打卡状态
     async checkTodayStatus() {
       console.log('开始检查打卡状态');
@@ -61,15 +73,29 @@ Component({
       });
 
       try {
-        // 获取用户签到状态和积分
+        // 获取当前本地日期信息
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate();
+        const localDate = {
+          year,
+          month,
+          day,
+          dateStr: this.formatDate(now),
+        };
+
+        // 获取用户签到状态和积分，传递本地日期信息
         const { result } = await wx.cloud.callFunction({
           name: 'getCheckInStatus',
+          data: {
+            localDate,
+          },
         });
 
         console.log('签到状态查询结果：', result);
 
         if (result.success) {
-          const today = new Date().toISOString().split('T')[0];
           this.setData({
             isCheckedIn: result.data.isCheckedIn,
             continuousDays: result.data.continuousDays,
@@ -98,8 +124,23 @@ Component({
       });
 
       try {
+        // 获取当前本地日期信息
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate();
+        const localDate = {
+          year,
+          month,
+          day,
+          dateStr: this.formatDate(now),
+        };
+
         const res = await wx.cloud.callFunction({
           name: 'checkInV2',
+          data: {
+            localDate,
+          },
         });
 
         if (res.result.success) {
@@ -194,10 +235,23 @@ Component({
       });
 
       try {
+        // 获取当前本地日期信息
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate();
+        const localDate = {
+          year,
+          month,
+          day,
+          dateStr: this.formatDate(now),
+        };
+
         const res = await wx.cloud.callFunction({
           name: 'makeupCheckIn',
           data: {
             date: this.data.selectedDate,
+            localDate,
           },
         });
 

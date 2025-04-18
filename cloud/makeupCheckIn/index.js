@@ -4,12 +4,19 @@ const db = cloud.database();
 const _ = db.command;
 
 // 计算连续签到天数
-const calculateContinuousDays = (dates, targetDate) => {
+const calculateContinuousDays = (dates, targetDate, localDateObj) => {
   // 确保所有日期都是 YYYY-MM-DD 格式的字符串
   const sortedDates = [...dates, targetDate].sort();
 
   // 获取今天的日期字符串
-  const now = new Date();
+  let now;
+  if (localDateObj) {
+    // 如果提供了本地日期，使用它
+    now = new Date(localDateObj.year, localDateObj.month - 1, localDateObj.day);
+  } else {
+    // 否则使用服务器时间
+    now = new Date();
+  }
   const todayStr = now.toISOString().split('T')[0];
 
   // 获取最后一次打卡日期
@@ -65,15 +72,26 @@ const calculateContinuousDays = (dates, targetDate) => {
 };
 
 exports.main = async (event, context) => {
-  const { date } = event;
+  const { date, localDate } = event;
   const wxContext = cloud.getWXContext();
   const userId = wxContext.OPENID;
 
   try {
     // 1. 验证补签日期
     const targetDate = new Date(date);
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+
+    // 使用本地日期计算30天前的日期
+    let now;
+    if (localDate) {
+      // 如果前端传递了本地日期信息，使用它
+      now = new Date(localDate.year, localDate.month - 1, localDate.day);
+    } else {
+      // 兼容旧版本，使用服务器时间
+      now = new Date();
+    }
+
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(now.getDate() - 30);
 
     if (targetDate < thirtyDaysAgo) {
       return {
@@ -168,8 +186,8 @@ exports.main = async (event, context) => {
         return [...acc, ...dates];
       }, []);
 
-      // 计算新的连续签到天数
-      const newContinuousDays = calculateContinuousDays(allDates, date);
+      // 计算新的连续签到天数 - 传递本地日期
+      const newContinuousDays = calculateContinuousDays(allDates, date, localDate);
 
       // 6. 用户状态更新逻辑已移除（userCheckInStatus集合已删除）
 
