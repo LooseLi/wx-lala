@@ -67,7 +67,6 @@ Page({
         data.forEach(item => {
           item.days = BASE.dateDiff(item.date);
         });
-        // 使用 sort 方法降序排序
         data.sort((a, b) => b.days - a.days);
         this.setData({
           list: data,
@@ -89,7 +88,6 @@ Page({
     // 计算还可以选择的图片数量
     const remainingCount = Math.max(0, 6 - currentImageCount);
 
-    // 如果已经达到最大图片数量，提示用户并返回
     if (remainingCount <= 0) {
       wx.showToast({
         title: '最多只能上传6张图片',
@@ -392,9 +390,6 @@ Page({
 
   // 查看纪念日图片
   viewImages(e) {
-    // 注意：catchtap 已经阻止了事件冒泡，不需要再调用 stopPropagation
-    // 在微信小程序中，catchtap 等同于 bindtap + stopPropagation
-
     const item = e.currentTarget.dataset.eventIndex;
     if (item.images && item.images.length > 0) {
       // 显示加载中提示
