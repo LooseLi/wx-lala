@@ -62,7 +62,7 @@ Page({
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: res => {
+      success: async res => {
         const defaultAvatar = '/static/images/default-avatar.jpg';
         const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
 
@@ -79,52 +79,20 @@ Page({
 
         this.setData(userInfo);
 
-        // 获取默认主题
-        themeManager
-          .getDefaultTheme()
-          .then(defaultTheme => {
-            // 添加用户到数据库
-            db.collection('userInfo').add({
-              data: {
-                ...userInfo,
-                openid: this.data.openid,
-                createTime: new Date(), // 创建时间
-                currentTheme: defaultTheme ? defaultTheme.id : 'theme1', // 设置默认主题
-              },
-              success: res => {
-                // 刷新打卡组件状态
-                setTimeout(() => {
-                  const checkInComponent = this.selectComponent('#checkIn');
-                  if (checkInComponent) {
-                    checkInComponent.checkTodayStatus();
-                  }
-                }, 1500); // 等待 1.5 秒确保数据已经存储
-              },
-              fail: err => {
-                console.error('用户手动登录数据保存失败:', err);
-              },
-            });
-          })
-          .catch(err => {
-            console.error('获取默认主题失败:', err);
-            // 即使获取默认主题失败，也尝试保存用户信息
-            db.collection('userInfo').add({
-              data: {
-                ...userInfo,
-                openid: this.data.openid,
-                createTime: new Date(), // 创建时间
-                currentTheme: 'theme1', // 使用硬编码的默认主题ID
-              },
-              success: res => {
-                setTimeout(() => {
-                  const checkInComponent = this.selectComponent('#checkIn');
-                  if (checkInComponent) {
-                    checkInComponent.checkTodayStatus();
-                  }
-                }, 1500);
-              },
-            });
-          });
+        try {
+          // 获取默认主题
+          const defaultTheme = await themeManager.getDefaultTheme();
+
+          // 添加用户到数据库
+          await this.addUserToDatabase(userInfo);
+
+          // 加载主题数据
+          if (this.data.openid) {
+            await this.loadThemeData();
+          }
+        } catch (err) {
+          console.error('获取默认主题或保存用户信息失败:', err);
+        }
       },
       fail: err => {
         wx.showToast({
@@ -264,42 +232,46 @@ Page({
    * 将用户添加到数据库
    */
   addUserToDatabase: function (userInfo) {
-    // 检查是否已存在该用户
-    db.collection('userInfo')
-      .where({ openid: this.data.openid })
-      .count()
-      .then(res => {
-        if (res.total === 0) {
-          // 获取默认主题
-          return themeManager.getDefaultTheme().then(defaultTheme => {
-            // 用户不存在，添加新用户
-            return db.collection('userInfo').add({
-              data: {
-                ...userInfo,
-                openid: this.data.openid,
-                createTime: new Date(),
-                currentTheme: defaultTheme ? defaultTheme.id : 'theme1', // 设置默认主题
-              },
+    return new Promise((resolve, reject) => {
+      // 检查是否已存在该用户
+      db.collection('userInfo')
+        .where({ openid: this.data.openid })
+        .count()
+        .then(res => {
+          if (res.total === 0) {
+            // 获取默认主题
+            return themeManager.getDefaultTheme().then(defaultTheme => {
+              // 用户不存在，添加新用户
+              return db.collection('userInfo').add({
+                data: {
+                  ...userInfo,
+                  openid: this.data.openid,
+                  createTime: new Date(),
+                  currentTheme: defaultTheme ? defaultTheme.id : 'theme1', // 设置默认主题
+                },
+              });
             });
-          });
-        } else {
-          return { success: true };
-        }
-      })
-      .then(res => {
-        this.setData({ loginState: 'logged-in' });
-
-        setTimeout(() => {
-          const checkInComponent = this.selectComponent('#checkIn');
-          if (checkInComponent) {
-            checkInComponent.checkTodayStatus();
+          } else {
+            return { success: true };
           }
-        }, 1000);
-      })
-      .catch(err => {
-        console.error('添加用户到数据库失败:', err);
-        this.setData({ loginState: 'idle' });
-      });
+        })
+        .then(res => {
+          this.setData({ loginState: 'logged-in' });
+
+          setTimeout(() => {
+            const checkInComponent = this.selectComponent('#checkIn');
+            if (checkInComponent) {
+              checkInComponent.checkTodayStatus();
+            }
+          }, 1000);
+          resolve(res);
+        })
+        .catch(err => {
+          console.error('添加用户到数据库失败:', err);
+          this.setData({ loginState: 'idle' });
+          reject(err);
+        });
+    });
   },
 
   /**
@@ -319,7 +291,12 @@ Page({
       });
 
       // 获取openid并从数据库获取最新用户数据
-      this.getOpenIdAndFetchLatestData();
+      this.getOpenIdAndFetchLatestData().then(() => {
+        // 加载主题数据
+        if (this.data.openid) {
+          this.loadThemeData();
+        }
+      });
     } else {
       // 未登录，开始登录流程
       this.startLoginProcess();
@@ -375,12 +352,15 @@ Page({
           updateTime: new Date(),
         };
 
-        this.addUserToDatabase(userInfo);
+        await this.addUserToDatabase(userInfo);
 
         this.setData({ loading: false });
       }
+      return openid;
     } catch (err) {
       this.setData({ loading: false });
+      console.error('获取openid失败:', err);
+      throw err;
     }
   },
 
@@ -398,6 +378,9 @@ Page({
       if (checkInComponent) {
         checkInComponent.checkTodayStatus();
       }
+
+      // 刷新主题数据
+      this.loadThemeData();
     }
 
     if (this.data.loginState === 'idle' && !this.data.isAuth) {
@@ -778,13 +761,7 @@ Page({
 
     // 免费主题或已解锁的付费主题，直接切换
     if (theme.price === 0 || theme.unlocked) {
-      wx.showToast({
-        title: `切换主题成功`,
-        icon: 'none',
-      });
-      this.setData({
-        currentTheme: theme,
-      });
+      this.switchTheme(theme);
     } else {
       // 未解锁的付费主题，显示解锁确认对话框
       wx.showModal({
@@ -792,11 +769,7 @@ Page({
         content: `确定使用 ${theme.price} 积分解锁该主题吗？`,
         success: res => {
           if (res.confirm) {
-            // 在正式开发时，这里需要调用解锁API
-            wx.showToast({
-              title: '解锁功能开发中...',
-              icon: 'none',
-            });
+            this.unlockTheme(theme);
           }
         },
       });
@@ -810,5 +783,147 @@ Page({
     wx.navigateTo({
       url: '/pages/themes/index',
     });
+  },
+
+  /**
+   * 加载用户主题数据
+   */
+  loadThemeData: async function () {
+    if (!this.data.openid) return;
+
+    wx.showLoading({ title: '加载中...' });
+
+    try {
+      // 获取用户可用的主题列表
+      const themes = await themeManager.getUserAvailableThemes(this.data.openid);
+
+      if (themes && themes.length > 0) {
+        // 获取当前使用的主题
+        const currentTheme = themes.find(theme => theme.current) || themes[0];
+
+        // 选择前两个主题作为预览
+        let previewThemes = [];
+
+        // 首先加入当前主题
+        previewThemes.push(currentTheme);
+
+        // 然后添加一个不同的主题（优先选择未解锁的付费主题）
+        const otherThemes = themes.filter(theme => theme.id !== currentTheme.id);
+
+        // 优先展示付费未解锁的主题
+        const premiumUnlocked = otherThemes.find(theme => theme.price > 0 && !theme.unlocked);
+        const premiumLocked = otherThemes.find(theme => theme.price > 0 && theme.unlocked);
+        const freeTheme = otherThemes.find(theme => theme.price === 0);
+
+        // 添加第二个主题（按优先级）
+        if (premiumUnlocked) {
+          previewThemes.push(premiumUnlocked);
+        } else if (premiumLocked) {
+          previewThemes.push(premiumLocked);
+        } else if (freeTheme) {
+          previewThemes.push(freeTheme);
+        } else if (otherThemes.length > 0) {
+          previewThemes.push(otherThemes[0]);
+        }
+
+        // 如果只有一个主题，添加一个虚拟的付费主题
+        if (previewThemes.length === 1) {
+          previewThemes.push({
+            id: 'theme2',
+            price: 520,
+            themeImage:
+              'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3503.jpeg?sign=960f3fc0a5a2c31e84c3510156c33a0a&t=1744949018',
+            isDefault: false,
+            unlocked: false,
+          });
+        }
+
+        this.setData({
+          currentTheme,
+          previewThemes,
+        });
+      }
+    } catch (error) {
+      console.error('加载主题数据失败:', error);
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  /**
+   * 切换主题
+   */
+  async switchTheme(theme) {
+    if (!this.data.openid) return;
+
+    wx.showLoading({ title: '正在切换主题...' });
+
+    try {
+      // 调用主题管理器的切换方法
+      const result = await themeManager.switchTheme(this.data.openid, theme.id);
+
+      if (result.success) {
+        wx.showToast({
+          title: '主题切换成功',
+          icon: 'success',
+        });
+
+        // 刷新主题数据
+        await this.loadThemeData();
+
+        // 应用主题背景
+        this.applyThemeBackground();
+      } else {
+        wx.showToast({
+          title: result.message || '主题切换失败',
+          icon: 'none',
+        });
+      }
+    } catch (error) {
+      console.error('切换主题失败:', error);
+      wx.showToast({
+        title: '主题切换失败',
+        icon: 'none',
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  /**
+   * 解锁主题
+   */
+  async unlockTheme(theme) {
+    if (!this.data.openid) return;
+
+    wx.showLoading({ title: '正在解锁主题...' });
+
+    try {
+      // 调用主题管理器的解锁方法
+      const result = await themeManager.unlockTheme(this.data.openid, theme.id);
+
+      if (result.success) {
+        wx.showToast({
+          title: '解锁成功',
+          icon: 'success',
+        });
+
+        // 解锁成功后自动切换到该主题
+        await this.switchTheme(theme);
+      } else {
+        wx.showToast({
+          title: result.message || '解锁失败',
+          icon: 'none',
+        });
+      }
+    } catch (error) {
+      console.error('解锁主题失败:', error);
+      wx.showToast({
+        title: '解锁失败',
+        icon: 'none',
+      });
+    } finally {
+      wx.hideLoading();
+    }
   },
 });

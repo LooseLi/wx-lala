@@ -296,18 +296,39 @@ async function unlockTheme(openid, themeId) {
     const theme = themeRes.data[0];
     const themePrice = theme.price || 0;
 
-    // 获取用户积分
-    const userPointsRes = await userPoints.where({ userId: openid }).get();
-    if (!userPointsRes.data || userPointsRes.data.length === 0) {
-      return { success: false, message: '用户积分信息不存在' };
+    // 使用themeServices云函数获取用户积分信息
+    const userPointsRes = await wx.cloud.callFunction({
+      name: 'themeServices',
+      data: {
+        action: 'getUserPoints',
+      },
+    });
+
+    if (!userPointsRes.result || !userPointsRes.result.success) {
+      console.error('获取用户积分失败:', userPointsRes);
+      return { success: false, message: '获取用户积分信息失败' };
     }
 
-    const pointsRecord = userPointsRes.data[0];
-    const currentPoints = pointsRecord.currentPoints || 0;
+    const currentPoints = userPointsRes.result.currentPoints || 0;
 
     // 检查积分是否足够
     if (currentPoints < themePrice) {
       return { success: false, message: '积分不足' };
+    }
+
+    // 使用themeServices云函数消费积分
+    const consumeResult = await wx.cloud.callFunction({
+      name: 'themeServices',
+      data: {
+        action: 'consumePoints',
+        pointsCost: themePrice,
+        themeId: themeId,
+      },
+    });
+
+    if (!consumeResult.result || !consumeResult.result.success) {
+      console.error('消费积分失败:', consumeResult);
+      return { success: false, message: consumeResult.result?.error || '消费积分失败' };
     }
 
     // 获取用户信息
@@ -318,28 +339,14 @@ async function unlockTheme(openid, themeId) {
 
     const user = userInfoRes.data[0];
 
-    // 开始事务处理
-    const transaction = {
-      success: false,
-      message: '未知错误',
+    // 更新用户解锁主题记录
+    const unlockRecord = {
+      themeId,
+      unlockTime: new Date(),
+      price: themePrice,
     };
 
-    // 1. 扣除积分
     try {
-      await userPoints.where({ userId: openid }).update({
-        data: {
-          currentPoints: db.command.inc(-themePrice),
-          updatedAt: new Date(),
-        },
-      });
-
-      // 2. 更新用户解锁主题记录
-      const unlockRecord = {
-        themeId,
-        unlockTime: new Date(),
-        price: themePrice,
-      };
-
       if (user.unlockedThemes) {
         // 已有解锁记录，添加新记录
         await userInfo.where({ openid }).update({
@@ -356,14 +363,15 @@ async function unlockTheme(openid, themeId) {
         });
       }
 
-      transaction.success = true;
-      transaction.message = '主题解锁成功';
+      return {
+        success: true,
+        message: '主题解锁成功',
+        currentPoints: consumeResult.result.currentPoints,
+      };
     } catch (error) {
-      console.error('解锁主题事务处理失败:', error);
-      transaction.message = '数据库操作失败';
+      console.error('更新用户解锁主题记录失败:', error);
+      return { success: false, message: '数据库操作失败' };
     }
-
-    return transaction;
   } catch (error) {
     console.error('解锁主题失败:', error);
     return { success: false, message: '系统错误' };
@@ -543,6 +551,41 @@ function onThemeChange(callback) {
   };
 }
 
+/**
+ * 获取用户积分
+ * @returns {Promise<Object>} 返回用户积分信息
+ */
+async function getUserPoints() {
+  try {
+    const result = await wx.cloud.callFunction({
+      name: 'themeServices',
+      data: {
+        action: 'getUserPoints',
+      },
+    });
+
+    if (result.result && result.result.success) {
+      return {
+        success: true,
+        currentPoints: result.result.currentPoints || 0,
+        totalPoints: result.result.totalPoints || 0,
+      };
+    } else {
+      console.error('获取用户积分失败:', result);
+      return {
+        success: false,
+        error: result.result?.error || '获取积分失败',
+      };
+    }
+  } catch (error) {
+    console.error('调用积分云函数失败:', error);
+    return {
+      success: false,
+      error: error.message || '系统错误',
+    };
+  }
+}
+
 module.exports = {
   getDefaultTheme,
   getUserTheme,
@@ -553,4 +596,5 @@ module.exports = {
   isThemeUnlocked,
   unlockTheme,
   switchTheme,
+  getUserPoints,
 };
