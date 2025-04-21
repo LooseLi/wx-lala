@@ -81,8 +81,6 @@ async function getUserPoints(userId) {
  * @param {string} themeId 主题ID
  */
 async function consumePoints(userId, pointsCost, themeId) {
-  console.log('消费积分参数:', { userId, pointsCost, themeId });
-
   // 确保pointsCost是数字类型
   pointsCost = Number(pointsCost);
   if (isNaN(pointsCost)) {
@@ -94,12 +92,10 @@ async function consumePoints(userId, pointsCost, themeId) {
   }
 
   try {
-    // 先检查不使用事务的方式
+    // 查询用户当前积分
     const userPointsRes = await db.collection('userPoints').where({ userId }).get();
-    console.log('查询到的用户积分:', userPointsRes);
 
     if (!userPointsRes.data || userPointsRes.data.length === 0) {
-      console.error('用户积分记录不存在');
       return {
         success: false,
         error: '用户积分记录不存在',
@@ -110,7 +106,6 @@ async function consumePoints(userId, pointsCost, themeId) {
 
     // 检查积分是否足够
     if (userPoints.currentPoints < pointsCost) {
-      console.error('积分不足', { 当前: userPoints.currentPoints, 需要: pointsCost });
       return {
         success: false,
         error: '积分不足',
@@ -146,7 +141,6 @@ async function consumePoints(userId, pointsCost, themeId) {
       // 不因为记录购买失败而影响整体流程
     }
 
-    console.log('积分消费成功', { newPoints: newCurrentPoints });
     return {
       success: true,
       currentPoints: newCurrentPoints,

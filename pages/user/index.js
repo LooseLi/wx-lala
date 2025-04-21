@@ -18,29 +18,8 @@ Page({
     loginState: 'idle',
     themeBackground: '', // 主题背景图片
     // 主题相关数据
-    currentTheme: {
-      id: 'theme1',
-      isDefault: true,
-      price: 0,
-    },
-    previewThemes: [
-      {
-        id: 'theme1',
-        price: 0,
-        themeImage:
-          'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3325.jpeg?sign=388e88c2ac1bd2e2761ae1faad064a26&t=1744257722',
-        isDefault: true,
-        unlocked: true,
-      },
-      {
-        id: 'theme2',
-        price: 520,
-        themeImage:
-          'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3503.jpeg?sign=960f3fc0a5a2c31e84c3510156c33a0a&t=1744949018',
-        isDefault: false,
-        unlocked: false,
-      },
-    ],
+    currentTheme: null,
+    previewThemes: [],
   },
 
   // 打卡成功的回调
@@ -803,18 +782,6 @@ Page({
 
         // 保持主题原始顺序，选择前两个主题作为预览
         const previewThemes = themes.slice(0, 2);
-
-        // 如果只有一个主题，添加一个虚拟的付费主题
-        if (previewThemes.length === 1) {
-          previewThemes.push({
-            id: 'theme2',
-            price: 520,
-            themeImage:
-              'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/IMG_3503.jpeg?sign=960f3fc0a5a2c31e84c3510156c33a0a&t=1744949018',
-            isDefault: false,
-            unlocked: false,
-          });
-        }
 
         this.setData({
           currentTheme,
