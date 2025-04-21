@@ -81,19 +81,25 @@ async function getUserPoints(userId) {
  * @param {string} themeId 主题ID
  */
 async function consumePoints(userId, pointsCost, themeId) {
-  const transaction = await db.startTransaction();
+  console.log('消费积分参数:', { userId, pointsCost, themeId });
+
+  // 确保pointsCost是数字类型
+  pointsCost = Number(pointsCost);
+  if (isNaN(pointsCost)) {
+    console.error('积分消费值无效');
+    return {
+      success: false,
+      error: '积分消费值无效',
+    };
+  }
 
   try {
-    // 查询用户当前积分
-    const userPointsRes = await transaction
-      .collection('userPoints')
-      .where({
-        userId,
-      })
-      .get();
+    // 先检查不使用事务的方式
+    const userPointsRes = await db.collection('userPoints').where({ userId }).get();
+    console.log('查询到的用户积分:', userPointsRes);
 
     if (!userPointsRes.data || userPointsRes.data.length === 0) {
-      await transaction.rollback();
+      console.error('用户积分记录不存在');
       return {
         success: false,
         error: '用户积分记录不存在',
@@ -104,16 +110,18 @@ async function consumePoints(userId, pointsCost, themeId) {
 
     // 检查积分是否足够
     if (userPoints.currentPoints < pointsCost) {
-      await transaction.rollback();
+      console.error('积分不足', { 当前: userPoints.currentPoints, 需要: pointsCost });
       return {
         success: false,
         error: '积分不足',
       };
     }
 
-    // 更新积分
+    // 使用简单的更新而不是事务
     const newCurrentPoints = userPoints.currentPoints - pointsCost;
-    await transaction
+
+    // 1. 更新积分
+    await db
       .collection('userPoints')
       .doc(userPoints._id)
       .update({
@@ -123,27 +131,28 @@ async function consumePoints(userId, pointsCost, themeId) {
         },
       });
 
-    // 记录购买记录
-    await transaction.collection('themePurchases').add({
-      data: {
-        userId,
-        themeId,
-        pointsCost,
-        purchasedAt: new Date(),
-      },
-    });
+    // 2. 记录购买记录，如果集合不存在会自动创建
+    try {
+      await db.collection('themePurchases').add({
+        data: {
+          userId,
+          themeId,
+          pointsCost,
+          purchasedAt: new Date(),
+        },
+      });
+    } catch (purchaseError) {
+      console.error('记录购买历史失败，但积分已扣除:', purchaseError);
+      // 不因为记录购买失败而影响整体流程
+    }
 
-    // 提交事务
-    await transaction.commit();
-
+    console.log('积分消费成功', { newPoints: newCurrentPoints });
     return {
       success: true,
       currentPoints: newCurrentPoints,
       message: '主题购买成功',
     };
   } catch (error) {
-    // 回滚事务
-    await transaction.rollback();
     console.error('消费积分失败:', error);
     return {
       success: false,
