@@ -108,7 +108,10 @@ Page({
     });
 
     // 添加到数据库，会同时设置默认主题
-    this.addUserToDatabase(userInfo);
+    this.addUserToDatabase(userInfo).then(() => {
+      // 确保用户创建后加载主题数据
+      this.loadThemeData();
+    });
   },
 
   /**
@@ -237,12 +240,20 @@ Page({
         .then(res => {
           this.setData({ loginState: 'logged-in' });
 
+          // 刷新页面数据
           setTimeout(() => {
+            // 加载打卡组件状态
             const checkInComponent = this.selectComponent('#checkIn');
             if (checkInComponent) {
               checkInComponent.checkTodayStatus();
             }
-          }, 1000);
+
+            // 确保主题数据已加载
+            if (!this.data.previewThemes || this.data.previewThemes.length === 0) {
+              this.loadThemeData();
+            }
+          }, 500);
+
           resolve(res);
         })
         .catch(err => {
@@ -523,75 +534,6 @@ Page({
     });
   },
 
-  // 清理旧头像，保留最近一次的
-  async cleanupOldAvatars(userFolder) {
-    try {
-      // 查询数据库获取用户历史头像记录
-      const userRecord = await db
-        .collection('userInfo')
-        .where({
-          openid: this.data.openid,
-        })
-        .get();
-
-      // 检查用户记录是否存在
-      if (!userRecord.data || userRecord.data.length === 0) {
-        return;
-      }
-
-      // 获取当前用户记录
-      const user = userRecord.data[0];
-
-      // 初始化头像历史记录（如果不存在）
-      if (!user.avatarHistory) {
-        await db
-          .collection('userInfo')
-          .where({ openid: this.data.openid })
-          .update({
-            data: { avatarHistory: [] },
-          });
-        return;
-      }
-
-      // 要保留的头像文件ID
-      const keepFileIDs = [this.data.avatar, this.data.previousAvatar].filter(Boolean);
-
-      // 找出需要删除的旧头像
-      const filesToDelete = user.avatarHistory.filter(fileID => {
-        // 检查这个fileID是否应该保留
-        return !keepFileIDs.some(keepID => {
-          // 如果两个ID完全相等，或者一个包含另一个，则认为是同一个文件
-          return (
-            keepID === fileID ||
-            (keepID && fileID && (keepID.includes(fileID) || fileID.includes(keepID)))
-          );
-        });
-      });
-
-      // 如果有需要删除的头像
-      if (filesToDelete.length > 0) {
-        try {
-          // 删除旧头像文件
-          const deleteResult = await wx.cloud.deleteFile({
-            fileList: filesToDelete,
-          });
-
-          // 更新数据库中的头像历史记录，只保留当前头像和上一个头像
-          await db
-            .collection('userInfo')
-            .where({
-              openid: this.data.openid,
-            })
-            .update({
-              data: {
-                avatarHistory: keepFileIDs.filter(Boolean),
-              },
-            });
-        } catch (deleteErr) {}
-      }
-    } catch (err) {}
-  },
-
   // 更新头像历史记录数组
   updateAvatarHistory(newAvatar) {
     // 获取当前用户信息
@@ -605,32 +547,6 @@ Page({
 
     // 只保留最近两个头像记录
     return history.slice(0, 2);
-  },
-
-  // 备用方法：如果清理失败，直接上传
-  uploadAvatarWithoutCleanup(userFolder, tempFilePath) {
-    wx.cloud.uploadFile({
-      cloudPath: `avatar/${userFolder}/${Date.now()}.jpg`,
-      filePath: tempFilePath,
-      success: res => {
-        const avatar = res.fileID;
-        wx.hideLoading();
-
-        // 更新本地和数据库
-        this.updateUserInfo({
-          avatar,
-          previousAvatar: this.data.avatar, // 保存上一次头像路径
-          avatarHistory: this.updateAvatarHistory(avatar), // 更新头像历史记录
-        });
-      },
-      fail: err => {
-        wx.hideLoading();
-        wx.showToast({
-          title: '上传失败',
-          icon: 'none',
-        });
-      },
-    });
   },
 
   // 编辑昵称
@@ -768,13 +684,18 @@ Page({
    * 加载用户主题数据
    */
   loadThemeData: async function () {
-    if (!this.data.openid) return;
+    if (!this.data.openid) {
+      console.log('loadThemeData: openid为空，无法加载主题数据');
+      return;
+    }
 
+    console.log('开始加载主题数据');
     wx.showLoading({ title: '加载中...' });
 
     try {
       // 获取用户可用的主题列表
       const themes = await themeManager.getUserAvailableThemes(this.data.openid);
+      console.log('获取到主题数据:', themes);
 
       if (themes && themes.length > 0) {
         // 获取当前使用的主题（只用于标记，不改变排序）
@@ -782,11 +703,14 @@ Page({
 
         // 保持主题原始顺序，选择前两个主题作为预览
         const previewThemes = themes.slice(0, 2);
+        console.log('预览主题:', previewThemes);
 
         this.setData({
           currentTheme,
           previewThemes,
         });
+      } else {
+        console.warn('未获取到主题数据或主题列表为空');
       }
     } catch (error) {
       console.error('加载主题数据失败:', error);

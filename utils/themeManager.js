@@ -11,10 +11,11 @@ let userPoints = null;
 /**
  * 初始化数据库连接
  * 确保在使用数据库前已经初始化云API
+ * @param {boolean} forceInit 是否强制重新初始化
  */
-function initDatabase() {
-  // 如果数据库已初始化，直接返回
-  if (db && themes && userInfo && userPoints) {
+function initDatabase(forceInit = false) {
+  // 如果数据库已初始化，直接返回（除非强制重新初始化）
+  if (!forceInit && db && themes && userInfo && userPoints) {
     return true;
   }
 
@@ -32,6 +33,7 @@ function initDatabase() {
       themes = db.collection('themes');
       userInfo = db.collection('userInfo');
       userPoints = db.collection('userPoints');
+      console.log('数据库初始化成功');
       return true;
     } catch (dbError) {
       console.error('获取数据库实例失败，可能是云环境未初始化:', dbError);
@@ -162,24 +164,33 @@ async function getUserAvailableThemes(openid) {
     return [];
   }
 
-  if (!initDatabase()) {
+  // 在关键函数中使用强制初始化以确保数据库连接
+  if (!initDatabase(true)) {
     console.error('数据库未初始化，无法获取用户可用主题');
     return [];
   }
 
   try {
+    console.log('开始获取主题数据');
     // 获取所有主题
     const themesRes = await themes.get();
     if (!themesRes.data || themesRes.data.length === 0) {
+      console.warn('未找到任何主题数据');
       return [];
     }
+    console.log('从数据库获取到主题数量:', themesRes.data.length);
 
     // 获取用户信息（获取已解锁主题列表）
     const userInfoRes = await userInfo.where({ openid }).get();
     const user = userInfoRes.data && userInfoRes.data.length > 0 ? userInfoRes.data[0] : null;
 
+    if (!user) {
+      console.warn('未找到用户信息');
+    }
+
     // 获取用户当前使用的主题
     const currentThemeId = user && user.currentTheme ? user.currentTheme : null;
+    console.log('当前主题ID:', currentThemeId);
 
     // 处理主题列表，添加解锁状态
     const availableThemes = themesRes.data.map(theme => {
@@ -199,6 +210,7 @@ async function getUserAvailableThemes(openid) {
     });
 
     // 不进行排序，保持原始顺序
+    console.log('处理后的主题数量:', availableThemes.length);
     return availableThemes;
   } catch (error) {
     console.error('获取用户可用主题失败:', error);
