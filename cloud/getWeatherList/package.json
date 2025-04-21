@@ -1,0 +1,14 @@
+{
+  "name": "getWeatherList",
+  "version": "1.0.0",
+  "description": "获取天气图标列表数据",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

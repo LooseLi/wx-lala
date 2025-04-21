@@ -178,10 +178,35 @@ Page({
 
   // 获取列表(天气)
   async getWeatherList() {
-    const res = await weatherDB.get();
-    this.setData({
-      weathers: res.data,
-    });
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'getWeatherList',
+      });
+
+      if (res.result && res.result.success) {
+        this.setData({
+          weathers: res.result.data,
+        });
+      } else {
+        console.error('获取天气列表失败:', res);
+        // 失败时尝试本地查询作为备选
+        const dbRes = await weatherDB.get();
+        this.setData({
+          weathers: dbRes.data,
+        });
+      }
+    } catch (error) {
+      console.error('调用天气列表云函数失败:', error);
+      // 出错时尝试本地查询作为备选
+      try {
+        const dbRes = await weatherDB.get();
+        this.setData({
+          weathers: dbRes.data,
+        });
+      } catch (err) {
+        console.error('本地查询天气列表也失败:', err);
+      }
+    }
   },
 
   // 点击
@@ -242,18 +267,6 @@ Page({
   // 检查本地存储中的食物数据
   checkStoredFoodData() {
     const today = this.formatDate(new Date());
-    const storedData = wx.getStorageSync('randomFoodData');
-
-    if (storedData && storedData.date === today) {
-      this.setData({
-        foods: storedData.foods,
-      });
-    } else {
-      this.setData({
-        foods: [],
-      });
-      wx.removeStorageSync('randomFoodData');
-    }
   },
 
   /**
