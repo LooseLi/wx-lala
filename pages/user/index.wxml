@@ -43,7 +43,7 @@
 
     <!-- 主题皮肤入口 -->
     <view class="theme-entry" wx:if="{{isAuth}}">
-      <view class="section-title">主题皮肤</view>
+      <!-- <view class="section-title">主题皮肤</view> -->
       <view class="theme-preview">
         <!-- 第一个主题 (免费) -->
         <view class="theme-item {{currentTheme.id === previewThemes[0].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 0}}" data-theme-id="{{previewThemes[0].id}}" bind:tap="handleThemeClick">
@@ -63,7 +63,7 @@
 
         <!-- 更多主题按钮 -->
         <view class="theme-more-item" bind:tap="goToThemesPage">
-          <view class="more-icon">+</view>
+          <view class="more-icon">...</view>
           <view class="more-text">更多主题</view>
         </view>
       </view>
