@@ -798,33 +798,11 @@ Page({
       const themes = await themeManager.getUserAvailableThemes(this.data.openid);
 
       if (themes && themes.length > 0) {
-        // 获取当前使用的主题
+        // 获取当前使用的主题（只用于标记，不改变排序）
         const currentTheme = themes.find(theme => theme.current) || themes[0];
 
-        // 选择前两个主题作为预览
-        let previewThemes = [];
-
-        // 首先加入当前主题
-        previewThemes.push(currentTheme);
-
-        // 然后添加一个不同的主题（优先选择未解锁的付费主题）
-        const otherThemes = themes.filter(theme => theme.id !== currentTheme.id);
-
-        // 优先展示付费未解锁的主题
-        const premiumUnlocked = otherThemes.find(theme => theme.price > 0 && !theme.unlocked);
-        const premiumLocked = otherThemes.find(theme => theme.price > 0 && theme.unlocked);
-        const freeTheme = otherThemes.find(theme => theme.price === 0);
-
-        // 添加第二个主题（按优先级）
-        if (premiumUnlocked) {
-          previewThemes.push(premiumUnlocked);
-        } else if (premiumLocked) {
-          previewThemes.push(premiumLocked);
-        } else if (freeTheme) {
-          previewThemes.push(freeTheme);
-        } else if (otherThemes.length > 0) {
-          previewThemes.push(otherThemes[0]);
-        }
+        // 保持主题原始顺序，选择前两个主题作为预览
+        const previewThemes = themes.slice(0, 2);
 
         // 如果只有一个主题，添加一个虚拟的付费主题
         if (previewThemes.length === 1) {

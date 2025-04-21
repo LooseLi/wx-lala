@@ -198,15 +198,7 @@ async function getUserAvailableThemes(openid) {
       };
     });
 
-    // 排序：当前使用的主题 > 已解锁的主题 > 未解锁的主题
-    availableThemes.sort((a, b) => {
-      if (a.current) return -1;
-      if (b.current) return 1;
-      if (a.unlocked && !b.unlocked) return -1;
-      if (!a.unlocked && b.unlocked) return 1;
-      return (a.index || 0) - (b.index || 0);
-    });
-
+    // 不进行排序，保持原始顺序
     return availableThemes;
   } catch (error) {
     console.error('获取用户可用主题失败:', error);

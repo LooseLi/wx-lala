@@ -77,14 +77,7 @@ Page({
         };
       });
 
-      // 排序：当前使用的主题 > 已解锁的主题 > 未解锁的主题
-      themeList.sort((a, b) => {
-        if (a.current) return -1;
-        if (b.current) return 1;
-        if (a.unlocked && !b.unlocked) return -1;
-        if (!a.unlocked && b.unlocked) return 1;
-        return (a.index || 0) - (b.index || 0);
-      });
+      // 不再进行排序，保持原始顺序
 
       this.setData({
         themeList,
@@ -107,13 +100,12 @@ Page({
    */
   async getUserPoints() {
     try {
-      const openid = wx.getStorageSync('openid');
-      if (!openid) return;
-
-      const pointsRes = await userPoints.where({ userId: openid }).get();
-      if (pointsRes.data && pointsRes.data.length > 0) {
-        const points = pointsRes.data[0].currentPoints || 0;
-        this.setData({ userPoints: points });
+      // 使用themeManager获取用户积分
+      const result = await themeManager.getUserPoints();
+      if (result.success) {
+        this.setData({
+          userPoints: result.currentPoints || 0,
+        });
       }
     } catch (error) {
       console.error('获取用户积分失败:', error);
@@ -157,31 +149,33 @@ Page({
         return;
       }
 
-      // 在实际项目中，这里应该调用themeManager.switchTheme方法
-      // 这里使用模拟实现
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 调用themeManager的切换主题方法
+      const result = await themeManager.switchTheme(openid, theme.id);
 
-      // 更新全局主题
-      const app = getApp();
-      app.globalData.currentTheme = theme;
+      if (result.success) {
+        // 更新当前页面状态，只更新current标记而不改变顺序
+        const themeList = this.data.themeList.map(item => ({
+          ...item,
+          current: item.id === theme.id,
+        }));
 
-      // 更新当前页面状态
-      const themeList = this.data.themeList.map(item => ({
-        ...item,
-        current: item.id === theme.id,
-      }));
+        this.setData({
+          themeList,
+          currentTheme: theme,
+        });
 
-      this.setData({
-        themeList,
-        currentTheme: theme,
-      });
-
-      wx.hideLoading();
-      wx.showToast({ title: '主题切换成功' });
+        wx.showToast({ title: '主题切换成功' });
+      } else {
+        wx.showToast({
+          title: result.message || '切换主题失败',
+          icon: 'none',
+        });
+      }
     } catch (error) {
       console.error('切换主题失败:', error);
-      wx.hideLoading();
       wx.showToast({ title: '切换主题失败', icon: 'none' });
+    } finally {
+      wx.hideLoading();
     }
   },
 
@@ -189,23 +183,37 @@ Page({
    * 显示解锁确认对话框
    */
   showUnlockConfirm(theme) {
-    // 检查积分是否足够
-    if (this.data.userPoints < theme.price) {
-      wx.showToast({
-        title: '积分不足，无法解锁该主题',
-        icon: 'none',
-      });
-      return;
-    }
+    // 使用themeManager获取用户积分
+    themeManager.getUserPoints().then(result => {
+      if (!result.success) {
+        wx.showToast({
+          title: '获取积分失败',
+          icon: 'none',
+        });
+        return;
+      }
 
-    wx.showModal({
-      title: '解锁主题',
-      content: `确定使用 ${theme.price} 积分解锁该主题吗？`,
-      success: res => {
-        if (res.confirm) {
-          this.unlockTheme(theme);
-        }
-      },
+      const userPoints = result.currentPoints;
+      this.setData({ userPoints }); // 更新最新积分
+
+      // 检查积分是否足够
+      if (userPoints < theme.price) {
+        wx.showToast({
+          title: '积分不足，无法解锁该主题',
+          icon: 'none',
+        });
+        return;
+      }
+
+      wx.showModal({
+        title: '解锁主题',
+        content: `确定使用 ${theme.price} 积分解锁该主题吗？`,
+        success: res => {
+          if (res.confirm) {
+            this.unlockTheme(theme);
+          }
+        },
+      });
     });
   },
 
@@ -223,44 +231,46 @@ Page({
         return;
       }
 
-      // 在实际项目中，这里应该调用云函数或themeManager.unlockTheme方法
-      // 这里使用模拟实现
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 调用themeManager的解锁方法
+      const result = await themeManager.unlockTheme(openid, theme.id);
 
-      // 更新用户积分（模拟）
-      const newPoints = this.data.userPoints - theme.price;
+      if (result.success) {
+        // 更新用户积分
+        const newPoints = result.currentPoints;
 
-      // 更新主题列表
-      const themeList = this.data.themeList.map(item => {
-        if (item.id === theme.id) {
+        // 更新主题列表，只更新状态标记而不改变顺序
+        const themeList = this.data.themeList.map(item => {
+          if (item.id === theme.id) {
+            return {
+              ...item,
+              unlocked: true,
+              current: true, // 解锁后自动使用
+            };
+          }
           return {
             ...item,
-            unlocked: true,
-            current: true, // 解锁后自动使用
+            current: false,
           };
-        }
-        return {
-          ...item,
-          current: false,
-        };
-      });
+        });
 
-      // 更新全局主题
-      const app = getApp();
-      app.globalData.currentTheme = theme;
+        this.setData({
+          themeList,
+          currentTheme: theme,
+          userPoints: newPoints,
+        });
 
-      this.setData({
-        themeList,
-        currentTheme: theme,
-        userPoints: newPoints,
-      });
-
-      wx.hideLoading();
-      wx.showToast({ title: '解锁并切换主题成功' });
+        wx.showToast({ title: '解锁并切换主题成功' });
+      } else {
+        wx.showToast({
+          title: result.message || '解锁主题失败',
+          icon: 'none',
+        });
+      }
     } catch (error) {
       console.error('解锁主题失败:', error);
-      wx.hideLoading();
       wx.showToast({ title: '解锁主题失败', icon: 'none' });
+    } finally {
+      wx.hideLoading();
     }
   },
 });
