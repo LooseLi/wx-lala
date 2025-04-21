@@ -771,28 +771,37 @@ Page({
       // 调用主题管理器的解锁方法
       const result = await themeManager.unlockTheme(this.data.openid, theme.id);
 
+      // 先隐藏加载框
+      wx.hideLoading();
+
       if (result.success) {
         wx.showToast({
           title: '解锁成功',
           icon: 'success',
+          duration: 2000,
         });
 
         // 解锁成功后自动切换到该主题
         await this.switchTheme(theme);
       } else {
+        // 积分不足等错误需要显示更长时间
         wx.showToast({
           title: result.message || '解锁失败',
           icon: 'none',
+          duration: 2000, // 延长显示时间
         });
       }
     } catch (error) {
       console.error('解锁主题失败:', error);
+
+      // 先隐藏加载框
+      wx.hideLoading();
+
       wx.showToast({
         title: '解锁失败',
         icon: 'none',
+        duration: 2000,
       });
-    } finally {
-      wx.hideLoading();
     }
   },
 });
