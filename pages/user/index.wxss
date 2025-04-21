@@ -346,6 +346,10 @@ view {
   background: linear-gradient(145deg, #1e8aff, #0045ff);
 }
 
+.check-entry {
+  margin-bottom: 32rpx;
+}
+
 /* 主题皮肤入口样式 */
 .theme-entry {
   width: 100%;
