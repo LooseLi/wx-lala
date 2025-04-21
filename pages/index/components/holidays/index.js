@@ -781,8 +781,6 @@ Page({
         })
         .get();
 
-      console.log('获取到的假期数据:', res.data);
-
       // 展开假期日期范围
       const holidayDateMap = this.expandHolidayDates(res.data);
 
@@ -804,7 +802,6 @@ Page({
       this.updateSelectedDateInCalendar(todayString);
       this.getSelectedDateInfo(today);
     } catch (error) {
-      console.error('获取节假日数据失败', error);
       wx.showToast({
         title: '获取数据失败',
         icon: 'none',
