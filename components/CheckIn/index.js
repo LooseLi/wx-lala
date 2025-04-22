@@ -78,11 +78,21 @@ Component({
         const year = now.getFullYear();
         const month = (now.getMonth() + 1).toString().padStart(2, '0');
         const day = now.getDate();
+        const dateStr = this.formatDate(now);
+
+        console.log('检查签到状态使用本地日期:', {
+          year,
+          month,
+          day,
+          dateStr,
+          time: now.toLocaleTimeString(),
+        });
+
         const localDate = {
           year,
           month,
           day,
-          dateStr: this.formatDate(now),
+          dateStr,
         };
 
         // 获取用户签到状态和积分，传递本地日期信息

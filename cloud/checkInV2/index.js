@@ -120,15 +120,25 @@ exports.main = async (event, context) => {
 
   try {
     // 1. 检查今日是否已打卡
+    // 确保day作为数字处理
+    const dayNum = parseInt(day);
+
+    console.log('检查是否已签到:', {
+      userId,
+      yearMonth,
+      day: dayNum,
+    });
+
     const monthRecord = await checkInMonthly
       .where({
         userId,
         yearMonth,
-        checkInDays: _.elemMatch(_.eq(day)),
+        checkInDays: _.elemMatch(_.eq(dayNum)),
       })
       .get();
 
     if (monthRecord.data.length > 0) {
+      console.log('今日已签到, 记录:', monthRecord.data);
       return { success: false, message: '今日已签到~' };
     }
 
@@ -164,13 +174,21 @@ exports.main = async (event, context) => {
       })
       .get();
 
+    // 确保day始终以数字形式存储
+    console.log('准备更新签到记录:', {
+      userId,
+      yearMonth,
+      day: dayNum,
+      hasExistingRecord: monthlyRecord.data.length > 0,
+    });
+
     if (monthlyRecord.data.length === 0) {
       // 如果没有当月记录，创建新记录
       await checkInMonthly.add({
         data: {
           userId,
           yearMonth,
-          checkInDays: [Number(day)], // 确保存储为数字类型
+          checkInDays: [dayNum], // 确保存储为数字类型
           makeupDays: [],
           updatedAt: now,
         },
@@ -184,7 +202,7 @@ exports.main = async (event, context) => {
         })
         .update({
           data: {
-            checkInDays: _.addToSet(Number(day)), // 确保存储为数字类型
+            checkInDays: _.addToSet(dayNum), // 确保存储为数字类型
             updatedAt: now,
           },
         });

@@ -125,11 +125,26 @@ exports.main = async (event, context) => {
     // 3. 获取用户积分
     const pointsRecord = await db.collection('userPoints').where({ userId }).get();
 
-    // 4. 处理签到状态
+    // 4. 处理签到状态 - 确保使用前端传入的日期判断
+    // 确保day作为数字处理，而不是字符串
+    const dayNum = parseInt(day);
     const currentMonthRecord = allMonthlyRecords.data.find(
       record => record.yearMonth === yearMonth,
     );
-    const isCheckedIn = currentMonthRecord && currentMonthRecord.checkInDays.includes(day);
+
+    // 检查当前月份记录中是否包含今天的日期（作为数字）
+    const isCheckedIn =
+      currentMonthRecord &&
+      currentMonthRecord.checkInDays &&
+      currentMonthRecord.checkInDays.includes(dayNum);
+
+    console.log('签到状态检查:', {
+      yearMonth,
+      day: dayNum,
+      foundRecord: !!currentMonthRecord,
+      checkInDays: currentMonthRecord ? currentMonthRecord.checkInDays : [],
+      isCheckedIn,
+    });
 
     // 5. 获取所有签到日期并计算连续天数
     // 从所有月份记录中提取签到日期，统一转为 YYYY-MM-DD 格式
