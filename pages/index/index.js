@@ -312,11 +312,19 @@ Page({
    * 获取今日未完成待办数量
    */
   getTodayUncompletedCount: function () {
-    // 调用云函数获取今日未完成待办数量
+    // 获取当前本地日期信息
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    // 调用云函数获取今日未完成待办数量，传递本地日期
     wx.cloud.callFunction({
       name: 'getTodos',
       data: {
         action: 'getTodayUncompletedCount',
+        localDate: { year, month, day, dateStr },
       },
       success: res => {
         if (res.result && res.result.success) {
@@ -332,6 +340,7 @@ Page({
         }
       },
       fail: err => {
+        console.error('获取待办数量失败:', err);
         this.setData({
           todayUncompletedCount: 0,
         });

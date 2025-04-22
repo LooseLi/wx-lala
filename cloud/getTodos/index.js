@@ -14,7 +14,7 @@ exports.main = async (event, context) => {
 
   // 如果是获取今日未完成待办数量的请求
   if (event.action === 'getTodayUncompletedCount') {
-    return await getTodayUncompletedCount(openid);
+    return await getTodayUncompletedCount(openid, event.localDate);
   }
 
   // 构建查询条件
@@ -95,13 +95,24 @@ exports.main = async (event, context) => {
 /**
  * 获取今日未完成待办数量
  * @param {string} openid - 用户的openid
+ * @param {Object} localDate - 前端传来的本地日期信息
  * @returns {Promise<Object>} - 返回今日未完成待办数量
  */
-async function getTodayUncompletedCount(openid) {
+async function getTodayUncompletedCount(openid, localDate) {
   try {
-    // 获取今天的日期字符串（仅年月日，不含时间部分）
-    const today = new Date();
-    const todayDateStr = formatDate(today); // 例如: "2023-04-15"
+    // 确定要使用的日期字符串
+    let todayDateStr;
+
+    // 优先使用前端传递的日期
+    if (localDate && localDate.dateStr) {
+      todayDateStr = localDate.dateStr;
+      console.log('使用前端传递的日期:', todayDateStr);
+    } else {
+      // 兼容旧调用方式，使用云函数的日期
+      const today = new Date();
+      todayDateStr = formatDate(today);
+      console.log('使用云函数本地日期:', todayDateStr);
+    }
 
     // 查询未完成的待办事项
     const result = await db
