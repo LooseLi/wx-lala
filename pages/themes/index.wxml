@@ -7,18 +7,14 @@
 
   <!-- 主题列表 -->
   <view class="theme-list" wx:if="{{!loading}}">
-    <view class="theme-item {{item.current ? 'active' : ''}}" 
-          wx:for="{{themeList}}" 
-          wx:key="id"
-          data-id="{{item.id}}" 
-          bindtap="handleThemeClick">
+    <view class="theme-item {{item.current ? 'active' : ''}}" wx:for="{{themeList}}" wx:key="id" data-id="{{item.id}}" bindtap="handleThemeClick">
       <image class="theme-image" src="{{item.themeImage}}" mode="aspectFill" />
-      
+
       <!-- 主题状态标签 -->
       <view class="theme-label" wx:if="{{item.current || !item.unlocked}}">
         <text class="status">{{item.current ? '使用中' : '解锁'}}</text>
       </view>
-      
+
       <!-- 锁定图标 -->
       <view class="lock-icon" wx:if="{{!item.unlocked}}">
         <text class="price">{{item.price}} 积分</text>
@@ -36,4 +32,4 @@
   <view class="empty" wx:if="{{!loading && themeList.length === 0}}">
     <text>暂无可用主题</text>
   </view>
-</view> 
+</view>
