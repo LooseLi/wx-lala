@@ -23,31 +23,31 @@ Page({
     events: [
       {
         id: 0,
-        icon: './images/event/icon-anniversary.png',
+        icon: './images/event/icon-jumao.png',
         title: '拉拉松松纪念日',
         page: '/pages/index/components/anniversary/index',
       },
       {
         id: 1,
-        icon: './images/event/icon-countdown.png',
+        icon: './images/event/icon-xianluomao.png',
         title: '倒计时',
         page: '/pages/index/components/countdown/index',
       },
       {
         id: 2,
-        icon: './images/event/icon-hoildays.png',
+        icon: './images/event/icon-jinmao.png',
         title: '能放几天假鸭',
         page: '/pages/index/components/holidays/index',
       },
       {
         id: 3,
-        icon: './images/event/icon-todo.png',
+        icon: './images/event/icon-bianmu.png',
         title: '待办清单',
         page: '/pages/index/components/todo/index',
       },
       {
         id: 4,
-        icon: './images/event/icon-more.png',
+        icon: './images/event/icon-gengduo.png',
         title: '想想要新加些啥',
         page: '',
       },
