@@ -144,7 +144,7 @@ page {
   @include card-style;
   margin-bottom: 14px;
   color: $white-text;
-  font-size: 13px;
+  font-size: 14px;
   @include flex-align-center;
   justify-content: left;
 
@@ -154,8 +154,8 @@ page {
   }
 
   &-icon {
-    width: $icon-size-large;
-    height: $icon-size-large;
+    width: $icon-size-medium;
+    height: $icon-size-medium;
   }
 
   &-title-container {
@@ -197,6 +197,7 @@ page {
 .eat-wrap {
   width: $standard-width;
   margin: 0 auto;
+  /* margin: 40px auto 20px; */
   display: flex;
   justify-content: space-between;
   align-items: center;
