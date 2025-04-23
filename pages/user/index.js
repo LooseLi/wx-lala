@@ -43,7 +43,8 @@ Page({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: async res => {
         const defaultAvatar = '/static/images/default-avatar.jpg';
-        const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
+        const defaultNickname =
+          '可爱用户' + this.data.openid.substring(this.data.openid.length - 6);
 
         const userInfo = {
           avatar: defaultAvatar,
@@ -91,7 +92,7 @@ Page({
     this.setData({ loginState: 'logging-in' });
 
     const defaultAvatar = '/static/images/default-avatar.jpg';
-    const defaultNickname = '可爱用户' + this.data.openid.substring(0, 6);
+    const defaultNickname = '可爱用户' + this.data.openid.substring(this.data.openid.length - 6);
 
     const userInfo = {
       avatar: defaultAvatar,
