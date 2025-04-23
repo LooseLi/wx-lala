@@ -109,7 +109,7 @@ page {
   border-radius: 6px;
   margin-bottom: 14px;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: left;
@@ -121,8 +121,8 @@ page {
 }
 
 .event-icon {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 }
 
 .event-title-container {
