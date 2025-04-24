@@ -164,6 +164,9 @@ Page({
           currentTheme: theme,
         });
 
+        // 添加标记，表示主题已经更改，这样我的页面返回时可以识别并刷新
+        wx.setStorageSync('themeChanged', true);
+
         wx.showToast({ title: '主题切换成功' });
       } else {
         wx.showToast({
@@ -258,6 +261,12 @@ Page({
           currentTheme: theme,
           userPoints: newPoints,
         });
+
+        // 添加标记，表示主题已经更改，这样我的页面返回时可以识别并刷新
+        wx.setStorageSync('themeChanged', true);
+
+        // 确保主题已经在数据库中更新后再切换
+        await themeManager.switchTheme(openid, theme.id);
 
         wx.showToast({ title: '解锁并切换主题成功' });
       } else {

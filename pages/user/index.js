@@ -294,7 +294,7 @@ Page({
     }
 
     // 监听主题变化
-    themeManager.onThemeChange(this.handleThemeChange.bind(this));
+    this.themeManagerUnsubscribe = themeManager.onThemeChange(this.handleThemeChange.bind(this));
 
     // 应用当前主题背景
     this.applyThemeBackground();
@@ -370,8 +370,37 @@ Page({
         checkInComponent.checkTodayStatus();
       }
 
-      // 刷新主题数据
-      this.loadThemeData();
+      // 确保openid存在再进行主题相关操作
+      if (this.data.openid) {
+        // 检查是否从主题页返回且主题已更改
+        const themeChanged = wx.getStorageSync('themeChanged');
+        if (themeChanged) {
+          console.log('检测到主题变更，强制刷新主题数据');
+          // 清除标记
+          wx.removeStorageSync('themeChanged');
+
+          // 强制刷新主题数据
+          this.loadThemeData().then(() => {
+            // 应用主题背景
+            this.applyThemeBackground();
+          });
+        } else {
+          // 常规刷新主题数据
+          this.loadThemeData();
+        }
+      } else {
+        console.log('onShow: openid为空，尝试重新获取');
+        // 尝试重新获取openid
+        this.getOpenId()
+          .then(() => {
+            if (this.data.openid) {
+              this.loadThemeData();
+            }
+          })
+          .catch(err => {
+            console.error('重新获取openid失败:', err);
+          });
+      }
     }
 
     if (this.data.loginState === 'idle' && !this.data.isAuth) {
@@ -393,7 +422,24 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload: function () {
+    // 在页面卸载时清除标记，防止后续误操作
+    try {
+      // 移除主题变更的监听
+      const themeManagerUnsubscribe = this.themeManagerUnsubscribe;
+      if (themeManagerUnsubscribe && typeof themeManagerUnsubscribe === 'function') {
+        themeManagerUnsubscribe();
+        this.themeManagerUnsubscribe = null;
+      }
+
+      // 可能导致问题的其他清理工作
+      if (wx.getStorageSync('themeChanged')) {
+        wx.removeStorageSync('themeChanged');
+      }
+    } catch (err) {
+      console.error('页面卸载清理失败:', err);
+    }
+  },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
@@ -539,15 +585,6 @@ Page({
   updateAvatarHistory(newAvatar) {
     // 获取当前用户信息
     const userInfo = wx.getStorageSync('userInfo') || {};
-
-    // 初始化历史记录数组
-    let history = userInfo.avatarHistory || [];
-
-    // 将新头像添加到历史记录最前面
-    history = [newAvatar, ...history.filter(item => item !== newAvatar)];
-
-    // 只保留最近两个头像记录
-    return history.slice(0, 2);
   },
 
   // 编辑昵称
@@ -687,10 +724,10 @@ Page({
   loadThemeData: async function () {
     if (!this.data.openid) {
       console.log('loadThemeData: openid为空，无法加载主题数据');
-      return;
+      return Promise.reject('openid为空');
     }
 
-    console.log('开始加载主题数据');
+    console.log('开始加载主题数据, openid:', this.data.openid);
     wx.showLoading({ title: '加载中...' });
 
     try {
@@ -710,13 +747,18 @@ Page({
           currentTheme,
           previewThemes,
         });
+
+        wx.hideLoading();
+        return Promise.resolve(themes);
       } else {
         console.warn('未获取到主题数据或主题列表为空');
+        wx.hideLoading();
+        return Promise.resolve([]);
       }
     } catch (error) {
       console.error('加载主题数据失败:', error);
-    } finally {
       wx.hideLoading();
+      return Promise.reject(error);
     }
   },
 
@@ -764,18 +806,25 @@ Page({
    * 解锁主题
    */
   async unlockTheme(theme) {
-    if (!this.data.openid) return;
+    if (!this.data.openid) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+        duration: 2000,
+      });
+      return;
+    }
 
-    wx.showLoading({ title: '正在解锁主题...' });
+    wx.showLoading({ title: '正在解锁主题...', mask: true });
 
     try {
       // 调用主题管理器的解锁方法
       const result = await themeManager.unlockTheme(this.data.openid, theme.id);
 
-      // 先隐藏加载框
-      wx.hideLoading();
-
       if (result.success) {
+        // 先隐藏加载框
+        wx.hideLoading();
+
         wx.showToast({
           title: '解锁成功',
           icon: 'success',
@@ -785,24 +834,34 @@ Page({
         // 解锁成功后自动切换到该主题
         await this.switchTheme(theme);
       } else {
-        // 积分不足等错误需要显示更长时间
+        // 先显示错误消息，延迟隐藏loading
         wx.showToast({
           title: result.message || '解锁失败',
           icon: 'none',
-          duration: 2000, // 延长显示时间
+          duration: 2500, // 延长显示时间
+          mask: true, // 添加遮罩防止用户点击
         });
+
+        // 延迟隐藏加载框，确保用户能看到消息
+        setTimeout(() => {
+          wx.hideLoading();
+        }, 500);
       }
     } catch (error) {
       console.error('解锁主题失败:', error);
 
-      // 先隐藏加载框
-      wx.hideLoading();
-
+      // 处理错误，先显示消息
       wx.showToast({
-        title: '解锁失败',
+        title: '解锁失败，请稍后重试',
         icon: 'none',
-        duration: 2000,
+        duration: 2500,
+        mask: true,
       });
+
+      // 延迟隐藏加载框
+      setTimeout(() => {
+        wx.hideLoading();
+      }, 500);
     }
   },
 });
