@@ -9,10 +9,13 @@
   <view class="theme-list" wx:if="{{!loading}}">
     <view class="theme-item {{item.current ? 'active' : ''}}" wx:for="{{themeList}}" wx:key="id" data-id="{{item.id}}" bindtap="handleThemeClick">
       <image class="theme-image" src="{{item.themeImage}}" mode="aspectFill" />
+      
+      <!-- 使用中标记 (左上角) -->
+      <image class="theme-active-icon" style="width:100rpx !important; height:100rpx !important; top:-1rpx !important; left:-1rpx !important;" wx:if="{{item.current}}" src="https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/icon/icon-active.png?sign=e6da098e773946e59f9833c989d95407&t=1745462480" mode="scaleToFill"></image>
 
       <!-- 主题状态标签 -->
-      <view class="theme-label" wx:if="{{item.current || !item.unlocked}}">
-        <text class="status">{{item.current ? '使用中' : '解锁'}}</text>
+      <view class="theme-label" wx:if="{{!item.unlocked}}">
+        <text class="status">待解锁</text>
       </view>
 
       <!-- 锁定图标 -->
