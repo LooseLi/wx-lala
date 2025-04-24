@@ -89,6 +89,16 @@ $standard-margin: 30rpx;
   object-fit: cover;
 }
 
+/* 使用中图标样式 */
+.theme-active-icon {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 100rpx;
+  height: 100rpx;
+  z-index: 10;
+}
+
 /* 主题标签 */
 .theme-label {
   position: absolute;

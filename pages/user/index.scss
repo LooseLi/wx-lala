@@ -378,9 +378,9 @@ view {
 /* 使用中图标样式 */
 .theme-active-icon {
   position: absolute;
-  top: 5rpx;
-  left: 5rpx;
-  width: 40rpx;
-  height: 40rpx;
-  z-index: 5;
+  top: -1px;
+  left: -1px;
+  width: 80rpx;
+  height: 80rpx;
+  z-index: 10;
 }
