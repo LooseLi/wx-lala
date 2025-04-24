@@ -317,7 +317,7 @@ async function unlockTheme(openid, themeId) {
 
     // 检查积分是否足够
     if (currentPoints < themePrice) {
-      return { success: false, message: '积分不足' };
+      return { success: false, message: '积分不足，加油签到喔~' };
     }
 
     // 使用themeServices云函数消费积分
@@ -369,7 +369,7 @@ async function unlockTheme(openid, themeId) {
 
       return {
         success: true,
-        message: '主题解锁成功',
+        message: '👏快去试试新皮肤吧',
         currentPoints: consumeResult.result.currentPoints,
       };
     } catch (error) {

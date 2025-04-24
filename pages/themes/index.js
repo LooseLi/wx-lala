@@ -199,7 +199,7 @@ Page({
       // 检查积分是否足够
       if (userPoints < theme.price) {
         wx.showToast({
-          title: '积分不足，无法解锁该主题',
+          title: '积分不足，加油签到喔~',
           icon: 'none',
         });
         return;
