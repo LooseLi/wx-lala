@@ -374,3 +374,13 @@ view {
   border-width: 4rpx;
   box-shadow: 0 0 10rpx rgba(var(--primary-color-rgb), 0.4);
 }
+
+/* 使用中图标样式 */
+.theme-active-icon {
+  position: absolute;
+  top: 5rpx;
+  left: 5rpx;
+  width: 40rpx;
+  height: 40rpx;
+  z-index: 5;
+}
