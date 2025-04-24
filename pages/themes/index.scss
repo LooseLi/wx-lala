@@ -1,0 +1,164 @@
+// 变量定义
+$background-primary: var(--background-primary);
+$background-secondary: var(--background-secondary);
+$card-shadow: var(--card-shadow);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-tertiary: var(--text-tertiary);
+$primary-color: var(--primary-color);
+$primary-color-rgb: var(--primary-color-rgb);
+$border-radius-large: 30rpx;
+$border-radius-medium: 16rpx;
+$standard-margin: 30rpx;
+
+// 混合器定义
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container {
+  min-height: 100vh;
+  background-color: $background-primary;
+  padding: $standard-margin;
+  box-sizing: border-box;
+}
+
+/* 顶部导航 */
+.header {
+  @include flex-between;
+  padding: 20rpx 0;
+  margin-bottom: $standard-margin;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: $text-primary;
+}
+
+.points {
+  font-size: 28rpx;
+  color: $text-secondary;
+  background-color: $background-secondary;
+  padding: 8rpx 16rpx;
+  border-radius: $border-radius-large;
+}
+
+/* 主题列表 */
+.theme-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.theme-item {
+  width: 48%;
+  position: relative;
+  margin-bottom: $standard-margin;
+  border-radius: $border-radius-medium;
+  overflow: hidden;
+  background-color: $background-secondary;
+  box-shadow: $card-shadow;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+
+  &.active {
+    border-color: $primary-color;
+    border-width: 4rpx;
+    box-shadow: 0 0 10rpx rgba($primary-color-rgb, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+}
+
+.theme-image {
+  width: 100%;
+  height: 400rpx;
+  display: block;
+  object-fit: cover;
+}
+
+/* 主题标签 */
+.theme-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10rpx 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  @include flex-center;
+}
+
+.status {
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 锁定图标 */
+.lock-icon {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: $border-radius-large;
+  padding: 6rpx 16rpx;
+}
+
+.price {
+  color: #fff;
+  font-size: 24rpx;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+
+  &-icon {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 50%;
+    border: 4rpx solid var(--background-tertiary);
+    border-top-color: $primary-color;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 20rpx;
+  }
+
+  text {
+    font-size: 28rpx;
+    color: $text-secondary;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 空状态 */
+.empty {
+  @include flex-center;
+  padding: 100rpx 0;
+
+  text {
+    font-size: 28rpx;
+    color: $text-tertiary;
+  }
+}
