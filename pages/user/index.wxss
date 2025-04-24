@@ -388,6 +388,8 @@ view {
 
 .theme-item.active {
   border-color: var(--primary-color);
+  border-width: 4rpx;
+  box-shadow: 0 0 10rpx rgba(var(--primary-color-rgb), 0.4);
 }
 
 .theme-item:active {

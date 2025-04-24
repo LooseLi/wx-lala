@@ -357,3 +357,20 @@ view {
     background: linear-gradient(145deg, #1e8aff, #0045ff);
   }
 }
+
+.theme-item {
+  width: 31%;
+  position: relative;
+  border-radius: 16rpx;
+  overflow: hidden;
+  border: 2rpx solid transparent;
+  background-color: var(--background-tertiary);
+  box-shadow: var(--small-shadow);
+  transition: all 0.2s ease;
+}
+
+.theme-item.active {
+  border-color: var(--primary-color);
+  border-width: 4rpx;
+  box-shadow: 0 0 10rpx rgba(var(--primary-color-rgb), 0.4);
+}
