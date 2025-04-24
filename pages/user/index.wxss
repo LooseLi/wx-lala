@@ -380,21 +380,21 @@ view {
   position: relative;
   border-radius: 16rpx;
   overflow: hidden;
-  border: 2rpx solid transparent;
+  border: 4rpx solid transparent;
   background-color: var(--background-tertiary);
   box-shadow: var(--small-shadow);
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .theme-item.active {
   border-color: var(--primary-color);
-  border-width: 4rpx;
   box-shadow: 0 0 10rpx rgba(var(--primary-color-rgb), 0.4);
 }
 
 .theme-item:active {
-  transform: scale(0.98);
-  opacity: 0.9;
+  transform: scale(0.99);
+  opacity: 0.95;
 }
 
 .theme-item image {
@@ -461,11 +461,11 @@ view {
 }
 
 /* 使用中图标样式 */
-.theme-active-icon {
+.theme-entry .theme-active-icon {
   position: absolute;
-  top: 5rpx;
-  left: 5rpx;
-  width: 40rpx;
-  height: 40rpx;
-  z-index: 5;
+  top: -1rpx;
+  left: -1rpx;
+  width: 80rpx;
+  height: 80rpx;
+  z-index: 10;
 }

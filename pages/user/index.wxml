@@ -49,14 +49,14 @@
         <view class="theme-item {{currentTheme.id === previewThemes[0].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 0}}" data-theme-id="{{previewThemes[0].id}}" bind:tap="handleThemeClick">
           <image src="{{previewThemes[0].themeImage}}" mode="aspectFill" />
           <!-- 使用中标记图标 -->
-          <image class="theme-active-icon" style="width:80rpx !important; height:80rpx !important; top:-1rpx !important; left:-1rpx !important;" wx:if="{{currentTheme.id === previewThemes[0].id}}" src="https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/icon/icon-active.png?sign=e6da098e773946e59f9833c989d95407&t=1745462480" mode="scaleToFill"></image>
+          <image class="theme-active-icon" wx:if="{{currentTheme.id === previewThemes[0].id}}" src="https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/icon/icon-active.png?sign=e6da098e773946e59f9833c989d95407&t=1745462480" mode="scaleToFill"></image>
         </view>
 
         <!-- 第二个主题 (付费) -->
         <view class="theme-item {{currentTheme.id === previewThemes[1].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 1}}" data-theme-id="{{previewThemes[1].id}}" bind:tap="handleThemeClick">
           <image src="{{previewThemes[1].themeImage}}" mode="aspectFill" />
           <!-- 使用中标记图标 -->
-          <image class="theme-active-icon" style="width:80rpx !important; height:80rpx !important; top:-1rpx !important; left:-1rpx !important;" wx:if="{{currentTheme.id === previewThemes[1].id}}" src="https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/icon/icon-active.png?sign=e6da098e773946e59f9833c989d95407&t=1745462480" mode="scaleToFill"></image>
+          <image class="theme-active-icon" wx:if="{{currentTheme.id === previewThemes[1].id}}" src="https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/themes/icon/icon-active.png?sign=e6da098e773946e59f9833c989d95407&t=1745462480" mode="scaleToFill"></image>
           <!-- 待解锁标签 -->
           <view class="theme-label" wx:if="{{!previewThemes[1].unlocked}}">
             <text class="status">待解锁</text>
