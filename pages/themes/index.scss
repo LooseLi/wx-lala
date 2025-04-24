@@ -67,18 +67,18 @@ $standard-margin: 30rpx;
   overflow: hidden;
   background-color: $background-secondary;
   box-shadow: $card-shadow;
-  border: 2rpx solid transparent;
+  border: 4rpx solid transparent;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 
   &.active {
     border-color: $primary-color;
-    border-width: 4rpx;
     box-shadow: 0 0 10rpx rgba($primary-color-rgb, 0.4);
   }
 
   &:active {
-    transform: scale(0.98);
-    opacity: 0.9;
+    transform: scale(0.99);
+    opacity: 0.95;
   }
 }
 
