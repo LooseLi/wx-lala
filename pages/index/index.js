@@ -267,6 +267,27 @@ Page({
   // 检查本地存储中的食物数据
   checkStoredFoodData() {
     const today = this.formatDate(new Date());
+    const storedData = wx.getStorageSync('randomFoodData');
+
+    // 检查存储的食物数据是否存在且为今天的数据
+    if (
+      storedData &&
+      storedData.date === today &&
+      storedData.foods &&
+      storedData.foods.length > 0
+    ) {
+      // 如果是今天的数据，设置到页面上
+      this.setData({
+        foods: storedData.foods,
+      });
+      console.log('从缓存读取到今日食物数据:', storedData.foods);
+    } else {
+      // 如果不是今天的数据或没有数据，清空当前显示
+      this.setData({
+        foods: [],
+      });
+      console.log('没有找到今日食物数据缓存');
+    }
   },
 
   /**
