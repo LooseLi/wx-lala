@@ -26,6 +26,7 @@ Page({
     editMode: false,
     currentTodoId: '',
     emptyTip: '暂无待办事项，点击下方按钮添加',
+    isFromOtherPage: false,
   },
 
   /**
@@ -40,8 +41,26 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 检查是否是从其他页面返回
+    const isFromOtherPage = this.data.isFromOtherPage;
+    if (isFromOtherPage) {
+      // 如果是从其他页面返回，重置已完成分组为折叠状态
+      this.resetCompletedGroupState();
+      this.setData({ isFromOtherPage: false });
+    }
+
     this.updateDateInfo();
     this.loadTodos();
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+    // 标记为从其他页面返回的状态
+    this.setData({
+      isFromOtherPage: true,
+    });
   },
 
   /**
@@ -67,6 +86,15 @@ Page({
         // 按日期分组待办事项
         const groupResult = this.groupTodosByDate(todos);
         const { hasFutureTodos, sortedFutureDateKeys, ...todoGroups } = groupResult;
+
+        // 保存当前"已完成"分组的展开状态（如果已经加载过数据）
+        const preserveCompletedState = this.data.todos && this.data.todos.length > 0;
+        const completedExpanded = preserveCompletedState
+          ? this.data.todoGroups.completed.expanded
+          : todoGroups.completed.expanded;
+
+        // 更新"已完成"分组的展开状态
+        todoGroups.completed.expanded = completedExpanded;
 
         this.setData(
           {
@@ -641,5 +669,17 @@ Page({
       success: res => {},
       fail: err => {},
     });
+  },
+
+  /**
+   * 重置已完成分组状态为折叠
+   */
+  resetCompletedGroupState: function () {
+    // 仅在已加载数据的情况下操作
+    if (this.data.todoGroups && this.data.todoGroups.completed) {
+      this.setData({
+        'todoGroups.completed.expanded': false,
+      });
+    }
   },
 });
