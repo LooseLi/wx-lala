@@ -13,7 +13,7 @@ Page({
       tomorrow: { title: '明天', todos: [], expanded: true, count: 0, dateInfo: '' },
       // 将单一future改为futureDates对象，支持多个未来日期
       futureDates: {},
-      completed: { title: '已完成', todos: [], expanded: true, count: 0 },
+      completed: { title: '已完成', todos: [], expanded: false, count: 0 },
     },
     loading: false,
     showForm: false,
@@ -133,7 +133,7 @@ Page({
       },
       // 初始化 futureDates 为空对象，将在处理过程中填充
       futureDates: {},
-      completed: { title: '已完成', todos: [], expanded: true, count: 0 },
+      completed: { title: '已完成', todos: [], expanded: false, count: 0 },
     };
 
     // 分组待办事项
