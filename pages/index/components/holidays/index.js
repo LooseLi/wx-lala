@@ -597,7 +597,7 @@ Page({
           );
 
           weekRow.push({
-            day: dayCounter,
+            day: isCurrentMonth && today.getDate() === dayCounter ? '今' : dayCounter,
             currentMonth: true,
             date: dateString,
             isToday: isCurrentMonth && today.getDate() === dayCounter,
