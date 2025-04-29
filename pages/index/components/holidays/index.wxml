@@ -19,7 +19,7 @@
     <view class="nav-btn" bindtap="nextMonth">
       <text class="nav-icon">〉</text>
     </view>
-    <view class="today-btn {{isCurrentMonthActive ? 'disabled' : ''}}" bindtap="goToToday">今天</view>
+    <view class="today-btn {{isCurrentMonthActive ? 'disabled' : ''}}" bindtap="goToToday">返回今天</view>
   </view>
   
   <view class="weekday-header">
