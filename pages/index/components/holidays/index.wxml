@@ -10,7 +10,7 @@
       </view>
     </view>
   </view>
-  
+
   <view class="month-navigator">
     <view class="nav-btn" bindtap="prevMonth">
       <text class="nav-icon">〈</text>
@@ -21,36 +21,24 @@
     </view>
     <view class="today-btn {{isCurrentMonthActive ? 'disabled' : ''}}" bindtap="goToToday">返回今天</view>
   </view>
-  
+
   <view class="weekday-header">
     <view class="weekday-item" wx:for="{{weekdays}}" wx:key="*this">{{item}}</view>
   </view>
-  
-  <swiper class="calendar-swiper" 
-          current="{{currentIndex}}" 
-          bindchange="handleSwiperChange" 
-          circular="{{true}}"
-          duration="200"
-          skip-hidden-item-layout="{{true}}">
+
+  <swiper class="calendar-swiper" current="{{currentIndex}}" bindchange="handleSwiperChange" circular="{{true}}" duration="200" skip-hidden-item-layout="{{true}}">
     <swiper-item wx:for="{{months}}" wx:key="id" wx:for-item="month" wx:for-index="monthIndex">
       <view class="calendar-grid">
         <view class="calendar-row" wx:for="{{month.rows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex">
-          <view 
-            class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}"
-            wx:for="{{row}}"
-            wx:key="date"
-            bindtap="selectDate"
-            data-date="{{item.date}}"
-            data-month-index="{{monthIndex}}"
-          >
+          <view class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}" wx:for="{{row}}" wx:key="date" bindtap="selectDate" data-date="{{item.date}}" data-month-index="{{monthIndex}}">
             <view class="date-text">{{item.day}}</view>
-            
+
             <!-- 农历日期 -->
             <view class="lunar-date {{item.isCustomFestival ? 'custom-festival' : ''}}" wx:if="{{item.lunar}}">{{item.lunar.display || item.lunar.day}}</view>
-            
+
             <!-- 假期标记 -->
             <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
-            
+
             <!-- 调休标记 -->
             <view class="workday-tag" wx:if="{{item.isWorkday}}">班</view>
           </view>
@@ -58,7 +46,7 @@
       </view>
     </swiper-item>
   </swiper>
-  
+
   <view class="selected-date-info" wx:if="{{selectedDateInfo}}">
     <view class="date-header">
       <text class="selected-date">{{selectedDateInfo.month}}月{{selectedDateInfo.day}}日 {{selectedDateInfo.weekday}}</text>
@@ -91,7 +79,7 @@
       <text>这一天没有特殊安排</text>
     </view>
   </view>
-  
+
   <!-- <view class="legend">
     <view class="legend-item">
       <view class="legend-marker holiday-marker"></view>
@@ -102,7 +90,7 @@
       <text class="legend-text">调休上班</text>
     </view>
   </view> -->
-  
+
   <view class="footer">
     <view class="tips">法定节假日安排可能会有调整，请以国务院发布的通知为准</view>
   </view>
