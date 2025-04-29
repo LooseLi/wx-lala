@@ -88,6 +88,29 @@
   margin: 0 30rpx;
 }
 
+/* 今天按钮样式 */
+.today-btn {
+  font-size: 26rpx;
+  color: var(--primary-color);
+  background-color: var(--background-tertiary, rgba(145, 213, 255, 0.1));
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+  margin-left: 20rpx;
+  border: 1rpx solid var(--border-color-light);
+  transition: all 0.3s;
+}
+
+.today-btn:active {
+  opacity: 0.8;
+}
+
+.today-btn.disabled {
+  opacity: 0.5;
+  color: var(--text-tertiary);
+  background-color: var(--background-secondary);
+  pointer-events: none;
+}
+
 /* 星期头部 */
 .weekday-header {
   display: flex;
