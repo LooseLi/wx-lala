@@ -159,9 +159,17 @@ Page({
    */
   switchYear(e) {
     const year = parseInt(e.currentTarget.dataset.year);
+
+    // 检查是否是当前月份
+    const today = new Date();
+    const isCurrentMonthActive =
+      year === today.getFullYear() && this.data.currentMonth === today.getMonth();
+
     this.setData({
       activeYear: year,
+      isCurrentMonthActive, // 更新当前月份状态
     });
+
     this.generateCalendar();
   },
 
