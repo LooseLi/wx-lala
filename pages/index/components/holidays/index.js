@@ -151,6 +151,7 @@ Page({
     selectedDate: null, // 选中的日期
     selectedDateInfo: null, // 选中日期的详细信息
     isLoading: true,
+    isCurrentMonthActive: true, // 是否当前显示的是今天所在的月份
   },
 
   /**
@@ -200,10 +201,16 @@ Page({
       }
     }
 
+    // 检查是否是当前月份
+    const today = new Date();
+    const isCurrentMonthActive =
+      activeYear === today.getFullYear() && currentMonth === today.getMonth();
+
     this.setData({
       currentMonth,
       activeYear,
       currentIndex: 1, // 始终将当前视图重置为中间项
+      isCurrentMonthActive, // 更新当前月份状态
     });
 
     // 重新生成三个月的日历数据
@@ -226,10 +233,16 @@ Page({
       }
     }
 
+    // 检查是否是当前月份
+    const today = new Date();
+    const isCurrentMonthActive =
+      activeYear === today.getFullYear() && currentMonth === today.getMonth();
+
     this.setData({
       currentMonth,
       activeYear,
       currentIndex: 1, // 始终将当前视图重置为中间项
+      isCurrentMonthActive, // 更新当前月份状态
     });
 
     // 重新生成三个月的日历数据
@@ -248,6 +261,35 @@ Page({
    */
   nextMonth() {
     this.updateCalendarToNextMonth();
+  },
+
+  /**
+   * 返回当前月份（今天按钮点击）
+   */
+  goToToday() {
+    // 获取当前日期
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    // 更新状态
+    this.setData({
+      activeYear: currentYear,
+      currentMonth: currentMonth,
+      currentIndex: 1, // 重置为中间视图
+      isCurrentMonthActive: true, // 设置为当前月份
+    });
+
+    // 重新生成日历数据
+    this.generateThreeMonths();
+
+    // 选中今天的日期
+    const todayString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    this.setData({
+      selectedDate: todayString,
+    });
+    this.updateSelectedDateInCalendar(todayString);
+    this.getSelectedDateInfo(today);
   },
 
   /**
