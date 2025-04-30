@@ -43,7 +43,6 @@
 
     <!-- 主题皮肤入口 -->
     <view class="theme-entry" wx:if="{{isAuth}}">
-      <!-- <view class="section-title">主题皮肤</view> -->
       <view class="theme-preview">
         <!-- 第一个主题 (免费) -->
         <view class="theme-item {{currentTheme.id === previewThemes[0].id ? 'active' : ''}}" wx:if="{{previewThemes.length > 0}}" data-theme-id="{{previewThemes[0].id}}" bind:tap="handleThemeClick">

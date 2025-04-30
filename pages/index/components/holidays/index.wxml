@@ -1,6 +1,5 @@
 <view class="container">
   <view class="header">
-    <!-- <view class="title">节假日日历</view> -->
     <view class="year-selector">
       <view class="year-btn {{activeYear === currentYear ? 'active' : ''}}" bindtap="switchYear" data-year="{{currentYear}}">
         {{currentYear}}年
@@ -32,13 +31,10 @@
         <view class="calendar-row" wx:for="{{month.rows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex">
           <view class="calendar-cell {{item.currentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isHoliday ? 'holiday' : ''}} {{item.isWorkday ? 'workday' : ''}} {{item.isFirstDay ? 'first-day' : ''}} {{item.isMiddleDay ? 'middle-day' : ''}} {{item.isLastDay ? 'last-day' : ''}}" wx:for="{{row}}" wx:key="date" bindtap="selectDate" data-date="{{item.date}}" data-month-index="{{monthIndex}}">
             <view class="date-text">{{item.day}}</view>
-
             <!-- 农历日期 -->
             <view class="lunar-date {{item.isCustomFestival ? 'custom-festival' : ''}}" wx:if="{{item.lunar}}">{{item.lunar.display || item.lunar.day}}</view>
-
             <!-- 假期标记 -->
             <view class="holiday-tag" wx:if="{{item.isHoliday}}">休</view>
-
             <!-- 调休标记 -->
             <view class="workday-tag" wx:if="{{item.isWorkday}}">班</view>
           </view>
@@ -79,17 +75,6 @@
       <text>这一天没有特殊安排</text>
     </view>
   </view>
-
-  <!-- <view class="legend">
-    <view class="legend-item">
-      <view class="legend-marker holiday-marker"></view>
-      <text class="legend-text">法定节假日</text>
-    </view>
-    <view class="legend-item">
-      <view class="legend-marker workday-marker"></view>
-      <text class="legend-text">调休上班</text>
-    </view>
-  </view> -->
 
   <view class="footer">
     <view class="tips">法定节假日安排可能会有调整，请以国务院发布的通知为准</view>
