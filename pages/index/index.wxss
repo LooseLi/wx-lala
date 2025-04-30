@@ -1,8 +1,4 @@
 @charset "UTF-8";
-page {
-  /* background-image: url('https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/WechatIMG606.jpg?sign=5ac9a3534170e830abc609696ecc46a4&t=1735267546'); */
-  /* background-size: 100% 100%; */
-}
 
 .page-wrapper {
   width: 100%;

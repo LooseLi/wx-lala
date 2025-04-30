@@ -19,7 +19,7 @@
       <view class="anniversary-card-container">
         <!-- 标题独立一行 -->
         <view class="anniversary-title">{{item.name}}</view>
-        
+
         <!-- 日期天数和图片图标的容器 -->
         <view class="anniversary-info-container">
           <!-- 左侧日期和天数 -->
@@ -27,7 +27,7 @@
             <view class="anniversary-date">{{item.date}}</view>
             <view class="anniversary-days"><text>{{item.days}}</text> 天</view>
           </view>
-          
+
           <!-- 右侧图片图标 -->
           <view class="anniversary-info-right" wx:if="{{item.images && item.images.length > 0}}" catchtap="viewImages" data-event-index="{{item}}">
             <view class="anniversary-images-icon">
@@ -65,7 +65,7 @@
             </picker>
           </view>
         </view>
-        
+
         <!-- 图片上传区域 -->
         <view class="ios-form-group">
           <!-- 图片预览区域 -->
@@ -78,7 +78,7 @@
                   <text class="delete-icon">×</text>
                 </view>
               </view>
-              
+
               <!-- 显示已上传的图片 -->
               <view class="image-preview-item" wx:for="{{uploadedImages}}" wx:key="index">
                 <image class="preview-image" src="{{item.fileID}}" mode="aspectFill" bindtap="previewUploadedImage" data-index="{{index}}"></image>
@@ -88,7 +88,7 @@
               </view>
             </view>
           </view>
-          
+
           <!-- 图片上传按钮 -->
           <view class="ios-form-item">
             <view class="image-upload-btn" bindtap="chooseImages">
