@@ -1,9 +1,12 @@
 const db = wx.cloud.database();
 const weatherDB = db.collection('weatherList');
 const foodDB = db.collection('foodList');
+const anniversary = db.collection('anniversaryList');
+const countdownDay = db.collection('holidayList');
 const API = require('../../utils/api');
 const plugins = require('../../utils/plugins');
 const themeManager = require('../../utils/themeManager'); // 引入主题管理模块
+const announcementUtils = require('../../utils/announcementUtils'); // 引入公告工具模块
 
 Page({
   /**
@@ -21,26 +24,15 @@ Page({
       'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
     // 公告数据
-    announcements: [
-      {
-        id: 1,
-        type: 'weather',
-        content: '今日大风预警，出门请注意安全',
-        link: '',
-      },
-      {
-        id: 2,
-        type: 'anniversary',
-        content: '距离纪念日还有3天，记得准备礼物哦',
-        link: '/pages/index/components/anniversary/index',
-      },
-      {
-        id: 3,
-        type: 'countdown',
-        content: '距离春节还有15天，准备回家过年啦',
-        link: '/pages/index/components/countdown/index',
-      },
-    ],
+    announcements: [],
+    // 纪念日数据
+    anniversaryList: [],
+    // 倒计时数据
+    countdownList: [],
+    // 倒计时处理后的数据
+    holidays: [],
+    nowHoliday: null, //当前所处节日
+    nextHoliday: null, //下一个节日
     events: [
       {
         id: 0,
@@ -312,6 +304,147 @@ Page({
   },
 
   /**
+   * 获取纪念日数据
+   */
+  async getAnniversaryData() {
+    try {
+      plugins.showLoading();
+      // 使用云函数获取纪念日数据
+      const res = await wx.cloud.callFunction({
+        name: 'getAnniversary',
+      });
+
+      const { result } = res;
+      const { data } = result;
+
+      if (data && data.length > 0) {
+        // 处理纪念日数据
+        data.forEach(item => {
+          item.days = this.dateDiff(item.date);
+        });
+
+        // 按天数排序
+        data.sort((a, b) => b.days - a.days);
+
+        this.setData({
+          anniversaryList: data,
+        });
+      }
+    } catch (err) {
+      console.error('获取纪念日数据失败:', err);
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  /**
+   * 获取倒计时数据
+   */
+  async getCountdownData() {
+    try {
+      plugins.showLoading();
+      const res = await countdownDay.get();
+
+      if (res.data && res.data.length > 0) {
+        this.setData({
+          countdownList: res.data,
+          holidays: res.data,
+        });
+
+        // 处理倒计时数据
+        this.handleHolidays();
+      }
+    } catch (err) {
+      console.error('获取倒计时数据失败:', err);
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  /**
+   * 处理倒计时数据
+   */
+  handleHolidays() {
+    const date = new Date();
+    const arr = [];
+    const currentFormattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+    this.data.holidays.forEach(item => {
+      const beginTime = new Date(item.beginDate.replace(/-/g, '/')).getTime();
+      const endTime = new Date(item.endDate.replace(/-/g, '/')).getTime();
+      item.begin = item.beginDate.split('-').slice(1).join('.');
+      item.end = item.endDate.split('-').slice(1).join('.');
+
+      if (currentFormattedDate === item.today) {
+        // 当前正好是某个节假日
+        this.setData({
+          nowHoliday: item,
+        });
+      } else if (date.getTime() >= beginTime && date.getTime() <= endTime) {
+        // 当前正在某个节假日范围
+        this.setData({
+          nowHoliday: item,
+        });
+      } else if (date.getTime() < beginTime) {
+        // 还没到的节假日
+        arr.push(item);
+      }
+    });
+
+    // 按照 beginDate 字段升序排序
+    arr.sort(
+      (a, b) => new Date(a.beginDate.replace(/-/g, '/')) - new Date(b.beginDate.replace(/-/g, '/')),
+    );
+
+    const nextHolidays = arr;
+    nextHolidays.forEach(item => {
+      const nextBeginTime = new Date(item.beginDate.replace(/-/g, '/'));
+      item.countDown = Math.ceil((nextBeginTime - date) / (1000 * 60 * 60 * 24));
+    });
+
+    this.setData({
+      nextHoliday: nextHolidays,
+    });
+  },
+
+  /**
+   * 计算两个日期之间的天数差异
+   * @param {String} date 日期字符串，格式为 YYYY-MM-DD
+   * @returns {Number} 天数差异，负数表示未来的天数，正数表示过去的天数
+   */
+  dateDiff(date) {
+    if (!date) return 0;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const targetDate = new Date(date.replace(/-/g, '/'));
+    targetDate.setHours(0, 0, 0, 0);
+
+    const timeDiff = today.getTime() - targetDate.getTime();
+    return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  },
+
+  /**
+   * 更新公告数据
+   */
+  updateAnnouncements() {
+    // 使用公告工具函数生成公告数据
+    const announcements = announcementUtils.generateAnnouncements(
+      this.data.today,
+      this.data.anniversaryList,
+      this.data.nextHoliday,
+    );
+
+    // 更新公告数据
+    this.setData({
+      announcements: announcements,
+    });
+
+    console.log('公告数据更新完成:', announcements);
+  },
+
+  /**
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
@@ -326,25 +459,39 @@ Page({
       },
     });
 
+    // 获取天气数据
     await this.getWeatherList();
     this.beforeGetLocation();
 
+    // 获取纪念日和倒计时数据
+    await Promise.all([this.getAnniversaryData(), this.getCountdownData()]);
+
+    // 获取待办数量
     this.getTodayUncompletedCount();
 
-    themeManager.onThemeChange(this.handleThemeChange.bind(this));
+    // 更新公告数据
+    this.updateAnnouncements();
 
+    // 主题相关设置
+    themeManager.onThemeChange(this.handleThemeChange.bind(this));
     this.applyThemeBackground();
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: async function () {
     // 每次显示页面时检查本地存储中的食物数据
     this.checkStoredFoodData();
 
     // 获取今日未完成待办数量
     this.getTodayUncompletedCount();
+
+    // 刷新纪念日和倒计时数据
+    await Promise.all([this.getAnniversaryData(), this.getCountdownData()]);
+
+    // 更新公告数据
+    this.updateAnnouncements();
 
     // 应用当前主题背景
     this.applyThemeBackground();
