@@ -20,6 +20,27 @@ Page({
     unknow:
       'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
+    // 公告数据
+    announcements: [
+      {
+        id: 1,
+        type: 'weather',
+        content: '今日大风预警，出门请注意安全',
+        link: '',
+      },
+      {
+        id: 2,
+        type: 'anniversary',
+        content: '距离纪念日还有3天，记得准备礼物哦',
+        link: '/pages/index/components/anniversary/index',
+      },
+      {
+        id: 3,
+        type: 'countdown',
+        content: '距离春节还有15天，准备回家过年啦',
+        link: '/pages/index/components/countdown/index',
+      },
+    ],
     events: [
       {
         id: 0,
@@ -404,6 +425,29 @@ Page({
       this.setData({
         themeBackground: backgroundImage,
       });
+    }
+  },
+
+  /**
+   * 处理公告点击事件
+   * @param {Object} e 事件对象
+   */
+  onAnnouncementClick(e) {
+    const announcement = e.detail.announcement;
+    console.log('点击了公告:', announcement);
+
+    // 如果有链接，跳转到对应页面
+    if (announcement.link) {
+      wx.navigateTo({
+        url: announcement.link,
+      });
+    } else if (announcement.type === 'weather') {
+      // 如果是天气公告，可以显示天气提示
+      if (this.data.today && this.data.today.tips) {
+        plugins.showToast({
+          title: this.data.today.tips,
+        });
+      }
     }
   },
 });

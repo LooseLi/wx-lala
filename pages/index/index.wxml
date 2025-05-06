@@ -1,5 +1,8 @@
 <view style="background-image: url('{{themeBackground}}'); background-size: cover; background-position: center; min-height: 100vh;">
   <view class="container">
+    <!-- 公告组件 -->
+    <announcement announcements="{{announcements}}" bindannouncementclick="onAnnouncementClick"></announcement>
+    
     <view class="card" wx:if="{{isShowMeet}}">
       <text class="meet">{{meetContent}}</text>
     </view>
