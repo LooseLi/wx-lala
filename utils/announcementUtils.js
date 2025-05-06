@@ -71,34 +71,63 @@ function checkBadWeather(weatherData) {
 }
 
 /**
- * 获取最近的纪念日公告
+ * 获取当天整周年纪念日公告
  * @param {Array} anniversaryList 纪念日列表
- * @param {Number} daysThreshold 天数阈值，只返回在这个天数内的纪念日
- * @returns {Object|null} 如果有符合条件的纪念日，返回公告对象；否则返回null
+ * @returns {Object|null} 如果当天有整周年纪念日，返回公告对象；否则返回null
  */
-function getRecentAnniversary(anniversaryList, daysThreshold = 7) {
+function getRecentAnniversary(anniversaryList) {
   if (!anniversaryList || !anniversaryList.length) return null;
 
-  // 筛选出未来daysThreshold天内的纪念日
-  const recentAnniversaries = anniversaryList.filter(item => {
-    // days字段是距离纪念日的天数，正数表示已过去的天数，负数表示未来的天数
-    return item.days < 0 && item.days >= -daysThreshold;
+  // 获取当前日期
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 检查是否有整周年纪念日
+  const anniversaryToday = anniversaryList.filter(item => {
+    if (!item.date) return false;
+
+    // 解析纪念日日期
+    const anniversaryDate = new Date(item.date.replace(/-/g, '/'));
+
+    // 判断是否是同一天（月份和日期相同）
+    const isSameMonthDay =
+      today.getMonth() === anniversaryDate.getMonth() &&
+      today.getDate() === anniversaryDate.getDate();
+
+    // 如果是同一天，计算周年数
+    if (isSameMonthDay) {
+      const years = today.getFullYear() - anniversaryDate.getFullYear();
+      return years > 0; // 只返回至少满1周年的纪念日
+    }
+
+    return false;
   });
 
-  // 按天数升序排序，找出最近的纪念日
-  if (recentAnniversaries.length > 0) {
-    recentAnniversaries.sort((a, b) => Math.abs(a.days) - Math.abs(b.days));
-    const nearest = recentAnniversaries[0];
+  // 如果有整周年纪念日，返回公告
+  if (anniversaryToday.length > 0) {
+    // 按周年数降序排序，优先显示大周年（如十周年、五周年等）
+    anniversaryToday.sort((a, b) => {
+      const dateA = new Date(a.date.replace(/-/g, '/'));
+      const dateB = new Date(b.date.replace(/-/g, '/'));
+      const yearsA = today.getFullYear() - dateA.getFullYear();
+      const yearsB = today.getFullYear() - dateB.getFullYear();
+      return yearsB - yearsA;
+    });
+
+    const anniversary = anniversaryToday[0];
+    const anniversaryDate = new Date(anniversary.date.replace(/-/g, '/'));
+    const years = today.getFullYear() - anniversaryDate.getFullYear();
 
     return {
-      id: 'anniversary-' + nearest._id,
+      id: 'anniversary-' + anniversary._id,
       type: 'anniversary',
-      content: `距离${nearest.name}还有${Math.abs(nearest.days)}天，记得准备礼物哦`,
+      content: `今天是${anniversary.name}${years}周年纪念日~`,
       link: '/pages/index/components/anniversary/index',
-      priority: 5, // 纪念日优先级中等
+      priority: 10, // 整周年纪念日优先级高
     };
   }
 
+  // 如果当天没有整周年纪念日，返回null
   return null;
 }
 
