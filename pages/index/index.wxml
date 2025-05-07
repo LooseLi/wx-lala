@@ -1,4 +1,4 @@
-<view style="background-image: url('{{themeBackground}}'); background-size: cover; background-position: center; min-height: 100vh;">
+<view class="page-wrapper" style="background-image: url('{{themeBackground}}');">
   <view class="container">
     <!-- 公告组件 -->
     <announcement announcements="{{announcements}}" bindannouncementclick="onAnnouncementClick"></announcement>

@@ -548,21 +548,35 @@ Page({
   /**
    * 处理主题变化
    * @param {Object} theme 新的主题对象
+   * @param {Boolean} isTransition 是否是过渡准备阶段
    */
-  handleThemeChange(theme) {
-    if (theme) {
-      // 优先使用处理后的URL，如果没有则使用原始图片路径
-      const backgroundImage = theme.themeImageUrl || theme.themeImage || '';
-      this.setData({
-        themeBackground: backgroundImage,
-      });
-    }
+  handleThemeChange(theme, isTransition = false) {
+    if (!theme) return;
+
+    // 优先使用处理后的URL，如果没有则使用原始图片路径
+    const backgroundImage = theme.themeImageUrl || theme.themeImage || '';
+
+    this.setData({
+      themeBackground: backgroundImage,
+    });
   },
 
   /**
    * 应用当前主题背景
    */
   applyThemeBackground() {
+    // 优先从本地缓存读取最新主题，确保在页面返回时显示最新主题
+    const cachedTheme = wx.getStorageSync('currentTheme');
+    if (cachedTheme) {
+      // 优先使用处理后的URL，如果没有则使用原始图片路径
+      const backgroundImage = cachedTheme.themeImageUrl || cachedTheme.themeImage || '';
+      this.setData({
+        themeBackground: backgroundImage,
+      });
+      return;
+    }
+    
+    // 如果没有缓存，则从全局状态读取
     const app = getApp();
     const currentTheme = app.globalData.currentTheme;
 

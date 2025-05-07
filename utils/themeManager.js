@@ -114,42 +114,144 @@ async function getUserTheme(openid) {
 /**
  * 加载主题
  * 优先加载用户选择的主题，如果没有则加载默认主题
+ * 添加时间戳验证机制，确保多设备同步
  * @param {string} openid 用户openid
  * @returns {Promise} 返回加载的主题
  */
 async function loadTheme(openid) {
   try {
-    // 先尝试从本地存储获取缓存的主题
+    let shouldRefreshUI = false;
+    let initialTheme = null;
+
+    // 先尝试从本地存储获取缓存的主题（快速显示）
     const cachedTheme = wx.getStorageSync('currentTheme');
     if (cachedTheme) {
       console.log('从缓存加载主题:', cachedTheme.name);
+      initialTheme = cachedTheme;
+
+      // 立即返回缓存的主题用于UI渲染，但继续在后台验证
+      setTimeout(() => {
+        validateAndUpdateTheme(openid, cachedTheme);
+      }, 100);
+
       return cachedTheme;
     }
 
-    // 如果有openid，尝试获取用户主题
-    let theme = null;
-    if (openid) {
-      theme = await getUserTheme(openid);
-    }
-
-    // 如果没有用户主题，获取默认主题
-    if (!theme) {
-      theme = await getDefaultTheme();
-      console.log('加载默认主题:', theme ? theme.name : '无默认主题');
-    } else {
-      console.log('加载用户主题:', theme.name);
-    }
-
-    // 缓存主题到本地存储
-    if (theme) {
-      wx.setStorageSync('currentTheme', theme);
-    }
-
-    return theme;
+    // 如果没有缓存，同步加载主题
+    return await loadAndCacheTheme(openid);
   } catch (error) {
     console.error('加载主题失败:', error);
     return null;
   }
+}
+
+/**
+ * 验证并更新主题（后台操作）
+ * @param {string} openid 用户openid
+ * @param {Object} cachedTheme 缓存的主题
+ */
+async function validateAndUpdateTheme(openid, cachedTheme) {
+  if (!openid) return;
+
+  try {
+    // 获取云端最新的主题
+    let cloudTheme = await getUserTheme(openid);
+
+    // 如果没有用户主题，获取默认主题
+    if (!cloudTheme) {
+      cloudTheme = await getDefaultTheme();
+    }
+
+    if (!cloudTheme) return;
+
+    // 检查主题是否需要更新
+    const needsUpdate = isThemeNeedsUpdate(cachedTheme, cloudTheme);
+
+    if (needsUpdate) {
+      console.log('检测到主题更新，从云端更新主题:', cloudTheme.name);
+
+      // 为云端主题添加时间戳
+      cloudTheme.lastModified = Date.now();
+
+      // 处理云存储图片URL
+      if (cloudTheme.themeImage && cloudTheme.themeImage.startsWith('cloud://')) {
+        cloudTheme.themeImageUrl = await getCloudFileURL(cloudTheme.themeImage);
+      }
+
+      // 更新本地缓存
+      wx.setStorageSync('currentTheme', cloudTheme);
+
+      // 应用新主题（平滑过渡）
+      applyTheme(cloudTheme);
+    }
+  } catch (error) {
+    console.error('验证主题更新失败:', error);
+  }
+}
+
+/**
+ * 检查主题是否需要更新
+ * @param {Object} cachedTheme 缓存的主题
+ * @param {Object} cloudTheme 云端主题
+ * @returns {boolean} 是否需要更新
+ */
+function isThemeNeedsUpdate(cachedTheme, cloudTheme) {
+  // 如果ID不同，肯定需要更新
+  if (cachedTheme.id !== cloudTheme.id) {
+    return true;
+  }
+
+  // 如果云端主题有更新时间且比缓存的新，需要更新
+  if (
+    cloudTheme.updateTime &&
+    (!cachedTheme.lastModified ||
+      new Date(cloudTheme.updateTime) > new Date(cachedTheme.lastModified))
+  ) {
+    return true;
+  }
+
+  // 如果主题内容有变化（比如图片URL变了），需要更新
+  if (cachedTheme.themeImage !== cloudTheme.themeImage) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * 加载并缓存主题（同步操作）
+ * @param {string} openid 用户openid
+ * @returns {Promise} 返回加载的主题
+ */
+async function loadAndCacheTheme(openid) {
+  // 如果有openid，尝试获取用户主题
+  let theme = null;
+  if (openid) {
+    theme = await getUserTheme(openid);
+  }
+
+  // 如果没有用户主题，获取默认主题
+  if (!theme) {
+    theme = await getDefaultTheme();
+    console.log('加载默认主题:', theme ? theme.name : '无默认主题');
+  } else {
+    console.log('加载用户主题:', theme.name);
+  }
+
+  // 添加时间戳
+  if (theme) {
+    theme.lastModified = Date.now();
+
+    // 处理云存储图片URL
+    if (theme.themeImage && theme.themeImage.startsWith('cloud://')) {
+      theme.themeImageUrl = await getCloudFileURL(theme.themeImage);
+    }
+
+    // 缓存主题到本地存储
+    wx.setStorageSync('currentTheme', theme);
+  }
+
+  return theme;
 }
 
 /**
@@ -412,22 +514,35 @@ async function switchTheme(openid, themeId) {
       return { success: false, message: '主题未解锁' };
     }
 
-    // 更新用户当前主题
+    // 更新用户当前主题，并添加更新时间
+    const now = new Date();
     await userInfo.where({ openid }).update({
       data: {
         currentTheme: themeId,
-        updatedAt: new Date(),
+        themeUpdateTime: now,
       },
     });
 
-    // 应用主题
-    await applyTheme(theme);
+    // 为主题添加时间戳
+    theme.lastModified = Date.now();
+    theme.updateTime = now;
 
-    // 更新全局主题
+    // 处理云存储图片URL
+    if (theme.themeImage && theme.themeImage.startsWith('cloud://')) {
+      theme.themeImageUrl = await getCloudFileURL(theme.themeImage);
+    }
+
+    // 更新本地缓存
+    wx.setStorageSync('currentTheme', theme);
+    
+    // 直接更新全局状态，确保切换后立即生效
     const app = getApp();
     app.globalData.currentTheme = theme;
 
-    return { success: true, message: '主题切换成功', theme };
+    // 应用新主题
+    applyTheme(theme);
+
+    return { success: true, message: '主题切换成功' };
   } catch (error) {
     console.error('切换主题失败:', error);
     return { success: false, message: '系统错误' };
@@ -470,11 +585,33 @@ async function getCloudFileURL(fileID) {
 /**
  * 应用主题
  * @param {Object} theme 主题对象
+ * @param {Boolean} smoothTransition 是否使用平滑过渡效果
  */
-async function applyTheme(theme) {
+async function applyTheme(theme, smoothTransition = true) {
   if (!theme) return;
 
   try {
+    // 获取应用实例
+    const app = getApp();
+    if (!app.globalData.themeChangeListeners) {
+      app.globalData.themeChangeListeners = [];
+    }
+    
+    // 更新全局状态，确保其他页面可以读取到最新主题
+    app.globalData.currentTheme = theme;
+
+    // 如果启用平滑过渡，先记录当前主题状态
+    let isBackgroundTransition = false;
+    if (smoothTransition) {
+      // 检查是否是背景图片变更（最需要平滑过渡的情况）
+      const currentTheme = wx.getStorageSync('currentTheme');
+      if (currentTheme && currentTheme.id !== theme.id) {
+        const oldBg = currentTheme.themeImageUrl || currentTheme.themeImage;
+        const newBg = theme.themeImageUrl || theme.themeImage;
+        isBackgroundTransition = oldBg !== newBg;
+      }
+    }
+
     // 如果主题有图片，获取可访问的URL
     if (theme.themeImage && theme.themeImage.startsWith('cloud://')) {
       // 创建一个新的主题对象，避免修改原始对象
@@ -484,40 +621,68 @@ async function applyTheme(theme) {
       // 存储处理后的主题到本地
       wx.setStorageSync('currentTheme', processedTheme);
 
-      // 发布主题变更事件
-      const app = getApp();
-      if (!app.globalData.themeChangeListeners) {
-        app.globalData.themeChangeListeners = [];
-      }
+      // 如果需要平滑过渡，使用动画效果
+      if (smoothTransition && isBackgroundTransition) {
+        // 先通知监听器准备过渡
+        app.globalData.themeChangeListeners.forEach(listener => {
+          if (typeof listener === 'function' && listener.name === 'prepareTransition') {
+            listener(processedTheme, true);
+          }
+        });
 
-      // 通知所有监听器
-      app.globalData.themeChangeListeners.forEach(listener => {
-        if (typeof listener === 'function') {
-          listener(processedTheme);
-        }
-      });
+        // 延迟一小段时间后应用新主题，让过渡效果更平滑
+        setTimeout(() => {
+          // 通知所有监听器
+          app.globalData.themeChangeListeners.forEach(listener => {
+            if (typeof listener === 'function') {
+              listener(processedTheme);
+            }
+          });
+        }, 50);
+      } else {
+        // 直接通知所有监听器
+        app.globalData.themeChangeListeners.forEach(listener => {
+          if (typeof listener === 'function') {
+            listener(processedTheme);
+          }
+        });
+      }
     } else {
       // 如果没有云存储图片，直接应用原始主题
       // 存储当前主题到本地
       wx.setStorageSync('currentTheme', theme);
 
-      // 发布主题变更事件
-      const app = getApp();
-      if (!app.globalData.themeChangeListeners) {
-        app.globalData.themeChangeListeners = [];
-      }
+      // 如果需要平滑过渡，使用动画效果
+      if (smoothTransition && isBackgroundTransition) {
+        // 先通知监听器准备过渡
+        app.globalData.themeChangeListeners.forEach(listener => {
+          if (typeof listener === 'function' && listener.name === 'prepareTransition') {
+            listener(theme, true);
+          }
+        });
 
-      // 通知所有监听器
-      app.globalData.themeChangeListeners.forEach(listener => {
-        if (typeof listener === 'function') {
-          listener(theme);
-        }
-      });
+        // 延迟一小段时间后应用新主题
+        setTimeout(() => {
+          // 通知所有监听器
+          app.globalData.themeChangeListeners.forEach(listener => {
+            if (typeof listener === 'function') {
+              listener(theme);
+            }
+          });
+        }, 50);
+      } else {
+        // 直接通知所有监听器
+        app.globalData.themeChangeListeners.forEach(listener => {
+          if (typeof listener === 'function') {
+            listener(theme);
+          }
+        });
+      }
     }
   } catch (error) {
     console.error('应用主题失败:', error);
 
-    // 出错时仍然应用原始主题
+    // 出错时仍然应用原始主题，但不使用过渡效果
     wx.setStorageSync('currentTheme', theme);
 
     const app = getApp();
