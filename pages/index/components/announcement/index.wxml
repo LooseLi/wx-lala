@@ -1,19 +1,7 @@
 <!-- 公告组件 -->
 <view class="announcement-container" wx:if="{{announcements.length > 0}}">
-  <swiper 
-    class="announcement-swiper" 
-    autoplay="{{true}}" 
-    vertical="{{true}}" 
-    circular="{{true}}" 
-    interval="3000" 
-    duration="500"
-    current="{{current}}"
-    bindchange="onAnnouncementChange">
-    <swiper-item 
-      wx:for="{{announcements}}" 
-      wx:key="id" 
-      bindtap="onAnnouncementTap" 
-      data-index="{{index}}">
+  <swiper class="announcement-swiper" autoplay="{{true}}" vertical="{{true}}" circular="{{true}}" interval="3000" duration="500" current="{{current}}" bindchange="onAnnouncementChange">
+    <swiper-item wx:for="{{announcements}}" wx:key="id" bindtap="onAnnouncementTap" data-index="{{index}}">
       <view class="announcement-item {{item.type}}">
         <image class="announcement-icon" src="./images/icon-gonggao.png"></image>
         <text class="announcement-text">{{item.content}}</text>

@@ -7,8 +7,8 @@ Component({
     // 公告列表
     announcements: {
       type: Array,
-      value: []
-    }
+      value: [],
+    },
   },
 
   /**
@@ -16,7 +16,7 @@ Component({
    */
   data: {
     // 当前显示的公告索引
-    current: 0
+    current: 0,
   },
 
   /**
@@ -26,17 +26,17 @@ Component({
     // 公告切换事件
     onAnnouncementChange(e) {
       this.setData({
-        current: e.detail.current
+        current: e.detail.current,
       });
     },
-    
+
     // 点击公告事件
     onAnnouncementTap(e) {
       const index = e.currentTarget.dataset.index;
       const announcement = this.data.announcements[index];
-      
+
       // 触发点击事件，将公告信息传递给父组件
       this.triggerEvent('announcementclick', { announcement });
-    }
-  }
-})
+    },
+  },
+});
