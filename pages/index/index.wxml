@@ -2,7 +2,7 @@
   <view class="container">
     <!-- 公告组件 -->
     <announcement announcements="{{announcements}}" bindannouncementclick="onAnnouncementClick"></announcement>
-    
+
     <view class="card" wx:if="{{isShowMeet}}">
       <text class="meet">{{meetContent}}</text>
     </view>

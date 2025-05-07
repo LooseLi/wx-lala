@@ -484,7 +484,7 @@ Page({
       });
       return;
     }
-  
+
     // 如果没有缓存，则从全局状态读取
     const app = getApp();
     const currentTheme = app.globalData.currentTheme;
