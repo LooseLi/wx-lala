@@ -160,9 +160,15 @@ Page({
           lives.icon = this.data.unknow;
           lives.tips = '快截图！让松松去更新天气小图标吧~';
         }
-        this.setData({
-          today: lives,
-        });
+        this.setData(
+          {
+            today: lives,
+          },
+          () => {
+            // 天气数据加载完成后，重新更新公告列表
+            this.updateAnnouncements();
+          },
+        );
       },
       fail: info => {
         console.log(info);
@@ -429,6 +435,12 @@ Page({
    * 更新公告数据
    */
   updateAnnouncements() {
+    // 检查依赖数据是否都已加载完成
+    if (!this.data.today || !this.data.anniversaryList || !this.data.nextHoliday) {
+      console.log('公告数据依赖尚未全部加载完成，暂不更新公告');
+      return;
+    }
+
     // 使用公告工具函数生成公告数据
     const announcements = announcementUtils.generateAnnouncements(
       this.data.today,
