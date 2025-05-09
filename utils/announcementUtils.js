@@ -11,33 +11,28 @@
 function checkBadWeather(weatherData) {
   if (!weatherData) return null;
 
-  // 恶劣天气类型列表
-  const badWeatherTypes = [
-    '暴雨',
-    '大暴雨',
-    '特大暴雨',
-    '雷阵雨',
-    '雷暴',
-    '暴雪',
-    '大暴雪',
-    '特大暴雪',
-    '浮尘',
-    '扬沙',
-    '沙尘暴',
-    '强沙尘暴',
-    '霾',
-    '中度霾',
-    '重度霾',
-    '严重霾',
-    '台风',
-    '飓风',
-    '龙卷风',
-    '冰雹',
-    '大风',
-    '狂风',
-    '飓风',
-    '热带风暴',
-  ];
+  // 天气分类
+  const weatherCategories = {
+    rain: ['大雨', '暴雨', '大暴雨', '特大暴雨', '极端降雨', '强阵雨'],
+    shower: ['雷阵雨', '强雷阵雨'],
+    snow: ['大雪', '暴雪'],
+    haze: ['霾', '中度霾', '重度霾', '严重霾'],
+    wind: ['劲风', '强风', '大风', '烈风', '风暴', '狂爆风', '飓风', '热带风暴'],
+    fog: ['大雾', '浓雾', '强浓雾', '特强浓雾'],
+    other: ['浮尘', '扬沙', '沙尘暴', '强沙尘暴', '龙卷风', '冰雹', '台风'],
+  };
+  // 文案模板
+  const weatherMessages = {
+    rain: '雨太大啦！别出门了吧~',
+    shower: '出门要带伞，打雷要抱抱~',
+    snow: '嫩大的雪，不上班行不行',
+    haze: '口罩，救一下！',
+    wind: '出门别被刮走啦，注意安全~',
+    fog: '能见度太低，慢行慢行~',
+    other: '出门注意安全喔~', // 默认文案
+  };
+  // 合并所有恶劣天气类型为一个数组
+  const badWeatherTypes = Object.values(weatherCategories).flat();
 
   // 高温预警
   const isHighTemperature = weatherData.temperature && parseInt(weatherData.temperature) >= 35;
@@ -51,7 +46,18 @@ function checkBadWeather(weatherData) {
     let content = '';
 
     if (isBadWeatherType) {
-      content = `今日${weatherData.weather}，出门注意安全喔~`;
+      // 根据天气类型获取对应文案
+      let weatherMessage = weatherMessages.other; // 默认文案
+
+      // 遍历所有天气分类，查找匹配的类型
+      for (const [category, types] of Object.entries(weatherCategories)) {
+        if (types.some(type => weatherData.weather.includes(type))) {
+          weatherMessage = weatherMessages[category];
+          break;
+        }
+      }
+
+      content = `今日${weatherData.weather}，${weatherMessage}`;
     } else if (isHighTemperature) {
       content = `今日${weatherData.temperature}°C！西瓜🍉降暑~`;
     } else if (isStrongWind) {
