@@ -57,7 +57,7 @@ function checkBadWeather(weatherData) {
         }
       }
 
-      content = `今日${weatherData.weather}，${weatherMessage}`;
+      content = `今日${weatherData.weather}：${weatherMessage}`;
     } else if (isHighTemperature) {
       content = `今日${weatherData.temperature}°C！西瓜🍉降暑~`;
     } else if (isStrongWind) {
@@ -127,7 +127,7 @@ function getRecentAnniversary(anniversaryList) {
     return {
       id: 'anniversary-' + anniversary._id,
       type: 'anniversary',
-      content: `今天是${anniversary.name}${years}周年纪念日~`,
+      content: `今天是${anniversary.name} ${years} 周年纪念日~`,
       link: '/pages/index/components/anniversary/index',
       priority: 10, // 整周年纪念日优先级高
     };
@@ -159,7 +159,7 @@ function getRecentCountdown(countdownList, daysThreshold = 15) {
     return {
       id: 'countdown-' + nearest._id,
       type: 'countdown',
-      content: `距离${nearest.id}还有${nearest.countDown}天~`,
+      content: `距离${nearest.id}还有 ${nearest.countDown} 天~`,
       link: '/pages/index/components/countdown/index',
       priority: 3, // 倒计时优先级较低
     };
