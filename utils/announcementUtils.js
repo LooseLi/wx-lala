@@ -38,7 +38,6 @@ function checkBadWeather(weatherData) {
   const isHighTemperature = weatherData.temperature && parseInt(weatherData.temperature) >= 35;
   // 大风预警
   const isStrongWind = weatherData.windpower && parseInt(weatherData.windpower) >= 4;
-  // 检查天气类型
   const isBadWeatherType =
     weatherData.weather && badWeatherTypes.some(type => weatherData.weather.includes(type));
 
@@ -49,7 +48,6 @@ function checkBadWeather(weatherData) {
       // 根据天气类型获取对应文案
       let weatherMessage = weatherMessages.other; // 默认文案
 
-      // 遍历所有天气分类，查找匹配的类型
       for (const [category, types] of Object.entries(weatherCategories)) {
         if (types.some(type => weatherData.weather.includes(type))) {
           weatherMessage = weatherMessages[category];
@@ -84,7 +82,6 @@ function checkBadWeather(weatherData) {
 function getRecentAnniversary(anniversaryList) {
   if (!anniversaryList || !anniversaryList.length) return null;
 
-  // 获取当前日期
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -92,18 +89,15 @@ function getRecentAnniversary(anniversaryList) {
   const anniversaryToday = anniversaryList.filter(item => {
     if (!item.date) return false;
 
-    // 解析纪念日日期
     const anniversaryDate = new Date(item.date.replace(/-/g, '/'));
 
-    // 判断是否是同一天（月份和日期相同）
     const isSameMonthDay =
       today.getMonth() === anniversaryDate.getMonth() &&
       today.getDate() === anniversaryDate.getDate();
 
-    // 如果是同一天，计算周年数
     if (isSameMonthDay) {
       const years = today.getFullYear() - anniversaryDate.getFullYear();
-      return years > 0; // 只返回至少满1周年的纪念日
+      return years > 0;
     }
 
     return false;
@@ -133,7 +127,6 @@ function getRecentAnniversary(anniversaryList) {
     };
   }
 
-  // 如果当天没有整周年纪念日，返回null
   return null;
 }
 
