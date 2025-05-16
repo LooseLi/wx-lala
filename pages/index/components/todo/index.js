@@ -44,6 +44,28 @@ Page({
   },
 
   /**
+   * 检查用户的订阅状态
+   */
+  checkSubscriptionStatus: function () {
+    wx.cloud.callFunction({
+      name: 'manageReminders',
+      data: {
+        action: 'getStatus',
+      },
+      success: res => {
+        if (res.result && res.result.success) {
+          this.setData({
+            isSubscribed: res.result.isActive || false,
+          });
+        }
+      },
+      fail: err => {
+        console.error('获取订阅状态失败:', err);
+      },
+    });
+  },
+
+  /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
