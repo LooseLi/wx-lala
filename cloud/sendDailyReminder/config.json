@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "openapi": ["subscribeMessage.send"]
+  },
+  "triggers": [
+    {
+      "name": "dailyTodoReminder",
+      "type": "timer",
+      "config": "0 55 14 * * * *"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 const db = wx.cloud.database();
 const todos = db.collection('todos');
 const { dateFormat } = require('../../../../utils/base');
+const config = require('../../../../config.js');
+const templateId = config.subscribeMessage.todoReminder.templateId;
 
 Page({
   /**
@@ -27,6 +29,7 @@ Page({
     currentTodoId: '',
     emptyTip: '暂无待办事项，点击下方按钮添加',
     isFromOtherPage: false,
+    isSubscribed: false, // 是否已订阅待办提醒
   },
 
   /**
@@ -35,6 +38,9 @@ Page({
   onLoad: async function (options) {
     this.updateDateInfo();
     this.loadTodos();
+
+    // 获取订阅状态
+    this.checkSubscriptionStatus();
   },
 
   /**
@@ -532,16 +538,21 @@ Page({
           });
         },
       });
-    } else {
-      const openid = wx.getStorageSync('openid');
-      if (!openid) {
-        wx.showToast({
-          title: '请先登录',
-          icon: 'none',
-        });
-        return;
-      }
+      return;
+    }
 
+    // 获取当前用户的openid
+    const openid = wx.getStorageSync('openid');
+    if (!openid) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 定义添加待办事项的函数
+    const addTodo = () => {
       todos.add({
         data: {
           ...todoData,
@@ -564,6 +575,54 @@ Page({
           });
         },
       });
+    };
+
+    // 如果未订阅，先请求订阅授权，然后再添加待办事项
+    if (!this.data.isSubscribed) {
+      // 直接调用微信API，这里是由用户点击直接触发的
+      wx.requestSubscribeMessage({
+        tmplIds: [templateId], // 使用配置文件中的模板ID
+        success: res => {
+          // 如果用户接受订阅
+          if (res[templateId] === 'accept') {
+            // 调用云函数保存订阅状态
+            wx.cloud.callFunction({
+              name: 'manageReminders',
+              data: {
+                action: 'subscribe',
+              },
+              success: result => {
+                if (result.result && result.result.success) {
+                  this.setData({ isSubscribed: true });
+                  wx.showToast({
+                    title: '已开启每日待办提醒',
+                    icon: 'none',
+                    duration: 2000,
+                  });
+                }
+                // 无论订阅成功与否，都添加待办事项
+                addTodo();
+              },
+              fail: err => {
+                console.error('调用云函数失败:', err);
+                // 即使订阅失败，也添加待办事项
+                addTodo();
+              },
+            });
+          } else {
+            // 用户拒绝订阅，依然添加待办事项
+            addTodo();
+          }
+        },
+        fail: err => {
+          console.error('订阅消息请求失败:', err);
+          // 即使订阅失败，也添加待办事项
+          addTodo();
+        },
+      });
+    } else {
+      // 已经订阅过，直接添加待办事项
+      addTodo();
     }
   },
 

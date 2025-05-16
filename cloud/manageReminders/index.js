@@ -6,6 +6,9 @@ cloud.init();
 const db = cloud.database();
 const _ = db.command;
 
+const config = require('./config');
+const templateId = config.subscribeMessage.todoReminder.templateId;
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
@@ -43,7 +46,7 @@ async function subscribe(openid, event) {
     const reminderData = {
       openid,
       isActive: true,
-      tmplId: 'GqXCTV7Ws4p-ADpD40fZz_ynl-P1an6QgtY-YuYFnnQ', // 模板ID
+      tmplId: templateId, // 模板ID
       expireTime,
       reminderTime: '17:20', // 固定提醒时间
       reminderTypes: {

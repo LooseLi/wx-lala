@@ -33,6 +33,7 @@ project.private.config.json
 # 敏感配置文件
 config.js
 secrets.js
+cloud/*/config.js
 
 # 日志文件
 npm-debug.log*
