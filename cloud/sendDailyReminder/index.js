@@ -113,11 +113,11 @@ exports.main = async (event, context) => {
           touser: reminder.openid,
           templateId: templateId,
           data: {
-            // 根据您的模板格式填充数据，以下是示例
-            thing1: { value: '待办事项提醒' },
-            thing2: { value: reminderContent },
-            date3: { value: currentDate },
-            thing4: { value: '点击查看详情' },
+            // 根据您的模板格式填充数据
+            thing17: { value: 'normal' }, // 事项优先级
+            phrase25: { value: '未完成' }, // 任务状态
+            number16: { value: todos.data.length.toString() }, // 事项数目
+            thing12: { value: '别忘记今日待办喔~' }, // 备注信息
           },
           page: '/pages/index/components/todo/index', // 点击消息后跳转的页面
           miniprogramState: 'trial', // 修改为 trial，表示体验版

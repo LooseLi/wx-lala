@@ -6,7 +6,7 @@
     {
       "name": "dailyTodoReminder",
       "type": "timer",
-      "config": "0 55 14 * * * *"
+      "config": "0 15 15 * * * *"
     }
   ]
 }
