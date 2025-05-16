@@ -54,9 +54,12 @@ Page({
       },
       success: res => {
         if (res.result && res.result.success) {
+          // 正确处理返回的数据结构
+          const isActive = res.result.data && res.result.data.isActive;
           this.setData({
-            isSubscribed: res.result.isActive || false,
+            isSubscribed: isActive || false,
           });
+          console.log('订阅状态检查结果:', isActive ? '已订阅' : '未订阅');
         }
       },
       fail: err => {
