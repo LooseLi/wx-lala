@@ -32,6 +32,10 @@
   background-color: rgba(64, 158, 255, 0.2);
 }
 
+.announcement-item.todo {
+  background-color: rgba(95, 186, 125, 0.2);
+}
+
 .announcement-icon {
   width: 40rpx;
   height: 40rpx;

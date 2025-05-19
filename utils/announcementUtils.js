@@ -166,10 +166,10 @@ function getRecentCountdown(countdownList, daysThreshold = 15) {
  * @param {Object} weatherData 天气数据
  * @param {Array} anniversaryList 纪念日列表
  * @param {Array} countdownList 倒计时列表
- * @param {Array} todoList 待办事项列表
+ * @param {Number} todoCount 今日未完成待办数量
  * @returns {Array} 公告列表
  */
-function generateAnnouncements(weatherData, anniversaryList, countdownList, todoList) {
+function generateAnnouncements(weatherData, anniversaryList, countdownList, todoCount) {
   const announcements = [];
 
   // 检查恶劣天气
@@ -191,7 +191,7 @@ function generateAnnouncements(weatherData, anniversaryList, countdownList, todo
   }
 
   // 获取今日待办
-  const todoAnnouncement = getTodayTodos(todoList);
+  const todoAnnouncement = getTodayTodos(todoCount);
   if (todoAnnouncement) {
     announcements.push(todoAnnouncement);
   }
@@ -217,33 +217,21 @@ function formatDate(date) {
 
 /**
  * 获取今日待办公告
- * @param {Array} todoList 待办事项列表
+ * @param {Number} todoCount 今日未完成待办数量
  * @returns {Object|null} 如果今日有待办事项，返回公告对象；否则返回null
  */
-function getTodayTodos(todoList) {
-  if (!todoList || !todoList.length) return null;
+function getTodayTodos(todoCount) {
+  // 如果没有待办或数量为0，不显示公告
+  if (!todoCount || todoCount <= 0) return null;
 
-  // 获取今天的日期字符串（格式：YYYY-MM-DD）
-  const today = new Date();
-  const todayStr = formatDate(today);
-
-  // 筛选今日未完成的待办事项
-  const todayTodos = todoList.filter(todo => {
-    return todo.dueDate === todayStr && !todo.completed;
-  });
-
-  // 如果今日有未完成的待办事项，返回公告
-  if (todayTodos.length > 0) {
-    return {
-      id: 'todo-' + Date.now(),
-      type: 'todo',
-      content: `今日有 ${todayTodos.length} 项待办事项待完成`,
-      link: '/pages/index/components/todo/index',
-      priority: 5, // 设置中等优先级
-    };
-  }
-
-  return null;
+  // 返回公告对象
+  return {
+    id: 'todo-' + Date.now(),
+    type: 'todo',
+    content: `今日有 ${todoCount} 项待办事项待完成`,
+    link: '/pages/index/components/todo/index',
+    priority: 5, // 设置中等优先级
+  };
 }
 
 module.exports = {

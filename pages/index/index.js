@@ -441,11 +441,12 @@ Page({
       return;
     }
 
-    // 使用公告工具函数生成公告数据
+    // 使用公告工具函数生成公告数据，传递待办数量
     const announcements = announcementUtils.generateAnnouncements(
       this.data.today,
       this.data.anniversaryList,
       this.data.nextHoliday,
+      this.data.todayUncompletedCount || 0, // 传递今日未完成待办数量
     );
 
     // 更新公告数据
