@@ -166,9 +166,10 @@ function getRecentCountdown(countdownList, daysThreshold = 15) {
  * @param {Object} weatherData 天气数据
  * @param {Array} anniversaryList 纪念日列表
  * @param {Array} countdownList 倒计时列表
+ * @param {Array} todoList 待办事项列表
  * @returns {Array} 公告列表
  */
-function generateAnnouncements(weatherData, anniversaryList, countdownList) {
+function generateAnnouncements(weatherData, anniversaryList, countdownList, todoList) {
   const announcements = [];
 
   // 检查恶劣天气
@@ -187,6 +188,12 @@ function generateAnnouncements(weatherData, anniversaryList, countdownList) {
   const countdownAnnouncement = getRecentCountdown(countdownList);
   if (countdownAnnouncement) {
     announcements.push(countdownAnnouncement);
+  }
+
+  // 获取今日待办
+  const todoAnnouncement = getTodayTodos(todoList);
+  if (todoAnnouncement) {
+    announcements.push(todoAnnouncement);
   }
 
   // 按优先级排序
