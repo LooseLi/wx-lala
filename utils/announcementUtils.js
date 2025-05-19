@@ -195,9 +195,55 @@ function generateAnnouncements(weatherData, anniversaryList, countdownList) {
   return announcements;
 }
 
+/**
+ * 格式化日期为 YYYY-MM-DD
+ * @param {Date} date 日期对象
+ * @returns {String} 格式化后的日期字符串
+ */
+function formatDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * 获取今日待办公告
+ * @param {Array} todoList 待办事项列表
+ * @returns {Object|null} 如果今日有待办事项，返回公告对象；否则返回null
+ */
+function getTodayTodos(todoList) {
+  if (!todoList || !todoList.length) return null;
+
+  // 获取今天的日期字符串（格式：YYYY-MM-DD）
+  const today = new Date();
+  const todayStr = formatDate(today);
+
+  // 筛选今日未完成的待办事项
+  const todayTodos = todoList.filter(todo => {
+    return todo.dueDate === todayStr && !todo.completed;
+  });
+
+  // 如果今日有未完成的待办事项，返回公告
+  if (todayTodos.length > 0) {
+    return {
+      id: 'todo-' + Date.now(),
+      type: 'todo',
+      content: `今日有 ${todayTodos.length} 项待办事项待完成`,
+      link: '/pages/index/components/todo/index',
+      priority: 5, // 设置中等优先级
+    };
+  }
+
+  return null;
+}
+
 module.exports = {
   checkBadWeather,
   getRecentAnniversary,
   getRecentCountdown,
+  getTodayTodos,
   generateAnnouncements,
+  formatDate,
 };
