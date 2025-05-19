@@ -67,7 +67,7 @@ function checkBadWeather(weatherData) {
       type: 'weather',
       content: content,
       link: '',
-      priority: 10, // 恶劣天气优先级最高
+      priority: 9, // 恶劣天气优先级第二高
     };
   }
 
@@ -123,7 +123,7 @@ function getRecentAnniversary(anniversaryList) {
       type: 'anniversary',
       content: `今天是${anniversary.name} ${years} 周年纪念日~`,
       link: '/pages/index/components/anniversary/index',
-      priority: 10, // 整周年纪念日优先级高
+      priority: 10, // 纪念日优先级最高
     };
   }
 
@@ -154,7 +154,7 @@ function getRecentCountdown(countdownList, daysThreshold = 15) {
       type: 'countdown',
       content: `距离${nearest.id}还有 ${nearest.countDown} 天~`,
       link: '/pages/index/components/countdown/index',
-      priority: 3, // 倒计时优先级较低
+      priority: 5, // 倒计时优先级最低
     };
   }
 
@@ -230,7 +230,7 @@ function getTodayTodos(todoCount) {
     type: 'todo',
     content: `今日有 ${todoCount} 项待办事项待完成`,
     link: '/pages/index/components/todo/index',
-    priority: 5, // 设置中等优先级
+    priority: 7, // 今日待办优先级第三高
   };
 }
 
