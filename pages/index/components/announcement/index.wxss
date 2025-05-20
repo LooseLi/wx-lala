@@ -19,24 +19,9 @@
   padding: 0 20rpx;
   height: 100%;
   background-color: rgba(245, 245, 245, 0.8);
-  border-left: 2px solid transparent;
 }
 
-.announcement-item.weather {
-  border-left-color: #ffcc00;
-}
-
-.announcement-item.anniversary {
-  border-left-color: #ff6b8b;
-}
-
-.announcement-item.countdown {
-  border-left-color: #409eff;
-}
-
-.announcement-item.todo {
-  border-left-color: #5fba7d;
-}
+/* 移除了所有类型特定的样式，完全依靠图标区分 */
 
 .announcement-icon {
   width: 40rpx;
