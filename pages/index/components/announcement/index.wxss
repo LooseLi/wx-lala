@@ -18,22 +18,24 @@
   align-items: center;
   padding: 0 20rpx;
   height: 100%;
+  background-color: rgba(245, 245, 245, 0.8);
+  border-left: 2px solid transparent;
 }
 
 .announcement-item.weather {
-  background-color: rgba(255, 204, 0, 0.2);
+  border-left-color: #ffcc00;
 }
 
 .announcement-item.anniversary {
-  background-color: rgba(255, 107, 139, 0.2);
+  border-left-color: #ff6b8b;
 }
 
 .announcement-item.countdown {
-  background-color: rgba(64, 158, 255, 0.2);
+  border-left-color: #409eff;
 }
 
 .announcement-item.todo {
-  background-color: rgba(95, 186, 125, 0.2);
+  border-left-color: #5fba7d;
 }
 
 .announcement-icon {
