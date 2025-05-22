@@ -23,13 +23,9 @@ Page({
     unknow:
       'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
-    // 公告数据
     announcements: [],
-    // 纪念日数据
     anniversaryList: [],
-    // 倒计时数据
     countdownList: [],
-    // 倒计时处理后的数据
     holidays: [],
     nowHoliday: null, //当前所处节日
     nextHoliday: null, //下一个节日
@@ -80,7 +76,6 @@ Page({
       title: this.data.today.tips,
     });
   },
-  // 点击没有权限图片的事件
   handleNoAuth() {
     plugins.showToast({
       title: '没有给我位置权限，看我委屈的小眼神 🥺',
@@ -472,21 +467,16 @@ Page({
       },
     });
 
-    // 获取天气数据
-    await this.getWeatherList();
+    await this.getWeatherList(); // 获取天气数据
     this.beforeGetLocation();
 
-    // 获取纪念日和倒计时数据
-    await Promise.all([this.getAnniversaryData(), this.getCountdownData()]);
+    await Promise.all([this.getAnniversaryData(), this.getCountdownData()]); // 获取纪念日和倒计时数据
 
-    // 获取待办数量
-    this.getTodayUncompletedCount();
+    this.getTodayUncompletedCount(); // 获取待办数量
 
-    // 更新公告数据
-    this.updateAnnouncements();
+    this.updateAnnouncements(); // 更新公告数据
 
-    // 主题相关设置
-    themeManager.onThemeChange(this.handleThemeChange.bind(this));
+    themeManager.onThemeChange(this.handleThemeChange.bind(this)); // 主题相关设置
     this.applyThemeBackground();
   },
 
