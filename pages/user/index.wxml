@@ -10,7 +10,7 @@
           <text class="nickname">{{nickname}}</text>
           <view class="edit-icon">✏️</view>
         </view>
-        <view>😘😘😘</view>
+        <view class="greeting">{{greeting}}</view>
       </view>
     </view>
     <view class="btn-login" wx:else>

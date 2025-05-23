@@ -2,6 +2,7 @@ const db = wx.cloud.database();
 const userInfo = db.collection('userInfo');
 const plugins = require('../../utils/plugins');
 const themeManager = require('../../utils/themeManager'); // 引入主题管理模块
+const greetingUtils = require('../../utils/greetingUtils'); // 引入问候语工具模块
 
 Page({
   data: {
@@ -20,6 +21,7 @@ Page({
     // 主题相关数据
     currentTheme: null,
     previewThemes: [],
+    greeting: '', // 基于时间的问候语
   },
 
   // 打卡成功的回调
@@ -269,6 +271,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // 生成基于时间的问候语
+    this.generateGreeting();
+
     const userInfo = wx.getStorageSync('userInfo');
 
     if (userInfo && userInfo.isAuth) {
@@ -364,6 +369,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 生成基于时间的问候语，每次显示页面时都更新
+    this.generateGreeting();
+
     if (this.data.isAuth && this.data.loginState === 'logged-in') {
       const checkInComponent = this.selectComponent('#checkIn');
       if (checkInComponent) {
@@ -875,5 +883,14 @@ Page({
         wx.hideLoading();
       }, 500);
     }
+  },
+
+  /**
+   * 生成基于时间的问候语
+   */
+  generateGreeting() {
+    // 使用问候语工具函数获取基于时间的问候语
+    const greeting = greetingUtils.getTimeBasedGreeting();
+    this.setData({ greeting });
   },
 });
