@@ -138,7 +138,7 @@ view {
 
 /* 问候语样式 */
 .greeting {
-  font-size: 28rpx;
+  font-size: 27rpx;
   color: var(--text-tertiary, #888);
   opacity: 0.85;
   margin-top: 4rpx;
