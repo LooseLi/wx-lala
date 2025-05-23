@@ -136,6 +136,15 @@ view {
   transform: translateY(2rpx);
 }
 
+/* 问候语样式 */
+.greeting {
+  font-size: 28rpx;
+  color: var(--text-tertiary, #888);
+  opacity: 0.85;
+  margin-top: 4rpx;
+  line-height: 1.4;
+}
+
 .edit-dialog {
   position: fixed;
   position: absolute;
