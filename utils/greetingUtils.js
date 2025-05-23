@@ -56,19 +56,20 @@ function getTimeBasedGreeting() {
 
   // 根据当前时间选择合适的问候语池
   let timePool;
-  if (hour >= 5 && hour < 9) {
+  if (hour >= 6 && hour < 12) {
+    // 早上 (6:00-11:59)
     timePool = greetings.morning;
-  } else if (hour >= 9 && hour < 12) {
-    timePool = greetings.forenoon;
   } else if (hour >= 12 && hour < 14) {
+    // 中午 (12:00-13:59)
     timePool = greetings.noon;
   } else if (hour >= 14 && hour < 18) {
+    // 下午 (14:00-17:59)
     timePool = greetings.afternoon;
-  } else if (hour >= 18 && hour < 20) {
+  } else if (hour >= 18 && hour < 23) {
+    // 傌晚 (18:00-22:59)
     timePool = greetings.evening;
-  } else if (hour >= 20 && hour < 23) {
-    timePool = greetings.night;
   } else {
+    // 深夜 (23:00-5:59)
     timePool = greetings.lateNight;
   }
 
