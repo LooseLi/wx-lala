@@ -207,6 +207,10 @@ view {
   }
 }
 
+.edit-dialog.show .dialog-content {
+  transform: scale(1);
+}
+
 // 遮罩层
 .mask {
   @include absolute-fill;
