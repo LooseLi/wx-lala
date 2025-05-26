@@ -515,23 +515,54 @@ Page({
     };
 
     if (this.data.editMode) {
-      todos.doc(this.data.currentTodoId).update({
-        data: todoData,
-        success: () => {
-          wx.showToast({
-            title: '更新成功',
-            icon: 'success',
+      // 首先获取当前待办事项的信息，特别是完成状态
+      todos
+        .doc(this.data.currentTodoId)
+        .get()
+        .then(res => {
+          const currentTodo = res.data;
+          const isCompleted = currentTodo.completed;
+
+          // 检查新日期是否为今天或未来日期
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // 设置为今天的开始时间
+
+          const isDueDateTodayOrFuture = dueDateObj && dueDateObj >= today;
+
+          // 如果是已完成的待办且日期改为今天或未来，则重置为未完成状态
+          let newCompletedStatus = isCompleted;
+          if (isCompleted && isDueDateTodayOrFuture) {
+            newCompletedStatus = false; // 重置为未完成
+          }
+
+          // 更新待办事项，包含新的完成状态
+          todos.doc(this.data.currentTodoId).update({
+            data: {
+              ...todoData,
+              completed: newCompletedStatus,
+            },
+            success: () => {
+              wx.showToast({
+                title: '更新成功',
+                icon: 'success',
+              });
+              this.setData({ showForm: false });
+              this.loadTodos();
+            },
+            fail: err => {
+              wx.showToast({
+                title: '更新失败',
+                icon: 'none',
+              });
+            },
           });
-          this.setData({ showForm: false });
-          this.loadTodos();
-        },
-        fail: err => {
+        })
+        .catch(err => {
           wx.showToast({
-            title: '更新失败',
+            title: '获取待办信息失败',
             icon: 'none',
           });
-        },
-      });
+        });
       return;
     }
 
