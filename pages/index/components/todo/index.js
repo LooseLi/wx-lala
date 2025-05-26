@@ -262,9 +262,7 @@ Page({
   toggleGroup: function (e) {
     const { group, date } = e.currentTarget.dataset;
 
-    // 如果是未来日期分组，需要特殊处理
     if (group === 'futureDates' && date) {
-      // 安全检查：确保该日期分组存在
       if (!this.data.todoGroups.futureDates || !this.data.todoGroups.futureDates[date]) {
         return;
       }
@@ -355,10 +353,8 @@ Page({
    * 显示添加待办事项表单
    */
   showAddForm: function () {
-    // 默认设置为今天
     const today = this.formatDate(new Date());
 
-    // 先设置弹窗可见但在底部
     this.setData({
       showForm: true,
       showDatePicker: false,
