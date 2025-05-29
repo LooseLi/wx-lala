@@ -519,9 +519,8 @@ Page({
           const currentTodo = res.data;
           const isCompleted = currentTodo.completed;
 
-          // 检查新日期是否为今天或未来日期
           const today = new Date();
-          today.setHours(0, 0, 0, 0); // 设置为今天的开始时间
+          today.setHours(0, 0, 0, 0);
 
           const isDueDateTodayOrFuture = dueDateObj && dueDateObj >= today;
 
