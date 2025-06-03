@@ -119,10 +119,13 @@ function getRecentAnniversary(anniversaryList) {
     const anniversaryDate = new Date(anniversary.date.replace(/-/g, '/'));
     const years = today.getFullYear() - anniversaryDate.getFullYear();
 
+    // 优先使用announcementName，如果不存在则使用name
+    const displayName = anniversary.announcementName || anniversary.name;
+
     return {
       id: 'anniversary-' + anniversary._id,
       type: 'anniversary',
-      content: `距离${anniversary.name}，已经 ${years} 年啦~`,
+      content: `距离${displayName}，已经 ${years} 年啦~`,
       link: '/pages/index/components/anniversary/index',
       priority: 10, // 纪念日优先级最高
       icon: './images/icon-heart.png', // 纪念日图标
