@@ -122,7 +122,7 @@ function getRecentAnniversary(anniversaryList) {
     return {
       id: 'anniversary-' + anniversary._id,
       type: 'anniversary',
-      content: `今天是${anniversary.name} ${years} 周年纪念日~`,
+      content: `距离${anniversary.name}，已经 ${years} 年啦~`,
       link: '/pages/index/components/anniversary/index',
       priority: 10, // 纪念日优先级最高
       icon: './images/icon-heart.png', // 纪念日图标
