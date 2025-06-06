@@ -38,7 +38,7 @@ Page({
       const openid = wx.getStorageSync('openid');
       if (!openid) {
         wx.showToast({
-          title: '请先登录',
+          title: '先登录喔，去个人中心看看吧~',
           icon: 'none',
         });
         this.setData({ loading: false });
@@ -145,7 +145,7 @@ Page({
       const openid = wx.getStorageSync('openid');
       if (!openid) {
         wx.hideLoading();
-        wx.showToast({ title: '请先登录', icon: 'none' });
+        wx.showToast({ title: '先登录喔，去个人中心看看吧~', icon: 'none' });
         return;
       }
 
@@ -230,7 +230,7 @@ Page({
       const openid = wx.getStorageSync('openid');
       if (!openid) {
         wx.hideLoading();
-        wx.showToast({ title: '请先登录', icon: 'none' });
+        wx.showToast({ title: '先登录喔，去个人中心看看吧~', icon: 'none' });
         return;
       }
 

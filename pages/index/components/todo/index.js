@@ -472,7 +472,7 @@ Page({
     // 表单验证
     if (!this.data.newTodo.title.trim()) {
       wx.showToast({
-        title: '请填写待办事项内容',
+        title: '待办事项内容不能为空喔~',
         icon: 'none',
       });
       return;
@@ -491,7 +491,7 @@ Page({
       dueDate = this.formatDate(tomorrow);
     } else if (dateType === 'future' && !dueDate) {
       wx.showToast({
-        title: '请选择日期',
+        title: '选个日期吧~',
         icon: 'none',
       });
       return;
@@ -565,7 +565,7 @@ Page({
     const openid = wx.getStorageSync('openid');
     if (!openid) {
       wx.showToast({
-        title: '请先登录',
+        title: '先登录喔，去个人中心看看吧~',
         icon: 'none',
       });
       return;

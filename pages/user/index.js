@@ -828,7 +828,7 @@ Page({
   async unlockTheme(theme) {
     if (!this.data.openid) {
       wx.showToast({
-        title: '请先登录',
+        title: '先登录喔，去个人中心看看吧~',
         icon: 'none',
         duration: 2000,
       });
