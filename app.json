@@ -31,7 +31,7 @@
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的",
+        "text": "个人中心",
         "iconPath": "icons/icon-mine-unselected.png",
         "selectedIconPath": "icons/icon-mine-selected.png"
       }
