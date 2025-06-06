@@ -25,7 +25,7 @@ Page({
     showDatePicker: false,
     editMode: false,
     currentTodoId: '',
-    emptyTip: '暂无待办事项，点击下方按钮添加',
+    emptyTip: '暂无待办事项',
     isFromOtherPage: false,
   },
 
@@ -70,7 +70,7 @@ Page({
     const openid = wx.getStorageSync('openid');
     if (!openid) {
       wx.showToast({
-        title: '请先登录',
+        title: '先登录喔，去个人中心看看吧~',
         icon: 'none',
       });
       return;
