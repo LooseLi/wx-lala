@@ -164,7 +164,7 @@ Page({
           currentTheme: theme,
         });
 
-        // 添加标记，表示主题已经更改，这样我的页面返回时可以识别并刷新
+        // 添加标记，表示主题已经更改，这样个人中心页面返回时可以识别并刷新
         wx.setStorageSync('themeChanged', true);
 
         wx.showToast({ title: '主题切换成功' });
@@ -262,7 +262,7 @@ Page({
           userPoints: newPoints,
         });
 
-        // 添加标记，表示主题已经更改，这样我的页面返回时可以识别并刷新
+        // 添加标记，表示主题已经更改，这样个人中心页面返回时可以识别并刷新
         wx.setStorageSync('themeChanged', true);
 
         // 确保主题已经在数据库中更新后再切换
