@@ -14,19 +14,16 @@ let userPoints = null;
  * @param {boolean} forceInit 是否强制重新初始化
  */
 function initDatabase(forceInit = false) {
-  // 如果数据库已初始化，直接返回（除非强制重新初始化）
   if (!forceInit && db && themes && userInfo && userPoints) {
     return true;
   }
 
   try {
-    // 检查云API是否存在
     if (!wx.cloud) {
       console.error('微信云开发未引入，请使用正确的小程序基础库以及开通云开发后再使用此功能');
       return false;
     }
 
-    // 不尝试自动初始化，避免与 App.js 中的初始化冲突
     // 直接尝试获取数据库实例
     try {
       db = wx.cloud.database();
@@ -51,7 +48,6 @@ function initDatabase(forceInit = false) {
  */
 async function getDefaultTheme() {
   if (!initDatabase()) {
-    console.error('数据库未初始化，无法获取默认主题');
     return null;
   }
 
@@ -83,7 +79,6 @@ async function getUserTheme(openid) {
   }
 
   if (!initDatabase()) {
-    console.error('数据库未初始化，无法获取用户主题');
     return null;
   }
 
@@ -103,7 +98,6 @@ async function getUserTheme(openid) {
       }
     }
 
-    // 如果没有找到用户主题，返回null
     return null;
   } catch (error) {
     console.error('获取用户主题失败:', error);
@@ -328,12 +322,10 @@ async function getUserAvailableThemes(openid) {
  */
 async function isThemeUnlocked(openid, themeId) {
   if (!openid || !themeId) {
-    console.error('检查主题解锁状态失败: 参数不完整');
     return false;
   }
 
   if (!initDatabase()) {
-    console.error('数据库未初始化，无法检查主题解锁状态');
     return false;
   }
 
@@ -359,7 +351,6 @@ async function isThemeUnlocked(openid, themeId) {
 
     const user = userInfoRes.data[0];
 
-    // 检查用户是否已解锁该主题
     if (!user.unlockedThemes) {
       return false;
     }
@@ -534,7 +525,7 @@ async function switchTheme(openid, themeId) {
 
     // 更新本地缓存
     wx.setStorageSync('currentTheme', theme);
-    
+
     // 直接更新全局状态，确保切换后立即生效
     const app = getApp();
     app.globalData.currentTheme = theme;
@@ -596,7 +587,7 @@ async function applyTheme(theme, smoothTransition = true) {
     if (!app.globalData.themeChangeListeners) {
       app.globalData.themeChangeListeners = [];
     }
-    
+
     // 更新全局状态，确保其他页面可以读取到最新主题
     app.globalData.currentTheme = theme;
 
