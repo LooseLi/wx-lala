@@ -139,32 +139,32 @@ function getRecentAnniversary(anniversaryList) {
  * 获取最近的倒计时公告
  * @param {Array} countdownList 倒计时列表
  * @param {Number} daysThreshold 天数阈值，只返回在这个天数内的倒计时
- * @returns {Object|null} 如果有符合条件的倒计时，返回公告对象；否则返回null
+ * @returns {Array} 返回所有符合条件的倒计时公告数组
  */
 function getRecentCountdown(countdownList, daysThreshold = 15) {
-  if (!countdownList || !countdownList.length) return null;
+  if (!countdownList || !countdownList.length) return [];
 
   // 筛选出未来daysThreshold天内的倒计时
   const recentCountdowns = countdownList.filter(item => {
     return item.countDown > 0 && item.countDown <= daysThreshold;
   });
 
-  // 按倒计时天数升序排序，找出最近的倒计时
+  // 按倒计时天数升序排序，最近的排在前面
   if (recentCountdowns.length > 0) {
     recentCountdowns.sort((a, b) => a.countDown - b.countDown);
-    const nearest = recentCountdowns[0];
-
-    return {
-      id: 'countdown-' + nearest._id,
+    
+    // 返回所有符合条件的倒计时公告
+    return recentCountdowns.map(item => ({
+      id: 'countdown-' + item._id,
       type: 'countdown',
-      content: `距离${nearest.id}还有 ${nearest.countDown} 天~`,
+      content: `距离${item.id}还有 ${item.countDown} 天~`,
       link: '/pages/index/components/countdown/index',
       priority: 5, // 倒计时优先级最低
       icon: './images/icon-gonggao.png', // 倒计时图标使用默认图标
-    };
+    }));
   }
 
-  return null;
+  return [];
 }
 
 /**
@@ -191,9 +191,9 @@ function generateAnnouncements(weatherData, anniversaryList, countdownList, todo
   }
 
   // 获取近期倒计时
-  const countdownAnnouncement = getRecentCountdown(countdownList);
-  if (countdownAnnouncement) {
-    announcements.push(countdownAnnouncement);
+  const countdownAnnouncements = getRecentCountdown(countdownList);
+  if (countdownAnnouncements.length > 0) {
+    announcements.push(...countdownAnnouncements);
   }
 
   // 获取今日待办
