@@ -25,9 +25,13 @@
           <!-- 左侧日期和天数 -->
           <view class="anniversary-info-left">
             <view class="anniversary-date">{{item.date}}</view>
+            <view class="anniversary-days-wrap">
             <view class="anniversary-days">
-              <text>{{item.days}}</text> 天
-              （<text wx:if="{{item.years > 0}}" class="anniversary-years">{{item.years}} 年</text>）
+              <text>{{item.days}}</text>天
+            </view>
+            <view wx:if="{{item.years > 0}}" class="anniversary-years">
+              （<text>{{item.years}}</text>年多啦~）
+            </view>
             </view>
           </view>
 

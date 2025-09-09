@@ -133,6 +133,11 @@ page {
   margin-bottom: 6px;
 }
 
+.anniversary-days-wrap {
+  display: flex;
+  align-items: flex-end;
+}
+
 .anniversary-days {
   font-size: 13px;
   color: var(--text-secondary);
@@ -141,6 +146,17 @@ page {
 .anniversary-days text {
   font-size: 20px;
   font-weight: 500;
+  color: #ff6b8b;
+  margin-right: 4px;
+}
+
+.anniversary-years {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.anniversary-years text {
+  font-size: 13px;
   color: #ff6b8b;
   margin-right: 4px;
 }
