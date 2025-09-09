@@ -66,6 +66,8 @@ Page({
         const { data } = result;
         data.forEach(item => {
           item.days = BASE.dateDiff(item.date);
+          // 计算年数
+          item.years = Math.floor(item.days / 365);
         });
         data.sort((a, b) => b.days - a.days);
         this.setData({
