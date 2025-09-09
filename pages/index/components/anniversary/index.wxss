@@ -135,7 +135,7 @@ page {
 
 .anniversary-days-wrap {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .anniversary-days {
@@ -156,7 +156,7 @@ page {
 }
 
 .anniversary-years text {
-  font-size: 13px;
+  font-size: 20px;
   color: #ff6b8b;
   margin-right: 4px;
 }
