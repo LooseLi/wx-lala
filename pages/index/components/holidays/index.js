@@ -21,13 +21,13 @@ const customFestivals = [
   },
   {
     name: '母亲节',
-    date: '5-11',
+    date: '5-10',
     tips: '',
     isLunar: false,
   },
   {
     name: '父亲节',
-    date: '6-15',
+    date: '6-21',
     tips: '',
     isLunar: false,
   },
