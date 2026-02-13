@@ -6,8 +6,7 @@ const holidays = db.collection('holidays');
 const solarlunar = require('../../../../miniprogram_npm/solarlunar/index');
 
 // 自定义节日数据
-const customFestivals = [
-  {
+const customFestivals = [{
     name: '小拉花',
     date: '9-1',
     tips: '生日快乐鸭🎂',
@@ -58,7 +57,7 @@ const customFestivals = [
   {
     name: '情人节',
     date: '2-14',
-    tips: '情人节不快乐',
+    tips: '情人节不快乐，回家快乐~',
     isLunar: false,
   },
   {
@@ -197,7 +196,10 @@ Page({
    * 更新日历到上个月
    */
   updateCalendarToPrevMonth() {
-    let { currentMonth, activeYear } = this.data;
+    let {
+      currentMonth,
+      activeYear
+    } = this.data;
 
     // 计算上个月的年和月
     currentMonth--;
@@ -229,7 +231,10 @@ Page({
    * 更新日历到下个月
    */
   updateCalendarToNextMonth() {
-    let { currentMonth, activeYear } = this.data;
+    let {
+      currentMonth,
+      activeYear
+    } = this.data;
 
     // 计算下个月的年和月
     currentMonth++;
@@ -343,7 +348,9 @@ Page({
    * 更新日历中选中日期的状态
    */
   updateSelectedDateInCalendar(selectedDate) {
-    const { months } = this.data;
+    const {
+      months
+    } = this.data;
 
     if (!months || months.length === 0) return;
 
@@ -385,7 +392,9 @@ Page({
     const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
     // 从日期映射中获取假期信息
-    const { holidayDateMap } = this.data;
+    const {
+      holidayDateMap
+    } = this.data;
     const dateInfo = holidayDateMap ? holidayDateMap[dateString] : null;
 
     // 获取农历信息
@@ -436,7 +445,11 @@ Page({
    * 生成三个月的日历数据
    */
   generateThreeMonths() {
-    const { activeYear, currentMonth, holidayDateMap } = this.data;
+    const {
+      activeYear,
+      currentMonth,
+      holidayDateMap
+    } = this.data;
     const months = [];
 
     // 计算上一个月
@@ -496,7 +509,9 @@ Page({
       rows: this.generateCalendarForMonth(nextYear, nextMonth, holidayDateMap),
     });
 
-    this.setData({ months });
+    this.setData({
+      months
+    });
 
     // 如果有选中的日期，更新选中状态
     if (this.data.selectedDate) {
@@ -597,8 +612,8 @@ Page({
           const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
           const isCustomFestival = customFestivals.some(
             item =>
-              (item.isLunar && item.date === lunarDate) ||
-              (!item.isLunar && item.date === solarDate),
+            (item.isLunar && item.date === lunarDate) ||
+            (!item.isLunar && item.date === solarDate),
           );
 
           weekRow.push({
@@ -642,8 +657,8 @@ Page({
           const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
           const isCustomFestival = customFestivals.some(
             item =>
-              (item.isLunar && item.date === lunarDate) ||
-              (!item.isLunar && item.date === solarDate),
+            (item.isLunar && item.date === lunarDate) ||
+            (!item.isLunar && item.date === solarDate),
           );
 
           weekRow.push({
@@ -691,8 +706,8 @@ Page({
           const lunarDate = `${lunarInfo.monthCn}-${lunarInfo.dayCn}`;
           const isCustomFestival = customFestivals.some(
             item =>
-              (item.isLunar && item.date === lunarDate) ||
-              (!item.isLunar && item.date === solarDate),
+            (item.isLunar && item.date === lunarDate) ||
+            (!item.isLunar && item.date === solarDate),
           );
 
           weekRow.push({
