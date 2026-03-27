@@ -3,6 +3,10 @@
   <view class="ios-action-bar">
     <view class="ios-status-bar"></view>
     <view class="ios-action-content">
+      <view class="ios-sort-button" bindtap="toggleSortOrder" aria-role="button" aria-label="切换排序">
+        <text wx:if="{{sortOrder === 'desc'}}">最长纪念</text>
+        <text wx:else>最新纪念</text>
+      </view>
       <view class="spacer"></view>
       <view class="ios-add-button" bindtap="onAdd">
         <text class="ios-icon">+</text>

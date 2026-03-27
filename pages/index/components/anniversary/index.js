@@ -17,6 +17,23 @@ Page({
     tempImages: [], // 临时存储选择的图片
     uploadedImages: [], // 已上传的图片
     imagesToDelete: [], // 需要删除的图片fileID列表
+    /** 按天数排序：desc 最长纪念在前，asc 最新纪念在前 */
+    sortOrder: 'desc',
+  },
+
+  sortListByDays(list, order) {
+    const sorted = [...list];
+    sorted.sort((a, b) => (order === 'desc' ? b.days - a.days : a.days - b.days));
+    return sorted;
+  },
+
+  toggleSortOrder() {
+    const next = this.data.sortOrder === 'desc' ? 'asc' : 'desc';
+    const list = this.sortListByDays(this.data.list, next);
+    this.setData({
+      sortOrder: next,
+      list,
+    });
   },
 
   openDialog() {
@@ -69,9 +86,9 @@ Page({
           // 计算年数
           item.years = Math.floor(item.days / 365);
         });
-        data.sort((a, b) => b.days - a.days);
+        const list = this.sortListByDays(data, this.data.sortOrder);
         this.setData({
-          list: data,
+          list,
         });
         wx.hideLoading();
       },
