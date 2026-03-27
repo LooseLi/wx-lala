@@ -3,6 +3,8 @@ const anniversary = db.collection('anniversaryList');
 const BASE = require('../../../../utils/base');
 const plugins = require('../../../../utils/plugins');
 
+const ANNIVERSARY_SORT_STORAGE_KEY = 'anniversarySortOrder';
+
 Page({
   /**
    * 页面的初始数据
@@ -34,6 +36,11 @@ Page({
       sortOrder: next,
       list,
     });
+    try {
+      wx.setStorageSync(ANNIVERSARY_SORT_STORAGE_KEY, next);
+    } catch (e) {
+      console.warn('纪念日排序偏好写入失败', e);
+    }
     wx.showToast({
       title: next === 'asc' ? '已按最新日期排序' : '已按最长天数排序',
       icon: 'none',
@@ -558,6 +565,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
+    try {
+      const saved = wx.getStorageSync(ANNIVERSARY_SORT_STORAGE_KEY);
+      if (saved === 'asc' || saved === 'desc') {
+        this.setData({ sortOrder: saved });
+      }
+    } catch (e) {
+      console.warn('纪念日排序偏好读取失败', e);
+    }
     await this.getAnniversary();
   },
 
