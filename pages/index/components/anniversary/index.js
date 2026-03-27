@@ -34,6 +34,11 @@ Page({
       sortOrder: next,
       list,
     });
+    wx.showToast({
+      title: next === 'asc' ? '已按最新日期排序' : '已按最长天数排序',
+      icon: 'none',
+      duration: 2000,
+    });
   },
 
   openDialog() {
