@@ -4,8 +4,9 @@
     <view class="ios-status-bar"></view>
     <view class="ios-action-content">
       <view class="ios-sort-button" bindtap="toggleSortOrder" aria-role="button" aria-label="切换排序">
-        <text wx:if="{{sortOrder === 'desc'}}">最长纪念</text>
-        <text wx:else>最新纪念</text>
+        <text class="ios-sort-label" wx:if="{{sortOrder === 'desc'}}">最长纪念</text>
+        <text class="ios-sort-label" wx:else>最新纪念</text>
+        <text class="ios-sort-arrow">{{sortOrder === 'desc' ? '↓' : '↑'}}</text>
       </view>
       <view class="spacer"></view>
       <view class="ios-add-button" bindtap="onAdd">

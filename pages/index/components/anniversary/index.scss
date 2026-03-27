@@ -136,7 +136,11 @@ page {
 }
 
 .ios-sort-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   flex-shrink: 0;
+  gap: $margin-small;
   padding: $padding-small $padding-medium;
   font-size: $font-size-micro;
   font-weight: $font-weight-medium;
@@ -148,6 +152,18 @@ page {
 
 .ios-sort-button:active {
   opacity: 0.65;
+}
+
+.ios-sort-label {
+  line-height: 1.2;
+}
+
+.ios-sort-arrow {
+  font-size: 13px;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  color: var(--text-primary);
+  opacity: 0.55;
 }
 
 // 添加按钮
