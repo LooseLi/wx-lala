@@ -58,11 +58,8 @@ function clampChars(str, maxLen) {
   return arr.slice(0, Math.max(0, maxLen - 1)).join('') + '…';
 }
 
-function buildSummary(titles) {
-  if (!titles.length) return '今日无具体标题';
-  const joined = titles.join('、');
-  return clampChars(joined, 20);
-}
+/** 模板 thing12「备注消息」固定文案（不展示具体待办标题） */
+const REMARK_THING12 = '记得及时处理喔~';
 
 exports.main = async event => {
   /** 跳过 12:30 窗口（仅用于手动联调，勿挂在长期定时器上） */
@@ -128,8 +125,7 @@ exports.main = async event => {
       return;
     }
 
-    const titles = todayTodos.map(t => (t.title || '').trim()).filter(Boolean);
-    const thing12 = buildSummary(titles);
+    const thing12 = clampChars(REMARK_THING12, 20);
     const number16 = String(todayTodos.length);
 
     try {
