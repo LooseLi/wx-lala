@@ -1,0 +1,10 @@
+{
+  "name": "send-daily-todo-digest",
+  "version": "1.0.0",
+  "description": "每日12:30（上海时区）待办汇总订阅消息",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "todo-remind-settings",
+  "version": "1.0.0",
+  "description": "待办每日汇总提醒开关（user_settings）",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -27,6 +27,8 @@ Page({
     currentTodoId: '',
     emptyTip: '暂无待办事项',
     isFromOtherPage: false,
+    showDailyRemindRow: false,
+    dailyTodoRemindEnabled: false,
   },
 
   /**
@@ -34,6 +36,7 @@ Page({
    */
   onLoad: async function (options) {
     this.updateDateInfo();
+    this.loadRemindSettings();
     this.loadTodos();
   },
 
@@ -50,7 +53,124 @@ Page({
     }
 
     this.updateDateInfo();
+    this.loadRemindSettings();
     this.loadTodos();
+  },
+
+  /**
+   * 读取每日汇总提醒开关（云函数，openid 来自上下文）
+   */
+  loadRemindSettings: function () {
+    const openid = wx.getStorageSync('openid');
+    if (!openid) {
+      this.setData({
+        showDailyRemindRow: false,
+        dailyTodoRemindEnabled: false,
+      });
+      return;
+    }
+    this.setData({ showDailyRemindRow: true });
+    wx.cloud.callFunction({
+      name: 'todoRemindSettings',
+      data: { action: 'get' },
+      success: res => {
+        if (res.result && res.result.success) {
+          this.setData({
+            dailyTodoRemindEnabled: !!res.result.dailyTodoRemindEnabled,
+          });
+        }
+      },
+    });
+  },
+
+  /**
+   * 每日汇总提醒开关：关直接写库；开需先 requestSubscribeMessage
+   */
+  onDailyRemindChange: function (e) {
+    const wantOn = e.detail.value;
+    const openid = wx.getStorageSync('openid');
+    if (!openid) {
+      wx.showToast({
+        title: '先登录喔，去个人中心看看吧~',
+        icon: 'none',
+      });
+      this.setData({ dailyTodoRemindEnabled: false });
+      return;
+    }
+
+    if (!wantOn) {
+      wx.cloud.callFunction({
+        name: 'todoRemindSettings',
+        data: { action: 'set', enabled: false },
+        success: res => {
+          if (res.result && res.result.success) {
+            this.setData({ dailyTodoRemindEnabled: false });
+          } else {
+            this.setData({ dailyTodoRemindEnabled: true });
+          }
+        },
+        fail: () => {
+          this.setData({ dailyTodoRemindEnabled: true });
+          wx.showToast({ title: '关闭失败', icon: 'none' });
+        },
+      });
+      return;
+    }
+
+    wx.cloud.callFunction({
+      name: 'getTodoSubscribeConfig',
+      success: cfg => {
+        const tmplIds = (cfg.result && cfg.result.tmplIds) || [];
+        if (!tmplIds.length) {
+          wx.showModal({
+            title: '未配置模板',
+            content:
+              '请在云开发控制台为云函数配置环境变量 TODO_DIGEST_TEMPLATE_ID（与 sendDailyTodoDigest 共用，勿写入 Git）。',
+            showCancel: false,
+          });
+          this.setData({ dailyTodoRemindEnabled: false });
+          return;
+        }
+        wx.requestSubscribeMessage({
+          tmplIds,
+          success: res => {
+            const accepted = tmplIds.some(id => res[id] === 'accept');
+            if (!accepted) {
+              wx.showToast({
+                title: '需要同意订阅才能提醒喔',
+                icon: 'none',
+              });
+              this.setData({ dailyTodoRemindEnabled: false });
+              return;
+            }
+            wx.cloud.callFunction({
+              name: 'todoRemindSettings',
+              data: { action: 'set', enabled: true },
+              success: r => {
+                if (r.result && r.result.success) {
+                  this.setData({ dailyTodoRemindEnabled: true });
+                  wx.showToast({ title: '已开启', icon: 'success' });
+                } else {
+                  this.setData({ dailyTodoRemindEnabled: false });
+                }
+              },
+              fail: () => {
+                wx.showToast({ title: '保存失败', icon: 'none' });
+                this.setData({ dailyTodoRemindEnabled: false });
+              },
+            });
+          },
+          fail: () => {
+            wx.showToast({ title: '未订阅', icon: 'none' });
+            this.setData({ dailyTodoRemindEnabled: false });
+          },
+        });
+      },
+      fail: () => {
+        wx.showToast({ title: '获取配置失败', icon: 'none' });
+        this.setData({ dailyTodoRemindEnabled: false });
+      },
+    });
   },
 
   /**

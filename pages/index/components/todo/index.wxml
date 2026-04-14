@@ -1,4 +1,11 @@
 <view class="container">
+  <view class="daily-remind-card" wx:if="{{showDailyRemindRow}}">
+    <view class="daily-remind-text">
+      <text class="daily-remind-title">每日汇总提醒</text>
+      <text class="daily-remind-desc">在微信「服务通知」每天约 12:30（北京时间）推送当天待办汇总，需订阅授权</text>
+    </view>
+    <switch class="daily-remind-switch" checked="{{dailyTodoRemindEnabled}}" bindchange="onDailyRemindChange" color="#07c160" />
+  </view>
   <!-- 待办事项列表 -->
   <view class="todo-list">
     <block wx:if="{{loading}}">

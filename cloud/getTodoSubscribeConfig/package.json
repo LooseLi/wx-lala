@@ -1,0 +1,10 @@
+{
+  "name": "get-todo-subscribe-config",
+  "version": "1.0.0",
+  "description": "返回待办订阅消息模板 ID（仅存云环境变量，不写仓库）",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
