@@ -29,6 +29,8 @@ Page({
     isFromOtherPage: false,
     showDailyRemindRow: false,
     dailyTodoRemindEnabled: false,
+    /** 页面预拉取，开关联动里须同步调 requestSubscribeMessage（不可先 await 云函数再订阅） */
+    digestTmplIds: [],
   },
 
   /**
@@ -66,10 +68,23 @@ Page({
       this.setData({
         showDailyRemindRow: false,
         dailyTodoRemindEnabled: false,
+        digestTmplIds: [],
       });
       return;
     }
     this.setData({ showDailyRemindRow: true });
+
+    wx.cloud.callFunction({
+      name: 'getTodoSubscribeConfig',
+      success: cfg => {
+        const tmplIds = (cfg.result && cfg.result.tmplIds) || [];
+        this.setData({ digestTmplIds: tmplIds });
+      },
+      fail: () => {
+        this.setData({ digestTmplIds: [] });
+      },
+    });
+
     wx.cloud.callFunction({
       name: 'todoRemindSettings',
       data: { action: 'get' },
@@ -117,57 +132,55 @@ Page({
       return;
     }
 
-    wx.cloud.callFunction({
-      name: 'getTodoSubscribeConfig',
-      success: cfg => {
-        const tmplIds = (cfg.result && cfg.result.tmplIds) || [];
-        if (!tmplIds.length) {
-          wx.showModal({
-            title: '未配置模板',
-            content:
-              '请在云开发控制台为云函数配置环境变量 TODO_DIGEST_TEMPLATE_ID（与 sendDailyTodoDigest 共用，勿写入 Git）。',
-            showCancel: false,
+    const tmplIds = this.data.digestTmplIds || [];
+    if (!tmplIds.length) {
+      wx.showModal({
+        title: '暂无法订阅',
+        content:
+          '请稍等页面加载完成后再试开关。若仍无效：在云开发为云函数 getTodoSubscribeConfig 配置环境变量 TODO_DIGEST_TEMPLATE_ID（与 sendDailyTodoDigest 相同）并重新部署。',
+        showCancel: false,
+      });
+      this.setData({ dailyTodoRemindEnabled: false });
+      this.loadRemindSettings();
+      return;
+    }
+
+    wx.requestSubscribeMessage({
+      tmplIds,
+      success: res => {
+        const accepted = tmplIds.some(id => res[id] === 'accept');
+        if (!accepted) {
+          wx.showToast({
+            title: '需要同意订阅才能提醒喔',
+            icon: 'none',
           });
           this.setData({ dailyTodoRemindEnabled: false });
           return;
         }
-        wx.requestSubscribeMessage({
-          tmplIds,
-          success: res => {
-            const accepted = tmplIds.some(id => res[id] === 'accept');
-            if (!accepted) {
-              wx.showToast({
-                title: '需要同意订阅才能提醒喔',
-                icon: 'none',
-              });
+        wx.cloud.callFunction({
+          name: 'todoRemindSettings',
+          data: { action: 'set', enabled: true },
+          success: r => {
+            if (r.result && r.result.success) {
+              this.setData({ dailyTodoRemindEnabled: true });
+              wx.showToast({ title: '已开启', icon: 'success' });
+            } else {
               this.setData({ dailyTodoRemindEnabled: false });
-              return;
             }
-            wx.cloud.callFunction({
-              name: 'todoRemindSettings',
-              data: { action: 'set', enabled: true },
-              success: r => {
-                if (r.result && r.result.success) {
-                  this.setData({ dailyTodoRemindEnabled: true });
-                  wx.showToast({ title: '已开启', icon: 'success' });
-                } else {
-                  this.setData({ dailyTodoRemindEnabled: false });
-                }
-              },
-              fail: () => {
-                wx.showToast({ title: '保存失败', icon: 'none' });
-                this.setData({ dailyTodoRemindEnabled: false });
-              },
-            });
           },
           fail: () => {
-            wx.showToast({ title: '未订阅', icon: 'none' });
+            wx.showToast({ title: '保存失败', icon: 'none' });
             this.setData({ dailyTodoRemindEnabled: false });
           },
         });
       },
-      fail: () => {
-        wx.showToast({ title: '获取配置失败', icon: 'none' });
+      fail: err => {
+        console.error('requestSubscribeMessage', err);
+        wx.showToast({
+          title: (err && err.errMsg) || '订阅失败',
+          icon: 'none',
+          duration: 3000,
+        });
         this.setData({ dailyTodoRemindEnabled: false });
       },
     });

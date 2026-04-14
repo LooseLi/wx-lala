@@ -4,6 +4,13 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 const db = cloud.database();
 
+function isDocumentNotFoundError(e) {
+  if (!e) return false;
+  if (e.errCode === -1) return true;
+  const msg = `${e.errMsg || ''}${e.message || ''}`;
+  return /cannot find document|document.*not exist|不存在|未找到/i.test(msg);
+}
+
 /**
  * action: 'get' | 'set'
  * set 时传 enabled: boolean
@@ -27,7 +34,7 @@ exports.main = async event => {
         dailyTodoRemindEnabled: !!(res.data && res.data.dailyTodoRemindEnabled),
       };
     } catch (e) {
-      if (e.errCode === -1 || (e.errMsg && e.errMsg.includes('cannot find document'))) {
+      if (isDocumentNotFoundError(e)) {
         return { success: true, dailyTodoRemindEnabled: false };
       }
       console.error('todoRemindSettings get', e);
@@ -38,26 +45,18 @@ exports.main = async event => {
   if (action === 'set') {
     const on = !!enabled;
     try {
-      await coll.doc(openid).update({
+      // 统一用 set：不存在则创建，存在则覆盖该文档（避免 update 未命中时未走 set）
+      await coll.doc(openid).set({
         data: {
           dailyTodoRemindEnabled: on,
           updateTime: db.serverDate(),
         },
       });
+      return { success: true };
     } catch (e) {
-      if (e.errCode === -1 || (e.errMsg && e.errMsg.includes('cannot find document'))) {
-        await coll.doc(openid).set({
-          data: {
-            dailyTodoRemindEnabled: on,
-            updateTime: db.serverDate(),
-          },
-        });
-      } else {
-        console.error('todoRemindSettings set', e);
-        return { success: false, error: e.message || String(e) };
-      }
+      console.error('todoRemindSettings set', e);
+      return { success: false, error: e.message || String(e), errMsg: e.errMsg };
     }
-    return { success: true };
   }
 
   return { success: false, error: 'unknown_action' };
