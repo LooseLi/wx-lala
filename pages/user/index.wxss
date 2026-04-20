@@ -360,6 +360,54 @@ view {
 }
 
 /* 主题皮肤入口样式 */
+.changelog-entry {
+  width: 100%;
+  margin-bottom: 32rpx;
+  padding: 28rpx 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--background-secondary);
+  border-radius: 24rpx;
+  box-shadow: var(--card-shadow);
+  border: 1rpx solid var(--border-color);
+  box-sizing: border-box;
+  transition: opacity 0.2s ease;
+}
+
+.changelog-entry:active {
+  opacity: 0.88;
+}
+
+.changelog-entry-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.changelog-entry-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+}
+
+.changelog-entry-sub {
+  font-size: 26rpx;
+  color: var(--text-tertiary, #888);
+}
+
+.changelog-entry-arrow {
+  flex-shrink: 0;
+  font-size: 40rpx;
+  color: var(--text-tertiary, #888);
+  font-weight: 300;
+  margin-left: 16rpx;
+  line-height: 1;
+}
+
 .theme-entry {
   width: 100%;
   margin-bottom: 32rpx;

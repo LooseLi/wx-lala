@@ -1,0 +1,17 @@
+<view class="page" wx:if="{{list.length}}">
+  <view class="hint">以下为各版本主要变化，按时间从新到旧排列。</view>
+  <view class="card" wx:for="{{list}}" wx:key="_key">
+    <view class="card-head">
+      <text class="version">v{{item.version}}</text>
+      <text class="date">{{item.date}}</text>
+    </view>
+    <view class="card-title" wx:if="{{item.title}}">{{item.title}}</view>
+    <view class="item" wx:for="{{item.items}}" wx:for-item="line" wx:for-index="lineIdx" wx:key="lineIdx">
+      <text class="bullet">·</text>
+      <text class="line">{{line}}</text>
+    </view>
+  </view>
+</view>
+<view class="empty" wx:else>
+  <text>暂无更新记录</text>
+</view>

@@ -738,6 +738,12 @@ Page({
     });
   },
 
+  goToChangelogPage() {
+    wx.navigateTo({
+      url: '/pages/changelog/index',
+    });
+  },
+
   /**
    * 加载用户主题数据
    */

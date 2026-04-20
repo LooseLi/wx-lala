@@ -70,6 +70,15 @@
       </view>
     </view>
 
+    <!-- 更新日志 -->
+    <view class="changelog-entry" bindtap="goToChangelogPage">
+      <view class="changelog-entry-text">
+        <text class="changelog-entry-title">关于</text>
+        <!-- <text class="changelog-entry-sub">版本与新功能说明</text> -->
+      </view>
+      <text class="changelog-entry-arrow">›</text>
+    </view>
+
     <!-- <view class="found">
       <image bindtap="handleUser" src="./images/found.svg" mode="widthFix" lazy-load></image>
     </view> -->
