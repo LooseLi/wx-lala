@@ -11,6 +11,7 @@
     "pages/index/components/holidays/index",
     "pages/index/components/todo/index"
   ],
+  "lazyCodeLoading": "requiredComponents",
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#daecff",
