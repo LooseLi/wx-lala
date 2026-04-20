@@ -391,7 +391,6 @@ view {
   font-size: 32rpx;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8rpx;
 }
 
 .changelog-entry-sub {
