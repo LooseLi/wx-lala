@@ -37,8 +37,8 @@ module.exports = [
   },
   {
     version: '1.6.1',
-    date: '2025-09-09',
-    items: ['新增纪念日天数换算为年'],
+    date: '2025-08-25',
+    items: ['修复首页公告中倒计时逻辑错误问题'],
   },
   {
     version: 'x.x.x',
