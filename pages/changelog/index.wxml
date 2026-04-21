@@ -1,5 +1,5 @@
 <view class="page" wx:if="{{list.length}}">
-  <view class="hint">以下为各版本主要变化，按时间从新到旧排列。</view>
+  <!-- <view class="hint">以下为各版本主要变化，按时间从新到旧排列。</view> -->
   <view class="card" wx:for="{{list}}" wx:key="_key">
     <view class="card-head">
       <text class="version">v{{item.version}}</text>

@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding: 24rpx 32rpx 48rpx;
+  padding: 32rpx 32rpx 56rpx;
   padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
