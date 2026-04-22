@@ -7,7 +7,7 @@
     </view>
     <view class="card-title" wx:if="{{item.title}}">{{item.title}}</view>
     <view class="item" wx:for="{{item.items}}" wx:for-item="line" wx:for-index="lineIdx" wx:key="lineIdx">
-      <text class="bullet">·</text>
+      <view class="bullet"></view>
       <text class="line">{{line}}</text>
     </view>
   </view>

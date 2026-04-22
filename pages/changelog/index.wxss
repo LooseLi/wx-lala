@@ -50,6 +50,7 @@
 .item {
   display: flex;
   align-items: flex-start;
+  gap: 12rpx;
   margin-bottom: 12rpx;
 }
 
@@ -59,10 +60,11 @@
 
 .bullet {
   flex-shrink: 0;
-  width: 28rpx;
-  font-size: 28rpx;
-  color: var(--primary-color);
-  line-height: 1.55;
+  width: 4px;
+  height: 4px;
+  margin-top: 16rpx;
+  border-radius: 50%;
+  background-color: #74b9ff;
 }
 
 .line {
