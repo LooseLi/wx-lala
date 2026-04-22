@@ -100,21 +100,19 @@
   padding-left: 4rpx;
 }
 
-/* 游戏宫格 2 列 */
-.game-grid {
+/* 游戏列表：单行单列，一行一张 */
+.game-list {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 20rpx;
   margin-bottom: 32rpx;
 }
 
 .game-card {
-  width: calc(50% - 10rpx);
+  width: 100%;
   border-radius: 24rpx;
   overflow: hidden;
-  min-height: 280rpx;
+  min-height: 220rpx;
   position: relative;
   box-sizing: border-box;
 }
@@ -150,11 +148,6 @@
   background: linear-gradient(145deg, #b2bec3 0%, #636e72 100%);
 }
 
-.game-card-bg--sokoban {
-  background: linear-gradient(145deg, #81ecec 0%, #00b894 100%);
-  opacity: 0.5;
-}
-
 .game-card-body {
   position: relative;
   z-index: 1;
@@ -162,7 +155,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-height: 280rpx;
+  min-height: 220rpx;
   box-sizing: border-box;
 }
 

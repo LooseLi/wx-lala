@@ -22,8 +22,8 @@
 
     <view class="section-title">开玩！</view>
 
-    <!-- 游戏卡片区：2 列 -->
-    <view class="game-grid">
+    <!-- 游戏列表：一行一张 -->
+    <view class="game-list">
       <view
         class="game-card game-card--active"
         hover-class="game-card--hover"
@@ -44,18 +44,6 @@
         <view class="game-card-bg game-card-bg--klotski" />
         <view class="game-card-body">
           <text class="game-name">华容道</text>
-          <text class="game-sub">即将开放</text>
-          <view class="play-btn play-btn--ghost">敬请期待</view>
-        </view>
-      </view>
-
-      <view
-        class="game-card game-card--disabled"
-        bindtap="onComingSoon"
-      >
-        <view class="game-card-bg game-card-bg--sokoban" />
-        <view class="game-card-body">
-          <text class="game-name">推箱子</text>
           <text class="game-sub">即将开放</text>
           <view class="play-btn play-btn--ghost">敬请期待</view>
         </view>
