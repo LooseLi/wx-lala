@@ -21,7 +21,7 @@
   flex-direction: row;
   align-items: center;
   padding: 28rpx 32rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 56rpx;
 }
 
 .avatar {
@@ -104,8 +104,8 @@
 .game-list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
-  margin-bottom: 32rpx;
+  gap: 36rpx;
+  margin-bottom: 56rpx;
 }
 
 .game-card {
@@ -173,6 +173,7 @@
 }
 
 .play-btn {
+  text-align: center;
   margin-top: auto;
   align-self: stretch;
   height: 64rpx;
