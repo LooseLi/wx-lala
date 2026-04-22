@@ -1,0 +1,5 @@
+<view class="placeholder-page">
+  <view class="placeholder-icon">🛍️</view>
+  <text class="placeholder-title">敬请期待</text>
+  <text class="placeholder-desc">积分兑换与皮肤将后续开放~</text>
+</view>

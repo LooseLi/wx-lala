@@ -1,0 +1,5 @@
+<view class="placeholder-page">
+  <view class="placeholder-icon">🎮</view>
+  <text class="placeholder-title">2048 开发中</text>
+  <text class="placeholder-desc">玩法与界面将在后续版本加入，先逛逛游戏大厅吧~</text>
+</view>

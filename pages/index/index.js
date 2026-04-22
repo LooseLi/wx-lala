@@ -56,6 +56,12 @@ Page({
       },
       {
         id: 4,
+        icon: './images/event/icon-helanzhu.png',
+        title: '游戏大厅',
+        page: '/packageGames/pages/game-hall/index',
+      },
+      {
+        id: 5,
         icon: './images/event/icon-gengduo.png',
         title: '想想要新加些啥',
         page: '',

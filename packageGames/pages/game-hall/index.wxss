@@ -1,0 +1,266 @@
+.hall-scroll {
+  height: 100vh;
+  background: linear-gradient(165deg, #fff4e8 0%, #f3e8ff 45%, #e8f4ff 100%);
+  box-sizing: border-box;
+}
+
+.hall-page {
+  padding: 24rpx 28rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.card-raise {
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12rpx 40rpx rgba(120, 90, 200, 0.12);
+}
+
+/* 顶栏 */
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.top-bar-right {
+  flex: 1;
+  margin-left: 28rpx;
+  min-width: 0;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+}
+
+.stat-pill--pressed {
+  opacity: 0.88;
+  transform: scale(0.98);
+}
+
+.stat-coin {
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.stat-fire {
+  background: linear-gradient(135deg, #ffecd2, #ff9a76);
+}
+
+.stat-emoji {
+  margin-right: 8rpx;
+  font-size: 30rpx;
+}
+
+.stat-num {
+  font-weight: 700;
+  color: #2d3436;
+  min-width: 48rpx;
+}
+
+.stat-label {
+  margin-left: 8rpx;
+  font-size: 22rpx;
+  color: #636e72;
+}
+
+.hint-text {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #d63031;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2d3436;
+  margin-bottom: 20rpx;
+  padding-left: 4rpx;
+}
+
+/* 游戏宫格 2 列 */
+.game-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+
+.game-card {
+  width: calc(50% - 10rpx);
+  border-radius: 24rpx;
+  overflow: hidden;
+  min-height: 280rpx;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.game-card--active {
+  box-shadow: 0 16rpx 36rpx rgba(255, 120, 80, 0.25);
+}
+
+.game-card--hover {
+  transform: scale(0.98);
+  opacity: 0.96;
+}
+
+.game-card--disabled {
+  opacity: 0.72;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.game-card-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.game-card-bg--2048 {
+  background: linear-gradient(145deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%);
+}
+
+.game-card-bg--klotski {
+  background: linear-gradient(145deg, #b2bec3 0%, #636e72 100%);
+}
+
+.game-card-bg--sokoban {
+  background: linear-gradient(145deg, #81ecec 0%, #00b894 100%);
+  opacity: 0.5;
+}
+
+.game-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 24rpx 20rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 280rpx;
+  box-sizing: border-box;
+}
+
+.game-name {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.game-sub {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 8rpx;
+}
+
+.play-btn {
+  margin-top: auto;
+  align-self: stretch;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6c5ce7;
+  background: #fff;
+  border-radius: 999rpx;
+  border: none;
+  padding: 0;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.12);
+}
+
+.play-btn::after {
+  border: none;
+}
+
+.play-btn--hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.game-card--disabled .game-name,
+.game-card--disabled .game-sub {
+  color: #fff;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.25);
+}
+
+.play-btn--ghost {
+  text-align: center;
+  line-height: 64rpx;
+  background: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* 商城 */
+.shop-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 32rpx 28rpx;
+}
+
+.shop-card--hover {
+  opacity: 0.92;
+  transform: scale(0.99);
+}
+
+.shop-icon-wrap {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+}
+
+.shop-texts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.shop-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.shop-desc {
+  font-size: 24rpx;
+  color: #74b9ff;
+}
+
+.shop-arrow {
+  font-size: 48rpx;
+  color: #b2bec3;
+  font-weight: 300;
+}
+
+.safe-bottom {
+  height: constant(safe-area-inset-bottom);
+  height: env(safe-area-inset-bottom);
+  min-height: 24rpx;
+}

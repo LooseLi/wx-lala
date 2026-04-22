@@ -1,0 +1,81 @@
+<scroll-view class="hall-scroll" scroll-y>
+  <view class="hall-page">
+    <!-- 顶栏：头像 + 积分 + 连签 -->
+    <view class="top-bar card-raise">
+      <image class="avatar" src="{{avatar}}" mode="aspectFill" />
+      <view class="top-bar-right">
+        <view class="stat-row">
+          <view class="stat-pill stat-coin" hover-class="stat-pill--pressed">
+            <text class="stat-emoji">🪙</text>
+            <text class="stat-num">{{loading ? '…' : currentPoints}}</text>
+            <text class="stat-label">积分</text>
+          </view>
+          <view class="stat-pill stat-fire" hover-class="stat-pill--pressed">
+            <text class="stat-emoji">🔥</text>
+            <text class="stat-num">{{loading ? '…' : continuousDays}}</text>
+            <text class="stat-label">连签</text>
+          </view>
+        </view>
+        <text wx:if="{{loadError}}" class="hint-text">数据加载失败，下拉重试</text>
+      </view>
+    </view>
+
+    <view class="section-title">开玩！</view>
+
+    <!-- 游戏卡片区：2 列 -->
+    <view class="game-grid">
+      <view
+        class="game-card game-card--active"
+        hover-class="game-card--hover"
+        bindtap="go2048"
+      >
+        <view class="game-card-bg game-card-bg--2048" />
+        <view class="game-card-body">
+          <text class="game-name">2048</text>
+          <text class="game-sub">数字合成</text>
+          <view class="play-btn" hover-class="play-btn--hover">开始游戏</view>
+        </view>
+      </view>
+
+      <view
+        class="game-card game-card--disabled"
+        bindtap="onComingSoon"
+      >
+        <view class="game-card-bg game-card-bg--klotski" />
+        <view class="game-card-body">
+          <text class="game-name">华容道</text>
+          <text class="game-sub">即将开放</text>
+          <view class="play-btn play-btn--ghost">敬请期待</view>
+        </view>
+      </view>
+
+      <view
+        class="game-card game-card--disabled"
+        bindtap="onComingSoon"
+      >
+        <view class="game-card-bg game-card-bg--sokoban" />
+        <view class="game-card-body">
+          <text class="game-name">推箱子</text>
+          <text class="game-sub">即将开放</text>
+          <view class="play-btn play-btn--ghost">敬请期待</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 商城入口 -->
+    <view
+      class="shop-card card-raise"
+      hover-class="shop-card--hover"
+      bindtap="goShop"
+    >
+      <view class="shop-icon-wrap">🛍️</view>
+      <view class="shop-texts">
+        <text class="shop-title">积分商城</text>
+        <text class="shop-desc">兑换皮肤 · 更多奖励</text>
+      </view>
+      <text class="shop-arrow">›</text>
+    </view>
+
+    <view class="safe-bottom" />
+  </view>
+</scroll-view>
