@@ -321,7 +321,7 @@
   right: 0;
   width: 100%;
   /* 动效区加大，约等于原 240rpx 的 1.5～1.6 倍 */
-  height: 400rpx;
+  height: 300rpx;
   bottom: 100%;
   display: flex;
   align-items: center;
