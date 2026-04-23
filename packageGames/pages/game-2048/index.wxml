@@ -1,5 +1,65 @@
-<view class="placeholder-page">
-  <view class="placeholder-icon">🎮</view>
-  <text class="placeholder-title">2048 开发中</text>
-  <text class="placeholder-desc">玩法与界面将在后续版本加入，先逛逛游戏大厅吧~</text>
+<wxs module="tile">
+function c(v) {
+  if (v <= 0) {
+    return 'c0'
+  }
+  if (v > 2048) {
+    return 'cbig'
+  }
+  return 'c' + v
+}
+module.exports.c = c
+</wxs>
+
+<view class="g2048-page">
+  <view class="toolbar">
+    <view class="stat-box">
+      <text class="stat-label">得分</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box stat-box--best">
+      <text class="stat-label">最高</text>
+      <text class="stat-value">{{best}}</text>
+    </view>
+    <view class="btn-new" hover-class="btn-new--press" bindtap="onNewGame">新局</view>
+  </view>
+
+  <view
+    class="board-outer"
+    catchtouchmove="catchMove"
+    bindtouchstart="touchStart"
+    bindtouchend="touchEnd"
+  >
+    <view class="board">
+      <view class="row" wx:for="{{board}}" wx:for-item="row" wx:for-index="ri" wx:key="ri">
+        <view class="cell" wx:for="{{row}}" wx:for-item="v" wx:for-index="ci" wx:key="ci">
+          <view wx:if="{{v > 0}}" class="tile {{tile.c(v)}}">
+            <text class="tile-text">{{v}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <text class="hint">左右上下滑动操作</text>
+
+  <view class="mask" wx:if="{{showWinMask && !gameOver}}">
+    <view class="mask-card">
+      <text class="mask-title">达成 2048！</text>
+      <text class="mask-sub">好厉害，要挑战更高分吗？</text>
+      <view class="mask-btns">
+        <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onContinueAfterWin">继续</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="mask" wx:if="{{gameOver}}">
+    <view class="mask-card">
+      <text class="mask-title">游戏结束</text>
+      <text class="mask-sub">本局得分 {{score}}</text>
+      <view class="mask-btns">
+        <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onRetry">再玩一局</view>
+      </view>
+    </view>
+  </view>
 </view>

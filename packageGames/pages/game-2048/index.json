@@ -2,5 +2,6 @@
   "navigationBarTitleText": "2048",
   "navigationBarBackgroundColor": "#6c5ce7",
   "navigationBarTextStyle": "white",
+  "disableScroll": true,
   "usingComponents": {}
 }
