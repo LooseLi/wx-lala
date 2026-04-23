@@ -16,14 +16,14 @@ module.exports.c = c
     <view class="g2048-content">
       <view class="toolbar">
         <view class="stat-box">
-          <text class="stat-label">得分</text>
+          <text class="stat-label">本局得分</text>
           <text class="stat-value">{{score}}</text>
         </view>
         <view class="stat-box stat-box--best">
-          <text class="stat-label">最高</text>
+          <text class="stat-label">最高记录</text>
           <text class="stat-value">{{best}}</text>
         </view>
-        <view class="btn-new" hover-class="btn-new--press" bindtap="onNewGame">新局</view>
+        <view class="btn-new" hover-class="btn-new--press" bindtap="onNewGame">新游戏</view>
       </view>
 
       <view
@@ -51,7 +51,7 @@ module.exports.c = c
         </view>
       </view>
 
-      <text class="hint">左右上下滑动操作</text>
+      <text class="hint">上下左右滑动操作</text>
     </view>
   </view>
 

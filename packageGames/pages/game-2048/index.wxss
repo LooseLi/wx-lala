@@ -286,7 +286,7 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(238, 228, 218, 0.73);
+  background: rgba(0, 0, 0, 0.55);
   z-index: 100;
   display: flex;
   align-items: center;
