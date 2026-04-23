@@ -93,9 +93,13 @@ Page({
   _layoutMetrics: null,
   _measureTries: 0,
   _winLottieAnim: null,
+  /** @type {object | null} 预拉取的 Lottie JSON，胜利时用 animationData 避免再请求 */
+  _winLottieJsonData: null,
+  _winLottiePrefetching: false,
 
   onLoad() {
     this.setData({ best: loadBest() });
+    this._prefetchWinLottieJson();
     this._startNewGame();
   },
 
@@ -106,6 +110,9 @@ Page({
   onShow() {
     this.setData({ best: loadBest() });
     this._scheduleMeasureLayout();
+    if (!this._winLottieJsonData) {
+      this._prefetchWinLottieJson();
+    }
   },
 
   onUnload() {
@@ -114,6 +121,8 @@ Page({
       this._spawnTimer = null;
     }
     this._destroyWinLottie();
+    this._winLottieJsonData = null;
+    this._winLottiePrefetching = false;
   },
 
   _destroyWinLottie() {
@@ -125,6 +134,47 @@ Page({
       }
       this._winLottieAnim = null;
     }
+  },
+
+  /**
+   * 进页预下载 Lottie JSON（downloadFile 合法域名需含云存储 host）；
+   * 成功则解析为对象，_initWinLottie 优先用 animationData，避免首屏等 CDN。
+   */
+  _prefetchWinLottieJson() {
+    if (this._winLottieJsonData || this._winLottiePrefetching) {
+      return;
+    }
+    this._winLottiePrefetching = true;
+    const fs = wx.getFileSystemManager();
+    wx.downloadFile({
+      url: WIN_LOTTE_JSON_URL,
+      success: (res) => {
+        if (res.statusCode !== 200 || !res.tempFilePath) {
+          this._winLottiePrefetching = false;
+          return;
+        }
+        fs.readFile({
+          filePath: res.tempFilePath,
+          encoding: 'utf8',
+          success: (readRes) => {
+            this._winLottiePrefetching = false;
+            try {
+              this._winLottieJsonData = JSON.parse(
+                readRes.data,
+              );
+            } catch (e) {
+              this._winLottieJsonData = null;
+            }
+          },
+          fail: () => {
+            this._winLottiePrefetching = false;
+          },
+        });
+      },
+      fail: () => {
+        this._winLottiePrefetching = false;
+      },
+    });
   },
 
   _initWinLottie() {
@@ -150,14 +200,19 @@ Page({
         canvas.height = h * dpr;
         ctx.scale(dpr, dpr);
         lottie.setup(canvas);
-        this._winLottieAnim = lottie.loadAnimation({
+        const animOpts = {
           loop: true,
           autoplay: true,
-          path: WIN_LOTTE_JSON_URL,
           rendererSettings: {
             context: ctx,
           },
-        });
+        };
+        if (this._winLottieJsonData) {
+          animOpts.animationData = this._winLottieJsonData;
+        } else {
+          animOpts.path = WIN_LOTTE_JSON_URL;
+        }
+        this._winLottieAnim = lottie.loadAnimation(animOpts);
       });
   },
 
