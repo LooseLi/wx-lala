@@ -1,4 +1,4 @@
-/* 布局：底部留白适配安全区 */
+/* 布局：整页为列；主内容在可视区内垂直居中；得分-棋盘 60rpx、棋盘-提示 30rpx */
 .g2048-page {
   min-height: 100vh;
   box-sizing: border-box;
@@ -7,17 +7,36 @@
   background: #faf8ef;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+}
+
+/* 占满除 fixed 弹层外的区域，将整块（得分+棋盘+提示）在垂直方向居中 */
+.g2048-center-wrap {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+/* 得分、棋盘、提示的竖直排布：得分-棋盘 60rpx，棋盘-提示 30rpx */
+.g2048-content {
+  width: 100%;
+  max-width: 700rpx;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
 }
 
 .toolbar {
   width: 100%;
-  max-width: 700rpx;
+  margin-bottom: 60rpx;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28rpx;
 }
 
 .stat-box {
@@ -66,8 +85,9 @@
 .board-outer {
   width: 100%;
   max-width: 700rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
   touch-action: none;
+  flex-shrink: 0;
 }
 
 .board {
@@ -253,6 +273,7 @@
 }
 
 .hint {
+  text-align: center;
   font-size: 24rpx;
   color: #776e65;
   opacity: 0.9;
