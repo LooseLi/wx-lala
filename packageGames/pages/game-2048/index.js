@@ -1,7 +1,11 @@
 const g = require('../../utils/game2048.js');
+const tgrid = require('../../utils/game2048Tiles.js');
 
 const BEST_KEY = 'lala_2048_best';
-const THRESHOLD = 30; // 滑动有效最小像素
+const THRESHOLD = 30;
+
+/** 与 wxss 中 .row / .board-bg 的 gap 一致 */
+const GAP_RPX = 12;
 
 function loadBest() {
   const v = wx.getStorageSync(BEST_KEY);
@@ -17,9 +21,56 @@ function saveBest(score) {
   return prev;
 }
 
+/**
+ * 把 tile-layer 的 px 宽高换算为 rpx 后，按与底格 flex+gap 相同公式求单格与坐标
+ * @param {number} widthPx
+ * @param {number} heightPx
+ * @param {number} windowWidth
+ */
+function metricsFromRect(widthPx, heightPx, windowWidth) {
+  if (!widthPx || !heightPx) {
+    return null;
+  }
+  const wR = (widthPx * 750) / windowWidth;
+  const hR = (heightPx * 750) / windowWidth;
+  const cellW = (wR - 3 * GAP_RPX) / 4;
+  const cellH = (hR - 3 * GAP_RPX) / 4;
+  return { cellW, cellH, gap: GAP_RPX, wR, hR };
+}
+
+/**
+ * 根据量到的 metrics 将盘面列表变成带 rpx 的样式项
+ */
+function layoutTilesRpx(flat, spawnNudgeId, m) {
+  if (!m || m.cellW <= 0 || m.cellH <= 0) {
+    return null;
+  }
+  const { cellW, cellH, gap } = m;
+  return flat.map((item) => {
+    return {
+      id: item.id,
+      v: item.v,
+      r: item.r,
+      c: item.c,
+      l: (item.c * (cellW + gap)).toFixed(2),
+      tp: (item.r * (cellH + gap)).toFixed(2),
+      w: cellW.toFixed(2),
+      h: cellH.toFixed(2),
+      isSpawn: spawnNudgeId > 0 && item.id === spawnNudgeId,
+    };
+  });
+}
+
 Page({
   data: {
-    board: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    rowIdx: [0, 1, 2, 3],
+    board: [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    tiles: [],
     score: 0,
     best: 0,
     gameOver: false,
@@ -30,25 +81,110 @@ Page({
   _tx: 0,
   _ty: 0,
   _touching: false,
+  _grid: null,
+  _nextId: 1,
+  _spawnTimer: null,
+  /** @type {null | { cellW: number, cellH: number, gap: number, wR: number, hR: number }} */
+  _layoutMetrics: null,
+  _measureTries: 0,
 
   onLoad() {
     this.setData({ best: loadBest() });
     this._startNewGame();
   },
 
+  onReady() {
+    this._scheduleMeasureLayout();
+  },
+
   onShow() {
     this.setData({ best: loadBest() });
+    this._scheduleMeasureLayout();
+  },
+
+  onUnload() {
+    if (this._spawnTimer) {
+      clearTimeout(this._spawnTimer);
+      this._spawnTimer = null;
+    }
+  },
+
+  _scheduleMeasureLayout() {
+    this._measureTries = 0;
+    const run = () => {
+      const sys = wx.getSystemInfoSync();
+      const q = wx.createSelectorQuery().in(this);
+      q.select('#g2048-tile-layer').boundingClientRect();
+      q.exec((res) => {
+        const rect = res && res[0];
+        if (rect && rect.width > 2 && rect.height > 2) {
+          this._layoutMetrics = metricsFromRect(
+            rect.width,
+            rect.height,
+            sys.windowWidth,
+          );
+          this._rebuildTilesInView(-1);
+          return;
+        }
+        this._measureTries += 1;
+        if (this._measureTries < 8) {
+          setTimeout(run, 50);
+        }
+      });
+    };
+    run();
+  },
+
+  /**
+   * 用当前 _layoutMetrics 重算 setData 中的 tiles、board
+   * @param {number} spawnNudgeId
+   */
+  _rebuildTilesInView(spawnNudgeId) {
+    if (!this._grid) {
+      return;
+    }
+    const board = tgrid.boardFromGrid(this._grid);
+    const list = tgrid.toTilesList(this._grid);
+    const tiles = layoutTilesRpx(list, spawnNudgeId, this._layoutMetrics);
+    this.setData({
+      board,
+      tiles: tiles || [],
+    });
   },
 
   _startNewGame() {
-    const board = g.initNewGame();
+    if (this._spawnTimer) {
+      clearTimeout(this._spawnTimer);
+      this._spawnTimer = null;
+    }
+    const b = g.initNewGame();
+    const built = tgrid.gridFromNumberBoard(b, 1);
+    this._grid = built.grid;
+    this._nextId = built.nextId;
     this.setData({
-      board,
       score: 0,
       gameOver: false,
       won: false,
       showWinMask: false,
     });
+    this._rebuildTilesInView(-1);
+    this._scheduleMeasureLayout();
+  },
+
+  _syncView(spawnNudgeId) {
+    this._rebuildTilesInView(spawnNudgeId);
+    if (spawnNudgeId > 0) {
+      this._spawnTimer = setTimeout(() => {
+        this.setData({
+          tiles: layoutTilesRpx(
+            tgrid.toTilesList(this._grid),
+            -1,
+            this._layoutMetrics,
+          ) || [],
+        });
+        this._spawnTimer = null;
+      }, 200);
+    }
   },
 
   onNewGame() {
@@ -71,32 +207,43 @@ Page({
     if (this.data.gameOver) {
       return;
     }
-    const prevBoard = g.cloneBoard(this.data.board);
-    const { board: next, changed, scoreAdd } = g.moveBoard(prevBoard, dir);
+    if (this._spawnTimer) {
+      clearTimeout(this._spawnTimer);
+      this._spawnTimer = null;
+    }
+
+    const { grid, changed, scoreAdd } = tgrid.moveTileGrid(
+      tgrid.cloneGrid(this._grid),
+      dir,
+    );
     if (!changed) {
       return;
     }
 
-    g.spawnTile(next);
+    this._grid = grid;
+    const { nextId, spawnId } = tgrid.spawnInGrid(this._grid, this._nextId);
+    this._nextId = nextId;
+
     let { score, won, showWinMask } = this.data;
     score += scoreAdd;
 
-    if (!won && g.hasReached2048(next)) {
+    if (!won && g.hasReached2048(tgrid.boardFromGrid(this._grid))) {
       won = true;
       showWinMask = true;
     }
 
     const best = saveBest(score);
-    const gameOver = !g.hasValidMove(next);
+    const gameOver = !g.hasValidMove(tgrid.boardFromGrid(this._grid));
 
     this.setData({
-      board: next,
       score,
       best,
       won,
       showWinMask,
       gameOver,
     });
+
+    this._syncView(spawnId);
 
     if (gameOver) {
       saveBest(score);
@@ -111,9 +258,9 @@ Page({
     if (this.data.gameOver) {
       return;
     }
-    const t = e.touches[0];
-    this._tx = t.clientX;
-    this._ty = t.clientY;
+    const t0 = e.touches[0];
+    this._tx = t0.clientX;
+    this._ty = t0.clientY;
     this._touching = true;
   },
 
@@ -122,9 +269,9 @@ Page({
       return;
     }
     this._touching = false;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - this._tx;
-    const dy = t.clientY - this._ty;
+    const t0 = e.changedTouches[0];
+    const dx = t0.clientX - this._tx;
+    const dy = t0.clientY - this._ty;
     if (Math.abs(dx) < THRESHOLD && Math.abs(dy) < THRESHOLD) {
       return;
     }
@@ -139,7 +286,6 @@ Page({
     this._startNewGame();
   },
 
-  /** 阻止棋盘区域把滑动冒泡到页面产生滚动 */
   catchMove() {},
 
   onShareAppMessage() {

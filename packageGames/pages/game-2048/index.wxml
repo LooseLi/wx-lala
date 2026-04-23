@@ -1,4 +1,4 @@
-<wxs module="tile">
+<wxs module="cmap">
 function c(v) {
   if (v <= 0) {
     return 'c0'
@@ -31,11 +31,19 @@ module.exports.c = c
     bindtouchend="touchEnd"
   >
     <view class="board">
-      <view class="row" wx:for="{{board}}" wx:for-item="row" wx:for-index="ri" wx:key="ri">
-        <view class="cell" wx:for="{{row}}" wx:for-item="v" wx:for-index="ci" wx:key="ci">
-          <view wx:if="{{v > 0}}" class="tile {{tile.c(v)}}">
-            <text class="tile-text">{{v}}</text>
-          </view>
+      <view class="board-bg">
+        <view class="row" wx:for="{{rowIdx}}" wx:for-item="ri" wx:key="*this">
+          <view class="cell" wx:for="{{rowIdx}}" wx:for-item="ci" wx:key="*this" />
+        </view>
+      </view>
+      <view id="g2048-tile-layer" class="tile-layer">
+        <view
+          wx:for="{{tiles}}"
+          wx:key="id"
+          class="tile-abs tile-anim {{cmap.c(item.v)}}{{item.isSpawn ? ' tile--spawn' : ''}}"
+          style="left: {{item.l}}rpx; top: {{item.tp}}rpx; width: {{item.w}}rpx; height: {{item.h}}rpx;"
+        >
+          <text class="tile-text">{{item.v}}</text>
         </view>
       </view>
     </view>

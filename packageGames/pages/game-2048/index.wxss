@@ -71,6 +71,7 @@
 }
 
 .board {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
   max-height: 88vw;
@@ -81,6 +82,16 @@
   display: flex;
   flex-direction: column;
   gap: 12rpx;
+}
+
+.board-bg {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12rpx;
+  min-height: 0;
 }
 
 .row {
@@ -95,22 +106,56 @@
   flex: 1;
   background: rgba(238, 228, 218, 0.35);
   border-radius: 6rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-width: 0;
   min-height: 0;
 }
 
-.tile {
-  width: 100%;
-  height: 100%;
+/* 与格线对齐的滑块层：同 id 的块 left/top 变化带过渡，形成滑动 */
+.tile-layer {
+  position: absolute;
+  left: 12rpx;
+  right: 12rpx;
+  top: 12rpx;
+  bottom: 12rpx;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tile-abs {
+  position: absolute;
   border-radius: 6rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding: 4rpx;
+  /* 与底格等宽满格对位，不额外内边距，避免与 flex 格错位 */
+  padding: 0;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1);
+  transition:
+    left 0.16s ease,
+    top 0.16s ease;
+  will-change: left, top;
+}
+
+.tile-anim {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* 新落子 */
+.tile--spawn {
+  animation: tilePop 0.2s ease-out;
+}
+
+@keyframes tilePop {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .tile-text {
