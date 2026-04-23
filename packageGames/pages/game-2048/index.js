@@ -1,5 +1,10 @@
+const lottie = require('lottie-miniprogram');
 const g = require('../../utils/game2048.js');
 const tgrid = require('../../utils/game2048Tiles.js');
+
+/** 胜利 Lottie 云地址；path 需配「下载」合法域名；带 sign 的 URL 会过期，上线后换长期链接 */
+const WIN_LOTTE_JSON_URL =
+  'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/lottie/emoji_celebrate.json?sign=1b451d8f28ec10070945129e881c07f1&t=1776934185';
 
 const BEST_KEY = 'lala_2048_best';
 const THRESHOLD = 30;
@@ -87,6 +92,7 @@ Page({
   /** @type {null | { cellW: number, cellH: number, gap: number, wR: number, hR: number }} */
   _layoutMetrics: null,
   _measureTries: 0,
+  _winLottieAnim: null,
 
   onLoad() {
     this.setData({ best: loadBest() });
@@ -107,6 +113,52 @@ Page({
       clearTimeout(this._spawnTimer);
       this._spawnTimer = null;
     }
+    this._destroyWinLottie();
+  },
+
+  _destroyWinLottie() {
+    if (this._winLottieAnim) {
+      try {
+        this._winLottieAnim.destroy();
+      } catch (e) {
+        /* noop */
+      }
+      this._winLottieAnim = null;
+    }
+  },
+
+  _initWinLottie() {
+    if (!this.data.showWinMask || this.data.gameOver) {
+      return;
+    }
+    this._destroyWinLottie();
+    const query = wx.createSelectorQuery().in(this);
+    query
+      .select('#g2048-win-lottie')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        const info = res && res[0];
+        const canvas = info && info.node;
+        if (!canvas) {
+          return;
+        }
+        const w = info.width || 220;
+        const h = info.height || 220;
+        const ctx = canvas.getContext('2d');
+        const dpr = wx.getSystemInfoSync().pixelRatio || 1;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.scale(dpr, dpr);
+        lottie.setup(canvas);
+        this._winLottieAnim = lottie.loadAnimation({
+          loop: true,
+          autoplay: true,
+          path: WIN_LOTTE_JSON_URL,
+          rendererSettings: {
+            context: ctx,
+          },
+        });
+      });
   },
 
   _scheduleMeasureLayout() {
@@ -161,6 +213,7 @@ Page({
     const built = tgrid.gridFromNumberBoard(b, 1);
     this._grid = built.grid;
     this._nextId = built.nextId;
+    this._destroyWinLottie();
     this.setData({
       score: 0,
       gameOver: false,
@@ -243,6 +296,12 @@ Page({
       gameOver,
     });
 
+    if (showWinMask) {
+      wx.nextTick(() => {
+        this._initWinLottie();
+      });
+    }
+
     this._syncView(spawnId);
 
     if (gameOver) {
@@ -251,6 +310,7 @@ Page({
   },
 
   onContinueAfterWin() {
+    this._destroyWinLottie();
     this.setData({ showWinMask: false });
   },
 

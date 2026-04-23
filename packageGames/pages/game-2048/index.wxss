@@ -306,6 +306,36 @@
   border: 2rpx solid #bbada0;
 }
 
+/* 胜利层：仅弹窗参与垂直居中；Lottie 绝对叠在弹窗正上方、同宽、底边贴弹窗顶 */
+.win-victory-anchor {
+  position: relative;
+  width: 100%;
+  max-width: 560rpx;
+  box-sizing: border-box;
+  /* 布局高度=仅 .mask-card，由 .mask 的 flex 把弹窗置于视口垂直居中 */
+}
+
+.win-victory-anchor .win-lottie-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  /* 动效区加大，约等于原 240rpx 的 1.5～1.6 倍 */
+  height: 400rpx;
+  bottom: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.win-lottie-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .mask-title {
   display: block;
   font-size: 44rpx;

@@ -56,11 +56,16 @@ module.exports.c = c
   </view>
 
   <view class="mask" wx:if="{{showWinMask && !gameOver}}">
-    <view class="mask-card">
-      <text class="mask-title">达成 2048！</text>
-      <text class="mask-sub">好厉害，要挑战更高分吗？</text>
-      <view class="mask-btns">
-        <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onContinueAfterWin">继续</view>
+    <view class="win-victory-anchor">
+      <view class="win-lottie-wrap">
+        <canvas type="2d" id="g2048-win-lottie" class="win-lottie-canvas"></canvas>
+      </view>
+      <view class="mask-card">
+        <text class="mask-title">达成 2048！</text>
+        <text class="mask-sub">好厉害，要挑战更高分吗？</text>
+        <view class="mask-btns">
+          <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onContinueAfterWin">继续</view>
+        </view>
       </view>
     </view>
   </view>

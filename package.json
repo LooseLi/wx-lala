@@ -40,6 +40,7 @@
     "sass": "^1.86.0"
   },
   "dependencies": {
+    "lottie-miniprogram": "^1.0.12",
     "solarlunar": "^2.0.7"
   }
 }
