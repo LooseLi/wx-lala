@@ -163,22 +163,22 @@
 
 .game-card-decor--2048 .game-card-bubble:nth-child(1) {
   position: absolute;
-  width: 220rpx;
-  height: 220rpx;
-  right: -36rpx;
-  top: -48rpx;
+  width: 200rpx;
+  height: 200rpx;
+  right: -32rpx;
+  top: -40rpx;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .game-card-decor--2048 .game-card-bubble:nth-child(2) {
   position: absolute;
-  width: 300rpx;
-  height: 300rpx;
-  right: -100rpx;
-  bottom: -90rpx;
+  width: 280rpx;
+  height: 280rpx;
+  right: -90rpx;
+  bottom: -100rpx;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .game-card-decor--klotski .game-card-bubble:nth-child(1) {
