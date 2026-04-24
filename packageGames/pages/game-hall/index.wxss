@@ -204,7 +204,7 @@
 .game-card-body {
   position: relative;
   z-index: 1;
-  padding: 48rpx 32rpx 48rpx;
+  padding: 42rpx 32rpx 42rpx;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
