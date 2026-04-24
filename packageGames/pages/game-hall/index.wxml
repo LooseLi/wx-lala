@@ -1,8 +1,14 @@
 <scroll-view class="hall-scroll" scroll-y>
   <view class="hall-page">
-    <!-- 顶栏：头像 + 积分 + 连签 -->
+    <!-- 顶栏：左侧 头像+昵称+欢迎语；右侧 积分等 -->
     <view class="top-bar card-raise">
-      <image class="avatar" src="{{avatar}}" mode="aspectFill" />
+      <view class="top-bar-left">
+        <image class="avatar" src="{{avatar}}" mode="aspectFill" />
+        <view class="top-bar-user">
+          <text class="top-bar-nickname">{{nickname}}</text>
+          <text class="top-bar-welcome">欢迎回来～</text>
+        </view>
+      </view>
       <view class="top-bar-right">
         <view class="stat-row">
           <view class="stat-pill stat-coin" hover-class="stat-pill--pressed">
@@ -10,11 +16,11 @@
             <text class="stat-num">{{loading ? '…' : currentPoints}}</text>
             <text class="stat-label">积分</text>
           </view>
-          <view class="stat-pill stat-fire" hover-class="stat-pill--pressed">
+          <!-- <view class="stat-pill stat-fire" hover-class="stat-pill--pressed">
             <text class="stat-emoji">🔥</text>
             <text class="stat-num">{{loading ? '…' : continuousDays}}</text>
             <text class="stat-label">连签</text>
-          </view>
+          </view> -->
         </view>
         <text wx:if="{{loadError}}" class="hint-text">数据加载失败，下拉重试</text>
       </view>

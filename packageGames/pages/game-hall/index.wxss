@@ -19,9 +19,18 @@
 .top-bar {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  padding: 28rpx 32rpx;
+  padding: 32rpx 32rpx;
   margin-bottom: 56rpx;
+}
+
+.top-bar-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .avatar {
@@ -33,10 +42,36 @@
   flex-shrink: 0;
 }
 
-.top-bar-right {
-  flex: 1;
-  margin-left: 28rpx;
+.top-bar-user {
+  margin-left: 16rpx;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.top-bar-nickname {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2d3436;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+/* 设计 4px 间距：按 375 宽 2x 约 8rpx */
+.top-bar-welcome {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #636e72;
+  line-height: 1.3;
+}
+
+.top-bar-right {
+  flex-shrink: 0;
+  margin-left: 16rpx;
 }
 
 .stat-row {

@@ -17,6 +17,7 @@ function buildLocalDate() {
 Page({
   data: {
     avatar: DEFAULT_AVATAR,
+    nickname: '游客',
     currentPoints: 0,
     continuousDays: 0,
     loading: true,
@@ -36,15 +37,19 @@ Page({
 
   applyUserFromStorage() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo && userInfo.avatar) {
-      this.setData({
-        avatar: userInfo.avatar,
-      });
-    } else {
-      this.setData({
-        avatar: DEFAULT_AVATAR,
-      });
+    let avatar = DEFAULT_AVATAR;
+    let nickname = '游客';
+    if (userInfo) {
+      if (userInfo.avatar) {
+        avatar = userInfo.avatar;
+      }
+      if (userInfo.nickname) {
+        nickname = userInfo.nickname;
+      } else if (userInfo.originalNickname) {
+        nickname = userInfo.originalNickname;
+      }
     }
+    this.setData({ avatar, nickname });
   },
 
   async fetchStatus() {
