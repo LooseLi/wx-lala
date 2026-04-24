@@ -169,6 +169,23 @@ function hasReached2048(board) {
 }
 
 /**
+ * 盘面上当前最大数字块（用于里程碑发奖等）
+ * @param {number[][]} board
+ * @returns {number}
+ */
+function getMaxTile(board) {
+  let m = 0;
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (board[r][c] > m) {
+        m = board[r][c];
+      }
+    }
+  }
+  return m;
+}
+
+/**
  * 初始盘面：两个随机 2
  */
 function initNewGame() {
@@ -186,6 +203,7 @@ module.exports = {
   getEmptyCells,
   hasValidMove,
   hasReached2048,
+  getMaxTile,
   initNewGame,
   cloneBoard,
 };

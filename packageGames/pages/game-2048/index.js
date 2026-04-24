@@ -9,6 +9,9 @@ const WIN_LOTTE_JSON_URL =
 const BEST_KEY = 'lala_2048_best';
 const THRESHOLD = 30;
 
+/** 里程碑：最高格首次达到时发积分（与云函数 grantGame2048Milestone 一致） */
+const MILESTONE_TIERS = [512, 1024, 2048];
+
 /** 与 wxss 中 .row / .board-bg 的 gap 一致 */
 const GAP_RPX = 12;
 
@@ -96,6 +99,12 @@ Page({
   /** @type {object | null} 预拉取的 Lottie JSON，胜利时用 animationData 避免再请求 */
   _winLottieJsonData: null,
   _winLottiePrefetching: false,
+  /** 本局会话 id，云函数幂等用 */
+  _gameSessionId: '',
+  /** @type {Record<number, boolean>} 本局已确认发放的档位 */
+  _milestoneGranted: null,
+  /** @type {Record<number, boolean>} 本档是否正在请求云函数 */
+  _milestoneInFlight: null,
 
   onLoad() {
     this.setData({ best: loadBest() });
@@ -259,11 +268,81 @@ Page({
     });
   },
 
+  _initGameSession() {
+    this._gameSessionId = `g2048_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2, 11)}`;
+    this._milestoneGranted = { 512: false, 1024: false, 2048: false };
+    this._milestoneInFlight = { 512: false, 1024: false, 2048: false };
+  },
+
+  /**
+   * 合并后根据盘面最大格尝试发放里程碑（每档本局只发成功一次）
+   * @param {number} maxTile
+   */
+  _checkMilestonesAfterMove(maxTile) {
+    if (!this._gameSessionId) {
+      return;
+    }
+    for (const tier of MILESTONE_TIERS) {
+      if (maxTile < tier) {
+        break;
+      }
+      if (this._milestoneGranted[tier]) {
+        continue;
+      }
+      this._grantMilestone(tier);
+    }
+  },
+
+  _grantMilestone(tier) {
+    if (!this._gameSessionId || this._milestoneGranted[tier]) {
+      return;
+    }
+    if (this._milestoneInFlight[tier]) {
+      return;
+    }
+    this._milestoneInFlight[tier] = true;
+    if (!wx.cloud) {
+      this._milestoneInFlight[tier] = false;
+      return;
+    }
+    wx.cloud.callFunction({
+      name: 'grantGame2048Milestone',
+      data: {
+        sessionId: this._gameSessionId,
+        tier,
+      },
+      success: (res) => {
+        this._milestoneInFlight[tier] = false;
+        const r = res.result;
+        if (!r || !r.success) {
+          return;
+        }
+        this._milestoneGranted[tier] = true;
+        if (r.already) {
+          return;
+        }
+        const gp = r.grantedPoints;
+        if (typeof gp === 'number' && gp > 0) {
+          wx.showToast({
+            title: `+${gp} 积分`,
+            icon: 'none',
+          });
+        }
+      },
+      fail: () => {
+        this._milestoneInFlight[tier] = false;
+      },
+    });
+  },
+
   _startNewGame() {
     if (this._spawnTimer) {
       clearTimeout(this._spawnTimer);
       this._spawnTimer = null;
     }
+    this._initGameSession();
     const b = g.initNewGame();
     const built = tgrid.gridFromNumberBoard(b, 1);
     this._grid = built.grid;
@@ -358,6 +437,9 @@ Page({
     }
 
     this._syncView(spawnId);
+
+    const maxTile = g.getMaxTile(tgrid.boardFromGrid(this._grid));
+    this._checkMilestonesAfterMove(maxTile);
 
     if (gameOver) {
       saveBest(score);
