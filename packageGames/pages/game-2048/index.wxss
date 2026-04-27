@@ -352,6 +352,14 @@
   line-height: 1.5;
 }
 
+.mask-strategy-tip {
+  display: block;
+  font-size: 24rpx;
+  color: #a89688;
+  margin-bottom: 28rpx;
+  line-height: 1.45;
+}
+
 .mask-revive-hint {
   display: block;
   font-size: 24rpx;

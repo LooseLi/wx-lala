@@ -74,6 +74,7 @@ module.exports.c = c
     <view class="mask-card">
       <text class="mask-title">游戏结束</text>
       <text class="mask-sub">本局得分 {{score}}</text>
+      <text class="mask-strategy-tip" wx:if="{{!reviveFreeUsed}}">尽量把大数锁在角落喔～</text>
       <text class="mask-revive-hint" wx:if="{{reviveFreeUsed}}">当前积分 {{currentPoints}} · 每次复活消耗 10 积分</text>
       <view class="mask-btns mask-btns--col">
         <view
