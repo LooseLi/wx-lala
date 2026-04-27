@@ -9,7 +9,7 @@ const WIN_LOTTE_JSON_URL =
 const BEST_KEY = 'lala_2048_best';
 const THRESHOLD = 30;
 
-/** 里程碑：最高格首次达到时发积分（与云函数 grantGame2048Milestone 一致） */
+/** 里程碑格值；与云 grantGame2048Milestone 一致 */
 const MILESTONE_TIERS = [512, 1024, 2048];
 
 /** 与 wxss 中 .row / .board-bg 的 gap 一致 */
@@ -99,8 +99,6 @@ Page({
   /** @type {object | null} 预拉取的 Lottie JSON，胜利时用 animationData 避免再请求 */
   _winLottieJsonData: null,
   _winLottiePrefetching: false,
-  /** 本局会话 id，云函数幂等用 */
-  _gameSessionId: '',
   /** @type {Record<number, boolean>} 本局已确认发放的档位 */
   _milestoneGranted: null,
   /** @type {Record<number, boolean>} 本档是否正在请求云函数 */
@@ -269,9 +267,6 @@ Page({
   },
 
   _initGameSession() {
-    this._gameSessionId = `g2048_${Date.now()}_${Math.random()
-      .toString(36)
-      .slice(2, 11)}`;
     this._milestoneGranted = { 512: false, 1024: false, 2048: false };
     this._milestoneInFlight = { 512: false, 1024: false, 2048: false };
   },
@@ -281,7 +276,7 @@ Page({
    * @param {number} maxTile
    */
   _checkMilestonesAfterMove(maxTile) {
-    if (!this._gameSessionId) {
+    if (!this._milestoneGranted) {
       return;
     }
     for (const tier of MILESTONE_TIERS) {
@@ -296,7 +291,7 @@ Page({
   },
 
   _grantMilestone(tier) {
-    if (!this._gameSessionId || this._milestoneGranted[tier]) {
+    if (!this._milestoneGranted || this._milestoneGranted[tier]) {
       return;
     }
     if (this._milestoneInFlight[tier]) {
@@ -309,20 +304,16 @@ Page({
     }
     wx.cloud.callFunction({
       name: 'grantGame2048Milestone',
-      data: {
-        sessionId: this._gameSessionId,
-        tier,
-      },
+      data: { tier },
       success: (res) => {
         this._milestoneInFlight[tier] = false;
         const r = res.result;
         if (!r || !r.success) {
+          const msg = (r && r.error) || '发奖失败';
+          wx.showToast({ title: String(msg), icon: 'none' });
           return;
         }
         this._milestoneGranted[tier] = true;
-        if (r.already) {
-          return;
-        }
         const gp = r.grantedPoints;
         if (typeof gp === 'number' && gp > 0) {
           wx.showToast({
@@ -331,8 +322,12 @@ Page({
           });
         }
       },
-      fail: () => {
+      fail: (err) => {
         this._milestoneInFlight[tier] = false;
+        wx.showToast({
+          title: (err && err.errMsg) || '网络异常',
+          icon: 'none',
+        });
       },
     });
   },

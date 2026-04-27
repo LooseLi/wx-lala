@@ -3,6 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+/* 与客户端 MILESTONE_TIERS 对应；发奖以客户端本局去重为主，这里只做档位白名单 + 固定加分 */
 const TIER_POINTS = {
   512: 100,
   1024: 200,
@@ -10,7 +11,6 @@ const TIER_POINTS = {
 };
 
 const MILESTONE_TIERS = [512, 1024, 2048];
-const LOG_COLLECTION = 'game2048MilestoneLog';
 
 /**
  * @param {string} userId
@@ -31,11 +31,7 @@ exports.main = async (event) => {
     return { success: false, error: '未登录' };
   }
 
-  const { sessionId, tier } = event || {};
-  if (typeof sessionId !== 'string' || sessionId.length < 4 || sessionId.length > 128) {
-    return { success: false, error: 'invalid session' };
-  }
-
+  const { tier } = event || {};
   const tierNum = Number(tier);
   if (!MILESTONE_TIERS.includes(tierNum)) {
     return { success: false, error: 'invalid tier' };
@@ -47,75 +43,32 @@ exports.main = async (event) => {
   }
 
   const userPoints = db.collection('userPoints');
-  const logCol = db.collection(LOG_COLLECTION);
+  const now = new Date();
 
   try {
-    const existing = await logCol
-      .where({
-        userId,
-        sessionId,
-        tier: tierNum,
-      })
-      .get();
-
-    if (existing.data && existing.data.length > 0) {
-      const currentPoints = await getCurrentPoints(userId);
-      return {
-        success: true,
-        already: true,
-        grantedPoints: 0,
-        currentPoints,
-      };
-    }
-
-    const now = new Date();
-    let newLogId = null;
-    try {
-      const addRes = await logCol.add({
+    const pointsResult = await userPoints.where({ userId }).get();
+    if (pointsResult.data.length === 0) {
+      await userPoints.add({
         data: {
           userId,
-          sessionId,
-          tier: tierNum,
-          points,
-          createdAt: now,
+          totalPoints: points,
+          currentPoints: points,
+          lastUpdateDate: now,
         },
       });
-      newLogId = addRes._id;
-
-      const pointsResult = await userPoints.where({ userId }).get();
-      if (pointsResult.data.length === 0) {
-        await userPoints.add({
-          data: {
-            userId,
-            totalPoints: points,
-            currentPoints: points,
-            lastUpdateDate: now,
-          },
-        });
-      } else {
-        await userPoints.where({ userId }).update({
-          data: {
-            totalPoints: _.inc(points),
-            currentPoints: _.inc(points),
-            lastUpdateDate: now,
-          },
-        });
-      }
-    } catch (inner) {
-      if (newLogId) {
-        try {
-          await logCol.doc(newLogId).remove();
-        } catch (e) {
-          console.error('rollback milestone log', e);
-        }
-      }
-      throw inner;
+    } else {
+      await userPoints.where({ userId }).update({
+        data: {
+          totalPoints: _.inc(points),
+          currentPoints: _.inc(points),
+          lastUpdateDate: now,
+        },
+      });
     }
 
     const currentPoints = await getCurrentPoints(userId);
     return {
       success: true,
-      already: false,
       grantedPoints: points,
       currentPoints,
     };
