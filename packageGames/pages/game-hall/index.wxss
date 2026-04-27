@@ -326,11 +326,13 @@
   padding-bottom: 2rpx;
 }
 
-.play-btn-triangle {
-  font-size: 22rpx;
-  line-height: 1;
-  margin-right: 10rpx;
-  color: #2d3436;
+/* 与稿一致：24×24，与文案间距 12（rpx） */
+.play-btn-start-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  display: block;
 }
 
 .play-btn--hover {

@@ -51,7 +51,11 @@
           <text class="game-name">2048</text>
           <text class="game-sub">滑动合并，挑战最高分</text>
           <view class="play-btn play-btn--solid" hover-class="play-btn--hover">
-            <text class="play-btn-triangle">▶</text>
+            <image
+              class="play-btn-start-icon"
+              src="/packageGames/pages/game-hall/images/icon-start.png"
+              mode="aspectFit"
+            />
             <text>开始游戏</text>
           </view>
         </view>
