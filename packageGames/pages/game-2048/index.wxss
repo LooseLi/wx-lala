@@ -348,14 +348,29 @@
   display: block;
   font-size: 28rpx;
   color: #8f7a66;
-  margin-bottom: 40rpx;
+  margin-bottom: 12rpx;
   line-height: 1.5;
+}
+
+.mask-revive-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #a89688;
+  margin-bottom: 32rpx;
+  line-height: 1.4;
 }
 
 .mask-btns {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 0;
+}
+
+.mask-btns--col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20rpx;
 }
 
 .mask-btn {
@@ -371,6 +386,11 @@
 .mask-btn--primary {
   background: #6c5ce7;
   color: #fff;
+}
+
+.mask-btn--secondary {
+  background: #eee4db;
+  color: #776e65;
 }
 
 .mask-btn--press {

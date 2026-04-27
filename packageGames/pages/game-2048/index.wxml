@@ -74,8 +74,14 @@ module.exports.c = c
     <view class="mask-card">
       <text class="mask-title">游戏结束</text>
       <text class="mask-sub">本局得分 {{score}}</text>
-      <view class="mask-btns">
-        <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onRetry">再玩一局</view>
+      <text class="mask-revive-hint" wx:if="{{reviveFreeUsed}}">当前积分 {{currentPoints}} · 每次复活消耗 10 积分</text>
+      <view class="mask-btns mask-btns--col">
+        <view
+          class="mask-btn mask-btn--primary"
+          hover-class="mask-btn--press"
+          bindtap="onRevive"
+        >{{reviveFreeUsed ? '10 积分复活' : '免费复活'}}</view>
+        <view class="mask-btn mask-btn--secondary" hover-class="mask-btn--press" bindtap="onRetry">再玩一局</view>
       </view>
     </view>
   </view>

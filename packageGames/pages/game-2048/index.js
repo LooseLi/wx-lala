@@ -84,6 +84,9 @@ Page({
     gameOver: false,
     won: false,
     showWinMask: false,
+    /** 本局是否已用掉免费复活（新局在 _startNewGame 里会置为 false） */
+    reviveFreeUsed: false,
+    currentPoints: 0,
   },
 
   _tx: 0,
@@ -103,6 +106,7 @@ Page({
   _milestoneGranted: null,
   /** @type {Record<number, boolean>} 本档是否正在请求云函数 */
   _milestoneInFlight: null,
+  _reviveInFlight: false,
 
   onLoad() {
     this.setData({ best: loadBest() });
@@ -117,9 +121,26 @@ Page({
   onShow() {
     this.setData({ best: loadBest() });
     this._scheduleMeasureLayout();
+    this._fetchCurrentPoints();
     if (!this._winLottieJsonData) {
       this._prefetchWinLottieJson();
     }
+  },
+
+  _fetchCurrentPoints() {
+    if (!wx.cloud) {
+      return;
+    }
+    wx.cloud.callFunction({
+      name: 'getCheckInStatus',
+      data: {},
+      success: (res) => {
+        const r = res.result;
+        if (r && r.success && r.data && typeof r.data.currentPoints === 'number') {
+          this.setData({ currentPoints: r.data.currentPoints || 0 });
+        }
+      },
+    });
   },
 
   onUnload() {
@@ -272,6 +293,50 @@ Page({
   },
 
   /**
+   * 死局盘面上互不相同的正数值升序，取最小两个
+   * @param {number[][]} numBoard
+   * @returns {null | { a: number, b: number }}
+   */
+  _getTwoSmallestDistinctValues(numBoard) {
+    const s = new Set();
+    for (let r = 0; r < 4; r += 1) {
+      for (let c = 0; c < 4; c += 1) {
+        const v = numBoard[r][c];
+        if (v > 0) {
+          s.add(v);
+        }
+      }
+    }
+    const arr = Array.from(s).sort((x, y) => x - y);
+    if (arr.length < 2) {
+      return null;
+    }
+    return { a: arr[0], b: arr[1] };
+  },
+
+  /**
+   * 将盘面上值等于 a 或 b 的格清空，保留 tile id
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean} 清盘后是否仍有可移动
+   */
+  _applyReviveClear(a, b) {
+    if (!this._grid) {
+      return false;
+    }
+    for (let r = 0; r < 4; r += 1) {
+      for (let c = 0; c < 4; c += 1) {
+        const cell = this._grid[r][c];
+        if (cell && (cell.v === a || cell.v === b)) {
+          this._grid[r][c] = null;
+        }
+      }
+    }
+    this._rebuildTilesInView(-1);
+    return g.hasValidMove(tgrid.boardFromGrid(this._grid));
+  },
+
+  /**
    * 合并后根据盘面最大格尝试发放里程碑（每档本局只发成功一次）
    * @param {number} maxTile
    */
@@ -348,6 +413,7 @@ Page({
       gameOver: false,
       won: false,
       showWinMask: false,
+      reviveFreeUsed: false,
     });
     this._rebuildTilesInView(-1);
     this._scheduleMeasureLayout();
@@ -476,6 +542,70 @@ Page({
 
   onRetry() {
     this._startNewGame();
+  },
+
+  onRevive() {
+    if (!this.data.gameOver) {
+      return;
+    }
+    if (this._reviveInFlight) {
+      return;
+    }
+    const numBoard = tgrid.boardFromGrid(this._grid);
+    const ab = this._getTwoSmallestDistinctValues(numBoard);
+    if (!ab) {
+      wx.showToast({ title: '无法复活', icon: 'none' });
+      return;
+    }
+
+    const { a, b } = ab;
+    const usePaid = this.data.reviveFreeUsed;
+
+    if (!usePaid) {
+      this._reviveInFlight = true;
+      const stillPlayable = this._applyReviveClear(a, b);
+      this._reviveInFlight = false;
+      if (stillPlayable) {
+        this.setData({ gameOver: false, reviveFreeUsed: true });
+      } else {
+        wx.showToast({ title: '仍无法继续', icon: 'none' });
+        this.setData({ reviveFreeUsed: true });
+      }
+      return;
+    }
+
+    if (!wx.cloud) {
+      wx.showToast({ title: '未开通云', icon: 'none' });
+      return;
+    }
+    this._reviveInFlight = true;
+    wx.cloud.callFunction({
+      name: 'spendGame2048Revive',
+      data: {},
+      success: (res) => {
+        this._reviveInFlight = false;
+        const r = res.result;
+        if (!r || !r.success) {
+          wx.showToast({ title: (r && r.error) || '扣费失败', icon: 'none' });
+          return;
+        }
+        if (typeof r.currentPoints === 'number') {
+          this.setData({ currentPoints: r.currentPoints });
+        } else {
+          this._fetchCurrentPoints();
+        }
+        const ok = this._applyReviveClear(a, b);
+        if (ok) {
+          this.setData({ gameOver: false });
+        } else {
+          wx.showToast({ title: '仍无法继续', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        this._reviveInFlight = false;
+        wx.showToast({ title: (err && err.errMsg) || '网络异常', icon: 'none' });
+      },
+    });
   },
 
   catchMove() {},
