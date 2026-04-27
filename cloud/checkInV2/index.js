@@ -142,29 +142,17 @@ exports.main = async (event, context) => {
       return { success: false, message: '今日已签到~' };
     }
 
-    // 2. 获取所有打卡记录
-    let points = 10; // 基础积分
+    // 2. 每日签到固定积分（与连续天数无关）
+    const points = 50;
 
-    // 获取所有月份的打卡记录
+    // 获取所有月份的打卡记录，计算连续天数供前端展示
     const allMonthlyRecords = await checkInMonthly.where({ userId }).get();
-
-    // 获取所有打卡日期，统一转为 YYYY-MM-DD 格式
     const allDates = allMonthlyRecords.data.reduce((acc, month) => {
       const dates = month.checkInDays.map(d => `${month.yearMonth}-${String(d).padStart(2, '0')}`);
       return [...acc, ...dates];
     }, []);
-
-    // 添加今天的日期（因为还未更新到数据库）
     const allDatesWithToday = [...allDates, todayStr];
-
-    // 使用统一的方法计算连续天数
     const continuousDays = calculateContinuousDays(allDatesWithToday, todayStr);
-
-    // 计算额外积分
-    if (continuousDays > 1) {
-      // 连续签到额外积分
-      points += Math.min(Math.floor(continuousDays / 7) * 5, 15);
-    }
 
     // 3. 更新月度记录
     const monthlyRecord = await checkInMonthly
