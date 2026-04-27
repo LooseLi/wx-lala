@@ -86,7 +86,7 @@
     </view>
 
     <!-- 商城入口 -->
-    <view
+    <!-- <view
       class="shop-card card-raise"
       hover-class="shop-card--hover"
       bindtap="goShop"
@@ -97,7 +97,7 @@
         <text class="shop-desc">兑换皮肤 · 更多奖励</text>
       </view>
       <text class="shop-arrow">›</text>
-    </view>
+    </view> -->
 
     <view class="safe-bottom" />
   </view>
