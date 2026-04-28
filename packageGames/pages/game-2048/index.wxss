@@ -172,6 +172,7 @@
     transform: scale(0.65);
     opacity: 0.8;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -188,6 +189,7 @@
 .c2 {
   background: #eee4da;
 }
+
 .c2 .tile-text {
   color: #776e65;
   font-size: 44rpx;
@@ -196,6 +198,7 @@
 .c4 {
   background: #ede0c8;
 }
+
 .c4 .tile-text {
   color: #776e65;
   font-size: 44rpx;
@@ -207,9 +210,11 @@
 .c64 {
   color: #f9f6f2;
 }
+
 .c8 {
   background: #f2b179;
 }
+
 .c8 .tile-text,
 .c16 .tile-text,
 .c32 .tile-text,
@@ -221,9 +226,11 @@
 .c16 {
   background: #f59563;
 }
+
 .c32 {
   background: #f67c5f;
 }
+
 .c64 {
   background: #f65e3b;
 }
@@ -234,6 +241,7 @@
   background: #edcf72;
   box-shadow: 0 0 20rpx rgba(243, 215, 116, 0.5);
 }
+
 .c128 .tile-text,
 .c256 .tile-text,
 .c512 .tile-text {
@@ -244,6 +252,7 @@
 .c256 {
   background: #edcc61;
 }
+
 .c512 {
   background: #edc850;
 }
@@ -253,6 +262,7 @@
   background: #edc53f;
   box-shadow: 0 0 24rpx rgba(243, 215, 116, 0.7);
 }
+
 .c1024 .tile-text,
 .c2048 .tile-text {
   color: #f9f6f2;
@@ -267,6 +277,7 @@
   background: #3c3a32;
   box-shadow: 0 0 16rpx rgba(0, 0, 0, 0.2);
 }
+
 .cbig .tile-text {
   color: #f9f6f2;
   font-size: 30rpx;

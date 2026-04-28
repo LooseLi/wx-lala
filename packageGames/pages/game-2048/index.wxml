@@ -1,14 +1,14 @@
 <wxs module="cmap">
-function c(v) {
-  if (v <= 0) {
-    return 'c0'
+  function c(v) {
+    if (v <= 0) {
+      return 'c0'
+    }
+    if (v > 2048) {
+      return 'cbig'
+    }
+    return 'c' + v
   }
-  if (v > 2048) {
-    return 'cbig'
-  }
-  return 'c' + v
-}
-module.exports.c = c
+  module.exports.c = c
 </wxs>
 
 <view class="g2048-page">
@@ -26,12 +26,7 @@ module.exports.c = c
         <view class="btn-new" hover-class="btn-new--press" bindtap="onNewGame">新游戏</view>
       </view>
 
-      <view
-        class="board-outer"
-        catchtouchmove="catchMove"
-        bindtouchstart="touchStart"
-        bindtouchend="touchEnd"
-      >
+      <view class="board-outer" catchtouchmove="catchMove" bindtouchstart="touchStart" bindtouchend="touchEnd">
         <view class="board">
           <view class="board-bg">
             <view class="row" wx:for="{{rowIdx}}" wx:for-item="ri" wx:key="*this">
@@ -39,12 +34,7 @@ module.exports.c = c
             </view>
           </view>
           <view id="g2048-tile-layer" class="tile-layer">
-            <view
-              wx:for="{{tiles}}"
-              wx:key="id"
-              class="tile-abs tile-anim {{cmap.c(item.v)}}{{item.isSpawn ? ' tile--spawn' : ''}}"
-              style="left: {{item.l}}rpx; top: {{item.tp}}rpx; width: {{item.w}}rpx; height: {{item.h}}rpx;"
-            >
+            <view wx:for="{{tiles}}" wx:key="id" class="tile-abs tile-anim {{cmap.c(item.v)}}{{item.isSpawn ? ' tile--spawn' : ''}}" style="left: {{item.l}}rpx; top: {{item.tp}}rpx; width: {{item.w}}rpx; height: {{item.h}}rpx;">
               <text class="tile-text">{{item.v}}</text>
             </view>
           </view>
@@ -77,11 +67,7 @@ module.exports.c = c
       <text class="mask-strategy-tip" wx:if="{{!reviveFreeUsed}}">尽量把大数锁在角落喔～</text>
       <text class="mask-revive-hint" wx:if="{{reviveFreeUsed}}">当前积分 {{currentPoints}} · 每次复活消耗 10 积分</text>
       <view class="mask-btns mask-btns--col">
-        <view
-          class="mask-btn mask-btn--primary"
-          hover-class="mask-btn--press"
-          bindtap="onRevive"
-        >{{reviveFreeUsed ? '10 积分复活' : '免费复活'}}</view>
+        <view class="mask-btn mask-btn--primary" hover-class="mask-btn--press" bindtap="onRevive">{{reviveFreeUsed ? '10 积分复活' : '免费复活'}}</view>
         <view class="mask-btn mask-btn--secondary" hover-class="mask-btn--press" bindtap="onRetry">再玩一局</view>
       </view>
     </view>

@@ -33,11 +33,7 @@
 
     <!-- 游戏列表：一行一张 -->
     <view class="game-list">
-      <view
-        class="game-card game-card--active"
-        hover-class="game-card--hover"
-        bindtap="go2048"
-      >
+      <view class="game-card game-card--active" hover-class="game-card--hover" bindtap="go2048">
         <view class="game-card-bg game-card-bg--2048" />
         <view class="game-card-decor game-card-decor--2048">
           <view class="game-card-bubble" />
@@ -45,29 +41,18 @@
         </view>
         <view class="game-card-body">
           <view class="game-card-icon-wrap">
-            <image
-              class="game-card-icon"
-              src="/packageGames/pages/game-hall/images/icon-2048.png"
-              mode="aspectFit"
-            />
+            <image class="game-card-icon" src="/packageGames/pages/game-hall/images/icon-2048.png" mode="aspectFit" />
           </view>
           <text class="game-name">2048</text>
           <text class="game-sub">滑动合并，挑战最高分</text>
           <view class="play-btn play-btn--solid" hover-class="play-btn--hover">
-            <image
-              class="play-btn-start-icon"
-              src="/packageGames/pages/game-hall/images/icon-start.png"
-              mode="aspectFit"
-            />
+            <image class="play-btn-start-icon" src="/packageGames/pages/game-hall/images/icon-start.png" mode="aspectFit" />
             <text>开始游戏</text>
           </view>
         </view>
       </view>
 
-      <view
-        class="game-card game-card--disabled"
-        bindtap="onComingSoon"
-      >
+      <view class="game-card game-card--disabled" bindtap="onComingSoon">
         <view class="game-card-bg game-card-bg--klotski" />
         <view class="game-card-decor game-card-decor--klotski">
           <view class="game-card-bubble" />
@@ -75,11 +60,7 @@
         </view>
         <view class="game-card-body">
           <view class="game-card-icon-wrap game-card-icon-wrap--muted">
-            <image
-              class="game-card-icon"
-              src="/packageGames/pages/game-hall/images/icon-huarongdao.png"
-              mode="aspectFit"
-            />
+            <image class="game-card-icon" src="/packageGames/pages/game-hall/images/icon-huarongdao.png" mode="aspectFit" />
           </view>
           <text class="game-name">华容道</text>
           <text class="game-sub">即将开放</text>
