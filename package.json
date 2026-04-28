@@ -7,6 +7,8 @@
     "lib": "lib"
   },
   "scripts": {
+    "postinstall": "node -e \"require('fs').mkdirSync(require('path').join(__dirname,'packageGames','miniprogram_npm'),{recursive:true})\"",
+    "clean:miniprogram-npm": "node -e \"const fs=require('fs');const p=require('path');[p.join(__dirname,'miniprogram_npm'),p.join(__dirname,'packageGames','miniprogram_npm')].forEach(d=>{try{fs.rmSync(d,{recursive:true});}catch(e){}});require('fs').mkdirSync(p.join(__dirname,'packageGames','miniprogram_npm'),{recursive:true});require('fs').writeFileSync(p.join(__dirname,'packageGames','miniprogram_npm','.gitkeep'),'');\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .js,.wxs --fix ./",
     "format": "prettier --write \"**/*.{js,wxs,wxml,wxss,json}\"",
@@ -40,7 +42,6 @@
     "sass": "^1.86.0"
   },
   "dependencies": {
-    "lottie-miniprogram": "^1.0.12",
     "solarlunar": "^2.0.7"
   }
 }

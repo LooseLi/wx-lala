@@ -1,0 +1,11 @@
+{
+  "name": "lala-package-games",
+  "private": true,
+  "description": "分包 games 的 npm 依赖，构建后输出到 packageGames/miniprogram_npm",
+  "scripts": {
+    "prepare": "node -e \"require('fs').mkdirSync(require('path').join(__dirname,'miniprogram_npm'),{recursive:true})\""
+  },
+  "dependencies": {
+    "lottie-miniprogram": "^1.0.12"
+  }
+}

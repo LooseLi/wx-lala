@@ -21,7 +21,13 @@ package-lock.json
 .windsurfrules
 
 # 微信小程序
-miniprogram_npm/
+# 根目录 npm 构建产物
+/miniprogram_npm/
+
+# 分包 npm 构建产物（除 .gitkeep 外由本地「构建 npm」生成）
+packageGames/miniprogram_npm/**
+!packageGames/miniprogram_npm/.gitkeep
+
 dist/
 .tmp/
 .DS_Store
