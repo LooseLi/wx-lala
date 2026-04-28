@@ -26,7 +26,10 @@
       </view>
     </view>
 
-    <view class="section-title">开玩！</view>
+    <view class="section-head">
+      <text class="section-title">开玩！</text>
+      <text class="section-sub">玩游戏得积分，单局最高可得 800！</text>
+    </view>
 
     <!-- 游戏列表：一行一张 -->
     <view class="game-list">
