@@ -40,6 +40,7 @@ project.private.config.json
 config.js
 secrets.js
 cloud/*/config.js
+data/changelog.js
 
 # 日志文件
 npm-debug.log*
@@ -49,3 +50,4 @@ yarn-error.log*
 # 临时文件
 *.swp
 *.swo
+
