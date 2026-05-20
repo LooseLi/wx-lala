@@ -4,6 +4,27 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV,
 });
 const db = cloud.database();
+const _ = db.command;
+
+/** 用户积分文档中的累计统计（缺失字段按 0 / 空对象） */
+function normalizePointsStats(rec) {
+  if (!rec) {
+    return {
+      earnedCheckIn: 0,
+      earnedGamesByGameId: {},
+      spentMakeup: 0,
+      spentReviveByGameId: {},
+      spentThemes: 0,
+    };
+  }
+  return {
+    earnedCheckIn: rec.earnedCheckIn || 0,
+    earnedGamesByGameId: rec.earnedGamesByGameId || {},
+    spentMakeup: rec.spentMakeup || 0,
+    spentReviveByGameId: rec.spentReviveByGameId || {},
+    spentThemes: rec.spentThemes || 0,
+  };
+}
 
 // 云函数入口函数
 exports.main = async (event, context) => {
@@ -45,6 +66,7 @@ async function getUserPoints(userId) {
         success: true,
         currentPoints: pointsRecord.currentPoints || 0,
         totalPoints: pointsRecord.totalPoints || 0,
+        pointsStats: normalizePointsStats(pointsRecord),
       };
     }
 
@@ -54,6 +76,11 @@ async function getUserPoints(userId) {
         userId,
         currentPoints: 0,
         totalPoints: 0,
+        earnedCheckIn: 0,
+        earnedGamesByGameId: {},
+        spentMakeup: 0,
+        spentReviveByGameId: {},
+        spentThemes: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -63,6 +90,7 @@ async function getUserPoints(userId) {
       success: true,
       currentPoints: 0,
       totalPoints: 0,
+      pointsStats: normalizePointsStats(null),
       message: '已创建初始积分记录',
     };
   } catch (error) {
@@ -112,19 +140,15 @@ async function consumePoints(userId, pointsCost, themeId) {
       };
     }
 
-    // 使用简单的更新而不是事务
     const newCurrentPoints = userPoints.currentPoints - pointsCost;
 
-    // 1. 更新积分
-    await db
-      .collection('userPoints')
-      .doc(userPoints._id)
-      .update({
-        data: {
-          currentPoints: newCurrentPoints,
-          updatedAt: new Date(),
-        },
-      });
+    await db.collection('userPoints').doc(userPoints._id).update({
+      data: {
+        currentPoints: _.inc(-pointsCost),
+        spentThemes: _.inc(pointsCost),
+        updatedAt: new Date(),
+      },
+    });
 
     // 2. 记录购买记录，如果集合不存在会自动创建
     try {

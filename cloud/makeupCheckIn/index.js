@@ -198,6 +198,7 @@ exports.main = async (event, context) => {
         .update({
           data: {
             currentPoints: _.inc(-30),
+            spentMakeup: _.inc(30),
             updatedAt: db.serverDate(),
           },
         });

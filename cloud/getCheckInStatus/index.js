@@ -88,6 +88,28 @@ const calculateContinuousDays = (dates, todayStr) => {
   }
 };
 
+/**
+ * 签到状态等；pointsStats 为积分渠道累计（老用户可能部分字段缺失）
+ */
+function normalizePointsStats(rec) {
+  if (!rec) {
+    return {
+      earnedCheckIn: 0,
+      earnedGamesByGameId: {},
+      spentMakeup: 0,
+      spentReviveByGameId: {},
+      spentThemes: 0,
+    };
+  }
+  return {
+    earnedCheckIn: rec.earnedCheckIn || 0,
+    earnedGamesByGameId: rec.earnedGamesByGameId || {},
+    spentMakeup: rec.spentMakeup || 0,
+    spentReviveByGameId: rec.spentReviveByGameId || {},
+    spentThemes: rec.spentThemes || 0,
+  };
+}
+
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const userId = wxContext.OPENID;
@@ -167,6 +189,9 @@ exports.main = async (event, context) => {
         continuousDays,
         currentStreak,
         currentPoints: pointsRecord.data.length > 0 ? pointsRecord.data[0].currentPoints : 0,
+        pointsStats: normalizePointsStats(
+          pointsRecord.data.length > 0 ? pointsRecord.data[0] : null,
+        ),
       },
     };
   } catch (error) {

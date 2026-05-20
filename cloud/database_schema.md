@@ -24,16 +24,31 @@
 - 删除权限：仅创建者可删除
 
 ## userPoints 集合
-用于存储用户的积分信息
+用于存储用户的积分信息，以及各渠道累计入账/消耗（便于观察；无逐笔流水）。
 
 ```json
 {
-  "userId": "string",        // 用户openid
-  "totalPoints": "number",   // 总积分
+  "userId": "string",        // 用户 openid
+  "totalPoints": "number",   // 历史累计获得（与业务现有语义一致）
   "currentPoints": "number", // 当前可用积分
-  "lastUpdateDate": "Date"   // 最后更新时间
+  "lastUpdateDate": "Date",  // 签到/发奖等更新时间（部分路径用 updatedAt）
+
+  "earnedCheckIn": "number",              // 签到累计获得的积分
+  "earnedGamesByGameId": {               // 按小游戏 id 累计发放的积分
+    "game_2048": "number"
+  },
+  "spentMakeup": "number",                // 补签累计消耗积分
+  "spentReviveByGameId": {                // 按游戏累计的付费复活消耗
+    "game_2048": "number"
+  },
+  "spentThemes": "number"                 // 兑换主题累计消耗积分
 }
 ```
+
+说明：
+
+- 老用户文档可能缺少上述扩展字段，读取时按 `0` / 空对象处理；写入通过 `_.inc` 与点路径自动补全嵌套 key。
+- **gameId** 约定为非数字开头的 slug（当前 2048 为 `game_2048`）；新游戏增加新的 key 即可。
 
 权限设置：
 - 读取权限：仅创建者可读

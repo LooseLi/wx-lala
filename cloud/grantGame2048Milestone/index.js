@@ -12,6 +12,9 @@ const TIER_POINTS = {
 
 const MILESTONE_TIERS = [512, 1024, 2048];
 
+/** 与计划约定一致；新游戏另增 id */
+const GAME_ID_2048 = 'game_2048';
+
 /**
  * @param {string} userId
  * @returns {Promise<number>}
@@ -54,6 +57,11 @@ exports.main = async (event) => {
           totalPoints: points,
           currentPoints: points,
           lastUpdateDate: now,
+          earnedCheckIn: 0,
+          earnedGamesByGameId: { [GAME_ID_2048]: points },
+          spentMakeup: 0,
+          spentReviveByGameId: {},
+          spentThemes: 0,
         },
       });
     } else {
@@ -62,6 +70,7 @@ exports.main = async (event) => {
           totalPoints: _.inc(points),
           currentPoints: _.inc(points),
           lastUpdateDate: now,
+          [`earnedGamesByGameId.${GAME_ID_2048}`]: _.inc(points),
         },
       });
     }

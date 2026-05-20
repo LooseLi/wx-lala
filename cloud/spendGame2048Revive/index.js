@@ -1,8 +1,10 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
+const _ = db.command;
 
 const COST = 10;
+const GAME_ID_2048 = 'game_2048';
 
 exports.main = async () => {
   const wxContext = cloud.getWXContext();
@@ -26,8 +28,9 @@ exports.main = async () => {
     const newCurrent = doc.currentPoints - COST;
     await db.collection('userPoints').doc(doc._id).update({
       data: {
-        currentPoints: newCurrent,
+        currentPoints: _.inc(-COST),
         lastUpdateDate: new Date(),
+        [`spentReviveByGameId.${GAME_ID_2048}`]: _.inc(COST),
       },
     });
     return { success: true, currentPoints: newCurrent, spent: COST };

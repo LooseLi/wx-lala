@@ -207,6 +207,11 @@ exports.main = async (event, context) => {
           totalPoints: points,
           currentPoints: points,
           lastUpdateDate: now,
+          earnedCheckIn: points,
+          earnedGamesByGameId: {},
+          spentMakeup: 0,
+          spentReviveByGameId: {},
+          spentThemes: 0,
         },
       });
     } else {
@@ -215,6 +220,7 @@ exports.main = async (event, context) => {
           totalPoints: _.inc(points),
           currentPoints: _.inc(points),
           lastUpdateDate: now,
+          earnedCheckIn: _.inc(points),
         },
       });
     }
