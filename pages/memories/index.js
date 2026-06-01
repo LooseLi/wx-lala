@@ -273,8 +273,8 @@ Page({
     const w = _sysInfo.windowWidth;
     const totalHeight = CONTAINER_PAD_TOP_PX + slots.length * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
 
-    const leftX = w * 0.25;
-    const rightX = w * 0.75;
+    const leftX = w * 0.35;
+    const rightX = w * 0.65;
 
     const cardTopY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX;
     const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
