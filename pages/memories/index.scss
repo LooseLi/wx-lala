@@ -1,0 +1,149 @@
+// 页面容器
+.page-wrapper {
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  padding-bottom: 60px;
+}
+
+// 卡片列表容器（相对定位，用于 Canvas 绝对定位）
+.memories-container {
+  position: relative;
+  padding: 40rpx 0 60rpx;
+}
+
+// S 形虚线 Canvas
+.s-curve-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// ─── 卡片槽位 ────────────────────────────────────────────────────
+
+.slot {
+  position: relative;
+  z-index: 1;
+  width: 240rpx;
+  margin-bottom: 80rpx;
+  // 左右偏移通过 margin 实现
+  &.slot-left {
+    margin-left: 40rpx;
+    margin-right: auto;
+  }
+  &.slot-right {
+    margin-left: auto;
+    margin-right: 40rpx;
+  }
+}
+
+// ─── 卡片基础样式 ─────────────────────────────────────────────────
+
+.card {
+  width: 240rpx;
+  border-radius: 16rpx;
+  background-color: var(--background-secondary, #fff);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+// ─── 填充态卡片 ───────────────────────────────────────────────────
+
+.card-filled {
+  min-height: 180rpx;
+  padding: 0;
+
+  .card-image-wrap {
+    position: relative;
+    width: 240rpx;
+    height: 200rpx;
+  }
+
+  .card-image {
+    width: 240rpx;
+    height: 200rpx;
+    display: block;
+  }
+
+  // "+N" 角标
+  .card-image-more {
+    position: absolute;
+    bottom: 10rpx;
+    right: 10rpx;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 22rpx;
+    padding: 4rpx 10rpx;
+    border-radius: 20rpx;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .card-text {
+    display: block;
+    font-size: 26rpx;
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 16rpx 18rpx;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+}
+
+// ─── 空槽态卡片 ───────────────────────────────────────────────────
+
+.card-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 16rpx 24rpx;
+  min-height: 200rpx;
+  background-color: var(--background-secondary, #f9f9f9);
+
+  // + 图标按钮
+  .add-image-btn {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    background-color: var(--background-primary, #efefef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12rpx;
+
+    .add-icon {
+      font-size: 40rpx;
+      color: var(--text-secondary, #888);
+      line-height: 1;
+      margin-top: -4rpx; // 视觉居中修正
+    }
+  }
+
+  .add-label {
+    font-size: 22rpx;
+    color: var(--text-secondary, #999);
+    margin-bottom: 16rpx;
+    letter-spacing: 1rpx;
+  }
+
+  // 内联文字输入框
+  .add-text-input {
+    width: 100%;
+    font-size: 24rpx;
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 60rpx;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-align: center;
+  }
+
+  .add-text-placeholder {
+    color: var(--text-tertiary, #ccc);
+    font-size: 24rpx;
+    text-align: center;
+  }
+}

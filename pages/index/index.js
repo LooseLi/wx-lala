@@ -63,8 +63,8 @@ Page({
       {
         id: 5,
         icon: './images/event/icon-gengduo.png',
-        title: '想想要新加些啥',
-        page: '',
+        title: '我们的回忆',
+        page: '/pages/memories/index',
       },
       // {
       //   id: 5,

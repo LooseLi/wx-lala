@@ -1,0 +1,183 @@
+.page-wrapper {
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  padding-bottom: 60px;
+}
+
+.memories-container {
+  position: relative;
+  padding: 40rpx 0 60rpx;
+}
+
+.s-curve-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── 卡片槽位 ─────────────────────────────────────────────────── */
+
+.slot {
+  position: relative;
+  z-index: 1;
+  width: 240rpx;
+  margin-bottom: 80rpx;
+}
+
+.slot-left {
+  margin-left: 40rpx;
+  margin-right: auto;
+}
+
+.slot-right {
+  margin-left: auto;
+  margin-right: 40rpx;
+}
+
+/* ─── 卡片（统一结构） ──────────────────────────────────────────── */
+
+.card {
+  width: 240rpx;
+  border-radius: 16rpx;
+  background-color: var(--background-secondary, #fff);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ─── 上方：图片区域 ─────────────────────────────────────────────── */
+
+.card-image-wrap {
+  position: relative;
+  width: 240rpx;
+  height: 200rpx;
+  flex-shrink: 0;
+}
+
+.card-image {
+  width: 240rpx;
+  height: 200rpx;
+  display: block;
+}
+
+.card-image-more {
+  position: absolute;
+  bottom: 10rpx;
+  right: 10rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ─── 上方：+ 添加按钮（无图时） ────────────────────────────────── */
+
+.add-image-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: var(--background-primary, #efefef);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 28rpx auto 12rpx;
+}
+
+.add-icon {
+  font-size: 40rpx;
+  color: var(--text-secondary, #888);
+  line-height: 1;
+  margin-top: -4rpx;
+}
+
+/* ─── 下方：文字 textarea ─────────────────────────────────────────── */
+
+.card-textarea {
+  width: 100%;
+  font-size: 24rpx;
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 60rpx;
+  box-sizing: border-box;
+  background: transparent;
+  padding: 12rpx 18rpx 20rpx;
+  text-align: center;
+}
+
+.card-textarea-placeholder {
+  color: var(--text-tertiary, #ccc);
+  font-size: 24rpx;
+  text-align: center;
+}
+
+/* ─── 全屏图片预览 Overlay ──────────────────────────────────────── */
+
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.92);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部：仅页码，居中显示 */
+.viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 32rpx 20rpx;
+  flex-shrink: 0;
+}
+
+.viewer-counter {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 2rpx;
+}
+
+/* 图片主体 */
+.viewer-image {
+  flex: 1;
+  width: 100%;
+}
+
+/* 底部操作栏：固定高度 80px，贴底显示 */
+.viewer-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 32rpx;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.viewer-btn {
+  padding: 16rpx 40rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.viewer-btn-delete {
+  background-color: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  border: 1rpx solid rgba(255, 59, 48, 0.4);
+}
+
+.viewer-btn-add {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}

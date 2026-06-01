@@ -9,7 +9,8 @@
     "pages/cloudFunctionTools/index",
     "pages/index/components/things/index",
     "pages/index/components/holidays/index",
-    "pages/index/components/todo/index"
+    "pages/index/components/todo/index",
+    "pages/memories/index"
   ],
   "lazyCodeLoading": "requiredComponents",
   "window": {
