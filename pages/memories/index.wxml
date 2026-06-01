@@ -24,8 +24,8 @@
     </view>
   </view>
 
-  <!-- 全屏图片预览 Overlay -->
-  <view wx:if="{{viewer.show}}" class="image-viewer">
+  <!-- 全屏图片预览 Overlay：catchtouchmove 防止底层页面滚动 -->
+  <view wx:if="{{viewer.show}}" class="image-viewer" catchtouchmove="noop">
     <!-- 顶部：页码 -->
     <view class="viewer-header">
       <text class="viewer-counter">{{viewer.current + 1}} / {{viewer.images.length}}</text>

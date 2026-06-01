@@ -190,6 +190,8 @@ Page({
     this.setData({ 'viewer.show': false });
   },
 
+  noop() {},
+
   onViewerTouchStart(e) {
     this._touchStartX = e.touches[0].clientX;
     this._touchStartY = e.touches[0].clientY;
