@@ -7,10 +7,10 @@ const ROTATIONS = [-5, 4, -3, 5, -4, 3, -5, 4, -3, 5];
 // 卡片宽 = 屏幕宽 × 25%，上方正方形高 = 卡片宽，下方文字区 = 88rpx
 const _sysInfo = wx.getSystemInfoSync();
 const _rpx = _sysInfo.windowWidth / 750;           // 1rpx 对应的 px 值
-const CARD_UPPER_PX = _sysInfo.windowWidth * 0.25; // 正方形上方区域（等于卡片宽度）
+const CARD_UPPER_PX = _sysInfo.windowWidth / 3;    // 正方形上方区域（等于卡片宽度）
 const CARD_TEXT_PX = Math.round(88 * _rpx);        // 文字区 88rpx → px
 const CARD_HEIGHT_PX = CARD_UPPER_PX + CARD_TEXT_PX;
-const CARD_MARGIN_PX = Math.round(80 * _rpx);      // margin-bottom 80rpx → px
+const CARD_MARGIN_PX = Math.round(100 * _rpx);      // margin-bottom 100rpx → px
 const SLOT_HEIGHT_PX = CARD_HEIGHT_PX + CARD_MARGIN_PX;
 // 容器 padding（对应 WXSS 中 padding: 40rpx 0 60rpx）
 const CONTAINER_PAD_TOP_PX = Math.round(40 * _rpx);
@@ -273,8 +273,10 @@ Page({
     const w = _sysInfo.windowWidth;
     const totalHeight = CONTAINER_PAD_TOP_PX + slots.length * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
 
-    const leftX = w * 0.35;
-    const rightX = w * 0.65;
+    // const leftX = w * 0.25;
+    // const rightX = w * 0.75;
+    const leftX = w * 0.30;
+    const rightX = w * 0.70;
 
     const cardTopY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX;
     const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
