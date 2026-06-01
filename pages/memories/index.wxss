@@ -9,111 +9,112 @@
   padding: 40rpx 0 60rpx;
 }
 
-.s-curve-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ─── 卡片槽位 ─────────────────────────────────────────────────── */
+/* ─── 卡片槽位：W/4 宽，中心落在 W/4 和 3W/4 ───────────────────── */
 
 .slot {
   position: relative;
   z-index: 1;
-  width: 240rpx;
+  width: 25%;
   margin-bottom: 80rpx;
 }
 
+/* 左卡片：左边距 12.5%，使卡片中心落在 W/4 */
 .slot-left {
-  margin-left: 40rpx;
+  margin-left: 12.5%;
   margin-right: auto;
 }
 
+/* 右卡片：右边距 12.5%，使卡片中心落在 3W/4 */
 .slot-right {
   margin-left: auto;
-  margin-right: 40rpx;
+  margin-right: 12.5%;
 }
 
 /* ─── 卡片（统一结构） ──────────────────────────────────────────── */
 
 .card {
-  width: 240rpx;
-  border-radius: 16rpx;
+  width: 100%;
+  border-radius: 12rpx;
   background-color: var(--background-secondary, #fff);
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-/* ─── 上方：图片区域 ─────────────────────────────────────────────── */
+/* ─── 上方：正方形区域（padding-bottom: 100% 方案）────────────── */
 
-.card-image-wrap {
+/* padding-bottom: 100% 使高度 = 宽度，子元素绝对定位填满 */
+.card-upper {
+  width: 100%;
+  padding-bottom: 100%;
   position: relative;
-  width: 240rpx;
-  height: 200rpx;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* 图片和 + 按钮都绝对定位，填满正方形 */
+.card-image-wrap,
+.add-image-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .card-image {
-  width: 240rpx;
-  height: 200rpx;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
 .card-image-more {
   position: absolute;
-  bottom: 10rpx;
-  right: 10rpx;
+  bottom: 6rpx;
+  right: 6rpx;
   background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
-  font-size: 22rpx;
-  padding: 4rpx 10rpx;
-  border-radius: 20rpx;
+  font-size: 18rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 16rpx;
   font-weight: 600;
   line-height: 1.4;
 }
 
-/* ─── 上方：+ 添加按钮（无图时） ────────────────────────────────── */
-
+/* + 按钮：绝对定位后用 flex 居中图标 */
 .add-image-btn {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  background-color: var(--background-primary, #efefef);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 28rpx auto 12rpx;
+  background-color: var(--background-secondary, #f5f5f7);
 }
 
 .add-icon {
-  font-size: 40rpx;
-  color: var(--text-secondary, #888);
+  font-size: 36rpx;
+  color: var(--text-secondary, #bbb);
   line-height: 1;
-  margin-top: -4rpx;
 }
 
-/* ─── 下方：文字 textarea ─────────────────────────────────────────── */
+/* ─── 下方：固定两行文字区域 ────────────────────────────────────── */
 
+/* 高度 = 22rpx × 1.5 × 2行 + 10rpx上 + 12rpx下 padding = 88rpx */
 .card-textarea {
   width: 100%;
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: var(--text-primary);
-  line-height: 1.6;
-  min-height: 60rpx;
+  line-height: 1.5;
+  height: 88rpx;
   box-sizing: border-box;
   background: transparent;
-  padding: 12rpx 18rpx 20rpx;
+  padding: 10rpx 12rpx 12rpx;
   text-align: center;
+  overflow: hidden;
 }
 
 .card-textarea-placeholder {
   color: var(--text-tertiary, #ccc);
-  font-size: 24rpx;
+  font-size: 22rpx;
   text-align: center;
 }
 

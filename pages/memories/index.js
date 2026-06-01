@@ -3,10 +3,18 @@ const memoriesDB = db.collection('memories');
 
 const ROTATIONS = [-5, 4, -3, 5, -4, 3, -5, 4, -3, 5];
 
-// 每张卡片渲染高度（px，用于 Canvas 曲线计算）
-const CARD_HEIGHT_PX = 260;
-const CARD_MARGIN_PX = 40;
+// 根据屏幕宽度动态计算卡片实际像素高度
+// 卡片宽 = 屏幕宽 × 25%，上方正方形高 = 卡片宽，下方文字区 = 88rpx
+const _sysInfo = wx.getSystemInfoSync();
+const _rpx = _sysInfo.windowWidth / 750;           // 1rpx 对应的 px 值
+const CARD_UPPER_PX = _sysInfo.windowWidth * 0.25; // 正方形上方区域（等于卡片宽度）
+const CARD_TEXT_PX = Math.round(88 * _rpx);        // 文字区 88rpx → px
+const CARD_HEIGHT_PX = CARD_UPPER_PX + CARD_TEXT_PX;
+const CARD_MARGIN_PX = Math.round(80 * _rpx);      // margin-bottom 80rpx → px
 const SLOT_HEIGHT_PX = CARD_HEIGHT_PX + CARD_MARGIN_PX;
+// 容器 padding（对应 WXSS 中 padding: 40rpx 0 60rpx）
+const CONTAINER_PAD_TOP_PX = Math.round(40 * _rpx);
+const CONTAINER_PAD_BOTTOM_PX = Math.round(60 * _rpx);
 
 Page({
   data: {
@@ -14,8 +22,7 @@ Page({
     // 空槽的文字草稿（唯一空槽专用）
     draftText: '',
     uploading: false,
-    canvasHeight: 0,
-    canvasWidth: 0,
+    svgBg: '',
     // 全屏图片预览 overlay 状态
     viewer: {
       show: false,
@@ -35,15 +42,11 @@ Page({
       const res = await memoriesDB.orderBy('order', 'asc').get();
       const filled = res.data || [];
       const slots = this.buildSlots(filled);
-      this.setData({ slots, draftText: '' }, () => {
-        this.drawSCurve();
-      });
+      this.setData({ slots, draftText: '', svgBg: this.buildSvgBackground(slots) });
     } catch (e) {
       console.error('加载回忆失败', e);
       const slots = this.buildSlots([]);
-      this.setData({ slots }, () => {
-        this.drawSCurve();
-      });
+      this.setData({ slots, svgBg: this.buildSvgBackground(slots) });
     }
   },
 
@@ -263,59 +266,42 @@ Page({
     this.setData({ 'viewer.images': newImages });
   },
 
-  // ─── Canvas S 形虚线绘制 ───────────────────────────────────────
-  drawSCurve() {
-    const slots = this.data.slots;
-    if (!slots || slots.length < 2) return;
+  // ─── SVG 背景图生成（同步） ────────────────────────────────────
+  buildSvgBackground(slots) {
+    if (!slots || slots.length === 0) return '';
 
-    const query = wx.createSelectorQuery();
-    query.select('#memories-container').boundingClientRect();
-    query.exec(res => {
-      if (!res || !res[0]) return;
-      const containerWidth = res[0].width;
-      const totalHeight = slots.length * SLOT_HEIGHT_PX + CARD_MARGIN_PX;
+    const w = _sysInfo.windowWidth;
+    const totalHeight = CONTAINER_PAD_TOP_PX + slots.length * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
 
-      this.setData({ canvasHeight: totalHeight, canvasWidth: containerWidth }, () => {
-        wx.createSelectorQuery()
-          .select('#s-curve')
-          .fields({ node: true, size: true })
-          .exec(canvasRes => {
-            if (!canvasRes || !canvasRes[0] || !canvasRes[0].node) return;
-            const node = canvasRes[0].node;
-            const ctx = node.getContext('2d');
-            const dpr = (wx.getWindowInfo || wx.getSystemInfoSync)().pixelRatio || 2;
-            node.width = containerWidth * dpr;
-            node.height = totalHeight * dpr;
-            ctx.scale(dpr, dpr);
-            this._renderCurve(ctx, slots, containerWidth, totalHeight);
-          });
-      });
-    });
-  },
+    const leftX = w * 0.25;
+    const rightX = w * 0.75;
 
-  _renderCurve(ctx, slots, width, totalHeight) {
-    ctx.clearRect(0, 0, width, totalHeight);
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.13)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([10, 10]);
-    ctx.lineCap = 'round';
+    const cardTopY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX;
+    const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
+    const cx = slot => slot.isLeft ? leftX : rightX;
 
-    const leftX = width * 0.28;
-    const rightX = width * 0.72;
+    const paths = [];
 
-    ctx.beginPath();
-    ctx.moveTo(width / 2, 0);
+    // 入场线：顶部 → 第一张卡片上边缘
+    paths.push(`M ${w / 2} 0 L ${cx(slots[0])} ${cardTopY(0)}`);
 
-    slots.forEach((slot, i) => {
-      const cardCenterY = i * SLOT_HEIGHT_PX + SLOT_HEIGHT_PX / 2;
-      const targetX = slot.isLeft ? leftX : rightX;
-      const prevY = i === 0 ? 0 : (i - 1) * SLOT_HEIGHT_PX + SLOT_HEIGHT_PX / 2;
-      const prevX = i === 0 ? width / 2 : slots[i - 1].isLeft ? leftX : rightX;
-      const cp1Y = prevY + (cardCenterY - prevY) * 0.4;
-      const cp2Y = prevY + (cardCenterY - prevY) * 0.6;
-      ctx.bezierCurveTo(prevX, cp1Y, targetX, cp2Y, targetX, cardCenterY);
-    });
+    // 卡片间隙段：贝塞尔曲线
+    for (let i = 0; i < slots.length - 1; i++) {
+      const x0 = cx(slots[i]);
+      const y0 = cardBottomY(i);
+      const x1 = cx(slots[i + 1]);
+      const y1 = cardTopY(i + 1);
+      const midY = (y0 + y1) / 2;
+      paths.push(`M ${x0} ${y0} C ${x0} ${midY} ${x1} ${midY} ${x1} ${y1}`);
+    }
 
-    ctx.stroke();
+    // 退场线：最后一张卡片下边缘 → 底部
+    const last = slots.length - 1;
+    paths.push(`M ${cx(slots[last])} ${cardBottomY(last)} L ${w / 2} ${totalHeight}`);
+
+    const d = paths.join(' ');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${totalHeight}"><path d="${d}" stroke="rgba(0,0,0,0.13)" stroke-width="2" stroke-dasharray="10 10" fill="none" stroke-linecap="round"/></svg>`;
+
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   },
 });

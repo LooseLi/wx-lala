@@ -1,25 +1,25 @@
 <view class="page-wrapper">
-  <view class="memories-container" id="memories-container">
-    <!-- S 形虚线 Canvas，绝对定位在背景层 -->
-    <canvas type="2d" id="s-curve" class="s-curve-canvas" style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;" />
+  <view class="memories-container" style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat;">
 
     <!-- 卡片列表：统一上下布局 -->
     <view wx:for="{{slots}}" wx:key="index" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}" style="transform: rotate({{item.rotation}}deg);">
       <view class="card">
-        <!-- 上方：有图片则展示缩略图，否则展示 + 添加按钮 -->
-        <view wx:if="{{item.images && item.images.length > 0}}" class="card-image-wrap" bindtap="openViewer" data-index="{{index}}">
-          <image class="card-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load />
-          <view wx:if="{{item.images.length > 1}}" class="card-image-more">
-            +{{item.images.length - 1}}
+        <!-- 上方：正方形区域，有图片则展示缩略图，否则展示 + 添加按钮 -->
+        <view class="card-upper">
+          <view wx:if="{{item.images && item.images.length > 0}}" class="card-image-wrap" bindtap="openViewer" data-index="{{index}}">
+            <image class="card-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load />
+            <view wx:if="{{item.images.length > 1}}" class="card-image-more">
+              +{{item.images.length - 1}}
+            </view>
+          </view>
+          <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
+            <text class="add-icon">+</text>
           </view>
         </view>
-        <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
-          <text class="add-icon">+</text>
-        </view>
 
-        <!-- 下方：已有记录用 onFilledTextBlur，空槽用 onDraftTextBlur -->
-        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="500" auto-height />
-        <textarea wx:else class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="500" auto-height />
+        <!-- 下方：固定两行文字区域 -->
+        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" />
+        <textarea wx:else class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" />
       </view>
     </view>
   </view>
