@@ -24,19 +24,18 @@
     </view>
 
     <!-- 日期标签层：绝对定位，与卡片垂直居中对齐 -->
-    <view
-      wx:for="{{slots}}"
-      wx:key="index"
-      class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}"
-      style="top: {{item.dateY}}px;"
-    >
+    <view wx:for="{{slots}}" wx:key="index" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
       <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
         <view class="date-inner">
-          <!-- 左侧卡片：文字在左（近 W/2），点在右（在 3W/4） -->
+          <!-- 右侧卡片：删除在最左，点在中，文字在右（近 W/2） -->
+          <view wx:if="{{!item.isLeft && item._id}}" class="date-delete" catchtap="onDeleteCard" data-index="{{index}}">×</view>
+          <!-- 左侧卡片：文字在左（近 W/2），点在中 -->
           <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
           <view class="date-dot"></view>
-          <!-- 右侧卡片：点在左（在 W/4），文字在右（近 W/2） -->
+          <!-- 右侧卡片：文字在右（近 W/2） -->
           <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+          <!-- 左侧卡片：删除在最右 -->
+          <view wx:if="{{item.isLeft && item._id}}" class="date-delete" catchtap="onDeleteCard" data-index="{{index}}">×</view>
         </view>
       </picker>
     </view>

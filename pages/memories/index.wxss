@@ -188,6 +188,20 @@
   color: var(--text-tertiary, #ccc);
 }
 
+.date-delete {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.35);
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
 /* ─── 全屏图片预览 Overlay ──────────────────────────────────────── */
 
 .image-viewer {

@@ -6,11 +6,11 @@ const ROTATIONS = [-5, 4, -3, 5, -4, 3, -5, 4, -3, 5];
 // 根据屏幕宽度动态计算卡片实际像素高度
 // 卡片宽 = 屏幕宽 × 25%，上方正方形高 = 卡片宽，下方文字区 = 88rpx
 const _sysInfo = wx.getSystemInfoSync();
-const _rpx = _sysInfo.windowWidth / 750;           // 1rpx 对应的 px 值
-const CARD_UPPER_PX = _sysInfo.windowWidth / 3;    // 正方形上方区域（等于卡片宽度）
-const CARD_TEXT_PX = Math.round(88 * _rpx);        // 文字区 88rpx → px
+const _rpx = _sysInfo.windowWidth / 750; // 1rpx 对应的 px 值
+const CARD_UPPER_PX = _sysInfo.windowWidth / 3; // 正方形上方区域（等于卡片宽度）
+const CARD_TEXT_PX = Math.round(88 * _rpx); // 文字区 88rpx → px
 const CARD_HEIGHT_PX = CARD_UPPER_PX + CARD_TEXT_PX;
-const CARD_MARGIN_PX = Math.round(100 * _rpx);      // margin-bottom 100rpx → px
+const CARD_MARGIN_PX = Math.round(100 * _rpx); // margin-bottom 100rpx → px
 const SLOT_HEIGHT_PX = CARD_HEIGHT_PX + CARD_MARGIN_PX;
 // 容器 padding（对应 WXSS 中 padding: 40rpx 0 60rpx）
 const CONTAINER_PAD_TOP_PX = Math.round(40 * _rpx);
@@ -41,11 +41,21 @@ Page({
       const res = await memoriesDB.orderBy('order', 'asc').get();
       const filled = res.data || [];
       const slots = this.buildSlots(filled);
-      this.setData({ slots, draftText: '', draftDate: '', svgBg: this.buildSvgBackground(slots) });
+      this.setData({
+        slots,
+        draftText: '',
+        draftDate: '',
+        svgBg: this.buildSvgBackground(slots)
+      });
     } catch (e) {
       console.error('加载回忆失败', e);
       const slots = this.buildSlots([]);
-      this.setData({ slots, draftText: '', draftDate: '', svgBg: this.buildSvgBackground(slots) });
+      this.setData({
+        slots,
+        draftText: '',
+        draftDate: '',
+        svgBg: this.buildSvgBackground(slots)
+      });
     }
   },
 
@@ -95,18 +105,29 @@ Page({
       const tempFiles = chosen.tempFiles;
       if (!tempFiles || tempFiles.length === 0) return null;
 
-      this.setData({ uploading: true });
-      wx.showLoading({ title: '上传中...' });
+      this.setData({
+        uploading: true
+      });
+      wx.showLoading({
+        title: '上传中...'
+      });
       const fileIDs = await Promise.all(tempFiles.map(f => this._uploadFile(f.tempFilePath)));
       wx.hideLoading();
-      this.setData({ uploading: false });
+      this.setData({
+        uploading: false
+      });
       return fileIDs;
     } catch (e) {
       wx.hideLoading();
-      this.setData({ uploading: false });
+      this.setData({
+        uploading: false
+      });
       if (e && e.errMsg && e.errMsg.includes('cancel')) return null;
       console.error('图片上传失败', e);
-      wx.showToast({ title: '上传失败，请重试', icon: 'none' });
+      wx.showToast({
+        title: '上传失败，请重试',
+        icon: 'none'
+      });
       return null;
     }
   },
@@ -124,32 +145,66 @@ Page({
     });
   },
 
+  // ─── 检查是否存在空的已有卡片 ─────────────────────────────────
+  _hasEmptyFilledCard() {
+    return this.data.slots.some(
+      s => s._id && (!s.images || s.images.length === 0) && !(s.text || '').trim()
+    );
+  },
+
   // ─── 点击 + 按钮：新建或追加图片 ──────────────────────────────
   async onAddImageTap(e) {
     if (this.data.uploading) return;
     const index = parseInt(e.currentTarget.dataset.index);
     const slot = this.data.slots[index];
 
+    if (!slot._id && this._hasEmptyFilledCard()) {
+      wx.showToast({
+        title: '请先完善已有的空记录',
+        icon: 'none'
+      });
+      return;
+    }
+
     const fileIDs = await this._chooseAndUploadImages();
     if (!fileIDs) return;
 
     if (slot._id) {
       const newImages = [...(slot.images || []), ...fileIDs];
-      await this._updateRecord(slot._id, { images: newImages });
+      await this._updateRecord(slot._id, {
+        images: newImages
+      });
     } else {
-      await this._addRecord({ images: fileIDs, text: this.data.draftText.trim(), date: this.data.draftDate });
+      await this._addRecord({
+        images: fileIDs,
+        text: this.data.draftText.trim(),
+        date: this.data.draftDate
+      });
     }
   },
 
   // ─── 空槽文字输入（草稿） ──────────────────────────────────────
   onDraftTextInput(e) {
-    this.setData({ draftText: e.detail.value });
+    this.setData({
+      draftText: e.detail.value
+    });
   },
 
   async onDraftTextBlur() {
     const text = this.data.draftText.trim();
     if (!text) return;
-    await this._addRecord({ images: [], text, date: this.data.draftDate });
+    if (this._hasEmptyFilledCard()) {
+      wx.showToast({
+        title: '请先完善已有的空记录',
+        icon: 'none'
+      });
+      return;
+    }
+    await this._addRecord({
+      images: [],
+      text,
+      date: this.data.draftDate
+    });
   },
 
   // ─── 日期选择 ──────────────────────────────────────────────────
@@ -158,12 +213,21 @@ Page({
     const slot = this.data.slots[index];
     const date = e.detail.value;
     if (slot._id) {
-      await this._updateRecord(slot._id, { date });
+      await this._updateRecord(slot._id, {
+        date
+      });
     } else {
       const slots = this.data.slots.map((s, i) =>
-        i === index ? { ...s, date, dateFormatted: this._formatDate(date) } : s
+        i === index ? {
+          ...s,
+          date,
+          dateFormatted: this._formatDate(date)
+        } : s
       );
-      this.setData({ slots, draftDate: date });
+      this.setData({
+        slots,
+        draftDate: date
+      });
     }
   },
 
@@ -174,11 +238,25 @@ Page({
     if (!slot || !slot._id) return;
     const newText = e.detail.value.trim();
     if (newText === (slot.text || '').trim()) return;
-    if (!newText && (!slot.images || slot.images.length === 0)) {
-      await this._deleteRecord(slot._id);
-      return;
-    }
-    await this._updateRecord(slot._id, { text: newText });
+    await this._updateRecord(slot._id, {
+      text: newText
+    });
+  },
+
+  // ─── 删除整张卡片 ──────────────────────────────────────────────
+  onDeleteCard(e) {
+    const index = parseInt(e.currentTarget.dataset.index);
+    const slot = this.data.slots[index];
+    if (!slot || !slot._id) return;
+    wx.showModal({
+      title: '删除记录',
+      content: '确认删除这条回忆吗？',
+      confirmColor: '#ff3b30',
+      success: async res => {
+        if (!res.confirm) return;
+        await this._deleteRecord(slot._id);
+      },
+    });
   },
 
   // ─── 云数据库写操作 ────────────────────────────────────────────
@@ -199,7 +277,10 @@ Page({
 
   async _updateRecord(docId, updates) {
     await memoriesDB.doc(docId).update({
-      data: { ...updates, updatedAt: db.serverDate() },
+      data: {
+        ...updates,
+        updatedAt: db.serverDate()
+      },
     });
     await this.loadMemories();
   },
@@ -225,7 +306,9 @@ Page({
   },
 
   closeViewer() {
-    this.setData({ 'viewer.show': false });
+    this.setData({
+      'viewer.show': false
+    });
   },
 
   noop() {},
@@ -251,19 +334,30 @@ Page({
 
     // 水平滑动且幅度超过阈值：切换图片
     if (absDx > 50 && absDx > absDy) {
-      const { current, images } = this.data.viewer;
+      const {
+        current,
+        images
+      } = this.data.viewer;
       if (dx < 0 && current < images.length - 1) {
         // 左滑：下一张
-        this.setData({ 'viewer.current': current + 1 });
+        this.setData({
+          'viewer.current': current + 1
+        });
       } else if (dx > 0 && current > 0) {
         // 右滑：上一张
-        this.setData({ 'viewer.current': current - 1 });
+        this.setData({
+          'viewer.current': current - 1
+        });
       }
     }
   },
 
   viewerDeleteCurrent() {
-    const { slotIndex, images, current } = this.data.viewer;
+    const {
+      slotIndex,
+      images,
+      current
+    } = this.data.viewer;
     const slot = this.data.slots[slotIndex];
     if (!slot || !slot._id) return;
     wx.showModal({
@@ -274,27 +368,27 @@ Page({
         const newImages = images.filter((_, i) => i !== current);
         if (newImages.length === 0) {
           this.closeViewer();
-          if (!(slot.text || '').trim()) {
-            await this._deleteRecord(slot._id);
-          } else {
-            await this._updateRecord(slot._id, { images: [] });
-          }
-          return;
         }
-        await this._updateRecord(slot._id, { images: newImages });
-        this.setData({
-          viewer: {
-            ...this.data.viewer,
-            images: newImages,
-            current: Math.min(current, newImages.length - 1),
-          },
+        await this._updateRecord(slot._id, {
+          images: newImages
         });
+        if (newImages.length > 0) {
+          this.setData({
+            viewer: {
+              ...this.data.viewer,
+              images: newImages,
+              current: Math.min(current, newImages.length - 1),
+            },
+          });
+        }
       },
     });
   },
 
   async viewerAddImages() {
-    const { slotIndex } = this.data.viewer;
+    const {
+      slotIndex
+    } = this.data.viewer;
     const slot = this.data.slots[slotIndex];
     if (!slot || !slot._id) return;
 
@@ -302,8 +396,12 @@ Page({
     if (!fileIDs) return;
 
     const newImages = [...this.data.viewer.images, ...fileIDs];
-    await this._updateRecord(slot._id, { images: newImages });
-    this.setData({ 'viewer.images': newImages });
+    await this._updateRecord(slot._id, {
+      images: newImages
+    });
+    this.setData({
+      'viewer.images': newImages
+    });
   },
 
   // ─── SVG 背景图生成（同步） ────────────────────────────────────
