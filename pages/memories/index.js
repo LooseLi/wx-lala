@@ -166,7 +166,7 @@ Page({
 
     if (!slot._id && this._hasEmptyFilledCard()) {
       wx.showToast({
-        title: '请先完善已有的空记录',
+        title: '先完善或删除已有的空卡片喔ฅ^•ﻌ•^ฅ',
         icon: 'none'
       });
       return;
@@ -201,7 +201,7 @@ Page({
     if (!text) return;
     if (this._hasEmptyFilledCard()) {
       wx.showToast({
-        title: '请先完善已有的空记录',
+        title: '先完善或删除已有的空卡片喔ฅ^•ﻌ•^ฅ',
         icon: 'none'
       });
       return;
@@ -255,8 +255,8 @@ Page({
     const slot = this.data.slots[index];
     if (!slot || !slot._id) return;
     wx.showModal({
-      title: '删除记录',
-      content: '确认删除这条回忆吗？',
+      title: '删除',
+      content: '确认要删除嘛(=ＴェＴ=)',
       confirmColor: '#ff3b30',
       success: async res => {
         if (!res.confirm) return;
@@ -335,7 +335,7 @@ Page({
     if (!slot || !slot._id) return;
     wx.showModal({
       title: '删除图片',
-      content: '确认删除这张图片吗？',
+      content: '确认删除这张图片嘛(=ＴェＴ=)',
       success: async res => {
         if (!res.confirm) return;
         const newImages = images.filter((_, i) => i !== current);

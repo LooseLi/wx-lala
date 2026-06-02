@@ -18,8 +18,8 @@
         </view>
 
         <!-- 下方：固定两行文字区域 -->
-        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" />
-        <textarea wx:else class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" />
+        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" />
+        <textarea wx:else class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" />
       </view>
     </view>
 
@@ -30,10 +30,10 @@
           <!-- 右侧卡片：删除在最左，点在中，文字在右（近 W/2） -->
           <image wx:if="{{!item.isLeft && item._id}}" class="date-delete" src="/pages/memories/images/icon_cat_delete.png" mode="aspectFit" catchtap="onDeleteCard" data-index="{{index}}" />
           <!-- 左侧卡片：文字在左（近 W/2），点在中 -->
-          <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+          <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '日期(=^▽^=)'}}</text>
           <view class="date-dot"></view>
           <!-- 右侧卡片：文字在右（近 W/2） -->
-          <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+          <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '日期(=^▽^=)'}}</text>
           <!-- 左侧卡片：删除在最右 -->
           <image wx:if="{{item.isLeft && item._id}}" class="date-delete" src="/pages/memories/images/icon_cat_delete.png" mode="aspectFit" catchtap="onDeleteCard" data-index="{{index}}" />
         </view>
