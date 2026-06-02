@@ -38,7 +38,7 @@ Page({
       },
       {
         id: 1,
-        icon: './images/event/icon-xianluomao.png',
+        icon: './images/event/icon-nainiumao.png',
         title: '倒计时',
         page: '/pages/index/components/countdown/index',
       },
@@ -62,9 +62,15 @@ Page({
       },
       {
         id: 5,
-        icon: './images/event/icon-gengduo.png',
-        title: '我们的回忆',
+        icon: './images/event/icon-xianluomao.png',
+        title: '梨的那些事儿',
         page: '/pages/memories/index',
+      },
+      {
+        id: 6,
+        icon: './images/event/icon-gengduo.png',
+        title: '想想要新加些啥',
+        page: '',
       },
       // {
       //   id: 5,
