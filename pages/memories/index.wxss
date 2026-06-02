@@ -118,6 +118,76 @@
   text-align: center;
 }
 
+/* ─── 日期标签层 ────────────────────────────────────────────────── */
+
+.date-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 25%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* 左侧卡片：标签在右侧（W/2 到 3W/4），内容靠右，点在最右 */
+.date-label-right {
+  left: 50%;
+  justify-content: flex-end;
+}
+
+/* 右侧卡片：标签在左侧（W/4 到 W/2），内容靠左，点在最左 */
+.date-label-left {
+  left: 25%;
+  justify-content: flex-start;
+}
+
+.date-picker-wrap {
+  display: block;
+}
+
+.date-inner {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.8);
+    opacity: 0.2;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+.date-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.date-text {
+  font-size: 20rpx;
+  color: var(--text-secondary, #888);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.date-text-placeholder {
+  color: var(--text-tertiary, #ccc);
+}
+
 /* ─── 全屏图片预览 Overlay ──────────────────────────────────────── */
 
 .image-viewer {

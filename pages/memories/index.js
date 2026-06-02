@@ -19,11 +19,10 @@ const CONTAINER_PAD_BOTTOM_PX = Math.round(60 * _rpx);
 Page({
   data: {
     slots: [],
-    // 空槽的文字草稿（唯一空槽专用）
     draftText: '',
+    draftDate: '',
     uploading: false,
     svgBg: '',
-    // 全屏图片预览 overlay 状态
     viewer: {
       show: false,
       slotIndex: -1,
@@ -42,11 +41,11 @@ Page({
       const res = await memoriesDB.orderBy('order', 'asc').get();
       const filled = res.data || [];
       const slots = this.buildSlots(filled);
-      this.setData({ slots, draftText: '', svgBg: this.buildSvgBackground(slots) });
+      this.setData({ slots, draftText: '', draftDate: '', svgBg: this.buildSvgBackground(slots) });
     } catch (e) {
       console.error('加载回忆失败', e);
       const slots = this.buildSlots([]);
-      this.setData({ slots, svgBg: this.buildSvgBackground(slots) });
+      this.setData({ slots, draftText: '', draftDate: '', svgBg: this.buildSvgBackground(slots) });
     }
   },
 
@@ -57,15 +56,28 @@ Page({
       ...card,
       rotation: ROTATIONS[i % ROTATIONS.length],
       isLeft: i % 2 === 0,
+      dateY: CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
+      dateFormatted: this._formatDate(card.date),
     }));
     const emptySlot = {
       _id: null,
       images: [],
       text: '',
+      date: '',
+      dateFormatted: '',
       rotation: ROTATIONS[n % ROTATIONS.length],
       isLeft: n % 2 === 0,
+      dateY: CONTAINER_PAD_TOP_PX + n * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
     };
     return [...filled, emptySlot];
+  },
+
+  // ─── 日期格式化 ────────────────────────────────────────────────
+  _formatDate(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[0]}年${parseInt(parts[1])}月${parseInt(parts[2])}日`;
   },
 
   // ─── 图片选择 + 上传（共用） ────────────────────────────────────
@@ -122,12 +134,10 @@ Page({
     if (!fileIDs) return;
 
     if (slot._id) {
-      // 已有记录：追加图片
       const newImages = [...(slot.images || []), ...fileIDs];
       await this._updateRecord(slot._id, { images: newImages });
     } else {
-      // 空槽：新建记录
-      await this._addRecord({ images: fileIDs, text: this.data.draftText.trim() });
+      await this._addRecord({ images: fileIDs, text: this.data.draftText.trim(), date: this.data.draftDate });
     }
   },
 
@@ -139,7 +149,22 @@ Page({
   async onDraftTextBlur() {
     const text = this.data.draftText.trim();
     if (!text) return;
-    await this._addRecord({ images: [], text });
+    await this._addRecord({ images: [], text, date: this.data.draftDate });
+  },
+
+  // ─── 日期选择 ──────────────────────────────────────────────────
+  async onDateChange(e) {
+    const index = parseInt(e.currentTarget.dataset.index);
+    const slot = this.data.slots[index];
+    const date = e.detail.value;
+    if (slot._id) {
+      await this._updateRecord(slot._id, { date });
+    } else {
+      const slots = this.data.slots.map((s, i) =>
+        i === index ? { ...s, date, dateFormatted: this._formatDate(date) } : s
+      );
+      this.setData({ slots, draftDate: date });
+    }
   },
 
   // ─── 已有卡片文字编辑（失焦保存） ─────────────────────────────
@@ -149,6 +174,10 @@ Page({
     if (!slot || !slot._id) return;
     const newText = e.detail.value.trim();
     if (newText === (slot.text || '').trim()) return;
+    if (!newText && (!slot.images || slot.images.length === 0)) {
+      await this._deleteRecord(slot._id);
+      return;
+    }
     await this._updateRecord(slot._id, { text: newText });
   },
 
@@ -160,6 +189,7 @@ Page({
         order,
         images: data.images || [],
         text: data.text || '',
+        date: data.date || '',
         createdAt: db.serverDate(),
         updatedAt: db.serverDate(),
       },
@@ -171,6 +201,11 @@ Page({
     await memoriesDB.doc(docId).update({
       data: { ...updates, updatedAt: db.serverDate() },
     });
+    await this.loadMemories();
+  },
+
+  async _deleteRecord(docId) {
+    await memoriesDB.doc(docId).remove();
     await this.loadMemories();
   },
 
@@ -237,18 +272,23 @@ Page({
       success: async res => {
         if (!res.confirm) return;
         const newImages = images.filter((_, i) => i !== current);
-        await this._updateRecord(slot._id, { images: newImages });
         if (newImages.length === 0) {
           this.closeViewer();
-        } else {
-          this.setData({
-            viewer: {
-              ...this.data.viewer,
-              images: newImages,
-              current: Math.min(current, newImages.length - 1),
-            },
-          });
+          if (!(slot.text || '').trim()) {
+            await this._deleteRecord(slot._id);
+          } else {
+            await this._updateRecord(slot._id, { images: [] });
+          }
+          return;
         }
+        await this._updateRecord(slot._id, { images: newImages });
+        this.setData({
+          viewer: {
+            ...this.data.viewer,
+            images: newImages,
+            current: Math.min(current, newImages.length - 1),
+          },
+        });
       },
     });
   },

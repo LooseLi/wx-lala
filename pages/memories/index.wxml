@@ -22,6 +22,24 @@
         <textarea wx:else class="card-textarea" placeholder="说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" />
       </view>
     </view>
+
+    <!-- 日期标签层：绝对定位，与卡片垂直居中对齐 -->
+    <view
+      wx:for="{{slots}}"
+      wx:key="index"
+      class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}"
+      style="top: {{item.dateY}}px;"
+    >
+      <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
+        <view class="date-inner">
+          <!-- 左侧卡片：文字在左（近 W/2），点在右（在 3W/4） -->
+          <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+          <view class="date-dot"></view>
+          <!-- 右侧卡片：点在左（在 W/4），文字在右（近 W/2） -->
+          <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+        </view>
+      </picker>
+    </view>
   </view>
 
   <!-- 全屏图片预览 Overlay：catchtouchmove 防止底层页面滚动 -->
