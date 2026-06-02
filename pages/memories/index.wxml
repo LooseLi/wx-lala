@@ -48,8 +48,12 @@
       <text class="viewer-counter">{{viewer.current + 1}} / {{viewer.images.length}}</text>
     </view>
 
-    <!-- 图片主体：touch 事件直接挂在 image 上，避免被组件吃掉 -->
-    <image class="viewer-image" src="{{viewer.images[viewer.current]}}" mode="aspectFit" bindtouchstart="onViewerTouchStart" bindtouchend="onViewerTouchEnd" />
+    <!-- 图片主体：swiper 原生滑动，image bindtap 关闭预览 -->
+    <swiper class="viewer-swiper" current="{{viewer.current}}" bindchange="onViewerSwiperChange" catchtouchmove="noop">
+      <swiper-item wx:for="{{viewer.images}}" wx:key="index" class="viewer-swiper-item">
+        <image class="viewer-image" src="{{item}}" mode="aspectFit" bindtap="closeViewer" />
+      </swiper-item>
+    </swiper>
 
     <!-- 底部操作栏：catchtap 阻止 tap 冒泡，touch 事件不拦截 -->
     <view class="viewer-footer">

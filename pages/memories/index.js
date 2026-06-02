@@ -313,43 +313,8 @@ Page({
 
   noop() {},
 
-  onViewerTouchStart(e) {
-    this._touchStartX = e.touches[0].clientX;
-    this._touchStartY = e.touches[0].clientY;
-  },
-
-  onViewerTouchEnd(e) {
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
-    const dx = endX - this._touchStartX;
-    const dy = endY - this._touchStartY;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    // 移动幅度极小：视为点击，关闭预览
-    if (absDx < 20 && absDy < 20) {
-      this.closeViewer();
-      return;
-    }
-
-    // 水平滑动且幅度超过阈值：切换图片
-    if (absDx > 50 && absDx > absDy) {
-      const {
-        current,
-        images
-      } = this.data.viewer;
-      if (dx < 0 && current < images.length - 1) {
-        // 左滑：下一张
-        this.setData({
-          'viewer.current': current + 1
-        });
-      } else if (dx > 0 && current > 0) {
-        // 右滑：上一张
-        this.setData({
-          'viewer.current': current - 1
-        });
-      }
-    }
+  onViewerSwiperChange(e) {
+    this.setData({ 'viewer.current': e.detail.current });
   },
 
   viewerDeleteCurrent() {
