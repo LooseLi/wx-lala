@@ -171,7 +171,8 @@
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #E8A045;
+  box-shadow: 0 0 0 2px rgba(232, 160, 69, 0.3);
   flex-shrink: 0;
   animation: pulse 2.4s ease-in-out infinite;
 }

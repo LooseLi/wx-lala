@@ -37,6 +37,10 @@ Page({
 
   // ─── 云数据库读取 ──────────────────────────────────────────────
   async loadMemories() {
+    wx.showLoading({
+      title: '加载中...',
+      mask: true
+    });
     try {
       const res = await memoriesDB.orderBy('order', 'asc').get();
       const filled = res.data || [];
@@ -56,6 +60,8 @@ Page({
         draftDate: '',
         svgBg: this.buildSvgBackground(slots)
       });
+    } finally {
+      wx.hideLoading();
     }
   },
 
@@ -314,7 +320,9 @@ Page({
   noop() {},
 
   onViewerSwiperChange(e) {
-    this.setData({ 'viewer.current': e.detail.current });
+    this.setData({
+      'viewer.current': e.detail.current
+    });
   },
 
   viewerDeleteCurrent() {
