@@ -87,7 +87,7 @@ Page({
     if (!dateStr) return '';
     const parts = dateStr.split('-');
     if (parts.length !== 3) return dateStr;
-    return `${parts[0]}年${parseInt(parts[1])}月${parseInt(parts[2])}日`;
+    return `${parts[0]}.${parseInt(parts[1])}.${parseInt(parts[2])}`;
   },
 
   // ─── 图片选择 + 上传（共用） ────────────────────────────────────
