@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const memoriesDB = db.collection('memories');
 
-const ROTATIONS = [-5, 4, -3, 5, -4, 3, -5, 4, -3, 5];
+const ROTATIONS = [-17, 7, -15, 14, -8, 6];
 
 // 根据屏幕宽度动态计算卡片实际像素高度
 // 卡片宽 = 屏幕宽 × 25%，上方正方形高 = 卡片宽，下方文字区 = 88rpx
