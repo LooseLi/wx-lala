@@ -13,7 +13,7 @@
 
 .slot {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 33.33%;
   margin-bottom: 100rpx;
 }
@@ -117,6 +117,95 @@
   text-align: center;
 }
 
+/* ─── 删除挂件：绳子层 z-index 1，图标层 z-index 3 ─────────────── */
+
+.card-charm-rope-layer {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-charm-rope {
+  width: 2px;
+  background-color: rgba(232, 160, 69, 0.55);
+  flex-shrink: 0;
+}
+
+.card-charm-icon-wrap {
+  position: absolute;
+  z-index: 3;
+}
+
+.card-charm-body {
+  animation: charmPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: top center;
+}
+
+.card-charm-icon {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  display: block;
+  animation: charmSway 3s ease-in-out 0.4s infinite;
+}
+
+.card-charm-icon.charm-tap {
+  animation: charmTapScale 0.28s ease;
+}
+
+@keyframes charmPopIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  80% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes charmSway {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4rpx);
+  }
+}
+
+@keyframes charmTapScale {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(0.78);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-charm-icon {
+    filter: invert(1);
+  }
+
+  .card-charm-rope {
+    background-color: rgba(232, 160, 69, 0.75);
+  }
+}
+
 /* ─── 日期标签层 ────────────────────────────────────────────────── */
 
 .date-label {
@@ -185,18 +274,6 @@
 
 .date-text-placeholder {
   color: var(--text-tertiary, #ccc);
-}
-
-.date-delete {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .date-delete {
-    filter: invert(1);
-  }
 }
 
 /* ─── 全屏图片预览 Overlay ──────────────────────────────────────── */

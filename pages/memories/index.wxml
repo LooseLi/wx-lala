@@ -1,6 +1,13 @@
 <view class="page-wrapper">
   <view class="memories-container" style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat;">
 
+    <!-- 绳子层（在卡片下层，避免压住卡片与图标） -->
+    <block wx:for="{{slots}}" wx:key="index">
+      <view wx:if="{{item._id}}" class="card-charm-rope-layer" style="{{item.charmStyle}}">
+        <view class="card-charm-rope" style="{{item.charmRopeStyle}}"></view>
+      </view>
+    </block>
+
     <!-- 卡片列表：统一上下布局 -->
     <view wx:for="{{slots}}" wx:key="index" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}" style="transform: rotate({{item.rotation}}deg);">
       <view class="card">
@@ -23,19 +30,22 @@
       </view>
     </view>
 
+    <!-- 删除图标层（在绳子上层） -->
+    <block wx:for="{{slots}}" wx:key="index">
+      <view wx:if="{{item._id}}" class="card-charm-icon-wrap" style="{{item.charmIconStyle}}" catchtap="onDeleteCard" data-index="{{index}}">
+        <view class="card-charm-body">
+          <image class="card-charm-icon {{charmTapIndex === index ? 'charm-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
+        </view>
+      </view>
+    </block>
+
     <!-- 日期标签层：绝对定位，与卡片垂直居中对齐 -->
     <view wx:for="{{slots}}" wx:key="index" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
       <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
         <view class="date-inner">
-          <!-- 右侧卡片：删除在最左，点在中，文字在右（近 W/2） -->
-          <image wx:if="{{!item.isLeft && item._id}}" class="date-delete" src="/pages/memories/images/icon_cat_delete.png" mode="aspectFit" catchtap="onDeleteCard" data-index="{{index}}" />
-          <!-- 左侧卡片：文字在左（近 W/2），点在中 -->
           <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
           <view class="date-dot"></view>
-          <!-- 右侧卡片：文字在右（近 W/2） -->
           <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
-          <!-- 左侧卡片：删除在最右 -->
-          <image wx:if="{{item.isLeft && item._id}}" class="date-delete" src="/pages/memories/images/icon_cat_delete.png" mode="aspectFit" catchtap="onDeleteCard" data-index="{{index}}" />
         </view>
       </picker>
     </view>

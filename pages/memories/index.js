@@ -15,6 +15,16 @@ const SLOT_HEIGHT_PX = CARD_HEIGHT_PX + CARD_MARGIN_PX;
 // 容器 padding（对应 WXSS 中 padding: 40rpx 0 60rpx）
 const CONTAINER_PAD_TOP_PX = Math.round(40 * _rpx);
 const CONTAINER_PAD_BOTTOM_PX = Math.round(60 * _rpx);
+const CHARM_ROPE_BASE_PX = Math.round(32 * _rpx);
+const CHARM_ROPE_OVERLAP_PX = Math.round(6 * _rpx);
+
+// 旋转后卡片视觉底边相对布局底边的下移量（绕槽位中心旋转）
+function rotationExtendBelow(deg) {
+  const rad = Math.abs(deg) * Math.PI / 180;
+  const halfW = CARD_UPPER_PX / 2;
+  const halfH = CARD_HEIGHT_PX / 2;
+  return Math.round(halfW * Math.sin(rad) + halfH * (1 - Math.cos(rad)));
+}
 
 Page({
   data: {
@@ -23,6 +33,7 @@ Page({
     draftDate: '',
     uploading: false,
     svgBg: '',
+    charmTapIndex: -1,
     viewer: {
       show: false,
       slotIndex: -1,
@@ -76,13 +87,29 @@ Page({
   // ─── buildSlots：已有记录 + 末尾唯一空槽 ───────────────────────
   buildSlots(filledCards) {
     const n = filledCards.length;
-    const filled = filledCards.map((card, i) => ({
-      ...card,
-      rotation: ROTATIONS[i % ROTATIONS.length],
-      isLeft: i % 2 === 0,
-      dateY: CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
-      dateFormatted: this._formatDate(card.date),
-    }));
+    const w = _sysInfo.windowWidth;
+    const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
+    const charmCenterX = i => Math.round((i % 2 === 0 ? 0.25 : 0.75) * w);
+
+    const filled = filledCards.map((card, i) => {
+      const isLeft = i % 2 === 0;
+      const rotation = ROTATIONS[i % ROTATIONS.length];
+      const extend = rotationExtendBelow(rotation);
+      const y = cardBottomY(i) + extend;
+      const ropePull = extend + CHARM_ROPE_OVERLAP_PX;
+      // 总高 = 上探 + 可见段 + 下探（上下 overlap 各一段，避免与卡片/图标断档）
+      const ropeH = CHARM_ROPE_BASE_PX + ropePull + CHARM_ROPE_OVERLAP_PX;
+      return {
+        ...card,
+        rotation,
+        isLeft,
+        dateY: CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
+        dateFormatted: this._formatDate(card.date),
+        charmStyle: `top:${y}px;left:${charmCenterX(i)}px;transform:translateX(-50%);`,
+        charmRopeStyle: `height:${ropeH}px;margin-top:-${ropePull}px;`,
+        charmIconStyle: `top:${y + CHARM_ROPE_BASE_PX}px;left:${charmCenterX(i)}px;transform:translateX(-50%);`,
+      };
+    });
     const emptySlot = {
       _id: null,
       images: [],
@@ -262,6 +289,17 @@ Page({
     const index = parseInt(e.currentTarget.dataset.index);
     const slot = this.data.slots[index];
     if (!slot || !slot._id) return;
+
+    this.setData({ charmTapIndex: -1 });
+    setTimeout(() => {
+      this.setData({ charmTapIndex: index });
+      setTimeout(() => {
+        if (this.data.charmTapIndex === index) {
+          this.setData({ charmTapIndex: -1 });
+        }
+      }, 280);
+    }, 0);
+
     wx.showModal({
       title: '删除',
       content: '确认要删除嘛(=ＴェＴ=)',
