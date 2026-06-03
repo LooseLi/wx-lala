@@ -18,8 +18,8 @@
         </view>
 
         <!-- 下方：固定两行文字区域 -->
-        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" />
-        <textarea wx:else class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" />
+        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" disabled="{{viewer.show}}" />
+        <textarea wx:else class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" disabled="{{viewer.show}}" />
       </view>
     </view>
 
