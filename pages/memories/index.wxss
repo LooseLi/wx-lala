@@ -93,6 +93,12 @@
 .add-icon-img {
   width: 64px;
   height: 64px;
+  display: block;
+}
+
+.add-icon-img.icon-tap,
+.card-charm-icon.icon-tap {
+  animation: iconTapScale 0.28s ease;
 }
 
 /* ─── 下方：固定两行文字区域 ────────────────────────────────────── */
@@ -149,9 +155,6 @@
   animation: charmSway 3s ease-in-out 0.4s infinite;
 }
 
-.card-charm-icon.charm-tap {
-  animation: charmTapScale 0.28s ease;
-}
 
 @keyframes charmPopIn {
   0% {
@@ -182,7 +185,7 @@
   }
 }
 
-@keyframes charmTapScale {
+@keyframes iconTapScale {
   0% {
     transform: scale(1);
   }

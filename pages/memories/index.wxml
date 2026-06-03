@@ -20,7 +20,7 @@
             </view>
           </view>
           <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
-            <image class="add-icon-img" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
+            <image class="add-icon-img {{addTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
           </view>
         </view>
 
@@ -34,7 +34,7 @@
     <block wx:for="{{slots}}" wx:key="index">
       <view wx:if="{{item._id}}" class="card-charm-icon-wrap" style="{{item.charmIconStyle}}" catchtap="onDeleteCard" data-index="{{index}}">
         <view class="card-charm-body">
-          <image class="card-charm-icon {{charmTapIndex === index ? 'charm-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
+          <image class="card-charm-icon {{charmTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
         </view>
       </view>
     </block>

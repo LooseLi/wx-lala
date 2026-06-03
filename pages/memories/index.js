@@ -34,6 +34,7 @@ Page({
     uploading: false,
     svgBg: '',
     charmTapIndex: -1,
+    addTapIndex: -1,
     viewer: {
       show: false,
       slotIndex: -1,
@@ -193,11 +194,31 @@ Page({
     );
   },
 
+  _playIconTapScale(dataKey, index) {
+    this.setData({
+      [dataKey]: -1
+    });
+    setTimeout(() => {
+      this.setData({
+        [dataKey]: index
+      });
+      setTimeout(() => {
+        if (this.data[dataKey] === index) {
+          this.setData({
+            [dataKey]: -1
+          });
+        }
+      }, 280);
+    }, 0);
+  },
+
   // ─── 点击 + 按钮：新建或追加图片 ──────────────────────────────
   async onAddImageTap(e) {
     if (this.data.uploading) return;
     const index = parseInt(e.currentTarget.dataset.index);
     const slot = this.data.slots[index];
+
+    this._playIconTapScale('addTapIndex', index);
 
     if (!slot._id && this._hasEmptyFilledCard()) {
       wx.showToast({
@@ -290,15 +311,7 @@ Page({
     const slot = this.data.slots[index];
     if (!slot || !slot._id) return;
 
-    this.setData({ charmTapIndex: -1 });
-    setTimeout(() => {
-      this.setData({ charmTapIndex: index });
-      setTimeout(() => {
-        if (this.data.charmTapIndex === index) {
-          this.setData({ charmTapIndex: -1 });
-        }
-      }, 280);
-    }, 0);
+    this._playIconTapScale('charmTapIndex', index);
 
     wx.showModal({
       title: '删除',
