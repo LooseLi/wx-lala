@@ -20,7 +20,9 @@
             </view>
           </view>
           <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
-            <image class="add-icon-img {{addTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
+            <view class="add-icon-body">
+              <image class="add-icon-img {{addTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
+            </view>
           </view>
         </view>
 

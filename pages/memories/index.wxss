@@ -90,6 +90,11 @@
   background-color: var(--background-secondary, #f5f5f7);
 }
 
+.add-icon-body {
+  animation: charmPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: center center;
+}
+
 .add-icon-img {
   width: 64px;
   height: 64px;
