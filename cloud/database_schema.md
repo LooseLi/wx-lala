@@ -41,6 +41,9 @@
   "spentReviveByGameId": {                // 按游戏累计的付费复活消耗
     "game_2048": "number"
   },
+  "bestScoreByGameId": {                  // 按小游戏 id 记录的历史最高分
+    "game_2048": "number"
+  },
   "spentThemes": "number"                 // 兑换主题累计消耗积分
 }
 ```

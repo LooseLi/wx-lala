@@ -20,10 +20,13 @@ function loadBest() {
   return typeof v === 'number' && v >= 0 ? v : 0;
 }
 
-function saveBest(score) {
+function saveBest(score, page) {
   const prev = loadBest();
   if (score > prev) {
     wx.setStorageSync(BEST_KEY, score);
+    if (page && wx.cloud) {
+      page._syncBestWithCloud(score);
+    }
     return score;
   }
   return prev;
@@ -122,9 +125,38 @@ Page({
     this.setData({ best: loadBest() });
     this._scheduleMeasureLayout();
     this._fetchCurrentPoints();
+    this._syncBestWithCloud(loadBest());
     if (!this._winLottieJsonData) {
       this._prefetchWinLottieJson();
     }
+  },
+
+  _syncBestWithCloud(score) {
+    if (!wx.cloud) {
+      return;
+    }
+    const openid = wx.getStorageSync('openid');
+    if (!openid) {
+      return;
+    }
+    const localScore = typeof score === 'number' ? score : loadBest();
+    wx.cloud.callFunction({
+      name: 'syncGame2048BestScore',
+      data: { score: localScore },
+      success: (res) => {
+        const r = res.result;
+        if (!r || !r.success || typeof r.bestScore !== 'number') {
+          return;
+        }
+        const merged = Math.max(loadBest(), r.bestScore);
+        if (merged > loadBest()) {
+          wx.setStorageSync(BEST_KEY, merged);
+        }
+        if (merged !== this.data.best) {
+          this.setData({ best: merged });
+        }
+      },
+    });
   },
 
   _fetchCurrentPoints() {
@@ -480,7 +512,7 @@ Page({
       showWinMask = true;
     }
 
-    const best = saveBest(score);
+    const best = saveBest(score, this);
     const gameOver = !g.hasValidMove(tgrid.boardFromGrid(this._grid));
 
     this.setData({
@@ -503,7 +535,7 @@ Page({
     this._checkMilestonesAfterMove(maxTile);
 
     if (gameOver) {
-      saveBest(score);
+      saveBest(score, this);
     }
   },
 
