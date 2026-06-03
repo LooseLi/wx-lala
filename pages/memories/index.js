@@ -33,6 +33,14 @@ Page({
 
   onLoad() {
     this.loadMemories();
+    wx.onThemeChange(() => {
+      const slots = this.data.slots;
+      if (slots && slots.length > 0) {
+        this.setData({
+          svgBg: this.buildSvgBackground(slots)
+        });
+      }
+    });
   },
 
   // ─── 云数据库读取 ──────────────────────────────────────────────
@@ -413,7 +421,9 @@ Page({
     paths.push(`M ${cx(slots[last])} ${cardBottomY(last)} L ${w / 2} ${totalHeight}`);
 
     const d = paths.join(' ');
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${totalHeight}"><path d="${d}" stroke="rgba(0,0,0,0.13)" stroke-width="2" stroke-dasharray="10 10" fill="none" stroke-linecap="round"/></svg>`;
+    const isDark = (wx.getSystemInfoSync().theme === 'dark');
+    const strokeColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.13)';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${totalHeight}"><path d="${d}" stroke="${strokeColor}" stroke-width="2" stroke-dasharray="10 10" fill="none" stroke-linecap="round"/></svg>`;
 
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   },

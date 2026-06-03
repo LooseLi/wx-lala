@@ -41,6 +41,7 @@
     ]
   },
   "style": "v2",
+  "darkmode": true,
   "sitemapLocation": "sitemap.json",
   "usingComponents": {
     "check-in": "/components/CheckIn/index"

@@ -193,6 +193,12 @@
   flex-shrink: 0;
 }
 
+@media (prefers-color-scheme: dark) {
+  .date-delete {
+    filter: invert(1);
+  }
+}
+
 /* ─── 全屏图片预览 Overlay ──────────────────────────────────────── */
 
 .image-viewer {
