@@ -17,6 +17,7 @@ const CONTAINER_PAD_TOP_PX = Math.round(40 * _rpx);
 const CONTAINER_PAD_BOTTOM_PX = Math.round(60 * _rpx);
 const CHARM_ROPE_BASE_PX = Math.round(32 * _rpx);
 const CHARM_ROPE_OVERLAP_PX = Math.round(6 * _rpx);
+const PAGE_SIZE = 20;
 
 // 旋转后卡片视觉底边相对布局底边的下移量（绕槽位中心旋转）
 function rotationExtendBelow(deg) {
@@ -28,6 +29,9 @@ function rotationExtendBelow(deg) {
 
 Page({
   data: {
+    filledRecords: [],
+    hasMore: true,
+    loadingMore: false,
     slots: [],
     draftText: '',
     draftDate: '',
@@ -44,7 +48,7 @@ Page({
   },
 
   onLoad() {
-    this.loadMemories();
+    this.loadMemories({ reset: true });
     wx.onThemeChange(() => {
       const slots = this.data.slots;
       if (slots && slots.length > 0) {
@@ -55,34 +59,68 @@ Page({
     });
   },
 
-  // ─── 云数据库读取 ──────────────────────────────────────────────
-  async loadMemories() {
-    wx.showLoading({
-      title: '加载中...',
-      mask: true
+  // ─── 云数据库读取（分页） ──────────────────────────────────────
+  async _fetchMemoriesPage(skip) {
+    const res = await memoriesDB
+      .orderBy('order', 'asc')
+      .skip(skip)
+      .limit(PAGE_SIZE)
+      .get();
+    return res.data || [];
+  },
+
+  _applySlots() {
+    const slots = this.buildSlots(this.data.filledRecords);
+    this.setData({
+      slots,
+      svgBg: this.buildSvgBackground(slots),
     });
+  },
+
+  async loadMemories(options = {}) {
+    const reset = options.reset === true;
+    if (!reset) {
+      if (!this.data.hasMore || this.data.loadingMore) return;
+      this.setData({ loadingMore: true });
+    } else {
+      wx.showLoading({ title: '加载中...', mask: true });
+    }
+
     try {
-      const res = await memoriesDB.orderBy('order', 'asc').get();
-      const filled = res.data || [];
-      const slots = this.buildSlots(filled);
-      this.setData({
-        slots,
-        draftText: '',
-        draftDate: '',
-        svgBg: this.buildSvgBackground(slots)
-      });
+      const skip = reset ? 0 : this.data.filledRecords.length;
+      const page = await this._fetchMemoriesPage(skip);
+      const filledRecords = reset ? page : [...this.data.filledRecords, ...page];
+      const hasMore = page.length === PAGE_SIZE;
+      const patch = { filledRecords, hasMore, loadingMore: false };
+      if (reset) {
+        patch.draftText = '';
+        patch.draftDate = '';
+      }
+      this.setData(patch, () => this._applySlots());
     } catch (e) {
       console.error('加载回忆失败', e);
-      const slots = this.buildSlots([]);
-      this.setData({
-        slots,
-        draftText: '',
-        draftDate: '',
-        svgBg: this.buildSvgBackground(slots)
-      });
+      if (reset) {
+        this.setData({
+          filledRecords: [],
+          hasMore: false,
+          loadingMore: false,
+          draftText: '',
+          draftDate: '',
+        }, () => this._applySlots());
+      } else {
+        this.setData({ loadingMore: false });
+      }
     } finally {
-      wx.hideLoading();
+      if (reset) wx.hideLoading();
     }
+  },
+
+  loadMoreMemories() {
+    this.loadMemories({ reset: false });
+  },
+
+  onReachBottom() {
+    this.loadMoreMemories();
   },
 
   // ─── buildSlots：已有记录 + 末尾唯一空槽 ───────────────────────
@@ -102,6 +140,7 @@ Page({
       const ropeH = CHARM_ROPE_BASE_PX + ropePull + CHARM_ROPE_OVERLAP_PX;
       return {
         ...card,
+        slotKey: card._id,
         rotation,
         isLeft,
         dateY: CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
@@ -113,6 +152,7 @@ Page({
     });
     const emptySlot = {
       _id: null,
+      slotKey: 'empty-slot',
       images: [],
       text: '',
       date: '',
@@ -189,8 +229,8 @@ Page({
 
   // ─── 检查是否存在空的已有卡片 ─────────────────────────────────
   _hasEmptyFilledCard() {
-    return this.data.slots.some(
-      s => s._id && (!s.images || s.images.length === 0) && !(s.text || '').trim()
+    return this.data.filledRecords.some(
+      r => (!r.images || r.images.length === 0) && !(r.text || '').trim()
     );
   },
 
@@ -326,8 +366,8 @@ Page({
 
   // ─── 云数据库写操作 ────────────────────────────────────────────
   async _addRecord(data) {
-    const order = this.data.slots.filter(s => s._id).length;
-    await memoriesDB.add({
+    const order = this.data.filledRecords.length;
+    const res = await memoriesDB.add({
       data: {
         order,
         images: data.images || [],
@@ -337,22 +377,34 @@ Page({
         updatedAt: db.serverDate(),
       },
     });
-    await this.loadMemories();
+    const newRecord = {
+      _id: res._id,
+      order,
+      images: data.images || [],
+      text: data.text || '',
+      date: data.date || '',
+    };
+    const filledRecords = [...this.data.filledRecords, newRecord];
+    this.setData({ filledRecords, draftText: '', draftDate: '' }, () => this._applySlots());
   },
 
   async _updateRecord(docId, updates) {
     await memoriesDB.doc(docId).update({
       data: {
         ...updates,
-        updatedAt: db.serverDate()
+        updatedAt: db.serverDate(),
       },
     });
-    await this.loadMemories();
+    const filledRecords = this.data.filledRecords.map(r =>
+      r._id === docId ? { ...r, ...updates } : r
+    );
+    this.setData({ filledRecords }, () => this._applySlots());
   },
 
   async _deleteRecord(docId) {
     await memoriesDB.doc(docId).remove();
-    await this.loadMemories();
+    const filledRecords = this.data.filledRecords.filter(r => r._id !== docId);
+    this.setData({ filledRecords }, () => this._applySlots());
   },
 
   // ─── 全屏图片预览 Overlay ──────────────────────────────────────

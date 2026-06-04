@@ -2,14 +2,14 @@
   <view class="memories-container" style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat;">
 
     <!-- 绳子层（在卡片下层，避免压住卡片与图标） -->
-    <block wx:for="{{slots}}" wx:key="index">
+    <block wx:for="{{slots}}" wx:key="slotKey">
       <view wx:if="{{item._id}}" class="card-charm-rope-layer" style="{{item.charmStyle}}">
         <view class="card-charm-rope" style="{{item.charmRopeStyle}}"></view>
       </view>
     </block>
 
     <!-- 卡片列表：统一上下布局 -->
-    <view wx:for="{{slots}}" wx:key="index" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}" style="transform: rotate({{item.rotation}}deg);">
+    <view wx:for="{{slots}}" wx:key="slotKey" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}" style="transform: rotate({{item.rotation}}deg);">
       <view class="card">
         <!-- 上方：正方形区域，有图片则展示缩略图，否则展示 + 添加按钮 -->
         <view class="card-upper">
@@ -33,7 +33,7 @@
     </view>
 
     <!-- 删除图标层（在绳子上层） -->
-    <block wx:for="{{slots}}" wx:key="index">
+    <block wx:for="{{slots}}" wx:key="slotKey">
       <view wx:if="{{item._id}}" class="card-charm-icon-wrap" style="{{item.charmIconStyle}}" catchtap="onDeleteCard" data-index="{{index}}">
         <view class="card-charm-body">
           <image class="card-charm-icon {{charmTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
@@ -42,7 +42,7 @@
     </block>
 
     <!-- 日期标签层：绝对定位，与卡片垂直居中对齐 -->
-    <view wx:for="{{slots}}" wx:key="index" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
+    <view wx:for="{{slots}}" wx:key="slotKey" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
       <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
         <view class="date-inner">
           <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
