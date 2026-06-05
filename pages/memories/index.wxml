@@ -1,9 +1,6 @@
 <view class="page-wrapper">
   <view class="memories-container">
-    <view
-      class="timeline-layer"
-      style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat; background-position: top center;"
-    />
+    <view class="timeline-layer" style="{{timelineTileStyle}}" />
 
     <view class="memories-content">
       <view wx:for="{{slots}}" wx:key="slotKey" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}">

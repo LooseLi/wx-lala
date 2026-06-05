@@ -1,3 +1,8 @@
+const {
+  TIMELINE_TILE_LIGHT_B64,
+  TIMELINE_TILE_DARK_B64,
+} = require('./timeline-tiles.js');
+
 const db = wx.cloud.database();
 const memoriesDB = db.collection('memories');
 
@@ -19,11 +24,8 @@ const CONTAINER_PAD_BOTTOM_PX = Math.round(60 * _rpx);
 const CHARM_ROPE_BASE_PX = Math.round(32 * _rpx);
 const CHARM_ROPE_OVERLAP_PX = Math.round(6 * _rpx);
 const PAGE_SIZE = 20;
-
-// 旋转后卡片视觉底边相对布局底边的下移量（绕槽位中心旋转）
-function computeTimelineHeight(slotCount) {
-  return CONTAINER_PAD_TOP_PX + slotCount * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
-}
+// 引导线瓦片覆盖的槽位数（2 槽一周期，repeat-y 无缝）
+const TIMELINE_TILE_SLOT_COUNT = 2;
 
 function rotationExtendBelow(deg) {
   const rad = Math.abs(deg) * Math.PI / 180;
@@ -86,6 +88,12 @@ function sortMemoriesDesc(records) {
   return [...records].sort(compareMemoriesDesc);
 }
 
+function buildTimelineTileStyle(theme) {
+  const b64 = theme === 'dark' ? TIMELINE_TILE_DARK_B64 : TIMELINE_TILE_LIGHT_B64;
+  const heightPx = TIMELINE_TILE_SLOT_COUNT * SLOT_HEIGHT_PX;
+  return `background-image:url(data:image/png;base64,${b64});background-repeat:repeat-y;background-position:top center;background-size:100% ${heightPx}px;`;
+}
+
 Page({
   data: {
     filledRecords: [],
@@ -95,7 +103,7 @@ Page({
     draftText: '',
     draftDate: '',
     uploading: false,
-    svgBg: '',
+    timelineTileStyle: '',
     charmTapIndex: -1,
     addTapIndex: -1,
     viewer: {
@@ -107,14 +115,20 @@ Page({
   },
 
   onLoad() {
+    this._initTimelineLayer();
     this.loadMemories({ reset: true });
-    wx.onThemeChange(() => {
-      const slots = this.data.slots;
-      if (slots && slots.length > 0) {
-        this.setData({
-          svgBg: this.buildTimelineSvg(slots.length),
-        });
-      }
+    wx.onThemeChange(({ theme }) => {
+      const resolved = theme === 'dark' ? 'dark' : 'light';
+      this.setData({
+        timelineTileStyle: buildTimelineTileStyle(resolved),
+      });
+    });
+  },
+
+  _initTimelineLayer() {
+    const theme = wx.getSystemInfoSync().theme === 'dark' ? 'dark' : 'light';
+    this.setData({
+      timelineTileStyle: buildTimelineTileStyle(theme),
     });
   },
 
@@ -137,10 +151,7 @@ Page({
 
   _applySlots() {
     const slots = this.buildSlots(this.data.filledRecords);
-    this.setData({
-      slots,
-      svgBg: this.buildTimelineSvg(slots.length),
-    });
+    this.setData({ slots });
   },
 
   async loadMemories(options = {}) {
@@ -572,38 +583,4 @@ Page({
     });
   },
 
-  // ─── SVG 时间轴背景（仅依赖槽位数，与卡片数据无关） ─────────────
-  buildTimelineSvg(slotCount) {
-    if (!slotCount || slotCount <= 0) return '';
-
-    const w = _sysInfo.windowWidth;
-    const totalHeight = computeTimelineHeight(slotCount);
-    const leftX = w * 0.30;
-    const rightX = w * 0.70;
-    const cx = i => (i % 2 === 0 ? leftX : rightX);
-    const cardTopY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX;
-    const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
-
-    const paths = [];
-    paths.push(`M ${w / 2} 0 L ${cx(0)} ${cardTopY(0)}`);
-
-    for (let i = 0; i < slotCount - 1; i++) {
-      const x0 = cx(i);
-      const y0 = cardBottomY(i);
-      const x1 = cx(i + 1);
-      const y1 = cardTopY(i + 1);
-      const midY = (y0 + y1) / 2;
-      paths.push(`M ${x0} ${y0} C ${x0} ${midY} ${x1} ${midY} ${x1} ${y1}`);
-    }
-
-    const last = slotCount - 1;
-    paths.push(`M ${cx(last)} ${cardBottomY(last)} L ${w / 2} ${totalHeight}`);
-
-    const d = paths.join(' ');
-    const isDark = (wx.getSystemInfoSync().theme === 'dark');
-    const strokeColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.13)';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${totalHeight}"><path d="${d}" stroke="${strokeColor}" stroke-width="2" stroke-dasharray="10 10" fill="none" stroke-linecap="round"/></svg>`;
-
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-  },
 });
