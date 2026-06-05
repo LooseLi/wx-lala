@@ -525,6 +525,7 @@ Page({
     });
     try {
       await memoriesDB.doc(docId).remove();
+      wx.showToast({ title: '删除成功～', icon: 'none' });
     } catch (e) {
       console.error('删除回忆失败', e);
       this.setData({ filledRecords: prev }, () => this._applySlots());
