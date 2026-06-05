@@ -88,6 +88,14 @@ function sortMemoriesDesc(records) {
   return [...records].sort(compareMemoriesDesc);
 }
 
+function mergeRecords(existing, incoming) {
+  const map = new Map();
+  [...existing, ...incoming].forEach((r) => {
+    if (r && r._id) map.set(r._id, r);
+  });
+  return sortMemoriesDesc([...map.values()]);
+}
+
 function buildTimelineTileStyle(theme) {
   const b64 = theme === 'dark' ? TIMELINE_TILE_DARK_B64 : TIMELINE_TILE_LIGHT_B64;
   const heightPx = TIMELINE_TILE_SLOT_COUNT * SLOT_HEIGHT_PX;
@@ -166,8 +174,9 @@ Page({
     try {
       const skip = reset ? 0 : this.data.filledRecords.length;
       const page = await this._fetchMemoriesPage(skip);
-      const merged = reset ? page : [...this.data.filledRecords, ...page];
-      const filledRecords = sortMemoriesDesc(merged);
+      const filledRecords = reset
+        ? sortMemoriesDesc(page)
+        : mergeRecords(this.data.filledRecords, page);
       const hasMore = page.length === PAGE_SIZE;
       const patch = { filledRecords, hasMore, loadingMore: false };
       if (reset) {
@@ -199,6 +208,17 @@ Page({
 
   onReachBottom() {
     this.loadMoreMemories();
+  },
+
+  _backfillIfNeeded() {
+    const { filledRecords, hasMore, loadingMore } = this.data;
+    if (!hasMore || loadingMore) return;
+    const needBackfill =
+      filledRecords.length === 0 ||
+      filledRecords.length < PAGE_SIZE;
+    if (needBackfill) {
+      this.loadMemories({ reset: false });
+    }
   },
 
   // ─── buildSlots：顶部唯一空槽 + 已加载记录（sortAt 降序） ─────
@@ -497,9 +517,19 @@ Page({
   },
 
   async _deleteRecord(docId) {
-    await memoriesDB.doc(docId).remove();
-    const filledRecords = this.data.filledRecords.filter(r => r._id !== docId);
-    this.setData({ filledRecords }, () => this._applySlots());
+    const prev = this.data.filledRecords;
+    const optimistic = prev.filter(r => r._id !== docId);
+    this.setData({ filledRecords: optimistic }, () => {
+      this._applySlots();
+      this._backfillIfNeeded();
+    });
+    try {
+      await memoriesDB.doc(docId).remove();
+    } catch (e) {
+      console.error('删除回忆失败', e);
+      this.setData({ filledRecords: prev }, () => this._applySlots());
+      wx.showToast({ title: '删除失败', icon: 'none' });
+    }
   },
 
   // ─── 全屏图片预览 Overlay ──────────────────────────────────────
