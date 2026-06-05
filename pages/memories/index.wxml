@@ -1,73 +1,65 @@
 <view class="page-wrapper">
-  <view class="memories-container" style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat;">
+  <view class="memories-container">
+    <view
+      class="timeline-layer"
+      style="background-image: {{svgBg}}; background-size: 100% 100%; background-repeat: no-repeat; background-position: top center;"
+    />
 
-    <!-- 绳子层（在卡片下层，避免压住卡片与图标） -->
-    <block wx:for="{{slots}}" wx:key="slotKey">
-      <view wx:if="{{item._id}}" class="card-charm-rope-layer" style="{{item.charmStyle}}">
-        <view class="card-charm-rope" style="{{item.charmRopeStyle}}"></view>
-      </view>
-    </block>
+    <view class="memories-content">
+      <view wx:for="{{slots}}" wx:key="slotKey" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}">
+        <view wx:if="{{item._id}}" class="card-charm-rope-layer" style="{{item.charmRopeLayerStyle}}">
+          <view class="card-charm-rope" style="{{item.charmRopeStyle}}"></view>
+        </view>
 
-    <!-- 卡片列表：统一上下布局 -->
-    <view wx:for="{{slots}}" wx:key="slotKey" class="slot {{item.isLeft ? 'slot-left' : 'slot-right'}}" style="transform: rotate({{item.rotation}}deg);">
-      <view class="card">
-        <!-- 上方：正方形区域，有图片则展示缩略图，否则展示 + 添加按钮 -->
-        <view class="card-upper">
-          <view wx:if="{{item.images && item.images.length > 0}}" class="card-image-wrap" bindtap="openViewer" data-index="{{index}}">
-            <image class="card-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load />
-            <view wx:if="{{item.images.length > 1}}" class="card-image-more">
-              +{{item.images.length - 1}}
+        <view class="card" style="transform: rotate({{item.rotation}}deg);">
+          <view class="card-upper">
+            <view wx:if="{{item.images && item.images.length > 0}}" class="card-image-wrap" bindtap="openViewer" data-index="{{index}}">
+              <image class="card-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load />
+              <view wx:if="{{item.images.length > 1}}" class="card-image-more">
+                +{{item.images.length - 1}}
+              </view>
+            </view>
+            <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
+              <view class="add-icon-body">
+                <image class="add-icon-img {{addTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
+              </view>
             </view>
           </view>
-          <view wx:else class="add-image-btn" bindtap="onAddImageTap" data-index="{{index}}">
-            <view class="add-icon-body">
-              <image class="add-icon-img {{addTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_add.png" mode="aspectFit" />
-            </view>
+
+          <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" disabled="{{viewer.show}}" />
+          <textarea wx:else class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" disabled="{{viewer.show}}" />
+        </view>
+
+        <view wx:if="{{item._id}}" class="card-charm-icon-wrap" style="{{item.charmIconWrapStyle}}" catchtap="onDeleteCard" data-index="{{index}}">
+          <view class="card-charm-body">
+            <image class="card-charm-icon {{charmTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
           </view>
         </view>
-
-        <!-- 下方：固定两行文字区域 -->
-        <textarea wx:if="{{item._id}}" class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{item.text}}" bindblur="onFilledTextBlur" data-index="{{index}}" maxlength="200" disabled="{{viewer.show}}" />
-        <textarea wx:else class="card-textarea" placeholder="ฅ^•ﻌ•^ฅ说点什么吧（可选）" placeholder-class="card-textarea-placeholder" value="{{draftText}}" bindinput="onDraftTextInput" bindblur="onDraftTextBlur" maxlength="200" disabled="{{viewer.show}}" />
       </view>
-    </view>
 
-    <!-- 删除图标层（在绳子上层） -->
-    <block wx:for="{{slots}}" wx:key="slotKey">
-      <view wx:if="{{item._id}}" class="card-charm-icon-wrap" style="{{item.charmIconStyle}}" catchtap="onDeleteCard" data-index="{{index}}">
-        <view class="card-charm-body">
-          <image class="card-charm-icon {{charmTapIndex === index ? 'icon-tap' : ''}}" src="/pages/memories/images/icon_cat_maoliang.png" mode="aspectFit" />
-        </view>
+      <view wx:for="{{slots}}" wx:key="slotKey" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
+        <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
+          <view class="date-inner">
+            <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+            <view class="date-dot"></view>
+            <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
+          </view>
+        </picker>
       </view>
-    </block>
-
-    <!-- 日期标签层：绝对定位，与卡片垂直居中对齐 -->
-    <view wx:for="{{slots}}" wx:key="slotKey" class="date-label {{item.isLeft ? 'date-label-right' : 'date-label-left'}}" style="top: {{item.dateY}}px;">
-      <picker mode="date" value="{{item.date || ''}}" bindchange="onDateChange" data-index="{{index}}" class="date-picker-wrap">
-        <view class="date-inner">
-          <text wx:if="{{item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
-          <view class="date-dot"></view>
-          <text wx:if="{{!item.isLeft}}" class="date-text {{item.dateFormatted ? '' : 'date-text-placeholder'}}">{{item.dateFormatted || '记录日期'}}</text>
-        </view>
-      </picker>
     </view>
   </view>
 
-  <!-- 全屏图片预览 Overlay：catchtouchmove 防止底层页面滚动 -->
   <view wx:if="{{viewer.show}}" class="image-viewer" catchtouchmove="noop">
-    <!-- 顶部：页码 -->
     <view class="viewer-header">
       <text class="viewer-counter">{{viewer.current + 1}} / {{viewer.images.length}}</text>
     </view>
 
-    <!-- 图片主体：swiper 原生滑动，image bindtap 关闭预览 -->
     <swiper class="viewer-swiper" current="{{viewer.current}}" bindchange="onViewerSwiperChange" catchtouchmove="noop">
       <swiper-item wx:for="{{viewer.images}}" wx:key="index" class="viewer-swiper-item">
         <image class="viewer-image" src="{{item}}" mode="aspectFit" bindtap="closeViewer" />
       </swiper-item>
     </swiper>
 
-    <!-- 底部操作栏：catchtap 阻止 tap 冒泡，touch 事件不拦截 -->
     <view class="viewer-footer">
       <view class="viewer-btn viewer-btn-delete" catchtap="viewerDeleteCurrent">删除此图</view>
       <view class="viewer-btn viewer-btn-add" catchtap="viewerAddImages">添加图片</view>

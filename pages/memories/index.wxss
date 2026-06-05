@@ -9,6 +9,21 @@
   padding: 40rpx 0 60rpx;
 }
 
+.timeline-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.memories-content {
+  position: relative;
+  z-index: 1;
+}
+
 /* ─── 卡片槽位：W/4 宽，中心落在 W/4 和 3W/4 ───────────────────── */
 
 .slot {
@@ -33,6 +48,8 @@
 /* ─── 卡片（统一结构） ──────────────────────────────────────────── */
 
 .card {
+  position: relative;
+  z-index: 2;
   width: 100%;
   border-radius: 12rpx;
   background-color: var(--background-secondary, #fff);
@@ -40,6 +57,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transform-origin: center center;
 }
 
 /* ─── 上方：正方形区域（padding-bottom: 100% 方案）────────────── */
@@ -132,6 +150,9 @@
 
 .card-charm-rope-layer {
   position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
   z-index: 1;
   pointer-events: none;
 }
@@ -144,6 +165,9 @@
 
 .card-charm-icon-wrap {
   position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
   z-index: 3;
 }
 

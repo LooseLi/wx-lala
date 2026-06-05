@@ -7,7 +7,8 @@ const ROTATIONS = [-17, 7, -15, 14, -8, 6];
 // 卡片宽 = 屏幕宽 × 25%，上方正方形高 = 卡片宽，下方文字区 = 88rpx
 const _sysInfo = wx.getSystemInfoSync();
 const _rpx = _sysInfo.windowWidth / 750; // 1rpx 对应的 px 值
-const CARD_UPPER_PX = _sysInfo.windowWidth / 3; // 正方形上方区域（等于卡片宽度）
+// 与 WXSS 槽宽 33.33% 一致
+const CARD_UPPER_PX = Math.round((_sysInfo.windowWidth * 33.33) / 100);
 const CARD_TEXT_PX = Math.round(88 * _rpx); // 文字区 88rpx → px
 const CARD_HEIGHT_PX = CARD_UPPER_PX + CARD_TEXT_PX;
 const CARD_MARGIN_PX = Math.round(100 * _rpx); // margin-bottom 100rpx → px
@@ -20,6 +21,10 @@ const CHARM_ROPE_OVERLAP_PX = Math.round(6 * _rpx);
 const PAGE_SIZE = 20;
 
 // 旋转后卡片视觉底边相对布局底边的下移量（绕槽位中心旋转）
+function computeTimelineHeight(slotCount) {
+  return CONTAINER_PAD_TOP_PX + slotCount * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
+}
+
 function rotationExtendBelow(deg) {
   const rad = Math.abs(deg) * Math.PI / 180;
   const halfW = CARD_UPPER_PX / 2;
@@ -53,7 +58,7 @@ Page({
       const slots = this.data.slots;
       if (slots && slots.length > 0) {
         this.setData({
-          svgBg: this.buildSvgBackground(slots)
+          svgBg: this.buildTimelineSvg(slots.length),
         });
       }
     });
@@ -73,7 +78,7 @@ Page({
     const slots = this.buildSlots(this.data.filledRecords);
     this.setData({
       slots,
-      svgBg: this.buildSvgBackground(slots),
+      svgBg: this.buildTimelineSvg(slots.length),
     });
   },
 
@@ -126,28 +131,23 @@ Page({
   // ─── buildSlots：已有记录 + 末尾唯一空槽 ───────────────────────
   buildSlots(filledCards) {
     const n = filledCards.length;
-    const w = _sysInfo.windowWidth;
-    const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
-    const charmCenterX = i => Math.round((i % 2 === 0 ? 0.25 : 0.75) * w);
 
     const filled = filledCards.map((card, i) => {
       const isLeft = i % 2 === 0;
       const rotation = ROTATIONS[i % ROTATIONS.length];
       const extend = rotationExtendBelow(rotation);
-      const y = cardBottomY(i) + extend;
       const ropePull = extend + CHARM_ROPE_OVERLAP_PX;
-      // 总高 = 上探 + 可见段 + 下探（上下 overlap 各一段，避免与卡片/图标断档）
       const ropeH = CHARM_ROPE_BASE_PX + ropePull + CHARM_ROPE_OVERLAP_PX;
       return {
         ...card,
         slotKey: card._id,
         rotation,
         isLeft,
-        dateY: CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
+        dateY: i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
         dateFormatted: this._formatDate(card.date),
-        charmStyle: `top:${y}px;left:${charmCenterX(i)}px;transform:translateX(-50%);`,
+        charmRopeLayerStyle: `margin-top:${extend}px;`,
         charmRopeStyle: `height:${ropeH}px;margin-top:-${ropePull}px;`,
-        charmIconStyle: `top:${y + CHARM_ROPE_BASE_PX}px;left:${charmCenterX(i)}px;transform:translateX(-50%);`,
+        charmIconWrapStyle: `margin-top:${extend + CHARM_ROPE_BASE_PX}px;`,
       };
     });
     const emptySlot = {
@@ -159,7 +159,7 @@ Page({
       dateFormatted: '',
       rotation: ROTATIONS[n % ROTATIONS.length],
       isLeft: n % 2 === 0,
-      dateY: CONTAINER_PAD_TOP_PX + n * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
+      dateY: n * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
     };
     return [...filled, emptySlot];
   },
@@ -488,40 +488,32 @@ Page({
     });
   },
 
-  // ─── SVG 背景图生成（同步） ────────────────────────────────────
-  buildSvgBackground(slots) {
-    if (!slots || slots.length === 0) return '';
+  // ─── SVG 时间轴背景（仅依赖槽位数，与卡片数据无关） ─────────────
+  buildTimelineSvg(slotCount) {
+    if (!slotCount || slotCount <= 0) return '';
 
     const w = _sysInfo.windowWidth;
-    const totalHeight = CONTAINER_PAD_TOP_PX + slots.length * SLOT_HEIGHT_PX + CONTAINER_PAD_BOTTOM_PX;
-
-    // const leftX = w * 0.25;
-    // const rightX = w * 0.75;
+    const totalHeight = computeTimelineHeight(slotCount);
     const leftX = w * 0.30;
     const rightX = w * 0.70;
-
+    const cx = i => (i % 2 === 0 ? leftX : rightX);
     const cardTopY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX;
     const cardBottomY = i => CONTAINER_PAD_TOP_PX + i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX;
-    const cx = slot => slot.isLeft ? leftX : rightX;
 
     const paths = [];
+    paths.push(`M ${w / 2} 0 L ${cx(0)} ${cardTopY(0)}`);
 
-    // 入场线：顶部 → 第一张卡片上边缘
-    paths.push(`M ${w / 2} 0 L ${cx(slots[0])} ${cardTopY(0)}`);
-
-    // 卡片间隙段：贝塞尔曲线
-    for (let i = 0; i < slots.length - 1; i++) {
-      const x0 = cx(slots[i]);
+    for (let i = 0; i < slotCount - 1; i++) {
+      const x0 = cx(i);
       const y0 = cardBottomY(i);
-      const x1 = cx(slots[i + 1]);
+      const x1 = cx(i + 1);
       const y1 = cardTopY(i + 1);
       const midY = (y0 + y1) / 2;
       paths.push(`M ${x0} ${y0} C ${x0} ${midY} ${x1} ${midY} ${x1} ${y1}`);
     }
 
-    // 退场线：最后一张卡片下边缘 → 底部
-    const last = slots.length - 1;
-    paths.push(`M ${cx(slots[last])} ${cardBottomY(last)} L ${w / 2} ${totalHeight}`);
+    const last = slotCount - 1;
+    paths.push(`M ${cx(last)} ${cardBottomY(last)} L ${w / 2} ${totalHeight}`);
 
     const d = paths.join(' ');
     const isDark = (wx.getSystemInfoSync().theme === 'dark');
