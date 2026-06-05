@@ -2,7 +2,7 @@
   <path
     d="M 225 0 C 225 175, 525 263, 525 438 C 525 613, 225 701, 225 876"
     stroke="rgba(0,0,0,0.13)"
-    stroke-width="2"
+    stroke-width="4"
     stroke-dasharray="10 10"
     fill="none"
     stroke-linecap="round"
