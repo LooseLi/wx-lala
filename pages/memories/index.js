@@ -32,6 +32,60 @@ function rotationExtendBelow(deg) {
   return Math.round(halfW * Math.sin(rad) + halfH * (1 - Math.cos(rad)));
 }
 
+function parseTimeMs(value) {
+  if (value == null) return 0;
+  if (typeof value === 'number') return value;
+  if (value instanceof Date) return value.getTime();
+  if (typeof value === 'string') {
+    const t = Date.parse(value);
+    return Number.isNaN(t) ? 0 : t;
+  }
+  if (typeof value === 'object') {
+    if (value.$date) return parseTimeMs(value.$date);
+    if (typeof value.seconds === 'number') return value.seconds * 1000;
+    if (typeof value.getTime === 'function') return value.getTime();
+  }
+  return 0;
+}
+
+// 有 date 用记录日期 00:00，否则用 createdAt
+function computeSortAt(record) {
+  const dateStr = (record.date || '').trim();
+  if (dateStr) {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const t = new Date(y, m, d).getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+  }
+  const ms = parseTimeMs(record.createdAt);
+  return ms || Date.now();
+}
+
+function normalizeMemoryRecord(record) {
+  return {
+    ...record,
+    sortAt: record.sortAt != null ? record.sortAt : computeSortAt(record),
+  };
+}
+
+function compareMemoriesDesc(a, b) {
+  const sa = a.sortAt != null ? a.sortAt : computeSortAt(a);
+  const sb = b.sortAt != null ? b.sortAt : computeSortAt(b);
+  if (sb !== sa) return sb - sa;
+  const ca = parseTimeMs(a.createdAt);
+  const cb = parseTimeMs(b.createdAt);
+  if (cb !== ca) return cb - ca;
+  return (b._id || '').localeCompare(a._id || '');
+}
+
+function sortMemoriesDesc(records) {
+  return [...records].sort(compareMemoriesDesc);
+}
+
 Page({
   data: {
     filledRecords: [],
@@ -67,11 +121,18 @@ Page({
   // ─── 云数据库读取（分页） ──────────────────────────────────────
   async _fetchMemoriesPage(skip) {
     const res = await memoriesDB
-      .orderBy('order', 'asc')
+      .orderBy('sortAt', 'desc')
       .skip(skip)
       .limit(PAGE_SIZE)
       .get();
-    return res.data || [];
+    const raw = res.data || [];
+    raw.forEach(item => {
+      if (item.sortAt == null && item._id) {
+        const sortAt = computeSortAt(item);
+        memoriesDB.doc(item._id).update({ data: { sortAt } }).catch(() => {});
+      }
+    });
+    return raw.map(normalizeMemoryRecord);
   },
 
   _applySlots() {
@@ -94,7 +155,8 @@ Page({
     try {
       const skip = reset ? 0 : this.data.filledRecords.length;
       const page = await this._fetchMemoriesPage(skip);
-      const filledRecords = reset ? page : [...this.data.filledRecords, ...page];
+      const merged = reset ? page : [...this.data.filledRecords, ...page];
+      const filledRecords = sortMemoriesDesc(merged);
       const hasMore = page.length === PAGE_SIZE;
       const patch = { filledRecords, hasMore, loadingMore: false };
       if (reset) {
@@ -128,13 +190,26 @@ Page({
     this.loadMoreMemories();
   },
 
-  // ─── buildSlots：已有记录 + 末尾唯一空槽 ───────────────────────
+  // ─── buildSlots：顶部唯一空槽 + 已加载记录（sortAt 降序） ─────
   buildSlots(filledCards) {
-    const n = filledCards.length;
+    const sorted = sortMemoriesDesc(filledCards);
 
-    const filled = filledCards.map((card, i) => {
-      const isLeft = i % 2 === 0;
-      const rotation = ROTATIONS[i % ROTATIONS.length];
+    const emptySlot = {
+      _id: null,
+      slotKey: 'empty-slot',
+      images: [],
+      text: '',
+      date: '',
+      dateFormatted: '',
+      rotation: ROTATIONS[0],
+      isLeft: true,
+      dateY: CARD_HEIGHT_PX / 2,
+    };
+
+    const filled = sorted.map((card, i) => {
+      const layoutIndex = i + 1;
+      const isLeft = layoutIndex % 2 === 0;
+      const rotation = ROTATIONS[layoutIndex % ROTATIONS.length];
       const extend = rotationExtendBelow(rotation);
       const ropePull = extend + CHARM_ROPE_OVERLAP_PX;
       const ropeH = CHARM_ROPE_BASE_PX + ropePull + CHARM_ROPE_OVERLAP_PX;
@@ -143,25 +218,15 @@ Page({
         slotKey: card._id,
         rotation,
         isLeft,
-        dateY: i * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
+        dateY: layoutIndex * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
         dateFormatted: this._formatDate(card.date),
         charmRopeLayerStyle: `margin-top:${extend}px;`,
         charmRopeStyle: `height:${ropeH}px;margin-top:-${ropePull}px;`,
         charmIconWrapStyle: `margin-top:${extend + CHARM_ROPE_BASE_PX}px;`,
       };
     });
-    const emptySlot = {
-      _id: null,
-      slotKey: 'empty-slot',
-      images: [],
-      text: '',
-      date: '',
-      dateFormatted: '',
-      rotation: ROTATIONS[n % ROTATIONS.length],
-      isLeft: n % 2 === 0,
-      dateY: n * SLOT_HEIGHT_PX + CARD_HEIGHT_PX / 2,
-    };
-    return [...filled, emptySlot];
+
+    return [emptySlot, ...filled];
   },
 
   // ─── 日期格式化 ────────────────────────────────────────────────
@@ -366,38 +431,57 @@ Page({
 
   // ─── 云数据库写操作 ────────────────────────────────────────────
   async _addRecord(data) {
-    const order = this.data.filledRecords.length;
+    const date = data.date || '';
+    const createdAtMs = Date.now();
+    const sortAt = computeSortAt({ date, createdAt: createdAtMs });
     const res = await memoriesDB.add({
       data: {
-        order,
+        sortAt,
         images: data.images || [],
         text: data.text || '',
-        date: data.date || '',
+        date,
         createdAt: db.serverDate(),
         updatedAt: db.serverDate(),
       },
     });
-    const newRecord = {
+    const newRecord = normalizeMemoryRecord({
       _id: res._id,
-      order,
+      sortAt,
       images: data.images || [],
       text: data.text || '',
-      date: data.date || '',
-    };
-    const filledRecords = [...this.data.filledRecords, newRecord];
+      date,
+      createdAt: createdAtMs,
+    });
+    const filledRecords = sortMemoriesDesc([...this.data.filledRecords, newRecord]);
     this.setData({ filledRecords, draftText: '', draftDate: '' }, () => this._applySlots());
   },
 
   async _updateRecord(docId, updates) {
-    await memoriesDB.doc(docId).update({
-      data: {
+    const current = this.data.filledRecords.find(r => r._id === docId);
+    if (!current) return;
+
+    const merged = { ...current, ...updates };
+    const cloudPatch = {
+      ...updates,
+      updatedAt: db.serverDate(),
+    };
+    if (Object.prototype.hasOwnProperty.call(updates, 'date')) {
+      cloudPatch.sortAt = computeSortAt(merged);
+    }
+
+    await memoriesDB.doc(docId).update({ data: cloudPatch });
+
+    let filledRecords = this.data.filledRecords.map(r => {
+      if (r._id !== docId) return r;
+      return normalizeMemoryRecord({
+        ...r,
         ...updates,
-        updatedAt: db.serverDate(),
-      },
+        sortAt: cloudPatch.sortAt != null ? cloudPatch.sortAt : r.sortAt,
+      });
     });
-    const filledRecords = this.data.filledRecords.map(r =>
-      r._id === docId ? { ...r, ...updates } : r
-    );
+    if (Object.prototype.hasOwnProperty.call(updates, 'date')) {
+      filledRecords = sortMemoriesDesc(filledRecords);
+    }
     this.setData({ filledRecords }, () => this._applySlots());
   },
 
