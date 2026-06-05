@@ -201,7 +201,7 @@ Page({
       text: '',
       date: '',
       dateFormatted: '',
-      rotation: ROTATIONS[0],
+      rotation: 0,
       isLeft: true,
       dateY: CARD_HEIGHT_PX / 2,
     };
