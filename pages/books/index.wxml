@@ -1,0 +1,319 @@
+<view class="page-wrapper">
+  <view class="books-page">
+    <!-- 顶部 Header -->
+    <view class="header">
+      <view class="header-left">
+        <view class="header-logo">📖</view>
+        <view class="header-titles">
+          <view class="header-title">我的书单</view>
+          <view class="header-subtitle">阅读 · 记录 · 感悟</view>
+        </view>
+      </view>
+      <view class="header-add" hover-class="header-add-hover" bindtap="openAddDialog">
+        <text class="header-add-plus">＋</text>
+        <text class="header-add-text">添加</text>
+      </view>
+    </view>
+
+    <view class="container">
+      <!-- 统计卡片 -->
+      <view class="stats">
+        <view
+          class="stat-card {{activeStatus === '全部' ? 'stat-card-active' : ''}}"
+          data-status="全部"
+          bindtap="onTapStatusFilter"
+        >
+          <text class="stat-value">{{stats.total}}</text>
+          <text class="stat-label">全部书籍</text>
+        </view>
+        <view
+          class="stat-card {{activeStatus === '已读' ? 'stat-card-active' : ''}}"
+          data-status="已读"
+          bindtap="onTapStatusFilter"
+        >
+          <text class="stat-value">{{stats.read}}</text>
+          <text class="stat-label">已读</text>
+        </view>
+        <view
+          class="stat-card {{activeStatus === '在读' ? 'stat-card-active' : ''}}"
+          data-status="在读"
+          bindtap="onTapStatusFilter"
+        >
+          <text class="stat-value">{{stats.reading}}</text>
+          <text class="stat-label">在读</text>
+        </view>
+        <view
+          class="stat-card {{activeStatus === '想读' ? 'stat-card-active' : ''}}"
+          data-status="想读"
+          bindtap="onTapStatusFilter"
+        >
+          <text class="stat-value">{{stats.wishlist}}</text>
+          <text class="stat-label">想读</text>
+        </view>
+      </view>
+
+      <!-- 搜索框 -->
+      <view class="search-wrap">
+        <text class="search-icon">🔍</text>
+        <input
+          class="search-input"
+          placeholder="搜索书名或作者……"
+          placeholder-class="search-placeholder"
+          value="{{search}}"
+          confirm-type="search"
+          bindinput="onSearchInput"
+        />
+        <view wx:if="{{search}}" class="search-clear" catchtap="onClearSearch">×</view>
+      </view>
+
+      <!-- 分类筛选 -->
+      <view class="genre-section">
+        <view class="genre-title">按分类筛选</view>
+        <scroll-view scroll-x="{{true}}" class="genre-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
+          <view class="genre-list">
+            <view
+              wx:for="{{GENRES}}"
+              wx:key="*this"
+              class="genre-chip {{activeGenre === item ? 'genre-chip-active' : ''}}"
+              data-genre="{{item}}"
+              bindtap="onTapGenre"
+            >{{item}}</view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="divider"></view>
+
+      <!-- 书单列表 -->
+      <view class="list-section">
+        <view wx:if="{{filtered.length > 0}}" class="list-count">
+          共 <text class="list-count-num">{{filtered.length}}</text> 本
+        </view>
+
+        <view wx:if="{{filtered.length === 0}}" class="empty-state">
+          <view class="empty-icon">📖</view>
+          <view class="empty-title">没有找到相关书籍</view>
+          <view class="empty-sub">
+            {{search ? '试试其他关键词' : '点击右上角添加你的第一本书'}}
+          </view>
+        </view>
+
+        <view wx:else class="book-list">
+          <view
+            wx:for="{{filtered}}"
+            wx:key="_id"
+            class="book-card"
+            hover-class="book-card-hover"
+            data-id="{{item._id}}"
+            bindtap="onOpenDetail"
+          >
+            <view class="book-cover cover-{{item.coverIndex}}">
+              <view class="book-cover-lines"></view>
+              <view class="book-cover-content">
+                <text class="book-cover-genre">{{item.genre}}</text>
+                <text class="book-cover-title">{{item.title}}</text>
+                <view class="book-cover-divider"></view>
+                <text class="book-cover-author">{{item.author}}</text>
+              </view>
+            </view>
+
+            <view class="book-info">
+              <view class="book-info-head">
+                <view class="book-info-titles">
+                  <text class="book-title">{{item.title}}</text>
+                  <text class="book-author">{{item.author}}</text>
+                </view>
+                <text class="book-arrow">›</text>
+              </view>
+
+              <view class="book-tags">
+                <view class="book-status book-status-{{item.statusMod}}">
+                  <text class="book-status-dot"></text>
+                  <text>{{item.status}}</text>
+                </view>
+                <view class="book-genre-tag">{{item.genre}}</view>
+              </view>
+
+              <view class="book-stars">
+                <view
+                  wx:for="{{starsTemplate}}"
+                  wx:for-item="s"
+                  wx:key="*this"
+                  class="star {{s <= item.rating ? 'star-on' : ''}}"
+                >★</view>
+              </view>
+
+              <view wx:if="{{item.notesPreview}}" class="book-notes">{{item.notesPreview}}{{(item.notes && item.notes.length > 60) ? '…' : ''}}</view>
+
+              <view wx:if="{{item.finishedAt}}" class="book-finished">读完于 {{item.finishedAt}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{loadingMore}}" class="loading-more">加载中...</view>
+        <view wx:elif="{{!hasMore && filtered.length > 0}}" class="loading-end">— 已到底啦 —</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加书籍弹窗 -->
+  <view wx:if="{{addOpen}}" class="dialog-mask" catchtouchmove="noop" catchtap="closeAddDialog">
+    <view class="dialog dialog-add" catchtap="noop">
+      <view class="dialog-head">
+        <view class="dialog-title">添加书籍</view>
+        <view class="dialog-desc">填写书籍信息，稍后可以补充读书心得</view>
+        <view class="dialog-close" catchtap="closeAddDialog">×</view>
+      </view>
+
+      <view class="dialog-body">
+        <view class="field">
+          <view class="field-label">书名 *</view>
+          <input
+            class="field-input"
+            placeholder="例：活着"
+            placeholder-class="field-placeholder"
+            value="{{addForm.title}}"
+            bindinput="onAddTitleInput"
+          />
+        </view>
+
+        <view class="field">
+          <view class="field-label">作者 *</view>
+          <input
+            class="field-input"
+            placeholder="例：余华"
+            placeholder-class="field-placeholder"
+            value="{{addForm.author}}"
+            bindinput="onAddAuthorInput"
+          />
+        </view>
+
+        <view class="field">
+          <view class="field-label">分类</view>
+          <view class="chips">
+            <view
+              wx:for="{{GENRE_OPTIONS}}"
+              wx:key="*this"
+              class="chip {{addForm.genre === item ? 'chip-active' : ''}}"
+              data-genre="{{item}}"
+              bindtap="onAddGenreTap"
+            >{{item}}</view>
+          </view>
+        </view>
+
+        <view class="field">
+          <view class="field-label">阅读状态</view>
+          <view class="status-group">
+            <view
+              wx:for="{{STATUS_OPTIONS}}"
+              wx:key="*this"
+              class="status-btn {{addForm.status === item ? 'status-btn-active' : ''}}"
+              data-status="{{item}}"
+              bindtap="onAddStatusTap"
+            >{{item}}</view>
+          </view>
+        </view>
+
+        <view class="field">
+          <view class="field-label">初步印象（可选）</view>
+          <textarea
+            class="field-textarea"
+            placeholder="简单写一点推荐理由或想读的原因……"
+            placeholder-class="field-placeholder"
+            maxlength="200"
+            value="{{addForm.notes}}"
+            bindinput="onAddNotesInput"
+          />
+        </view>
+      </view>
+
+      <view class="dialog-footer">
+        <view class="btn btn-ghost" catchtap="closeAddDialog">取消</view>
+        <view class="btn btn-primary" catchtap="onConfirmAdd">＋ 添加到书单</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详情/编辑弹窗 -->
+  <view wx:if="{{detailOpen}}" class="dialog-mask" catchtouchmove="noop" catchtap="closeDetailDialog">
+    <view class="dialog dialog-detail" catchtap="noop">
+      <view class="detail-hero cover-{{detail.coverIndex}}">
+        <view class="dialog-close detail-close" catchtap="closeDetailDialog">×</view>
+        <view class="detail-hero-row">
+          <view class="detail-hero-cover">
+            <text class="detail-hero-cover-genre">{{detail.genre}}</text>
+            <text class="detail-hero-cover-title">{{detail.title}}</text>
+          </view>
+          <view class="detail-hero-meta">
+            <view class="detail-hero-genre">{{detail.genre}}</view>
+            <view class="detail-hero-title">{{detail.title}}</view>
+            <view class="detail-hero-author">{{detail.author}}</view>
+            <view wx:if="{{detail.finishedAt}}" class="detail-hero-finished">读完于 {{detail.finishedAt}}</view>
+          </view>
+        </view>
+      </view>
+
+      <scroll-view scroll-y="{{true}}" class="detail-body">
+        <view class="detail-row">
+          <view class="detail-block">
+            <view class="field-label">阅读状态</view>
+            <view class="status-group">
+              <view
+                wx:for="{{STATUS_OPTIONS}}"
+                wx:key="*this"
+                class="status-btn status-btn-pill {{detail.status === item ? 'status-btn-active' : ''}}"
+                data-status="{{item}}"
+                bindtap="onDetailStatusTap"
+              >{{item}}</view>
+            </view>
+          </view>
+
+          <view class="detail-block">
+            <view class="field-label">我的评分</view>
+            <view class="rating">
+              <view
+                wx:for="{{starsTemplate}}"
+                wx:key="*this"
+                class="star star-lg {{item <= detail.rating ? 'star-on' : ''}}"
+                data-value="{{item}}"
+                catchtap="onDetailRatingTap"
+              >★</view>
+              <text class="rating-text">{{detail.rating}} / 5</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="divider"></view>
+
+        <view class="field">
+          <view class="field-label">读书心得</view>
+          <textarea
+            class="field-textarea field-textarea-lg"
+            placeholder="写下你对这本书的感悟、收获与思考……"
+            placeholder-class="field-placeholder"
+            maxlength="2000"
+            value="{{detail.notes}}"
+            bindinput="onDetailNotesInput"
+          />
+        </view>
+
+        <view class="field">
+          <view class="field-label">❝ 精彩引言</view>
+          <textarea
+            class="field-textarea field-textarea-italic"
+            placeholder="摘录书中令你印象深刻的一段话……"
+            placeholder-class="field-placeholder"
+            maxlength="500"
+            value="{{detail.quote}}"
+            bindinput="onDetailQuoteInput"
+          />
+        </view>
+      </scroll-view>
+
+      <view class="dialog-footer dialog-footer-between">
+        <view class="btn btn-danger-ghost" catchtap="onDeleteBook">🗑 删除书籍</view>
+        <view class="btn btn-primary {{detail.edited ? '' : 'btn-disabled'}}" catchtap="onSaveDetail">💾 保存心得</view>
+      </view>
+    </view>
+  </view>
+</view>

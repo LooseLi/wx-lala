@@ -68,6 +68,12 @@ Page({
       },
       {
         id: 6,
+        icon: './images/event/icon-jumao.png',
+        title: '我的书单',
+        page: '/pages/books/index',
+      },
+      {
+        id: 7,
         icon: './images/event/icon-gengduo.png',
         title: '想想要新加些啥',
         page: '',

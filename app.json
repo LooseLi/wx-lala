@@ -10,7 +10,8 @@
     "pages/index/components/things/index",
     "pages/index/components/holidays/index",
     "pages/index/components/todo/index",
-    "pages/memories/index"
+    "pages/memories/index",
+    "pages/books/index"
   ],
   "lazyCodeLoading": "requiredComponents",
   "window": {

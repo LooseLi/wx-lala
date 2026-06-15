@@ -90,13 +90,44 @@
 
 建议在控制台为 **`openid` + `dateStr` 建唯一复合索引**，避免并发重复发送。
 
+## books 集合（我的书单）
+
+用于记录读过的书籍与读书心得，由 `pages/books/index` 页面读写。
+
+```json
+{
+  "_id": "string",
+  "_openid": "string",       // 自动写入，作为创建者标记
+  "title": "string",         // 书名
+  "author": "string",        // 作者
+  "genre": "string",         // 文学 / 历史 / 哲学 / 科技 / 社科 / 传记 / 小说 / 心理
+  "status": "string",        // 想读 | 在读 | 已读
+  "rating": "number",        // 0-5
+  "notes": "string",         // 读书心得（长文）
+  "quote": "string",         // 精彩引言
+  "finishedAt": "string",    // YYYY-MM，可空
+  "sortAt": "number",        // 排序时间戳（毫秒），用于列表 orderBy desc
+  "createdAt": "Date",       // 服务端时间
+  "updatedAt": "Date"        // 服务端时间
+}
+```
+
+权限设置：
+- 读取权限：仅创建者可读
+- 写入权限：仅创建者可写
+- 更新权限：仅创建者可更新
+- 删除权限：仅创建者可删除
+
+索引建议：
+- `sortAt` 单字段索引（降序）：列表分页
+
 ## 创建步骤
 
 1. 打开微信开发者工具
 2. 切换到云开发控制台
 3. 选择"数据库"
 4. 点击"添加集合"
-5. 分别创建 checkInRecords、userPoints、**user_settings**、**todo_daily_remind** 等集合
+5. 分别创建 checkInRecords、userPoints、**user_settings**、**todo_daily_remind**、**books** 等集合
 6. 为每个集合设置相应的权限
 
 ## 索引设置
