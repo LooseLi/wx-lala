@@ -307,9 +307,9 @@ Page({
     } = this.data.addForm;
     const t = (title || '').trim();
     const a = (author || '').trim();
-    if (!t || !a) {
+    if (!t) {
       wx.showToast({
-        title: '书名和作者不能为空',
+        title: '书名不能为空',
         icon: 'none'
       });
       return;

@@ -116,8 +116,8 @@
   </view>
 
   <!-- 添加书籍弹窗 -->
-  <view wx:if="{{addOpen}}" class="dialog-mask" catchtouchmove="noop" catchtap="closeAddDialog">
-    <view class="dialog dialog-add" catchtap="noop">
+  <view wx:if="{{addOpen}}" class="dialog-mask" catchtouchmove="noop">
+    <view class="dialog dialog-add">
       <view class="dialog-head">
         <view class="dialog-title">添加书籍</view>
         <view class="dialog-desc">填写书籍信息，稍后可以补充读书心得</view>
@@ -131,7 +131,7 @@
         </view>
 
         <view class="field">
-          <view class="field-label">作者 *</view>
+          <view class="field-label">作者（可选）</view>
           <input class="field-input" placeholder="例：余华" placeholder-class="field-placeholder" value="{{addForm.author}}" bindinput="onAddAuthorInput" />
         </view>
 
@@ -157,7 +157,7 @@
 
       <view class="dialog-footer">
         <view class="btn btn-ghost" catchtap="closeAddDialog">取消</view>
-        <view class="btn btn-primary" catchtap="onConfirmAdd">＋ 添加到书单</view>
+        <view class="btn btn-primary {{addForm.title.length === 0 ? 'btn-disabled' : ''}}" catchtap="onConfirmAdd">＋ 添加到书单</view>
       </view>
     </view>
   </view>
