@@ -616,15 +616,15 @@
 }
 
 .field-textarea-sm {
-  height: 70rpx;
+  /* height: 70rpx; */
 }
 
 .field-textarea-lg {
-  height: 200rpx;
+  /* height: 140rpx; */
 }
 
 .field-textarea-italic {
-  height: 140rpx;
+  /* height: 140rpx; */
   font-style: italic;
 }
 
@@ -713,7 +713,7 @@
 }
 
 .dialog-detail {
-  max-width: 660rpx;
+  /* max-width: 660rpx; */
   padding: 0;
 }
 
@@ -811,8 +811,12 @@
 
 .detail-body {
   flex: 1;
-  padding: 32rpx 32rpx 0;
-  max-height: 60vh;
+  overflow: hidden;
+  height: 100%;
+}
+
+.detail-body-inner {
+  padding: 32rpx 32rpx 24rpx;
   display: flex;
   flex-direction: column;
   gap: 28rpx;

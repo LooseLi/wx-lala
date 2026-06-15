@@ -766,6 +766,7 @@
 // ─── 详情弹窗 ────────────────────────────────────────────────
 .dialog-detail {
   max-width: 660rpx;
+  height: 90vh;
   padding: 0;
 }
 
@@ -863,8 +864,12 @@
 
 .detail-body {
   flex: 1;
-  padding: 32rpx 32rpx 0;
-  max-height: 60vh;
+  overflow: hidden;
+  height: 100%;
+}
+
+.detail-body-inner {
+  padding: 32rpx 32rpx 24rpx;
   display: flex;
   flex-direction: column;
   gap: 28rpx;

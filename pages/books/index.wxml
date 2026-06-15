@@ -90,7 +90,7 @@
 
               <view class="book-tags">
                 <view class="book-status book-status-{{item.statusMod}}">
-                  <text class="book-status-dot"></text>
+                  <!-- <text class="book-status-dot"></text> -->
                   <text>{{item.status}}</text>
                 </view>
                 <view class="book-genre-tag">{{item.genre}}</view>
@@ -179,34 +179,36 @@
         </view>
       </view>
 
-      <scroll-view scroll-y="{{true}}" class="detail-body">
-        <view class="detail-row">
-          <view class="detail-block">
-            <view class="field-label">阅读状态</view>
-            <view class="status-group">
-              <view wx:for="{{STATUS_OPTIONS}}" wx:key="*this" class="status-btn status-btn-pill {{detail.status === item ? 'status-btn-active' : ''}}" data-status="{{item}}" bindtap="onDetailStatusTap">{{item}}</view>
+      <scroll-view scroll-y="{{true}}" class="detail-body" style="height:100%">
+        <view class="detail-body-inner">
+          <view class="detail-row">
+            <view class="detail-block">
+              <view class="field-label">阅读状态</view>
+              <view class="status-group">
+                <view wx:for="{{STATUS_OPTIONS}}" wx:key="*this" class="status-btn status-btn-pill {{detail.status === item ? 'status-btn-active' : ''}}" data-status="{{item}}" bindtap="onDetailStatusTap">{{item}}</view>
+              </view>
+            </view>
+
+            <view class="detail-block">
+              <view class="field-label">我的评分</view>
+              <view class="rating">
+                <view wx:for="{{starsTemplate}}" wx:key="*this" class="star star-lg {{item <= detail.rating ? 'star-on' : ''}}" data-value="{{item}}" catchtap="onDetailRatingTap">★</view>
+                <text class="rating-text">{{detail.rating}} / 5</text>
+              </view>
             </view>
           </view>
 
-          <view class="detail-block">
-            <view class="field-label">我的评分</view>
-            <view class="rating">
-              <view wx:for="{{starsTemplate}}" wx:key="*this" class="star star-lg {{item <= detail.rating ? 'star-on' : ''}}" data-value="{{item}}" catchtap="onDetailRatingTap">★</view>
-              <text class="rating-text">{{detail.rating}} / 5</text>
-            </view>
+          <view class="divider"></view>
+
+          <view class="field">
+            <view class="field-label">读书心得</view>
+            <textarea class="field-textarea field-textarea-lg" placeholder="写下你对这本书的感悟、收获与思考……" placeholder-class="field-placeholder" maxlength="2000" value="{{detail.notes}}" bindinput="onDetailNotesInput" />
           </view>
-        </view>
 
-        <view class="divider"></view>
-
-        <view class="field">
-          <view class="field-label">读书心得</view>
-          <textarea class="field-textarea field-textarea-lg" placeholder="写下你对这本书的感悟、收获与思考……" placeholder-class="field-placeholder" maxlength="2000" value="{{detail.notes}}" bindinput="onDetailNotesInput" />
-        </view>
-
-        <view class="field">
-          <view class="field-label">❝ 精彩引言</view>
-          <textarea class="field-textarea field-textarea-italic" placeholder="摘录书中令你印象深刻的一段话……" placeholder-class="field-placeholder" maxlength="500" value="{{detail.quote}}" bindinput="onDetailQuoteInput" />
+          <view class="field">
+            <view class="field-label">❝ 精彩引言</view>
+            <textarea class="field-textarea field-textarea-italic" placeholder="摘录书中令你印象深刻的一段话……" placeholder-class="field-placeholder" maxlength="500" value="{{detail.quote}}" bindinput="onDetailQuoteInput" />
+          </view>
         </view>
       </scroll-view>
 
