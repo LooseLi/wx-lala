@@ -176,15 +176,10 @@
   font-weight: 500;
 }
 
-.genre-scroll {
-  width: 100%;
-  white-space: nowrap;
-}
-
 .genre-list {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   gap: 14rpx;
-  padding: 4rpx 0;
 }
 
 .genre-chip {
@@ -512,12 +507,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32rpx;
+  padding: 40rpx;
 }
 
 .dialog {
   width: 100%;
-  max-width: 640rpx;
+  /* max-width: 640rpx; */
   max-height: 90vh;
   background-color: var(--background-secondary, #fff);
   border-radius: 28rpx;
@@ -528,7 +523,7 @@
 }
 
 .dialog-add {
-  max-width: 600rpx;
+  /* max-width: 600rpx; */
 }
 
 .dialog-head {
@@ -618,6 +613,10 @@
   line-height: 1.6;
   color: var(--text-primary);
   box-sizing: border-box;
+}
+
+.field-textarea-sm {
+  height: 70rpx;
 }
 
 .field-textarea-lg {

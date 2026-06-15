@@ -199,15 +199,10 @@
   font-weight: 500;
 }
 
-.genre-scroll {
-  width: 100%;
-  white-space: nowrap;
-}
-
 .genre-list {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   gap: 14rpx;
-  padding: 4rpx 0;
 }
 
 .genre-chip {

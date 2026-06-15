@@ -46,11 +46,9 @@
       <!-- 分类筛选 -->
       <view class="genre-section">
         <view class="genre-title">按分类筛选</view>
-        <scroll-view scroll-x="{{true}}" class="genre-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
-          <view class="genre-list">
-            <view wx:for="{{GENRES}}" wx:key="*this" class="genre-chip {{activeGenre === item ? 'genre-chip-active' : ''}}" data-genre="{{item}}" bindtap="onTapGenre">{{item}}</view>
-          </view>
-        </scroll-view>
+        <view class="genre-list">
+          <view wx:for="{{GENRES}}" wx:key="*this" class="genre-chip {{activeGenre === item ? 'genre-chip-active' : ''}}" data-genre="{{item}}" bindtap="onTapGenre">{{item}}</view>
+        </view>
       </view>
 
       <view class="divider"></view>
