@@ -18,35 +18,19 @@
     <view class="container">
       <!-- 统计卡片 -->
       <view class="stats">
-        <view
-          class="stat-card {{activeStatus === '全部' ? 'stat-card-active' : ''}}"
-          data-status="全部"
-          bindtap="onTapStatusFilter"
-        >
+        <view class="stat-card {{activeStatus === '全部' ? 'stat-card-active' : ''}}" data-status="全部" bindtap="onTapStatusFilter">
           <text class="stat-value">{{stats.total}}</text>
           <text class="stat-label">全部书籍</text>
         </view>
-        <view
-          class="stat-card {{activeStatus === '已读' ? 'stat-card-active' : ''}}"
-          data-status="已读"
-          bindtap="onTapStatusFilter"
-        >
+        <view class="stat-card {{activeStatus === '已读' ? 'stat-card-active' : ''}}" data-status="已读" bindtap="onTapStatusFilter">
           <text class="stat-value">{{stats.read}}</text>
           <text class="stat-label">已读</text>
         </view>
-        <view
-          class="stat-card {{activeStatus === '在读' ? 'stat-card-active' : ''}}"
-          data-status="在读"
-          bindtap="onTapStatusFilter"
-        >
+        <view class="stat-card {{activeStatus === '在读' ? 'stat-card-active' : ''}}" data-status="在读" bindtap="onTapStatusFilter">
           <text class="stat-value">{{stats.reading}}</text>
           <text class="stat-label">在读</text>
         </view>
-        <view
-          class="stat-card {{activeStatus === '想读' ? 'stat-card-active' : ''}}"
-          data-status="想读"
-          bindtap="onTapStatusFilter"
-        >
+        <view class="stat-card {{activeStatus === '想读' ? 'stat-card-active' : ''}}" data-status="想读" bindtap="onTapStatusFilter">
           <text class="stat-value">{{stats.wishlist}}</text>
           <text class="stat-label">想读</text>
         </view>
@@ -55,14 +39,7 @@
       <!-- 搜索框 -->
       <view class="search-wrap">
         <text class="search-icon">🔍</text>
-        <input
-          class="search-input"
-          placeholder="搜索书名或作者……"
-          placeholder-class="search-placeholder"
-          value="{{search}}"
-          confirm-type="search"
-          bindinput="onSearchInput"
-        />
+        <input class="search-input" placeholder="搜索书名或作者……" placeholder-class="search-placeholder" value="{{search}}" confirm-type="search" bindinput="onSearchInput" />
         <view wx:if="{{search}}" class="search-clear" catchtap="onClearSearch">×</view>
       </view>
 
@@ -71,13 +48,7 @@
         <view class="genre-title">按分类筛选</view>
         <scroll-view scroll-x="{{true}}" class="genre-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
           <view class="genre-list">
-            <view
-              wx:for="{{GENRES}}"
-              wx:key="*this"
-              class="genre-chip {{activeGenre === item ? 'genre-chip-active' : ''}}"
-              data-genre="{{item}}"
-              bindtap="onTapGenre"
-            >{{item}}</view>
+            <view wx:for="{{GENRES}}" wx:key="*this" class="genre-chip {{activeGenre === item ? 'genre-chip-active' : ''}}" data-genre="{{item}}" bindtap="onTapGenre">{{item}}</view>
           </view>
         </scroll-view>
       </view>
@@ -99,14 +70,7 @@
         </view>
 
         <view wx:else class="book-list">
-          <view
-            wx:for="{{filtered}}"
-            wx:key="_id"
-            class="book-card"
-            hover-class="book-card-hover"
-            data-id="{{item._id}}"
-            bindtap="onOpenDetail"
-          >
+          <view wx:for="{{filtered}}" wx:key="_id" class="book-card" hover-class="book-card-hover" data-id="{{item._id}}" bindtap="onOpenDetail">
             <view class="book-cover cover-{{item.coverIndex}}">
               <view class="book-cover-lines"></view>
               <view class="book-cover-content">
@@ -135,12 +99,7 @@
               </view>
 
               <view class="book-stars">
-                <view
-                  wx:for="{{starsTemplate}}"
-                  wx:for-item="s"
-                  wx:key="*this"
-                  class="star {{s <= item.rating ? 'star-on' : ''}}"
-                >★</view>
+                <view wx:for="{{starsTemplate}}" wx:for-item="s" wx:key="*this" class="star {{s <= item.rating ? 'star-on' : ''}}">★</view>
               </view>
 
               <view wx:if="{{item.notesPreview}}" class="book-notes">{{item.notesPreview}}{{(item.notes && item.notes.length > 60) ? '…' : ''}}</view>
@@ -168,62 +127,31 @@
       <view class="dialog-body">
         <view class="field">
           <view class="field-label">书名 *</view>
-          <input
-            class="field-input"
-            placeholder="例：活着"
-            placeholder-class="field-placeholder"
-            value="{{addForm.title}}"
-            bindinput="onAddTitleInput"
-          />
+          <input class="field-input" placeholder="例：活着" placeholder-class="field-placeholder" value="{{addForm.title}}" bindinput="onAddTitleInput" />
         </view>
 
         <view class="field">
           <view class="field-label">作者 *</view>
-          <input
-            class="field-input"
-            placeholder="例：余华"
-            placeholder-class="field-placeholder"
-            value="{{addForm.author}}"
-            bindinput="onAddAuthorInput"
-          />
+          <input class="field-input" placeholder="例：余华" placeholder-class="field-placeholder" value="{{addForm.author}}" bindinput="onAddAuthorInput" />
         </view>
 
         <view class="field">
           <view class="field-label">分类</view>
           <view class="chips">
-            <view
-              wx:for="{{GENRE_OPTIONS}}"
-              wx:key="*this"
-              class="chip {{addForm.genre === item ? 'chip-active' : ''}}"
-              data-genre="{{item}}"
-              bindtap="onAddGenreTap"
-            >{{item}}</view>
+            <view wx:for="{{GENRE_OPTIONS}}" wx:key="*this" class="chip {{addForm.genre === item ? 'chip-active' : ''}}" data-genre="{{item}}" bindtap="onAddGenreTap">{{item}}</view>
           </view>
         </view>
 
         <view class="field">
           <view class="field-label">阅读状态</view>
           <view class="status-group">
-            <view
-              wx:for="{{STATUS_OPTIONS}}"
-              wx:key="*this"
-              class="status-btn {{addForm.status === item ? 'status-btn-active' : ''}}"
-              data-status="{{item}}"
-              bindtap="onAddStatusTap"
-            >{{item}}</view>
+            <view wx:for="{{STATUS_OPTIONS}}" wx:key="*this" class="status-btn {{addForm.status === item ? 'status-btn-active' : ''}}" data-status="{{item}}" bindtap="onAddStatusTap">{{item}}</view>
           </view>
         </view>
 
         <view class="field">
           <view class="field-label">初步印象（可选）</view>
-          <textarea
-            class="field-textarea"
-            placeholder="简单写一点推荐理由或想读的原因……"
-            placeholder-class="field-placeholder"
-            maxlength="200"
-            value="{{addForm.notes}}"
-            bindinput="onAddNotesInput"
-          />
+          <textarea class="field-textarea" placeholder="简单写一点推荐理由或想读的原因……" placeholder-class="field-placeholder" maxlength="200" value="{{addForm.notes}}" bindinput="onAddNotesInput" />
         </view>
       </view>
 
@@ -258,26 +186,14 @@
           <view class="detail-block">
             <view class="field-label">阅读状态</view>
             <view class="status-group">
-              <view
-                wx:for="{{STATUS_OPTIONS}}"
-                wx:key="*this"
-                class="status-btn status-btn-pill {{detail.status === item ? 'status-btn-active' : ''}}"
-                data-status="{{item}}"
-                bindtap="onDetailStatusTap"
-              >{{item}}</view>
+              <view wx:for="{{STATUS_OPTIONS}}" wx:key="*this" class="status-btn status-btn-pill {{detail.status === item ? 'status-btn-active' : ''}}" data-status="{{item}}" bindtap="onDetailStatusTap">{{item}}</view>
             </view>
           </view>
 
           <view class="detail-block">
             <view class="field-label">我的评分</view>
             <view class="rating">
-              <view
-                wx:for="{{starsTemplate}}"
-                wx:key="*this"
-                class="star star-lg {{item <= detail.rating ? 'star-on' : ''}}"
-                data-value="{{item}}"
-                catchtap="onDetailRatingTap"
-              >★</view>
+              <view wx:for="{{starsTemplate}}" wx:key="*this" class="star star-lg {{item <= detail.rating ? 'star-on' : ''}}" data-value="{{item}}" catchtap="onDetailRatingTap">★</view>
               <text class="rating-text">{{detail.rating}} / 5</text>
             </view>
           </view>
@@ -287,26 +203,12 @@
 
         <view class="field">
           <view class="field-label">读书心得</view>
-          <textarea
-            class="field-textarea field-textarea-lg"
-            placeholder="写下你对这本书的感悟、收获与思考……"
-            placeholder-class="field-placeholder"
-            maxlength="2000"
-            value="{{detail.notes}}"
-            bindinput="onDetailNotesInput"
-          />
+          <textarea class="field-textarea field-textarea-lg" placeholder="写下你对这本书的感悟、收获与思考……" placeholder-class="field-placeholder" maxlength="2000" value="{{detail.notes}}" bindinput="onDetailNotesInput" />
         </view>
 
         <view class="field">
           <view class="field-label">❝ 精彩引言</view>
-          <textarea
-            class="field-textarea field-textarea-italic"
-            placeholder="摘录书中令你印象深刻的一段话……"
-            placeholder-class="field-placeholder"
-            maxlength="500"
-            value="{{detail.quote}}"
-            bindinput="onDetailQuoteInput"
-          />
+          <textarea class="field-textarea field-textarea-italic" placeholder="摘录书中令你印象深刻的一段话……" placeholder-class="field-placeholder" maxlength="500" value="{{detail.quote}}" bindinput="onDetailQuoteInput" />
         </view>
       </scroll-view>
 
