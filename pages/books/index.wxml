@@ -108,7 +108,7 @@
         </view>
 
         <view wx:if="{{loadingMore}}" class="loading-more">加载中...</view>
-        <view wx:elif="{{!hasMore && filtered.length > 0}}" class="loading-end">— 已到底啦 —</view>
+        <view wx:elif="{{!hasMore && filtered.length > 0}}" class="loading-end">— 已经到底啦 —</view>
       </view>
     </view>
   </view>
@@ -202,12 +202,12 @@
 
           <view class="field">
             <view class="field-label">读书心得</view>
-            <textarea class="field-textarea field-textarea-lg" placeholder="写下你对这本书的感悟、收获与思考……" placeholder-class="field-placeholder" maxlength="2000" value="{{detail.notes}}" bindinput="onDetailNotesInput" />
+            <textarea class="field-textarea field-textarea-lg" placeholder="写下你的碎碎念～" placeholder-class="field-placeholder" maxlength="2000" value="{{detail.notes}}" bindinput="onDetailNotesInput" />
           </view>
 
           <view class="field">
-            <view class="field-label">❝ 精彩引言</view>
-            <textarea class="field-textarea field-textarea-italic" placeholder="摘录书中令你印象深刻的一段话……" placeholder-class="field-placeholder" maxlength="500" value="{{detail.quote}}" bindinput="onDetailQuoteInput" />
+            <view class="field-label">精彩引言</view>
+            <textarea class="field-textarea field-textarea-italic" placeholder="可以摘录书中令人印象深刻的话喔～" placeholder-class="field-placeholder" maxlength="500" value="{{detail.quote}}" bindinput="onDetailQuoteInput" />
           </view>
         </view>
       </scroll-view>

@@ -492,7 +492,7 @@ Page({
     if (!_id) return;
     wx.showModal({
       title: '删除书籍',
-      content: `确认删除《${title || '这本书'}》及其读书心得？`,
+      content: '确认要删除嘛？',
       confirmColor: '#ff3b30',
       success: async (res) => {
         if (!res.confirm) return;
