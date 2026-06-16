@@ -77,7 +77,7 @@ page {
 // 位置信息
 .location {
   @include flex-align-center;
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 .icon-dingwei {
@@ -87,8 +87,8 @@ page {
 }
 
 .temperature {
-  font-size: 48px;
-  padding: 14px 0;
+  font-size: 32px;
+  padding: 8px 0;
 }
 
 // 通用布局
@@ -102,7 +102,7 @@ page {
 
 // 风力信息
 .wind {
-  margin: 6px 0;
+  margin: 3px 0;
 }
 
 .windpower {

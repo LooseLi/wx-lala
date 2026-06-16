@@ -68,7 +68,7 @@ Page({
       },
       {
         id: 6,
-        icon: './images/event/icon-jumao.png',
+        icon: './images/event/icon-heimao.png',
         title: '我的书单',
         page: '/pages/books/index',
       },
