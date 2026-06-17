@@ -41,7 +41,7 @@
             <view class="stat-hint">种</view>
           </view>
           <view class="stat-card">
-            <view class="stat-label">同比变化</view>
+            <view class="stat-label">同比去年</view>
             <block wx:if="{{hasHistory}}">
               <view class="stat-value {{isPositive ? 'value-positive' : 'value-negative'}}">
                 {{isPositive ? '+' : '-'}}{{growthAmountStr}}

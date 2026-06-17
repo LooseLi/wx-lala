@@ -103,10 +103,10 @@
   word-break: break-all;
 }
 .stat-value.value-positive {
-  color: #10b981;
+  color: #ef4444;
 }
 .stat-value.value-negative {
-  color: #ef4444;
+  color: #10b981;
 }
 .stat-value.stat-dash {
   color: var(--text-tertiary);
@@ -117,10 +117,10 @@
   color: var(--text-tertiary);
 }
 .stat-hint.hint-positive {
-  color: #10b981;
+  color: #ef4444;
 }
 .stat-hint.hint-negative {
-  color: #ef4444;
+  color: #10b981;
 }
 
 .card {
