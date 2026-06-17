@@ -526,13 +526,13 @@ Page({
 
   async onArchive() {
     const year = parseInt(this.data.archiveYear, 10);
-    if (!year || year < 1900 || year > 2100) {
-      this.setData({ archiveError: '请输入有效年份（1900–2100）' });
+    if (!year || year < 2000 || year > 2100) {
+      wx.showToast({ title: '请输入有效年份（2000–2100）', icon: 'none' });
       return;
     }
     const existingYears = this._rawHistory.map(r => r.year);
     if (existingYears.includes(year)) {
-      this.setData({ archiveError: '该年份已有归档记录' });
+      wx.showToast({ title: '该年份已归档，请先删除已有归档', icon: 'none' });
       return;
     }
 
@@ -552,14 +552,14 @@ Page({
         },
       });
       if (!res.result || !res.result.success) {
-        this.setData({ archiveError: (res.result && res.result.error) || '归档失败' });
+        wx.showToast({ title: (res.result && res.result.error) || '归档失败', icon: 'none' });
         return;
       }
       await this.loadData();
       this.setData({ archiveVisible: false });
       wx.showToast({ title: '归档成功', icon: 'success' });
     } catch {
-      this.setData({ archiveError: '归档失败，请重试' });
+      wx.showToast({ title: '归档失败，请重试', icon: 'none' });
     } finally {
       wx.hideLoading();
     }
