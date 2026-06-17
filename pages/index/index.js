@@ -75,8 +75,8 @@ Page({
       {
         id: 7,
         icon: './images/event/icon-gengduo.png',
-        title: '想想要新加些啥',
-        page: '',
+        title: '资产配置',
+        page: '/packageAssets/pages/assets/index',
       },
       // {
       //   id: 5,

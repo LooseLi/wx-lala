@@ -1,0 +1,315 @@
+<view class="page-wrapper">
+  <view class="assets-page">
+    <!-- ─── 顶部 Header ─────────────────────────────── -->
+    <view class="header">
+      <view class="header-left">
+        <view class="header-logo">💰</view>
+        <view class="header-titles">
+          <view class="header-title">资产配置</view>
+          <view class="header-subtitle">记录 · 分析 · 成长</view>
+        </view>
+      </view>
+      <view class="header-actions">
+        <view
+          class="btn-ghost {{!currentAssets.length ? 'btn-disabled' : ''}}"
+          bindtap="openArchiveDialog"
+        >
+          归档
+        </view>
+        <view class="btn-primary" bindtap="openEditorDialog">编辑配置</view>
+      </view>
+    </view>
+
+    <!-- ─── 主体内容 ────────────────────────────────── -->
+    <view class="container">
+      <!-- 加载中 -->
+      <view wx:if="{{loading}}" class="loading-wrap">
+        <view class="loading-text">加载中...</view>
+      </view>
+
+      <block wx:else>
+        <!-- 统计卡片 -->
+        <view class="stats-grid">
+          <view class="stat-card">
+            <view class="stat-label">当前总资产</view>
+            <view class="stat-value">{{totalAmountStr}}</view>
+            <view class="stat-hint">元</view>
+          </view>
+          <view class="stat-card">
+            <view class="stat-label">资产类别</view>
+            <view class="stat-value">{{categoryCount}}</view>
+            <view class="stat-hint">种</view>
+          </view>
+          <view class="stat-card">
+            <view class="stat-label">同比变化</view>
+            <block wx:if="{{hasHistory}}">
+              <view class="stat-value {{isPositive ? 'value-positive' : 'value-negative'}}">
+                {{isPositive ? '+' : '-'}}{{growthAmountStr}}
+              </view>
+              <view
+                wx:if="{{growthPercent}}"
+                class="stat-hint {{isPositive ? 'hint-positive' : 'hint-negative'}}"
+              >
+                {{isPositive ? '↑' : '↓'}} {{growthPercent}}%
+              </view>
+            </block>
+            <block wx:else>
+              <view class="stat-value stat-dash">—</view>
+              <view class="stat-hint">暂无对比</view>
+            </block>
+          </view>
+        </view>
+
+        <!-- 当前资产卡片 -->
+        <view class="card">
+          <view class="card-header">
+            <view>
+              <view class="card-title">当前资产配置</view>
+              <view class="card-subtitle">共 {{currentAssets.length}} 类资产</view>
+            </view>
+            <view class="btn-ghost-sm" bindtap="openEditorDialog">编辑</view>
+          </view>
+
+          <block wx:if="{{currentAssets.length}}">
+            <!-- 环形图 -->
+            <view class="donut-wrap">
+              <canvas type="2d" id="donutCanvas" class="donut-canvas"></canvas>
+              <view class="donut-center">
+                <view class="donut-center-label">总资产</view>
+                <view class="donut-center-value">{{totalAmountStr}}</view>
+              </view>
+            </view>
+            <!-- 图例 -->
+            <view class="donut-legend">
+              <view wx:for="{{donutLegend}}" wx:key="id" class="legend-item">
+                <view class="legend-dot" style="background-color:{{item.color}}"></view>
+                <view class="legend-name">{{item.name}}</view>
+                <view class="legend-percent">{{item.percent}}%</view>
+              </view>
+            </view>
+          </block>
+
+          <view wx:else class="empty-tip">
+            <view class="empty-icon">📊</view>
+            <view class="empty-text">暂无资产数据，点击「编辑配置」开始记录</view>
+          </view>
+        </view>
+
+        <!-- 历年记录卡片 -->
+        <view class="card">
+          <view class="card-header">
+            <view>
+              <view class="card-title">历年资产配置</view>
+              <view class="card-subtitle">共 {{history.length}} 条记录</view>
+            </view>
+            <view class="view-toggle">
+              <view
+                class="toggle-btn {{historyView === 'chart' ? 'toggle-active' : ''}}"
+                data-view="chart"
+                bindtap="switchView"
+              >
+                折线图
+              </view>
+              <view
+                class="toggle-btn {{historyView === 'table' ? 'toggle-active' : ''}}"
+                data-view="table"
+                bindtap="switchView"
+              >
+                列表
+              </view>
+            </view>
+          </view>
+
+          <!-- 折线图模式 -->
+          <block wx:if="{{historyView === 'chart'}}">
+            <block wx:if="{{history.length >= 2}}">
+              <canvas type="2d" id="lineCanvas" class="line-canvas"></canvas>
+              <view class="line-legend">
+                <view wx:for="{{lineLegend}}" wx:key="name" class="line-legend-item">
+                  <view
+                    class="line-legend-line {{item.isTotal ? '' : 'line-dashed'}}"
+                    style="background-color:{{item.color}}"
+                  ></view>
+                  <view class="line-legend-name">{{item.name}}</view>
+                </view>
+              </view>
+            </block>
+            <view wx:else class="empty-tip">
+              <view class="empty-icon">📈</view>
+              <view class="empty-text">至少需要 2 条历史记录才能显示折线图</view>
+            </view>
+          </block>
+
+          <!-- 列表模式 -->
+          <view wx:else class="history-table">
+            <block wx:if="{{history.length}}">
+              <view wx:for="{{history}}" wx:key="_id" class="history-row">
+                <view
+                  class="history-row-header"
+                  data-year="{{item.year}}"
+                  bindtap="toggleYearExpand"
+                >
+                  <view class="history-year-info">
+                    <view class="history-year">{{item.year}} 年</view>
+                    <view wx:if="{{item.note}}" class="history-note">{{item.note}}</view>
+                  </view>
+                  <view class="history-row-right">
+                    <view class="history-total">{{item.totalAmountStr}}</view>
+                    <view class="history-chevron">{{expandedYears[item.year] ? '∧' : '∨'}}</view>
+                  </view>
+                </view>
+
+                <!-- Top3 标签 -->
+                <view class="history-badges">
+                  <view
+                    wx:for="{{item.top3}}"
+                    wx:key="id"
+                    wx:for-item="asset"
+                    class="asset-badge"
+                    style="border-left-color:{{asset.color}}"
+                  >
+                    {{asset.name}} {{asset.percent}}%
+                  </view>
+                </view>
+
+                <!-- 展开详情 -->
+                <view wx:if="{{expandedYears[item.year]}}" class="history-detail">
+                  <view
+                    wx:for="{{item.assets}}"
+                    wx:key="id"
+                    wx:for-item="asset"
+                    class="detail-item"
+                  >
+                    <view class="detail-dot" style="background-color:{{asset.color}}"></view>
+                    <view class="detail-name">{{asset.name}}</view>
+                    <view class="detail-amount">{{asset.amountStr}}</view>
+                    <view class="detail-percent">{{asset.percent}}%</view>
+                  </view>
+                </view>
+
+                <view class="history-delete-row">
+                  <view
+                    class="history-delete-btn"
+                    data-id="{{item._id}}"
+                    data-year="{{item.year}}"
+                    catchtap="onDeleteRecord"
+                  >
+                    删除记录
+                  </view>
+                </view>
+              </view>
+            </block>
+
+            <view wx:else class="empty-tip">
+              <view class="empty-icon">📅</view>
+              <view class="empty-text">还没有历史归档，点击「归档」按钮保存当前配置</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- ─── 遮罩层 ──────────────────────────────────── -->
+  <view
+    class="overlay {{editorVisible || archiveVisible ? 'overlay-show' : ''}}"
+    catchtap="onOverlayTap"
+  ></view>
+
+  <!-- ─── 编辑资产弹窗 ──────────────────────────────── -->
+  <view class="popup {{editorVisible ? 'popup-show' : ''}}">
+    <view class="popup-header">
+      <view class="popup-title">编辑资产配置</view>
+      <view class="popup-close" catchtap="closeEditorDialog">×</view>
+    </view>
+    <scroll-view class="popup-scroll" scroll-y="true" enhanced="true">
+      <view class="popup-body">
+        <view
+          wx:for="{{editingAssets}}"
+          wx:key="id"
+          wx:for-index="eIdx"
+          wx:for-item="eItem"
+          class="asset-edit-row"
+        >
+          <view class="asset-row-top">
+            <view class="color-swatches">
+              <view
+                wx:for="{{ASSET_COLORS}}"
+                wx:key="*this"
+                wx:for-item="clr"
+                wx:for-index="cIdx"
+                class="color-swatch {{eItem.color === clr ? 'color-swatch-selected' : ''}}"
+                style="background-color:{{clr}}"
+                data-eidx="{{eIdx}}"
+                data-cidx="{{cIdx}}"
+                catchtap="onAssetColorChange"
+              ></view>
+            </view>
+            <view class="asset-delete-btn" data-eidx="{{eIdx}}" catchtap="removeAssetItem">
+              ✕
+            </view>
+          </view>
+          <view class="asset-row-inputs">
+            <input
+              class="input-field input-name"
+              value="{{eItem.name}}"
+              placeholder="资产名称"
+              data-eidx="{{eIdx}}"
+              bindinput="onAssetNameChange"
+            />
+            <input
+              class="input-field input-amount"
+              value="{{eItem.amount}}"
+              placeholder="金额（元）"
+              type="digit"
+              data-eidx="{{eIdx}}"
+              bindinput="onAssetAmountChange"
+            />
+          </view>
+        </view>
+
+        <view class="add-asset-btn" catchtap="addAssetItem">
+          <text>＋ 添加资产类别</text>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="popup-footer">
+      <view class="btn-outline" catchtap="closeEditorDialog">取消</view>
+      <view class="btn-primary" catchtap="onSaveAssets">保存</view>
+    </view>
+  </view>
+
+  <!-- ─── 归档弹窗 ──────────────────────────────────── -->
+  <view class="popup {{archiveVisible ? 'popup-show' : ''}}">
+    <view class="popup-header">
+      <view class="popup-title">年度归档</view>
+      <view class="popup-close" catchtap="closeArchiveDialog">×</view>
+    </view>
+    <view class="popup-body archive-body">
+      <view class="form-item">
+        <view class="form-label">归档年份</view>
+        <input
+          class="form-input"
+          value="{{archiveYear}}"
+          type="number"
+          placeholder="请输入年份（如 2025）"
+          bindinput="onArchiveYearChange"
+        />
+      </view>
+      <view class="form-item">
+        <view class="form-label">备注（选填）</view>
+        <input
+          class="form-input"
+          value="{{archiveNote}}"
+          placeholder="例如：初始建仓、加仓操作…"
+          bindinput="onArchiveNoteChange"
+        />
+      </view>
+      <view wx:if="{{archiveError}}" class="form-error">{{archiveError}}</view>
+    </view>
+    <view class="popup-footer">
+      <view class="btn-outline" catchtap="closeArchiveDialog">取消</view>
+      <view class="btn-primary" catchtap="onArchive">归档</view>
+    </view>
+  </view>
+</view>

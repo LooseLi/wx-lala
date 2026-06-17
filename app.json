@@ -64,6 +64,13 @@
         "pages/game-2048/index",
         "pages/points-mall/index"
       ]
+    },
+    {
+      "root": "packageAssets",
+      "name": "assets",
+      "pages": [
+        "pages/assets/index"
+      ]
     }
   ]
 }
