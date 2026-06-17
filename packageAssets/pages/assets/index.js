@@ -130,13 +130,15 @@ Page({
     const total = calcTotal(currentAssets);
     const categoryCount = currentAssets.length;
 
-    // 同比变化
+    // 同比变化：与上一年（当前年份 - 1）的归档记录对比
     let growthAmountStr = '';
     let growthPercent = null;
     let isPositive = true;
-    const hasHistory = this._rawHistory.length > 0;
+    const lastYear = new Date().getFullYear() - 1;
+    const lastYearRecord = this._rawHistory.find(r => r.year === lastYear);
+    const hasHistory = !!lastYearRecord;
     if (hasHistory) {
-      const lastTotal = this._rawHistory[0].totalAmount || calcTotal(this._rawHistory[0].assets);
+      const lastTotal = lastYearRecord.totalAmount || calcTotal(lastYearRecord.assets);
       const diff = total - lastTotal;
       isPositive = diff >= 0;
       growthAmountStr = formatAmount(Math.abs(diff));
