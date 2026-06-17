@@ -33,7 +33,7 @@
   z-index: 2;
   font-size: 14px;
   color: #fafafa;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: ResourceHanRoundedCN-Medium;
 }
 
 .location {
@@ -49,6 +49,7 @@
 }
 
 .temperature {
+  font-family: ResourceHanRoundedCN-Medium;
   font-size: 40px;
   padding: 8px 0;
 }
@@ -106,6 +107,7 @@
   margin-bottom: 14px;
   padding: 10px 0;
   color: #fff;
+  font-family: ResourceHanRoundedCN-Medium;
   font-size: 15px;
   display: flex;
   align-items: center;
@@ -143,6 +145,7 @@
   background-color: #ff4d4f;
   color: white;
   border-radius: 9px;
+  font-family: ResourceHanRoundedCN-Medium;
   font-size: 12px;
   display: flex;
   justify-content: center;

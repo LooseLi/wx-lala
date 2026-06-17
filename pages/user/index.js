@@ -271,6 +271,21 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.loadFontFace({
+      global: true,
+      family: 'ResourceHanRoundedCN-Bold',
+      source: 'url("https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/fonts/user/Resource-Han-Rounded-CN-Bold.ttf?sign=1c9b77047646e5c2e4566a1ebd9069d5&t=1781687365")',
+      success: () => console.log('字体加载成功'),
+      fail: (err) => console.error('字体加载失败:', err),
+    });
+    wx.loadFontFace({
+      global: true,
+      family: 'ResourceHanRoundedCN-Medium-User',
+      source: 'url("https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/fonts/user/Resource-Han-Rounded-CN-Medium.ttf?sign=f64eb0df954aff11022aea2ee9b5dcc9&t=1781688755")',
+      success: () => console.log('字体加载成功'),
+      fail: (err) => console.error('字体加载失败:', err),
+    });
+
     // 生成基于时间的问候语
     this.generateGreeting();
 
