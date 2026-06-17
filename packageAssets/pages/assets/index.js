@@ -311,10 +311,10 @@ Page({
           ctx.fillText(String(yr.year), toX(i), pT + cH + 7);
         });
 
-        // 各类别折线（虚线）
+        // 各类别折线
         catNames.forEach((name, ni) => {
           ctx.beginPath();
-          ctx.setLineDash([5, 3]);
+          ctx.setLineDash([]);
           ctx.strokeStyle = catColors[name];
           ctx.lineWidth = 1.5;
           catVals[ni].forEach((v, i) => {

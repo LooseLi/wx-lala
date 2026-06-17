@@ -127,7 +127,7 @@
               <view class="line-legend">
                 <view wx:for="{{lineLegend}}" wx:key="name" class="line-legend-item">
                   <view
-                    class="line-legend-line {{item.isTotal ? '' : 'line-dashed'}}"
+                    class="line-legend-line"
                     style="background-color:{{item.color}}"
                   ></view>
                   <view class="line-legend-name">{{item.name}}</view>
