@@ -474,6 +474,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
+    wx.loadFontFace({
+      global: true,
+      family: 'ResourceHanRoundedCN-Medium',
+      source: 'url("https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/fonts/home/Resource-Han-Rounded-CN-Medium.ttf?sign=929efeb3f1fb0ac8b1d141eec30468bf&t=1781686259")',
+      success: () => console.log('字体加载成功'),
+      fail: (err) => console.error('字体加载失败:', err),
+    });
+
     // 检查本地存储中的食物数据
     this.checkStoredFoodData();
 

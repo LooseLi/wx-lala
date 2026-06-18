@@ -40,7 +40,7 @@
   font-size: 24rpx;
   color: var(--text-secondary);
   margin-top: 8rpx;
-  font-family: -apple-system, 'SF Pro Text';
+  font-family: ResourceHanRoundedCN-Medium-User;
 }
 
 .days-number,
@@ -49,14 +49,14 @@
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.1;
-  font-family: -apple-system, 'SF Pro Display';
+  font-family: ResourceHanRoundedCN-Bold;
 }
 
 .days-text,
 .points-text {
   font-size: 28rpx;
   color: var(--text-secondary);
-  font-family: -apple-system, 'SF Pro Text';
+  font-family: ResourceHanRoundedCN-Medium-User;
 }
 
 .check-in-button {
@@ -67,7 +67,7 @@
   font-size: 32rpx;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: -apple-system, 'SF Pro Text';
+  font-family: ResourceHanRoundedCN-Medium-User;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -123,7 +123,7 @@
   font-size: 32rpx;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: -apple-system, 'SF Pro Text';
+  font-family: ResourceHanRoundedCN-Medium-User;
   text-align: center;
   width: 100%;
 }
@@ -201,13 +201,11 @@
   color: var(--text-primary);
   display: block;
   margin-bottom: 12rpx;
-  font-family: -apple-system, 'SF Pro Display';
 }
 
 .dialog-subtitle {
   font-size: 28rpx;
   color: var(--text-secondary);
-  font-family: -apple-system, 'SF Pro Text';
 }
 
 /* 补签确认区域 */
@@ -248,7 +246,6 @@
 .points-available {
   color: var(--text-secondary);
   font-size: 24rpx;
-  font-family: -apple-system, 'SF Pro Text';
 }
 
 .confirm-button {
@@ -259,7 +256,6 @@
   text-align: center;
   font-size: 32rpx;
   font-weight: 600;
-  font-family: -apple-system, 'SF Pro Text';
   box-shadow: 0 4rpx 8rpx rgba(var(--primary-color-rgb), 0.2);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
