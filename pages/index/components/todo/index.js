@@ -680,7 +680,7 @@ Page({
     let dueDateObj = null;
     if (dueDate) {
       dueDateObj = new Date(dueDate);
-      dueDateObj.setHours(23, 59, 59, 999); // 设置为当天的最后一秒
+      dueDateObj.setHours(23, 59, 59, 999);
     }
 
     const todoData = {
@@ -689,90 +689,97 @@ Page({
       updateTime: new Date(),
     };
 
-    if (this.data.editMode) {
-      // 首先获取当前待办事项的信息，特别是完成状态
-      todos
-        .doc(this.data.currentTodoId)
-        .get()
-        .then(res => {
-          const currentTodo = res.data;
-          const isCompleted = currentTodo.completed;
+    const doSave = () => {
+      if (this.data.editMode) {
+        todos
+          .doc(this.data.currentTodoId)
+          .get()
+          .then(res => {
+            const currentTodo = res.data;
+            const isCompleted = currentTodo.completed;
 
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-          const isDueDateTodayOrFuture = dueDateObj && dueDateObj >= today;
+            const isDueDateTodayOrFuture = dueDateObj && dueDateObj >= today;
 
-          // 如果是已完成的待办且日期改为今天或未来，则重置为未完成状态
-          let newCompletedStatus = isCompleted;
-          if (isCompleted && isDueDateTodayOrFuture) {
-            newCompletedStatus = false; // 重置为未完成
-          }
+            let newCompletedStatus = isCompleted;
+            if (isCompleted && isDueDateTodayOrFuture) {
+              newCompletedStatus = false;
+            }
 
-          // 更新待办事项，包含新的完成状态
-          todos.doc(this.data.currentTodoId).update({
-            data: {
-              ...todoData,
-              completed: newCompletedStatus,
-            },
-            success: () => {
-              wx.showToast({
-                title: '更新成功',
-                icon: 'success',
-              });
-              this.setData({ showForm: false });
-              this.loadTodos();
-            },
-            fail: err => {
-              wx.showToast({
-                title: '更新失败',
-                icon: 'none',
-              });
-            },
+            todos.doc(this.data.currentTodoId).update({
+              data: {
+                ...todoData,
+                completed: newCompletedStatus,
+              },
+              success: () => {
+                wx.showToast({
+                  title: '更新成功',
+                  icon: 'success',
+                });
+                this.setData({ showForm: false });
+                this.loadTodos();
+              },
+              fail: () => {
+                wx.showToast({
+                  title: '更新失败',
+                  icon: 'none',
+                });
+              },
+            });
+          })
+          .catch(() => {
+            wx.showToast({
+              title: '获取待办信息失败',
+              icon: 'none',
+            });
           });
-        })
-        .catch(err => {
-          wx.showToast({
-            title: '获取待办信息失败',
-            icon: 'none',
-          });
-        });
-      return;
-    }
+        return;
+      }
 
-    // 获取当前用户的openid
-    const openid = wx.getStorageSync('openid');
-    if (!openid) {
-      wx.showToast({
-        title: '先登录喔，去个人中心看看吧~',
-        icon: 'none',
-      });
-      return;
-    }
-
-    // 直接添加待办事项
-    todos.add({
-      data: {
-        ...todoData,
-        openid,
-        completed: false,
-        createTime: new Date(),
-      },
-      success: res => {
+      const openid = wx.getStorageSync('openid');
+      if (!openid) {
         wx.showToast({
-          title: '添加成功',
-          icon: 'success',
-        });
-        this.setData({ showForm: false });
-        this.loadTodos();
-      },
-      fail: err => {
-        wx.showToast({
-          title: '添加失败',
+          title: '先登录喔，去个人中心看看吧~',
           icon: 'none',
         });
-      },
-    });
+        return;
+      }
+
+      todos.add({
+        data: {
+          ...todoData,
+          openid,
+          completed: false,
+          createTime: new Date(),
+        },
+        success: () => {
+          wx.showToast({
+            title: '添加成功',
+            icon: 'success',
+          });
+          this.setData({ showForm: false });
+          this.loadTodos();
+        },
+        fail: () => {
+          wx.showToast({
+            title: '添加失败',
+            icon: 'none',
+          });
+        },
+      });
+    };
+
+    const tmplIds = this.data.digestTmplIds || [];
+    if (this.data.dailyTodoRemindEnabled && tmplIds.length) {
+      wx.requestSubscribeMessage({
+        tmplIds,
+        complete: () => doSave(),
+      });
+    } else {
+      doSave();
+    }
   },
 
   /**
