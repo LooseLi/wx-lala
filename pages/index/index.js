@@ -20,8 +20,7 @@ Page({
     hasAuth: false, //是否有位置权限
     todayUncompletedCount: 0, // 今日未完成待办数量
     themeBackground: '', // 主题背景图片
-    unknow:
-      'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
+    unknow: 'https://6c61-lala-tsum-6gem2abq66c46985-1308328307.tcb.qcloud.la/iconWeathers/wushuju.png?sign=343126b7a94dec3f6074005460ae9d5d&t=1735278996', // 天气图标无数据
     weathers: [],
     announcements: [],
     anniversaryList: [],
@@ -29,8 +28,7 @@ Page({
     holidays: [],
     nowHoliday: null, //当前所处节日
     nextHoliday: null, //下一个节日
-    events: [
-      {
+    events: [{
         id: 0,
         icon: './images/event/icon-jumao.png',
         title: '拉拉松松纪念日',
@@ -74,9 +72,15 @@ Page({
       },
       {
         id: 7,
-        icon: './images/event/icon-gengduo.png',
+        icon: './images/event/icon-baimao.png',
         title: '资产配置',
         page: '/packageAssets/pages/assets/index',
+      },
+      {
+        id: 8,
+        icon: './images/event/icon-gengduo.png',
+        title: '想想要新加些啥',
+        page: '',
       },
       // {
       //   id: 5,
@@ -173,8 +177,7 @@ Page({
           lives.icon = this.data.unknow;
           lives.tips = '快截图！让松松去更新天气小图标吧~';
         }
-        this.setData(
-          {
+        this.setData({
             today: lives,
           },
           () => {
@@ -333,8 +336,12 @@ Page({
         name: 'getAnniversary',
       });
 
-      const { result } = res;
-      const { data } = result;
+      const {
+        result
+      } = res;
+      const {
+        data
+      } = result;
 
       if (data && data.length > 0) {
         // 处理纪念日数据
@@ -542,7 +549,12 @@ Page({
       name: 'getTodos',
       data: {
         action: 'getTodayUncompletedCount',
-        localDate: { year, month, day, dateStr },
+        localDate: {
+          year,
+          month,
+          day,
+          dateStr
+        },
       },
       success: res => {
         if (res.result && res.result.success) {
