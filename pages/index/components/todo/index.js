@@ -29,6 +29,7 @@ Page({
     isFromOtherPage: false,
     showDailyRemindRow: false,
     dailyTodoRemindEnabled: false,
+    subscribeExpired: false,
     /** 页面预拉取，开关联动里须同步调 requestSubscribeMessage（不可先 await 云函数再订阅） */
     digestTmplIds: [],
   },
@@ -92,6 +93,7 @@ Page({
         if (res.result && res.result.success) {
           this.setData({
             dailyTodoRemindEnabled: !!res.result.dailyTodoRemindEnabled,
+            subscribeExpired: !!res.result.subscribeExpired,
           });
         }
       },
@@ -162,7 +164,7 @@ Page({
           data: { action: 'set', enabled: true },
           success: r => {
             if (r.result && r.result.success) {
-              this.setData({ dailyTodoRemindEnabled: true });
+              this.setData({ dailyTodoRemindEnabled: true, subscribeExpired: false });
               wx.showToast({ title: '已开启', icon: 'success' });
             } else {
               this.setData({ dailyTodoRemindEnabled: false });
@@ -182,6 +184,50 @@ Page({
           duration: 3000,
         });
         this.setData({ dailyTodoRemindEnabled: false });
+      },
+    });
+  },
+
+  /**
+   * 续订提醒额度：用户点击后重新弹出订阅授权，补充发送额度
+   */
+  onRenewSubscribe: function () {
+    const tmplIds = this.data.digestTmplIds || [];
+    if (!tmplIds.length) {
+      wx.showToast({ title: '配置加载中，请稍后再试', icon: 'none' });
+      this.loadRemindSettings();
+      return;
+    }
+
+    wx.requestSubscribeMessage({
+      tmplIds,
+      success: res => {
+        const accepted = tmplIds.some(id => res[id] === 'accept');
+        if (!accepted) {
+          wx.showToast({ title: '需要同意订阅才能续订喔', icon: 'none' });
+          return;
+        }
+        wx.cloud.callFunction({
+          name: 'todoRemindSettings',
+          data: { action: 'set', enabled: true },
+          success: r => {
+            if (r.result && r.result.success) {
+              this.setData({ subscribeExpired: false });
+              wx.showToast({ title: '续订成功', icon: 'success' });
+            }
+          },
+          fail: () => {
+            wx.showToast({ title: '保存失败', icon: 'none' });
+          },
+        });
+      },
+      fail: err => {
+        console.error('renewSubscribe', err);
+        wx.showToast({
+          title: (err && err.errMsg) || '订阅失败',
+          icon: 'none',
+          duration: 3000,
+        });
       },
     });
   },

@@ -166,8 +166,28 @@ exports.main = async event => {
       }
       sent += 1;
     } catch (e) {
-      console.error('sendDailyTodoDigest send fail', openid, e);
-      errors.push({ openid, err: e.message || String(e) });
+      const errCode = e.errCode || (e.result && e.result.errCode);
+      console.error('sendDailyTodoDigest send fail', openid, errCode, e);
+
+      if (errCode === 43101) {
+        await db
+          .collection('user_settings')
+          .doc(openid)
+          .update({ data: { subscribeExpired: true, subscribeExpiredAt: new Date() } })
+          .catch(ue => console.error('mark subscribeExpired fail', openid, ue));
+
+        await db.collection('todo_daily_remind').add({
+          data: {
+            openid,
+            dateStr: todayStr,
+            sent: false,
+            skipReason: 'subscribe_expired',
+            createdAt: new Date(),
+          },
+        });
+      }
+
+      errors.push({ openid, errCode, err: e.message || String(e) });
     }
   };
 

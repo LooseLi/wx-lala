@@ -32,10 +32,11 @@ exports.main = async event => {
       return {
         success: true,
         dailyTodoRemindEnabled: !!(res.data && res.data.dailyTodoRemindEnabled),
+        subscribeExpired: !!(res.data && res.data.subscribeExpired),
       };
     } catch (e) {
       if (isDocumentNotFoundError(e)) {
-        return { success: true, dailyTodoRemindEnabled: false };
+        return { success: true, dailyTodoRemindEnabled: false, subscribeExpired: false };
       }
       console.error('todoRemindSettings get', e);
       return { success: false, error: e.message || String(e) };
@@ -45,13 +46,14 @@ exports.main = async event => {
   if (action === 'set') {
     const on = !!enabled;
     try {
-      // 统一用 set：不存在则创建，存在则覆盖该文档（避免 update 未命中时未走 set）
-      await coll.doc(openid).set({
-        data: {
-          dailyTodoRemindEnabled: on,
-          updateTime: db.serverDate(),
-        },
-      });
+      const data = {
+        dailyTodoRemindEnabled: on,
+        updateTime: db.serverDate(),
+      };
+      if (on) {
+        data.subscribeExpired = false;
+      }
+      await coll.doc(openid).set({ data });
       return { success: true };
     } catch (e) {
       console.error('todoRemindSettings set', e);

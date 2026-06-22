@@ -49,6 +49,39 @@
   transform: scale(0.92);
 }
 
+/* 补充订阅授权提示 */
+.subscribe-expired-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin: -10rpx 8rpx 20rpx;
+  padding: 18rpx 28rpx;
+  border-radius: 10rpx;
+  background-color: var(--background-secondary);
+  border: 0.5px solid var(--border-color);
+}
+.subscribe-expired-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.subscribe-renew-btn {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background-color: var(--primary-color);
+  padding: 8rpx 28rpx;
+  border-radius: 8rpx;
+  line-height: 1.6;
+}
+.subscribe-renew-btn:active {
+  opacity: 0.8;
+}
+
 /* 待办事项列表 */
 .todo-list {
   flex: 1;

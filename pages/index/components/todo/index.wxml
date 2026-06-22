@@ -6,6 +6,10 @@
     </view>
     <switch class="daily-remind-switch" checked="{{dailyTodoRemindEnabled}}" bindchange="onDailyRemindChange" color="#07c160" />
   </view>
+  <view class="subscribe-expired-bar" wx:if="{{showDailyRemindRow && dailyTodoRemindEnabled}}">
+    <text class="subscribe-expired-text">每次授权仅能发送一次通知，点击授权以便能够持续发送并接收通知</text>
+    <view class="subscribe-renew-btn" bindtap="onRenewSubscribe">授权</view>
+  </view>
   <!-- 待办事项列表 -->
   <view class="todo-list">
     <block wx:if="{{loading}}">
