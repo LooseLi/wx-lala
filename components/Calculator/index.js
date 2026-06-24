@@ -1,4 +1,4 @@
-// 按键定义：5 列 × 4 行，与 demo/calculator 保持一致
+// 按键定义：5 列 × 4 行
 const BUTTONS = [
   { label: '7', value: '7', type: 'number' },
   { label: '8', value: '8', type: 'number' },
@@ -20,22 +20,60 @@ const BUTTONS = [
   { label: '=', value: '=', type: 'equals', wide: true },
 ];
 
-function calculate(a, op, b) {
-  const numA = parseFloat(a);
-  const numB = parseFloat(b);
-  let result;
-  switch (op) {
-    case '+': result = numA + numB; break;
-    case '-': result = numA - numB; break;
-    case '*': result = numA * numB; break;
-    case '/':
-      if (numB === 0) return '错误';
-      result = numA / numB;
-      break;
-    default: return b;
+// 运算符优先级
+const PRECEDENCE = { '+': 1, '-': 1, '*': 2, '/': 2 };
+
+// 运算符显示标签
+const OP_LABEL = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+
+// 调度场算法（Shunting-yard）求值，支持数学优先级
+function evaluate(tokens) {
+  const output = [];   // 输出队列（逆波兰表达式）
+  const opStack = [];  // 运算符栈
+
+  tokens.forEach(token => {
+    if (typeof token === 'number') {
+      output.push(token);
+    } else {
+      // 运算符：弹出优先级 >= 当前运算符的栈顶
+      while (
+        opStack.length > 0 &&
+        PRECEDENCE[opStack[opStack.length - 1]] >= PRECEDENCE[token]
+      ) {
+        output.push(opStack.pop());
+      }
+      opStack.push(token);
+    }
+  });
+
+  while (opStack.length > 0) output.push(opStack.pop());
+
+  // 计算逆波兰表达式
+  const calcStack = [];
+  for (const token of output) {
+    if (typeof token === 'number') {
+      calcStack.push(token);
+    } else {
+      const b = calcStack.pop();
+      const a = calcStack.pop();
+      switch (token) {
+        case '+': calcStack.push(a + b); break;
+        case '-': calcStack.push(a - b); break;
+        case '*': calcStack.push(a * b); break;
+        case '/':
+          if (b === 0) return null; // 除以零
+          calcStack.push(a / b);
+          break;
+      }
+    }
   }
-  const resultStr = result.toPrecision(12);
-  return String(parseFloat(resultStr));
+  return calcStack[0];
+}
+
+// 浮点精度处理
+function cleanNumber(n) {
+  const str = n.toPrecision(12);
+  return parseFloat(str);
 }
 
 function formatDisplay(display) {
@@ -56,6 +94,13 @@ function getFontSize(len) {
   return 34;
 }
 
+// 根据 tokens 数组拼出表达式字符串（用于显示）
+function buildExpressionStr(tokens) {
+  return tokens
+    .map(t => (typeof t === 'number' ? String(t) : OP_LABEL[t]))
+    .join(' ');
+}
+
 Component({
   properties: {
     visible: {
@@ -66,15 +111,16 @@ Component({
 
   data: {
     buttons: BUTTONS,
+    // 显示
     display: '0',
     displayStr: '0',
     expression: '',
-    prevValue: null,
-    operator: null,
-    waiting: false,
-    justCalculated: false,
     fontSize: 60,
     copied: false,
+    // 表达式队列
+    tokens: [],         // 完整操作序列，数字（Number）和运算符（string）交替
+    pendingOp: '',      // 已选但尚未 push 进 tokens 的运算符
+    justCalculated: false,  // 刚按过 =
   },
 
   methods: {
@@ -84,14 +130,6 @@ Component({
 
     onKeyTap(e) {
       const value = e.currentTarget.dataset.value;
-      const {
-        display,
-        expression,
-        prevValue,
-        operator,
-        waiting,
-        justCalculated,
-      } = this.data;
 
       if (value === 'clear') {
         this._reset();
@@ -99,71 +137,140 @@ Component({
       }
 
       if (value === 'delete') {
-        if (display.length > 1) {
-          this._setDisplay(display.slice(0, -1));
-        } else {
-          this._setDisplay('0');
-        }
+        this._handleDelete();
         return;
       }
 
       if (value === '.') {
-        if (waiting) {
-          this._setDisplay('0.');
-          this.setData({ waiting: false });
-          return;
-        }
-        if (!display.includes('.')) {
-          this._setDisplay(display + '.');
-        }
+        this._handleDecimal();
         return;
       }
 
-      // 数字
       if (['0','1','2','3','4','5','6','7','8','9'].includes(value)) {
-        if (waiting || justCalculated) {
-          this._setDisplay(value);
-          this.setData({ waiting: false, justCalculated: false });
-        } else if (display === '0') {
-          this._setDisplay(value);
-        } else {
-          this._setDisplay(display + value);
-        }
+        this._handleDigit(value);
         return;
       }
 
-      // 运算符
       if (['+', '-', '*', '/'].includes(value)) {
-        let newDisplay = display;
-        if (operator && !waiting && prevValue !== null) {
-          newDisplay = calculate(prevValue, operator, display);
-          this._setDisplay(newDisplay);
-        }
-        const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' }[value];
-        this.setData({
-          prevValue: newDisplay,
-          operator: value,
-          waiting: true,
-          justCalculated: false,
-          expression: newDisplay + ' ' + opLabel,
-        });
+        this._handleOperator(value);
         return;
       }
 
-      // 等号
       if (value === '=') {
-        if (!operator || prevValue === null) return;
-        const result = calculate(prevValue, operator, display);
-        const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' }[operator];
-        this._setDisplay(result);
-        this.setData({
-          expression: prevValue + ' ' + opLabel + ' ' + display + ' =',
-          prevValue: null,
-          operator: null,
-          waiting: false,
-          justCalculated: true,
-        });
+        this._handleEquals();
       }
+    },
+
+    _handleDigit(digit) {
+      const { display, justCalculated, pendingOp } = this.data;
+
+      if (justCalculated && !pendingOp) {
+        // = 后直接输数字 → 从头开始，丢弃旧结果
+        this._setDisplay(digit === '0' ? '0' : digit);
+        this.setData({ tokens: [], pendingOp: '', justCalculated: false, expression: '' });
+        return;
+      }
+
+      if (pendingOp) {
+        // 刚选了运算符，开始输入下一个操作数
+        this._setDisplay(digit === '0' ? '0' : digit);
+        this.setData({ pendingOp: '' });
+        return;
+      }
+
+      // 普通追加
+      if (display === '0') {
+        this._setDisplay(digit === '0' ? '0' : digit);
+      } else {
+        this._setDisplay(display + digit);
+      }
+      this.setData({ justCalculated: false });
+    },
+
+    _handleDecimal() {
+      const { display, pendingOp, justCalculated } = this.data;
+
+      if (pendingOp || (justCalculated && !this.data.tokens.length)) {
+        this._setDisplay('0.');
+        this.setData({ pendingOp: '', justCalculated: false });
+        return;
+      }
+
+      if (!display.includes('.')) {
+        this._setDisplay(display + '.');
+      }
+    },
+
+    _handleDelete() {
+      const { display } = this.data;
+      if (display.length > 1) {
+        this._setDisplay(display.slice(0, -1));
+      } else {
+        this._setDisplay('0');
+      }
+      // ⌫ 不影响 tokens 和 expression
+    },
+
+    _handleOperator(op) {
+      const { display, tokens, justCalculated, pendingOp } = this.data;
+
+      let newTokens;
+      if (pendingOp) {
+        // 连按运算符：替换最后那个运算符
+        newTokens = [...tokens.slice(0, -1), op];
+      } else {
+        // 将当前显示的数字压入 tokens，再压运算符
+        const num = parseFloat(display);
+        if (justCalculated) {
+          // = 之后按运算符：以结果为起点
+          newTokens = [num, op];
+        } else {
+          newTokens = [...tokens, num, op];
+        }
+      }
+
+      const exprStr = buildExpressionStr(newTokens);
+      this._setDisplay(display);
+      this.setData({
+        tokens: newTokens,
+        pendingOp: op,
+        justCalculated: false,
+        expression: exprStr,
+      });
+    },
+
+    _handleEquals() {
+      const { display, tokens, pendingOp } = this.data;
+      if (!tokens.length) return;
+
+      // 将当前 display 数字作为最后一个操作数
+      const lastNum = parseFloat(display);
+      const fullTokens = pendingOp
+        ? [...tokens.slice(0, -1), lastNum]  // 末尾是运算符时，丢掉悬空运算符
+        : [...tokens, lastNum];
+
+      const rawResult = evaluate(fullTokens);
+
+      if (rawResult === null) {
+        // 除以零
+        const exprStr = buildExpressionStr(fullTokens) + ' =';
+        this.setData({ expression: exprStr });
+        this._setDisplay('错误');
+        this.setData({ tokens: [], pendingOp: '', justCalculated: true });
+        return;
+      }
+
+      const result = cleanNumber(rawResult);
+      const resultStr = String(result);
+      const exprStr = buildExpressionStr(fullTokens) + ' =';
+
+      this._setDisplay(resultStr);
+      this.setData({
+        tokens: [],
+        pendingOp: '',
+        justCalculated: true,
+        expression: exprStr,
+      });
     },
 
     onCopy() {
@@ -184,11 +291,11 @@ Component({
         display: '0',
         displayStr: '0',
         expression: '',
-        prevValue: null,
-        operator: null,
-        waiting: false,
-        justCalculated: false,
         fontSize: 60,
+        tokens: [],
+        pendingOp: '',
+        justCalculated: false,
+        copied: false,
       });
     },
 
