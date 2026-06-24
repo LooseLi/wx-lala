@@ -92,6 +92,9 @@ Page({
     archiveYear: String(new Date().getFullYear()),
     archiveNote: '',
     archiveError: '',
+
+    // 计算器
+    calcVisible: false,
   },
 
   // 原始历史数据（不放入 data 以避免频繁 setData）
@@ -568,5 +571,14 @@ Page({
   onOverlayTap() {
     if (this.data.editorVisible) this.closeEditorDialog();
     if (this.data.archiveVisible) this.closeArchiveDialog();
+  },
+
+  // ─── 计算器 ──────────────────────────────────────────────────
+  toggleCalc() {
+    this.setData({ calcVisible: !this.data.calcVisible });
+  },
+
+  closeCalc() {
+    this.setData({ calcVisible: false });
   },
 });

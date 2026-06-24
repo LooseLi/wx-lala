@@ -701,3 +701,31 @@
   margin-top: -12rpx;
   margin-bottom: 4rpx;
 }
+
+// ─── 悬浮计算器按钮 ─────────────────────────────────────────
+.calc-fab {
+  position: fixed;
+  bottom: 120rpx;
+  right: 40rpx;
+  z-index: 200;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background-color: #ff9f0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(255, 159, 10, 0.45);
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.calc-fab-active {
+  transform: scale(0.92);
+  opacity: 0.85;
+}
+
+.calc-fab-icon {
+  font-size: 44rpx;
+  line-height: 1;
+  color: #fff;
+}

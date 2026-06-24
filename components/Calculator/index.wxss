@@ -1,0 +1,118 @@
+.calc-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 199;
+  background: transparent;
+  pointer-events: none;
+}
+.calc-overlay.calc-overlay-show {
+  pointer-events: auto;
+}
+
+.calc-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background-color: #1c1c1e;
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.calc-panel.calc-panel-show {
+  transform: translateY(0);
+}
+
+.calc-display {
+  padding: 24rpx 32rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.calc-expression {
+  font-size: 24rpx;
+  color: #8e8e93;
+  text-align: right;
+  height: 32rpx;
+  line-height: 32rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16rpx;
+}
+
+.calc-copy-btn {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background-color: #2c2c2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #8e8e93;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.calc-copy-btn.calc-copy-copied {
+  color: #ff9f0a;
+}
+
+.calc-number {
+  color: #f5f5f7;
+  font-weight: 300;
+  line-height: 1;
+  text-align: right;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-keypad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12rpx;
+  padding: 0 20rpx 32rpx;
+}
+
+.calc-btn {
+  height: 96rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #f5f5f7;
+  transition: opacity 0.1s, transform 0.1s;
+}
+.calc-btn.calc-btn-active {
+  opacity: 0.75;
+  transform: scale(0.95);
+}
+.calc-btn.calc-btn-wide {
+  grid-column: span 2;
+}
+.calc-btn.calc-btn-number, .calc-btn.calc-btn-decimal {
+  background-color: #2c2c2e;
+}
+.calc-btn.calc-btn-operator, .calc-btn.calc-btn-equals {
+  background-color: #ff9f0a;
+}
+.calc-btn.calc-btn-clear, .calc-btn.calc-btn-delete {
+  background-color: #636366;
+}

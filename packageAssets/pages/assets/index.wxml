@@ -312,4 +312,12 @@
       <view class="btn-primary" catchtap="onArchive">归档</view>
     </view>
   </view>
+
+  <!-- ─── 悬浮计算器按钮 ────────────────────────────── -->
+  <view class="calc-fab" hover-class="calc-fab-active" hover-stay-time="100" bindtap="toggleCalc">
+    <text class="calc-fab-icon">{{calcVisible ? '×' : '🧮'}}</text>
+  </view>
+
+  <!-- ─── 计算器组件 ──────────────────────────────────── -->
+  <calculator visible="{{calcVisible}}" bind:close="closeCalc" />
 </view>

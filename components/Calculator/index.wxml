@@ -1,0 +1,36 @@
+<!-- 透明全屏遮罩，点击关闭计算器 -->
+<view
+  class="calc-overlay {{visible ? 'calc-overlay-show' : ''}}"
+  catchtap="onOverlayTap"
+></view>
+
+<!-- 计算器面板 -->
+<view class="calc-panel {{visible ? 'calc-panel-show' : ''}}">
+  <!-- 显示区 -->
+  <view class="calc-display">
+    <text class="calc-expression">{{expression || ' '}}</text>
+    <view class="calc-result-row">
+      <view
+        class="calc-copy-btn {{copied ? 'calc-copy-copied' : ''}}"
+        catchtap="onCopy"
+      >
+        <text wx:if="{{copied}}">✓</text>
+        <text wx:else>⎘</text>
+      </view>
+      <text class="calc-number" style="font-size:{{fontSize}}rpx">{{displayStr}}</text>
+    </view>
+  </view>
+
+  <!-- 按键区：5 列网格 -->
+  <view class="calc-keypad">
+    <view
+      wx:for="{{buttons}}"
+      wx:key="value"
+      class="calc-btn calc-btn-{{item.type}} {{item.wide ? 'calc-btn-wide' : ''}}"
+      hover-class="calc-btn-active"
+      hover-stay-time="100"
+      data-value="{{item.value}}"
+      catchtap="onKeyTap"
+    >{{item.label}}</view>
+  </view>
+</view>

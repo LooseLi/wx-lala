@@ -1,5 +1,8 @@
 {
   "navigationBarTitleText": "资产配置",
   "navigationBarBackgroundColor": "#daecff",
-  "navigationBarTextStyle": "black"
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "calculator": "/components/Calculator/index"
+  }
 }
