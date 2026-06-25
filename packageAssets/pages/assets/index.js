@@ -95,13 +95,24 @@ Page({
 
     // 计算器
     calcVisible: false,
+    fabX: 0,
+    fabY: 0,
   },
 
   // 原始历史数据（不放入 data 以避免频繁 setData）
   _rawHistory: [],
 
   onLoad() {
+    this._initFabPosition();
     this.loadData();
+  },
+
+  _initFabPosition() {
+    const sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const FAB_SIZE = 96 / 750 * sysInfo.windowWidth;
+    const x = sysInfo.windowWidth - FAB_SIZE - (40 / 750 * sysInfo.windowWidth);
+    const y = sysInfo.windowHeight - FAB_SIZE - (120 / 750 * sysInfo.windowWidth);
+    this.setData({ fabX: x, fabY: y });
   },
 
   async loadData() {

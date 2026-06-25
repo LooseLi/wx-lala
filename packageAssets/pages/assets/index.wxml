@@ -313,11 +313,21 @@
     </view>
   </view>
 
-  <!-- ─── 悬浮计算器按钮 ────────────────────────────── -->
-  <view class="calc-fab" hover-class="calc-fab-active" hover-stay-time="100" bindtap="toggleCalc">
-    <image wx:if="{{!calcVisible}}" class="calc-fab-img" src="./images/icon-jisuanqi.png" mode="aspectFit" />
-    <text wx:else class="calc-fab-close">×</text>
-  </view>
+  <!-- ─── 悬浮计算器按钮（可拖动）────────────────────── -->
+  <movable-area class="calc-fab-area">
+    <movable-view
+      class="calc-fab"
+      direction="all"
+      x="{{fabX}}"
+      y="{{fabY}}"
+      damping="40"
+      friction="2"
+      bindtap="toggleCalc"
+    >
+      <image wx:if="{{!calcVisible}}" class="calc-fab-img" src="./images/icon-jisuanqi.png" mode="aspectFit" />
+      <image wx:else class="calc-fab-img" src="./images/icon-guanbi.png" mode="aspectFit" />
+    </movable-view>
+  </movable-area>
 
   <!-- ─── 计算器组件 ──────────────────────────────────── -->
   <calculator visible="{{calcVisible}}" bind:close="closeCalc" />

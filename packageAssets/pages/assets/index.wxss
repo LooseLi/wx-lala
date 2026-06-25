@@ -652,31 +652,34 @@
   margin-bottom: 4rpx;
 }
 
-.calc-fab {
+.calc-fab-area {
   position: fixed;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 200;
-  width: 96rpx;
-  height: 96rpx;
+  pointer-events: none;
+}
+
+.calc-fab {
+  width: 86rpx;
+  height: 86rpx;
   border-radius: 50%;
-  background-color: var(--background-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s, opacity 0.15s;
+  pointer-events: auto;
 }
 
 .calc-fab-active {
-  transform: scale(0.92);
-  opacity: 0.85;
+  opacity: 0.75;
 }
 
 .calc-fab-img {
-  width: 96rpx;
-  height: 96rpx;
+  width: 86rpx;
+  height: 86rpx;
 }
 
 .calc-fab-close {
