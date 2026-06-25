@@ -711,11 +711,11 @@
   width: 96rpx;
   height: 96rpx;
   border-radius: 50%;
-  background-color: #ff9f0a;
+  background-color: var(--background-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(255, 159, 10, 0.45);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
   transition: transform 0.15s, opacity 0.15s;
 }
 
@@ -724,8 +724,14 @@
   opacity: 0.85;
 }
 
-.calc-fab-icon {
-  font-size: 44rpx;
+.calc-fab-img {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.calc-fab-close {
+  font-size: 48rpx;
   line-height: 1;
-  color: #fff;
+  color: var(--text-secondary);
+  font-weight: 300;
 }

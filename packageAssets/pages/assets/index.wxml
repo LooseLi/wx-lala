@@ -315,7 +315,8 @@
 
   <!-- ─── 悬浮计算器按钮 ────────────────────────────── -->
   <view class="calc-fab" hover-class="calc-fab-active" hover-stay-time="100" bindtap="toggleCalc">
-    <text class="calc-fab-icon">{{calcVisible ? '×' : '🧮'}}</text>
+    <image wx:if="{{!calcVisible}}" class="calc-fab-img" src="./images/icon-jisuanqi.png" mode="aspectFit" />
+    <text wx:else class="calc-fab-close">×</text>
   </view>
 
   <!-- ─── 计算器组件 ──────────────────────────────────── -->
