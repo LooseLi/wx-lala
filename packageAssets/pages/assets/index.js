@@ -1,15 +1,13 @@
 const ASSET_COLORS = [
-  '#3B82F6',
-  '#10B981',
-  '#F59E0B',
-  '#8B5CF6',
   '#EF4444',
-  '#06B6D4',
+  '#3B82F6',
+  '#8B5CF6',
+  '#F59E0B',
+  '#10B981',
   '#EC4899',
-  '#6366F1',
 ];
 
-const DEFAULT_CATEGORIES = ['股票', '债券', '现金', '基金', '黄金', '房产', '数字货币', '其他'];
+const DEFAULT_CATEGORIES = ['基金', '债券', '现金', '黄金', '股票', '其他'];
 
 function generateId() {
   return Math.random().toString(36).slice(2, 9);
