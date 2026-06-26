@@ -6,7 +6,7 @@
         <view class="header-logo">💰</view>
         <view class="header-titles">
           <view class="header-title">资产配置</view>
-          <view class="header-subtitle">记录 · 分析 · 成长</view>
+          <view class="header-subtitle">记录 · 一路长红</view>
         </view>
       </view>
       <view class="header-actions">
@@ -83,8 +83,8 @@
             <view class="donut-legend">
               <view wx:for="{{donutLegend}}" wx:key="id" class="legend-item">
                 <view class="legend-dot" style="background-color:{{item.color}}"></view>
-                <view class="legend-name">{{item.name}}</view>
-                <view class="legend-percent">{{item.percent}}%</view>
+                <view class="legend-name">{{item.name}} ({{item.percent}}%)</view>
+                <view class="legend-amount">{{item.amountStr}}</view>
               </view>
             </view>
           </block>

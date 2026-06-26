@@ -229,9 +229,12 @@
   white-space: nowrap;
 }
 
-.legend-percent {
-  font-size: 22rpx;
-  color: var(--text-secondary);
+.legend-amount {
+  font-size: 24rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 // ─── 空状态 ────────────────────────────────────────────────────

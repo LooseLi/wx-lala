@@ -181,7 +181,7 @@
 .donut-legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14rpx;
+  gap: 14rpx 36rpx;
   padding: 16rpx 28rpx 28rpx;
 }
 
@@ -192,8 +192,8 @@
 }
 
 .legend-dot {
-  width: 20rpx;
-  height: 20rpx;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -207,9 +207,12 @@
   white-space: nowrap;
 }
 
-.legend-percent {
-  font-size: 22rpx;
-  color: var(--text-secondary);
+.legend-amount {
+  font-size: 24rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .empty-tip {
@@ -423,7 +426,7 @@
 .btn-ghost {
   height: 64rpx;
   padding: 0 24rpx;
-  border: 1rpx solid var(--border-color);
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
   border-radius: 32rpx;
   font-size: 26rpx;
@@ -435,7 +438,7 @@
 .btn-ghost-sm {
   height: 52rpx;
   padding: 0 20rpx;
-  border: 1rpx solid var(--border-color);
+  border: 1px solid var(--border-color);
   color: var(--text-secondary);
   border-radius: 26rpx;
   font-size: 24rpx;
@@ -449,7 +452,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1rpx solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 16rpx;
   font-size: 28rpx;
   color: var(--text-secondary);
@@ -567,7 +570,7 @@
   padding: 0 20rpx;
   background-color: var(--background-secondary);
   border-radius: 12rpx;
-  border: 1rpx solid var(--border-color);
+  border: 1px solid var(--border-color);
   font-size: 26rpx;
   color: var(--text-primary);
 }
@@ -601,7 +604,7 @@
   padding: 0 20rpx;
   background-color: var(--background-primary);
   border-radius: 12rpx;
-  border: 1rpx solid var(--border-color);
+  border: 1px solid var(--border-color);
   font-size: 28rpx;
   color: var(--text-primary);
   box-sizing: border-box;

@@ -163,6 +163,7 @@ Page({
     const donutLegend = currentAssets.map(a => ({
       ...a,
       percent: calcPercent(a.amount, total),
+      amountStr: formatAmount(a.amount),
     }));
 
     // 折线图图例
