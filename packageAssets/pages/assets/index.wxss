@@ -541,55 +541,24 @@
 }
 
 .asset-edit-row {
-  margin-bottom: 20rpx;
-  padding: 20rpx;
-  background-color: var(--background-primary);
-  border-radius: 16rpx;
-}
-
-.asset-row-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16rpx;
   margin-bottom: 16rpx;
 }
 
-.color-swatches {
+.asset-row-label {
   display: flex;
+  align-items: center;
   gap: 12rpx;
-  flex-wrap: wrap;
   flex: 1;
 }
 
-.color-swatch {
-  width: 40rpx;
-  height: 40rpx;
+.asset-row-dot {
+  width: 22rpx;
+  height: 22rpx;
   border-radius: 50%;
-  border: 3rpx solid transparent;
-  box-sizing: border-box;
-}
-.color-swatch.color-swatch-selected {
-  border-color: var(--text-primary);
-  transform: scale(1.15);
-}
-
-.asset-delete-btn {
-  width: 48rpx;
-  height: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border-radius: 50%;
-  font-size: 24rpx;
   flex-shrink: 0;
-  margin-left: 12rpx;
-}
-
-.asset-row-inputs {
-  display: flex;
-  gap: 16rpx;
 }
 
 .input-field {
@@ -604,23 +573,16 @@
 }
 
 .input-name {
-  flex: 1.2;
-}
-
-.input-amount {
   flex: 1;
 }
 
-.add-asset-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 80rpx;
-  border: 2rpx dashed var(--border-color);
-  border-radius: 16rpx;
+.input-name-disabled {
   color: var(--text-secondary);
-  font-size: 26rpx;
-  margin-top: 4rpx;
+  background-color: var(--background-primary);
+}
+
+.input-amount {
+  flex: 2;
 }
 
 .form-item {
@@ -663,10 +625,10 @@
 }
 
 .calc-fab {
-  width: 86rpx;
-  height: 86rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
-  background: #ffffff;
+  background-color: var(--background-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -679,8 +641,8 @@
 }
 
 .calc-fab-img {
-  width: 86rpx;
-  height: 86rpx;
+  width: 72rpx;
+  height: 72rpx;
 }
 
 .calc-fab-close {

@@ -410,49 +410,20 @@ Page({
 
   // ─── 编辑弹窗 ─────────────────────────────────────────────────
   openEditorDialog() {
-    let editingAssets = this.data.currentAssets.map(a => ({
-      ...a,
-      amount: String(a.amount),
+    // 以固定类别为基准，回填已有金额
+    const existing = {};
+    this.data.currentAssets.forEach(a => { existing[a.name] = a; });
+    const editingAssets = DEFAULT_CATEGORIES.map((name, i) => ({
+      id: existing[name] ? existing[name].id : generateId(),
+      name,
+      amount: existing[name] ? String(existing[name].amount) : '0',
+      color: ASSET_COLORS[i],
     }));
-    if (!editingAssets.length) {
-      editingAssets = [
-        {
-          id: generateId(),
-          name: DEFAULT_CATEGORIES[0],
-          amount: '',
-          color: ASSET_COLORS[0],
-        },
-      ];
-    }
     this.setData({ editorVisible: true, editingAssets });
   },
 
   closeEditorDialog() {
     this.setData({ editorVisible: false });
-  },
-
-  addAssetItem() {
-    const editingAssets = [...this.data.editingAssets];
-    const usedColors = new Set(editingAssets.map(a => a.color));
-    const color = ASSET_COLORS.find(c => !usedColors.has(c)) || ASSET_COLORS[0];
-    const usedNames = new Set(editingAssets.map(a => a.name));
-    const name =
-      DEFAULT_CATEGORIES.find(n => !usedNames.has(n)) || `资产${editingAssets.length + 1}`;
-    editingAssets.push({ id: generateId(), name, amount: '', color });
-    this.setData({ editingAssets });
-  },
-
-  removeAssetItem(e) {
-    const eidx = Number(e.currentTarget.dataset.eidx);
-    const editingAssets = this.data.editingAssets.filter((_, i) => i !== eidx);
-    this.setData({ editingAssets });
-  },
-
-  onAssetNameChange(e) {
-    const eidx = Number(e.currentTarget.dataset.eidx);
-    const editingAssets = [...this.data.editingAssets];
-    editingAssets[eidx] = { ...editingAssets[eidx], name: e.detail.value };
-    this.setData({ editingAssets });
   },
 
   onAssetAmountChange(e) {
@@ -462,31 +433,19 @@ Page({
     this.setData({ editingAssets });
   },
 
-  onAssetColorChange(e) {
-    const eidx = Number(e.currentTarget.dataset.eidx);
-    const cidx = Number(e.currentTarget.dataset.cidx);
-    const editingAssets = [...this.data.editingAssets];
-    editingAssets[eidx] = { ...editingAssets[eidx], color: ASSET_COLORS[cidx] };
-    this.setData({ editingAssets });
-  },
-
   async onSaveAssets() {
+    // 过滤金额为空或 0 的类别
     const assets = this.data.editingAssets
-      .filter(a => a.name.trim() && Number(a.amount) > 0)
+      .filter(a => Number(a.amount) > 0)
       .map(a => ({
-        id: a.id || generateId(),
-        name: a.name.trim(),
+        id: a.id,
+        name: a.name,
         amount: Number(a.amount),
         color: a.color,
       }));
 
     if (!assets.length) {
-      wx.showToast({ title: '请至少添加一项有效资产', icon: 'none' });
-      return;
-    }
-    const names = assets.map(a => a.name);
-    if (new Set(names).size !== names.length) {
-      wx.showToast({ title: '资产名称不能重复', icon: 'none' });
+      wx.showToast({ title: '请至少填写一项资产金额', icon: 'none' });
       return;
     }
 

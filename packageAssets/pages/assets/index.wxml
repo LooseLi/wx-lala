@@ -231,45 +231,22 @@
           wx:for-item="eItem"
           class="asset-edit-row"
         >
-          <view class="asset-row-top">
-            <view class="color-swatches">
-              <view
-                wx:for="{{ASSET_COLORS}}"
-                wx:key="*this"
-                wx:for-item="clr"
-                wx:for-index="cIdx"
-                class="color-swatch {{eItem.color === clr ? 'color-swatch-selected' : ''}}"
-                style="background-color:{{clr}}"
-                data-eidx="{{eIdx}}"
-                data-cidx="{{cIdx}}"
-                catchtap="onAssetColorChange"
-              ></view>
-            </view>
-            <view class="asset-delete-btn" data-eidx="{{eIdx}}" catchtap="removeAssetItem">
-              ✕
-            </view>
-          </view>
-          <view class="asset-row-inputs">
+          <view class="asset-row-label">
+            <view class="asset-row-dot" style="background-color:{{eItem.color}}"></view>
             <input
-              class="input-field input-name"
+              class="input-field input-name input-name-disabled"
               value="{{eItem.name}}"
-              placeholder="资产名称"
-              data-eidx="{{eIdx}}"
-              bindinput="onAssetNameChange"
-            />
-            <input
-              class="input-field input-amount"
-              value="{{eItem.amount}}"
-              placeholder="金额（元）"
-              type="digit"
-              data-eidx="{{eIdx}}"
-              bindinput="onAssetAmountChange"
+              disabled="{{true}}"
             />
           </view>
-        </view>
-
-        <view class="add-asset-btn" catchtap="addAssetItem">
-          <text>＋ 添加资产类别</text>
+          <input
+            class="input-field input-amount"
+            value="{{eItem.amount}}"
+            placeholder="金额（元）"
+            type="digit"
+            data-eidx="{{eIdx}}"
+            bindinput="onAssetAmountChange"
+          />
         </view>
       </view>
     </scroll-view>
