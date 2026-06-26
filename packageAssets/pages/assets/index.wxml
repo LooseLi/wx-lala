@@ -31,32 +31,28 @@
         <!-- 统计卡片 -->
         <view class="stats-grid">
           <view class="stat-card">
-            <view class="stat-label">当前总资产</view>
+            <view class="stat-label">当前总资产（元）</view>
             <view class="stat-value">{{totalAmountStr}}</view>
-            <view class="stat-hint">元</view>
           </view>
           <view class="stat-card">
-            <view class="stat-label">资产类别</view>
+            <view class="stat-label">资产类别（种）</view>
             <view class="stat-value">{{categoryCount}}</view>
-            <view class="stat-hint">种</view>
           </view>
           <view class="stat-card">
-            <view class="stat-label">同比去年</view>
-            <block wx:if="{{hasHistory}}">
-              <view class="stat-value {{isPositive ? 'value-positive' : 'value-negative'}}">
-                {{isPositive ? '+' : '-'}}{{growthAmountStr}}
-              </view>
-              <view
-                wx:if="{{growthPercent}}"
-                class="stat-hint {{isPositive ? 'hint-positive' : 'hint-negative'}}"
-              >
-                {{isPositive ? '↑' : '↓'}} {{growthPercent}}%
-              </view>
-            </block>
-            <block wx:else>
-              <view class="stat-value stat-dash">—</view>
-              <view class="stat-hint">暂无对比</view>
-            </block>
+            <view class="stat-label">
+              同比去年
+              <text
+                wx:if="{{hasHistory && growthPercent}}"
+                class="stat-label-change {{isPositive ? 'label-positive' : 'label-negative'}}"
+              >{{isPositive ? ' ↑' : ' ↓'}}{{growthPercent}}%</text>
+            </view>
+            <view
+              wx:if="{{hasHistory}}"
+              class="stat-value {{isPositive ? 'value-positive' : 'value-negative'}}"
+            >
+              {{isPositive ? '+' : '-'}}{{growthAmountStr}}
+            </view>
+            <view wx:else class="stat-value stat-dash">—</view>
           </view>
         </view>
 
@@ -274,11 +270,11 @@
         />
       </view>
       <view class="form-item">
-        <view class="form-label">备注（选填）</view>
+        <view class="form-label">备注</view>
         <input
           class="form-input"
           value="{{archiveNote}}"
-          placeholder="例如：初始建仓、加仓操作…"
+          placeholder="（选填）"
           bindinput="onArchiveNoteChange"
         />
       </view>

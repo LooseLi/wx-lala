@@ -82,17 +82,24 @@
 .stat-card {
   background-color: var(--background-secondary);
   border-radius: 20rpx;
-  padding: 22rpx 16rpx;
+  padding: 24rpx 20rpx;
   box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
-  gap: 6rpx;
+  gap: 10rpx;
 }
 
 .stat-label {
   font-size: 20rpx;
   color: var(--text-secondary);
   line-height: 1.3;
+}
+
+.stat-label-change.label-positive {
+  color: #ef4444;
+}
+.stat-label-change.label-negative {
+  color: #10b981;
 }
 
 .stat-value {
