@@ -67,14 +67,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24rpx;
-  color: #8e8e93;
   flex-shrink: 0;
   transition: opacity 0.15s;
 
   &.calc-copy-copied {
-    color: #ff9f0a;
+    opacity: 0.5;
   }
+}
+
+.calc-copy-icon {
+  width: 30rpx;
+  height: 30rpx;
 }
 
 .calc-number {

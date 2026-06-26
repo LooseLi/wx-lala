@@ -14,8 +14,7 @@
         class="calc-copy-btn {{copied ? 'calc-copy-copied' : ''}}"
         catchtap="onCopy"
       >
-        <text wx:if="{{copied}}">✓</text>
-        <text wx:else>⎘</text>
+        <image class="calc-copy-icon" src="./images/icon-fuzhi.png" mode="aspectFit" />
       </view>
       <text class="calc-number" style="font-size:{{fontSize}}rpx">{{displayStr}}</text>
     </view>
