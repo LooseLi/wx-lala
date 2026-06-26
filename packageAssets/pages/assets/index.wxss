@@ -637,8 +637,8 @@
 }
 
 .calc-fab {
-  width: 96rpx;
-  height: 96rpx;
+  width: 90rpx;
+  height: 90rpx;
   border-radius: 50%;
   background-color: var(--background-secondary);
   display: flex;
@@ -653,8 +653,8 @@
 }
 
 .calc-fab-img {
-  width: 72rpx;
-  height: 72rpx;
+  width: 90rpx;
+  height: 90rpx;
 }
 
 .calc-fab-close {
