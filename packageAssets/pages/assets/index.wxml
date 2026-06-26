@@ -3,7 +3,9 @@
     <!-- ─── 顶部 Header ─────────────────────────────── -->
     <view class="header">
       <view class="header-left">
-        <view class="header-logo">💰</view>
+        <view class="header-logo">
+          <image class="header-logo-img" src="./images/icon-licai.png" mode="aspectFit" />
+        </view>
         <view class="header-titles">
           <view class="header-title">资产配置</view>
           <view class="header-subtitle">记录 · 一路长红</view>

@@ -27,12 +27,14 @@
 .header-logo {
   width: 64rpx;
   height: 64rpx;
-  border-radius: 16rpx;
-  background-color: #e8f4ff;
-  font-size: 34rpx;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.header-logo-img {
+  width: 64rpx;
+  height: 64rpx;
 }
 .header-titles {
   display: flex;
