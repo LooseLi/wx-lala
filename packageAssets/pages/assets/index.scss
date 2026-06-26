@@ -506,6 +506,18 @@
   color: var(--text-secondary);
 }
 
+.btn-outline-primary {
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
 .btn-disabled {
   opacity: 0.35;
   pointer-events: none;

@@ -250,7 +250,7 @@
     </scroll-view>
     <view class="popup-footer">
       <view class="btn-outline" catchtap="closeEditorDialog">取消</view>
-      <view class="btn-primary" catchtap="onSaveAssets">保存</view>
+      <view class="btn-outline-primary" catchtap="onSaveAssets">保存</view>
     </view>
   </view>
 
@@ -284,7 +284,7 @@
     </view>
     <view class="popup-footer">
       <view class="btn-outline" catchtap="closeArchiveDialog">取消</view>
-      <view class="btn-primary" catchtap="onArchive">归档</view>
+      <view class="btn-outline-primary" catchtap="onArchive">归档</view>
     </view>
   </view>
 
