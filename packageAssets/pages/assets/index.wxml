@@ -186,6 +186,9 @@
                 </view>
 
                 <view class="history-delete-row">
+                  <view wx:if="{{item.updatedAtStr}}" class="history-updated-at">
+                    归档时间：{{item.updatedAtStr}}
+                  </view>
                   <view
                     class="history-delete-btn"
                     data-id="{{item._id}}"

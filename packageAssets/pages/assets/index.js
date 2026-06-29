@@ -34,6 +34,38 @@ function calcPercent(amount, total) {
   return ((amount / total) * 100).toFixed(1);
 }
 
+function parseCloudDate(value) {
+  if (value == null) return 0;
+  if (typeof value === 'number') return value;
+  if (value instanceof Date) return value.getTime();
+  if (typeof value === 'string') {
+    const t = Date.parse(value);
+    return Number.isNaN(t) ? 0 : t;
+  }
+  if (typeof value === 'object') {
+    if (value.$date) return parseCloudDate(value.$date);
+    if (typeof value.seconds === 'number') return value.seconds * 1000;
+    if (typeof value.getTime === 'function') return value.getTime();
+  }
+  return 0;
+}
+
+function formatHistoryUpdatedAt(record) {
+  const ms =
+    parseCloudDate(record.archivedAt) ||
+    parseCloudDate(record._updateTime) ||
+    parseCloudDate(record._createTime);
+  if (!ms) return '';
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  // return `${y}-${m}-${day} ${h}:${min}`;
+  return `${y}.${m}.${day}`;
+}
+
 function processHistory(history) {
   return history.map(yr => {
     const total = yr.totalAmount || calcTotal(yr.assets);
@@ -53,6 +85,7 @@ function processHistory(history) {
     return {
       ...yr,
       totalAmountStr: formatAmount(total),
+      updatedAtStr: formatHistoryUpdatedAt(yr),
       top4,
       assets,
     };

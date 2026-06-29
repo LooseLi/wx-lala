@@ -447,8 +447,14 @@
 
 .history-delete-row {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   padding: 0 28rpx 20rpx;
+}
+
+.history-updated-at {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
 }
 
 .history-delete-btn {
