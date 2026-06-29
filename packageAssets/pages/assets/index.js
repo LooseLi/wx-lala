@@ -88,7 +88,7 @@ Page({
     donutLegend: [],
 
     // 历年视图
-    historyView: 'table',
+    historyView: 'chart',
     expandedYears: {},
 
     // 折线图图例
@@ -271,6 +271,10 @@ Page({
         // 按年份升序排列用于绘制
         const sorted = [...rawHistory].sort((a, b) => a.year - b.year);
         const n = sorted.length;
+        const labelIndices =
+          n <= 7
+            ? sorted.map((_, i) => i)
+            : [0, Math.floor((n - 1) / 2), n - 1];
 
         // 收集所有类别
         const catNames = [];
@@ -321,11 +325,11 @@ Page({
           ctx.fillText(formatAmountShort(v), pL - 5, y);
         }
 
-        // X 轴标签
+        // X 轴标签：≤7 个全显示，>7 个仅首/中/尾
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        sorted.forEach((yr, i) => {
-          ctx.fillText(String(yr.year), toX(i), pT + cH + 7);
+        labelIndices.forEach(i => {
+          ctx.fillText(String(sorted[i].year), toX(i), pT + cH + 7);
         });
 
         // 各类别折线
