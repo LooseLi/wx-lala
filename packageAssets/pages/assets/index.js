@@ -429,7 +429,7 @@ Page({
   onDeleteRecord(e) {
     const { id, year } = e.currentTarget.dataset;
     wx.showModal({
-      title: '删除确认',
+      title: '确认删除',
       content: `确定删除 ${year} 年的归档记录吗？`,
       confirmText: '删除',
       confirmColor: '#ef4444',
@@ -443,7 +443,7 @@ Page({
           });
           const rawHistory = this._rawHistory.filter(r => r._id !== id);
           this._updatePageState(this.data.currentAssets, rawHistory);
-          wx.showToast({ title: '已删除', icon: 'success' });
+          wx.showToast({ title: '删除成功', icon: 'success' });
         } catch {
           wx.showToast({ title: '删除失败', icon: 'none' });
         } finally {
@@ -546,10 +546,18 @@ Page({
       wx.showToast({ title: '请选择有效年份（2020–2100）', icon: 'none' });
       return;
     }
-    const existingYears = this._rawHistory.map(r => r.year);
-    if (existingYears.includes(year)) {
-      wx.showToast({ title: '该年份已归档，请先删除已有归档', icon: 'none' });
-      return;
+
+    const existingRecord = this._rawHistory.find(r => r.year === year);
+    if (existingRecord) {
+      const { confirm } = await new Promise(resolve => {
+        wx.showModal({
+          title: '确认归档',
+          content: `${year} 年已有归档记录，是否用当前资产配置覆盖更新？`,
+          confirmText: '确认',
+          success: resolve,
+        });
+      });
+      if (!confirm) return;
     }
 
     const assets = this.data.currentAssets;
@@ -565,6 +573,7 @@ Page({
           assets,
           totalAmount,
           note: this.data.archiveNote,
+          overwrite: !!existingRecord,
         },
       });
       if (!res.result || !res.result.success) {
@@ -573,7 +582,10 @@ Page({
       }
       await this.loadData();
       this.setData({ archiveVisible: false });
-      wx.showToast({ title: '归档成功', icon: 'success' });
+      wx.showToast({
+        title: res.result.overwritten ? '更新成功' : '归档成功',
+        icon: 'success',
+      });
     } catch {
       wx.showToast({ title: '归档失败，请重试', icon: 'none' });
     } finally {

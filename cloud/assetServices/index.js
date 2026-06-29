@@ -15,7 +15,14 @@ exports.main = async (event, context) => {
     case 'saveAssets':
       return await saveAssets(OPENID, event.assets);
     case 'archiveYear':
-      return await archiveYear(OPENID, event.year, event.assets, event.totalAmount, event.note);
+      return await archiveYear(
+        OPENID,
+        event.year,
+        event.assets,
+        event.totalAmount,
+        event.note,
+        event.overwrite
+      );
     case 'deleteRecord':
       return await deleteRecord(OPENID, event.recordId);
     default:
@@ -74,24 +81,33 @@ async function saveAssets(openid, assets) {
   }
 }
 
-async function archiveYear(openid, year, assets, totalAmount, note) {
+async function archiveYear(openid, year, assets, totalAmount, note, overwrite) {
   try {
     const existing = await db
       .collection('assetHistory')
       .where({ openid, year })
       .limit(1)
       .get();
+    const payload = {
+      assets,
+      totalAmount,
+      note: note || '',
+      archivedAt: db.serverDate(),
+    };
     if (existing.data.length > 0) {
-      return { success: false, error: '该年份已有归档记录' };
+      if (!overwrite) {
+        return { success: false, error: '该年份已有归档记录' };
+      }
+      await db.collection('assetHistory').doc(existing.data[0]._id).update({
+        data: payload,
+      });
+      return { success: true, overwritten: true };
     }
     await db.collection('assetHistory').add({
       data: {
         openid,
         year,
-        assets,
-        totalAmount,
-        note: note || '',
-        archivedAt: db.serverDate(),
+        ...payload,
       },
     });
     return { success: true };
