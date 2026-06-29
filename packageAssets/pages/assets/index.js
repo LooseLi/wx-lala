@@ -542,8 +542,8 @@ Page({
 
   async onArchive() {
     const year = parseInt(this.data.archiveYear, 10);
-    if (!year || year < 2000 || year > 2100) {
-      wx.showToast({ title: '请输入有效年份（2000–2100）', icon: 'none' });
+    if (!year || year < 2020 || year > 2100) {
+      wx.showToast({ title: '请选择有效年份（2020–2100）', icon: 'none' });
       return;
     }
     const existingYears = this._rawHistory.map(r => r.year);

@@ -266,13 +266,16 @@
     <view class="popup-body archive-body">
       <view class="form-item">
         <view class="form-label">归档年份</view>
-        <input
-          class="form-input"
+        <picker
+          mode="date"
+          fields="year"
           value="{{archiveYear}}"
-          type="number"
-          placeholder="请输入年份（如 2025）"
-          bindinput="onArchiveYearChange"
-        />
+          start="2020"
+          end="2100"
+          bindchange="onArchiveYearChange"
+        >
+          <view class="form-input form-picker">{{archiveYear || '请选择年份'}}</view>
+        </picker>
       </view>
       <view class="form-item">
         <view class="form-label">备注</view>
