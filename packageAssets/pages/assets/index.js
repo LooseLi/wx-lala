@@ -37,11 +37,14 @@ function calcPercent(amount, total) {
 function processHistory(history) {
   return history.map(yr => {
     const total = yr.totalAmount || calcTotal(yr.assets);
-    const sortedAssets = [...yr.assets].sort((a, b) => b.amount - a.amount);
-    const top3 = sortedAssets.slice(0, 3).map(a => ({
-      ...a,
-      percent: calcPercent(a.amount, total),
-    }));
+    const top4 = [...yr.assets]
+      .filter(a => (Number(a.amount) || 0) > 0)
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 4)
+      .map(a => ({
+        ...a,
+        percent: calcPercent(a.amount, total),
+      }));
     const assets = yr.assets.map(a => ({
       ...a,
       amountStr: formatAmount(a.amount),
@@ -50,7 +53,7 @@ function processHistory(history) {
     return {
       ...yr,
       totalAmountStr: formatAmount(total),
-      top3,
+      top4,
       assets,
     };
   });

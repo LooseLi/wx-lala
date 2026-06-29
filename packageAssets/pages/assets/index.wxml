@@ -157,10 +157,10 @@
                   </view>
                 </view>
 
-                <!-- Top3 标签 -->
+                <!-- Top4 标签 -->
                 <view class="history-badges">
                   <view
-                    wx:for="{{item.top3}}"
+                    wx:for="{{item.top4}}"
                     wx:key="id"
                     wx:for-item="asset"
                     class="asset-badge"
