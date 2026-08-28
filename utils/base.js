@@ -58,17 +58,16 @@ const dateFormat = (time, str) => {
 };
 
 /**
- * @param {*} time 时间差
- * @param {*} str
+ * @param {Date|string} date 开始日期
+ * @param {Date|string} endDate 结束日期，默认今天
  * @returns
  */
-const dateDiff = date => {
-  // 将-转化为/，使用new Date
-  const dateBegin = new Date(date.replace(/-/g, '/'));
-  const currentDate = new Date();
-  let dateDiff = currentDate.getTime() - dateBegin.getTime();
-  let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
-  return dayDiff;
+const dateDiff = (date, endDate = new Date()) => {
+  const dateBegin = IS.isDate(date) ? date : new Date(date.replace(/-/g, '/'));
+  const dateEnd = IS.isDate(endDate) ? endDate : new Date(endDate.replace(/-/g, '/'));
+  const beginTime = Date.UTC(dateBegin.getFullYear(), dateBegin.getMonth(), dateBegin.getDate());
+  const endTime = Date.UTC(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate());
+  return Math.floor((endTime - beginTime) / (24 * 3600 * 1000));
   // var leave1 = dateDiff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
   // var hours = Math.floor(leave1 / (3600 * 1000)) //计算出小时数
   // //计算相差分钟数

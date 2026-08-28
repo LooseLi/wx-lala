@@ -29,10 +29,12 @@
         <view class="anniversary-info-container">
           <!-- 左侧日期和天数 -->
           <view class="anniversary-info-left">
-            <view class="anniversary-date">{{item.date}}</view>
+            <view class="anniversary-date">
+              {{item.date}}<text wx:if="{{item.endDate}}"> ～ {{item.endDate}}</text>
+            </view>
             <view class="anniversary-days-wrap">
               <view class="anniversary-days">
-                <text>{{item.days}}</text>天
+                {{item.hasEnded ? '共 ' : ''}}<text>{{item.days}}</text>天
               </view>
               <view wx:if="{{item.years > 0}}" class="anniversary-years">
                 （<text>{{item.years}}</text>年多啦~）
@@ -73,7 +75,22 @@
           </view>
           <view class="ios-form-item">
             <picker mode="date" class="date-picker" aria-role="combobox" aria-labelledby="js_date" value="{{date}}" start="2016-09-01" bindchange="bindDateChange">
-              <view class="ios-input date-picker-text">{{date}}</view>
+              <view class="date-picker-row">
+                <text class="date-picker-label">开始日期</text>
+                <text class="date-picker-text">{{date}}</text>
+              </view>
+            </picker>
+          </view>
+          <view class="ios-form-item ios-form-switch">
+            <text class="ios-form-label">结束日期</text>
+            <switch checked="{{hasEndDate}}" bindchange="bindEndDateToggle" color="#ff6b8b" />
+          </view>
+          <view class="ios-form-item" wx:if="{{hasEndDate}}">
+            <picker mode="date" class="date-picker" aria-role="combobox" value="{{endDate}}" start="{{date}}" bindchange="bindEndDateChange">
+              <view class="date-picker-row">
+                <text class="date-picker-label">截止日期</text>
+                <text class="date-picker-text">{{endDate}}</text>
+              </view>
             </picker>
           </view>
         </view>

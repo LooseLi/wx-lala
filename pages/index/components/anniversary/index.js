@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
 const anniversary = db.collection('anniversaryList');
+const dbCommand = db.command;
 const BASE = require('../../../../utils/base');
 const plugins = require('../../../../utils/plugins');
 
@@ -14,24 +15,26 @@ Page({
     dialog: false,
     name: '',
     date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+    hasEndDate: false,
+    endDate: '',
     id: '', // 某条纪念日id
     type: 'add', // 新增还是修改
     tempImages: [], // 临时存储选择的图片
     uploadedImages: [], // 已上传的图片
     imagesToDelete: [], // 需要删除的图片fileID列表
-    /** 按天数排序：desc 最长纪念在前，asc 最新纪念在前 */
+    /** desc 最长纪念在前，asc 最新开始日期在前 */
     sortOrder: 'desc',
   },
 
-  sortListByDays(list, order) {
+  sortList(list, order) {
     const sorted = [...list];
-    sorted.sort((a, b) => (order === 'desc' ? b.days - a.days : a.days - b.days));
+    sorted.sort((a, b) => (order === 'desc' ? b.days - a.days : b.date.localeCompare(a.date)));
     return sorted;
   },
 
   toggleSortOrder() {
     const next = this.data.sortOrder === 'desc' ? 'asc' : 'desc';
-    const list = this.sortListByDays(this.data.list, next);
+    const list = this.sortList(this.data.list, next);
     this.setData({
       sortOrder: next,
       list,
@@ -69,8 +72,33 @@ Page({
   },
 
   bindDateChange(e) {
+    const date = e.detail.value;
+    const data = { date };
+    if (this.data.hasEndDate && this.data.endDate < date) {
+      data.endDate = date;
+    }
+    this.setData(data);
+  },
+
+  bindEndDateToggle(e) {
+    if (!e.detail.value) {
+      this.setData({
+        hasEndDate: false,
+        endDate: '',
+      });
+      return;
+    }
+
+    const today = BASE.dateFormat(new Date(), 'yyyy-MM-dd');
     this.setData({
-      date: e.detail.value,
+      hasEndDate: true,
+      endDate: this.data.date > today ? this.data.date : today,
+    });
+  },
+
+  bindEndDateChange(e) {
+    this.setData({
+      endDate: e.detail.value,
     });
   },
 
@@ -78,6 +106,8 @@ Page({
     this.setData({
       name: '',
       date: BASE.dateFormat(new Date(), 'yyyy-MM-dd'),
+      hasEndDate: false,
+      endDate: '',
       tempImages: [],
       uploadedImages: [],
       imagesToDelete: [], // 重置待删除图片列表
@@ -94,11 +124,12 @@ Page({
         const { result } = res;
         const { data } = result;
         data.forEach(item => {
-          item.days = BASE.dateDiff(item.date);
+          item.hasEnded = Boolean(item.endDate && BASE.dateDiff(item.endDate) >= 0);
+          item.days = BASE.dateDiff(item.date, item.hasEnded ? item.endDate : undefined);
           // 计算年数
           item.years = Math.floor(item.days / 365);
         });
-        const list = this.sortListByDays(data, this.data.sortOrder);
+        const list = this.sortList(data, this.data.sortOrder);
         this.setData({
           list,
         });
@@ -273,13 +304,18 @@ Page({
         return this.uploadImages();
       })
       .then(uploadedImages => {
+        const data = {
+          name: this.data.name,
+          date: this.data.date,
+          canEdit: true,
+          images: uploadedImages || [],
+        };
+        if (this.data.hasEndDate) {
+          data.endDate = this.data.endDate;
+        }
+
         anniversary.add({
-          data: {
-            name: this.data.name,
-            date: this.data.date,
-            canEdit: true,
-            images: uploadedImages || [], // 添加图片数组字段
-          },
+          data,
           success: res => {
             wx.hideLoading();
             wx.showToast({
@@ -331,6 +367,7 @@ Page({
           data: {
             name: this.data.name,
             date: this.data.date,
+            endDate: this.data.hasEndDate ? this.data.endDate : dbCommand.remove(),
             images: allImages, // 更新图片数组
           },
           success: res => {
@@ -381,6 +418,15 @@ Page({
       return;
     }
 
+    if (this.data.hasEndDate && this.data.endDate < this.data.date) {
+      wx.showToast({
+        title: '结束日期不能早于开始日期',
+        icon: 'none',
+        duration: 2000,
+      });
+      return;
+    }
+
     // 显示加载中提示
     wx.showLoading({
       title: '保存中...',
@@ -410,6 +456,8 @@ Page({
       this.setData({
         name: obj.name,
         date: obj.date,
+        hasEndDate: Boolean(obj.endDate),
+        endDate: obj.endDate || '',
         id: obj._id,
         type: 'update',
         uploadedImages: obj.images || [], // 加载已有图片

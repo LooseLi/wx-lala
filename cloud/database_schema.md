@@ -90,6 +90,33 @@
 
 建议在控制台为 **`openid` + `dateStr` 建唯一复合索引**，避免并发重复发送。
 
+## anniversaryList 集合（纪念日）
+
+用于存储纪念日及相关照片，由 `pages/index/components/anniversary/index` 页面维护。
+
+```json
+{
+  "_id": "string",
+  "_openid": "string",       // 自动写入，作为创建者标记
+  "name": "string",          // 纪念日名称
+  "date": "string",          // 开始日期，YYYY-MM-DD
+  "endDate": "string",       // 可选结束日期，YYYY-MM-DD
+  "canEdit": "boolean",
+  "images": [
+    {
+      "fileID": "string",
+      "path": "string"
+    }
+  ]
+}
+```
+
+说明：
+
+- 缺少 `endDate` 的旧记录按持续中的纪念日处理，天数累计到今天。
+- `endDate` 到达后纪念天数停止累计，记录仍保留在列表中。
+- 超过 `endDate` 后，该记录不再生成首页周年公告。
+
 ## books 集合（我的书单）
 
 用于记录读过的书籍与读书心得，由 `pages/books/index` 页面读写。

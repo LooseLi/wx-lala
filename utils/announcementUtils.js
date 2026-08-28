@@ -91,6 +91,11 @@ function getRecentAnniversary(anniversaryList) {
     if (!item.date) return false;
 
     const anniversaryDate = new Date(item.date.replace(/-/g, '/'));
+    if (item.endDate) {
+      const endDate = new Date(item.endDate.replace(/-/g, '/'));
+      endDate.setHours(0, 0, 0, 0);
+      if (today > endDate) return false;
+    }
 
     const isSameMonthDay =
       today.getMonth() === anniversaryDate.getMonth() &&

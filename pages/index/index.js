@@ -346,7 +346,8 @@ Page({
       if (data && data.length > 0) {
         // 处理纪念日数据
         data.forEach(item => {
-          item.days = this.dateDiff(item.date);
+          const hasEnded = Boolean(item.endDate && this.dateDiff(item.endDate) >= 0);
+          item.days = this.dateDiff(item.date, hasEnded ? item.endDate : undefined);
         });
 
         // 按天数排序
@@ -435,19 +436,18 @@ Page({
 
   /**
    * 计算两个日期之间的天数差异
-   * @param {String} date 日期字符串，格式为 YYYY-MM-DD
+   * @param {String} date 开始日期字符串，格式为 YYYY-MM-DD
+   * @param {String} endDate 可选的结束日期字符串，格式为 YYYY-MM-DD
    * @returns {Number} 天数差异，负数表示未来的天数，正数表示过去的天数
    */
-  dateDiff(date) {
+  dateDiff(date, endDate) {
     if (!date) return 0;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const targetDate = new Date(date.replace(/-/g, '/'));
-    targetDate.setHours(0, 0, 0, 0);
-
-    const timeDiff = today.getTime() - targetDate.getTime();
+    const start = new Date(date.replace(/-/g, '/'));
+    const end = endDate ? new Date(endDate.replace(/-/g, '/')) : new Date();
+    const startTime = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+    const endTime = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+    const timeDiff = endTime - startTime;
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   },
 

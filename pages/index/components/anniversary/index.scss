@@ -76,7 +76,7 @@ page {
   &__hd {
     display: flex;
     align-items: center;
-    padding: $padding-small $padding-large;
+    padding: $padding-small 24px;
     position: relative;
 
     &__side {
@@ -142,10 +142,10 @@ page {
   flex-shrink: 0;
   gap: $margin-small;
   padding: $padding-small $padding-medium;
-  font-size: $font-size-micro;
+  font-size: 14px;
   font-weight: $font-weight-medium;
   color: var(--text-primary);
-  border-radius: $border-radius-mini;
+  border-radius: $border-radius-small;
   background-color: rgba(var(--primary-color-rgb), 0.08);
   transition: opacity 0.2s ease;
 }
@@ -263,6 +263,29 @@ page {
     }
   }
 
+  &-days-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &-years {
+    font-size: $font-size-mini;
+    color: var(--text-secondary);
+
+    text {
+      font-size: 20px;
+      color: $anniversary-pink;
+      margin-right: $margin-small;
+    }
+  }
+
+  &-status {
+    margin-left: $margin-small;
+    font-size: $font-size-micro;
+    color: var(--text-tertiary);
+  }
+
   // 纪念日图片图标样式
   &-images-icon {
     @include flex-column;
@@ -332,6 +355,15 @@ page {
     &:last-child {
       border-bottom: none;
     }
+  }
+
+  &-switch {
+    @include flex-between;
+  }
+
+  &-label {
+    font-size: $font-size-small;
+    color: var(--text-primary);
   }
 }
 
@@ -420,7 +452,20 @@ page {
 .date-picker {
   width: 100%;
 
+  &-row {
+    @include flex-between;
+    min-height: $icon-size-medium;
+  }
+
+  &-label {
+    flex-shrink: 0;
+    margin-right: $margin-medium;
+    font-size: $font-size-small;
+    color: var(--text-secondary);
+  }
+
   &-text {
+    font-size: $font-size-small;
     color: var(--text-primary) !important;
   }
 }
