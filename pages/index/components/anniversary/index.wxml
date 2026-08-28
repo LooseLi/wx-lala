@@ -34,7 +34,7 @@
             </view>
             <view class="anniversary-days-wrap">
               <view class="anniversary-days">
-                {{item.hasEnded ? '共 ' : ''}}<text>{{item.days}}</text>天
+                {{item.endDate ? '共 ' : ''}}<text>{{item.days}}</text>天
               </view>
               <view wx:if="{{item.years > 0}}" class="anniversary-years">
                 （<text>{{item.years}}</text>年多啦~）

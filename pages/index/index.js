@@ -345,8 +345,7 @@ Page({
       if (data && data.length > 0) {
         // 处理纪念日数据
         data.forEach(item => {
-          const hasEnded = Boolean(item.endDate && this.dateDiff(item.endDate) >= 0);
-          item.days = this.dateDiff(item.date, hasEnded ? item.endDate : undefined);
+          item.days = this.dateDiff(item.date, item.endDate || undefined);
         });
 
         // 按天数排序

@@ -125,7 +125,7 @@ Page({
         const { data } = result;
         data.forEach(item => {
           item.hasEnded = Boolean(item.endDate && BASE.dateDiff(item.endDate) >= 0);
-          item.days = BASE.dateDiff(item.date, item.hasEnded ? item.endDate : undefined);
+          item.days = BASE.dateDiff(item.date, item.endDate || undefined);
           // 计算年数
           item.years = Math.floor(item.days / 365);
         });
